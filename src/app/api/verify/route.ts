@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { OPENROUTER_MODEL, OPENROUTER_API_KEY, OPENROUTER_URL } from '@/lib/constants';
+import { OPENROUTER_MODEL, OPENROUTER_BASE_URL } from '@/lib/constants';
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,11 +17,11 @@ export async function POST(req: NextRequest) {
     }
     DO NOT output anything other than the JSON object.`;
 
-    const res = await fetch(`${OPENROUTER_URL}/chat/completions`, {
+    const res = await fetch(OPENROUTER_BASE_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
       },
       body: JSON.stringify({
         model: OPENROUTER_MODEL,
