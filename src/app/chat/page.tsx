@@ -51,6 +51,7 @@ export default function Page() {
       setStreamingContent('');
 
       try {
+        console.log('[Chat] Starting request to /api/chat...');
         const response = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -59,6 +60,8 @@ export default function Page() {
             history: messages.slice(-10),
           }),
         });
+
+        console.log('[Chat] Response received, status:', response.status);
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
@@ -69,13 +72,17 @@ export default function Page() {
         const reader = response.body?.getReader();
         if (!reader) throw new Error('No response stream');
 
+        console.log('[Chat] Stream reader obtained, starting to read...');
         const decoder = new TextDecoder();
         let fullContent = '';
         let buffer = '';
 
         while (true) {
           const { done, value } = await reader.read();
-          if (done) break;
+          if (done) {
+            console.log('[Chat] Stream complete');
+            break;
+          }
 
           buffer += decoder.decode(value, { stream: true });
           const lines = buffer.split('\n');
@@ -85,11 +92,12 @@ export default function Page() {
             const trimmed = line.trim();
             if (!trimmed || !trimmed.startsWith('data: ')) continue;
 
-            const data = trimmed.slice(6);
-            if (data === '[DONE]') continue;
+            const dataStr = trimmed.slice(6);
+            if (dataStr === '[DONE]') continue;
 
             try {
-              const parsed = JSON.parse(data);
+              const parsed = JSON.parse(dataStr);
+              console.log('[Chat] Received chunk type:', parsed.type);
 
               if (parsed.type === 'meta' && parsed.pineconeIds) {
                 pineconeIdsRef.current = parsed.pineconeIds;
@@ -97,10 +105,10 @@ export default function Page() {
                 fullContent += parsed.content;
                 setStreamingContent(fullContent);
               } else if (parsed.type === 'error') {
-                console.error('[Stream] Error:', parsed.error);
+                console.error('[Stream] Server reported error:', parsed.error);
               }
             } catch {
-              // Skip malformed chunks
+              // Skip malformed
             }
           }
         }
