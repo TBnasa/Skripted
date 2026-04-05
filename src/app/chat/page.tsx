@@ -38,7 +38,7 @@ export default function Page() {
       lastPromptRef.current = content;
       setShowFeedback(false);
 
-      // Add user message
+      // Add user message locally
       const userMessage: ChatMessage = {
         id: crypto.randomUUID(),
         role: 'user',
@@ -46,7 +46,8 @@ export default function Page() {
         timestamp: Date.now(),
       };
 
-      setMessages((prev) => [...prev, userMessage]);
+      const updatedHistory = [...messages, userMessage];
+      setMessages(updatedHistory);
       setIsStreaming(true);
       setStreamingContent('');
 
@@ -113,7 +114,6 @@ export default function Page() {
           }
         }
 
-        // Add the complete assistant message
         const assistantMessage: ChatMessage = {
           id: crypto.randomUUID(),
           role: 'assistant',
@@ -123,7 +123,19 @@ export default function Page() {
           pineconeIds: [...pineconeIdsRef.current],
         };
 
-        setMessages((prev) => [...prev, assistantMessage]);
+        const updatedMessages = [...updatedHistory, assistantMessage];
+        setMessages(updatedMessages);
+
+        // Async save session to Supabase
+        fetch('/api/session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sessionId: sessionIdRef.current,
+            title: updatedMessages[0]?.content.substring(0, 40) || 'New Chat',
+            messages: updatedMessages,
+          }),
+        }).catch(err => console.error('Failed to sync session', err));
 
         // Extract code and set in editor
         const code = extractCode(fullContent);

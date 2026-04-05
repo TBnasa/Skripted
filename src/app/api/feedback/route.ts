@@ -4,7 +4,7 @@
    ═══════════════════════════════════════════ */
 
 import { NextRequest } from 'next/server';
-import { createServerClient } from '@/lib/supabase-server';
+import { createClient } from '@/lib/supabase-server';
 import type { FeedbackPayload } from '@/types';
 
 export async function POST(request: NextRequest): Promise<Response> {
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest): Promise<Response> {
       );
     }
 
-    const supabase = createServerClient();
+    const supabase = await createClient();
 
     const { error } = await supabase
       .from('feedback_logs')

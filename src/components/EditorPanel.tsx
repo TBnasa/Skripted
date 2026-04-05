@@ -17,6 +17,8 @@ interface EditorPanelProps {
 export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const [copied, setCopied] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [verifyResult, setVerifyResult] = useState<{ status: 'success' | 'working' | 'error', message: string } | null>(null);
 
   const handleEditorMount = useCallback(
     (editorInstance: editor.IStandaloneCodeEditor, monaco: typeof import('monaco-editor')) => {
@@ -54,6 +56,31 @@ export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
     await navigator.clipboard.writeText(code);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  }, [code]);
+
+  const handleVerify = useCallback(async () => {
+    if (!code.trim()) return;
+    setVerifying(true);
+    setVerifyResult(null);
+
+    try {
+      const res = await fetch('/api/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+      });
+      
+      const data = await res.json();
+      if (res.ok && data.valid) {
+        setVerifyResult({ status: 'success', message: 'Script is compatible with Paper 1.21.1!' });
+      } else {
+        setVerifyResult({ status: 'error', message: data.message || 'Syntax errors found. Re-prompt AI to fix.' });
+      }
+    } catch (e) {
+      setVerifyResult({ status: 'error', message: 'Verification failed to run.' });
+    }
+    
+    setVerifying(false);
   }, [code]);
 
   return (
@@ -98,10 +125,32 @@ export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
             )}
           </button>
 
+          {/* Verify button */}
+          <button
+            onClick={handleVerify}
+            disabled={!code.trim() || verifying}
+            className="flex items-center gap-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-2 text-xs font-medium text-[var(--color-accent-primary)] transition-all duration-200 hover:bg-[var(--color-bg-tertiary)] disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            {verifying ? 'Verifying...' : 'Verify Syntax'}
+          </button>
+
           {/* Download button */}
           <DownloadButton code={code} />
         </div>
       </div>
+      
+      {/* Verification Result Toast */}
+      {verifyResult && (
+        <div className={`flex items-center px-5 py-2 text-xs font-semibold ${
+          verifyResult.status === 'success' 
+            ? 'bg-[var(--color-accent-success)]/10 text-[var(--color-accent-success)]' 
+            : 'bg-[var(--color-accent-danger)]/10 text-[var(--color-accent-danger)]'
+        }`}>
+          <span>{verifyResult.status === 'success' ? '✅' : '⚠️'}</span>
+          <span className="ml-2">{verifyResult.message}</span>
+          <button onClick={() => setVerifyResult(null)} className="ml-auto opacity-60 hover:opacity-100">✕</button>
+        </div>
+      )}
 
       {/* Editor */}
       <div className="flex-1 overflow-hidden">
