@@ -32,7 +32,6 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
         {isUser ? 'U' : '⚡'}
       </div>
 
-      {/* Content */}
       <div
         className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
           isUser
@@ -40,21 +39,29 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
             : 'bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]'
         }`}
       >
-        {/* Render content with code block detection */}
-        {message.content.split(/(```[\s\S]*?```)/g).map((segment, i) => {
-          if (segment.startsWith('```')) {
-            const codeContent = segment.replace(/```\w*\n?/g, '').replace(/```$/g, '');
-            return (
-              <pre
-                key={i}
-                className="my-2 overflow-x-auto rounded-lg bg-[var(--color-bg-primary)] p-3 font-[var(--font-mono)] text-xs leading-relaxed"
-              >
-                <code>{codeContent}</code>
-              </pre>
-            );
-          }
-          return <span key={i} className="whitespace-pre-wrap">{segment}</span>;
-        })}
+        {/* Render content with improved streaming-safe logic */}
+        {(() => {
+          const content = message.content;
+          // Simple but robust split that handles unterminated blocks by treating them as plain code until finished
+          const segments = content.split(/(```[\s\S]*?```|```[\s\S]*$)/g);
+          
+          return segments.map((segment, i) => {
+            if (segment.startsWith('```')) {
+              // Remove markers and any language hints
+              const codeContent = segment.replace(/^```\w*\n?/g, '').replace(/```$/g, '');
+              return (
+                <pre
+                  key={i}
+                  className="my-2 overflow-x-auto rounded-lg bg-[var(--color-bg-primary)] p-3 font-[var(--font-mono)] text-xs leading-relaxed border border-[var(--color-border)]"
+                >
+                  <code className="block whitespace-pre">{codeContent || ' '}</code>
+                </pre>
+              );
+            }
+            if (!segment) return null;
+            return <span key={i} className="whitespace-pre-wrap">{segment}</span>;
+          });
+        })()}
       </div>
     </div>
   );
