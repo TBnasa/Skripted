@@ -23,12 +23,25 @@ export async function POST(request: NextRequest): Promise<Response> {
       );
     }
 
-    // Step 1: Search Pinecone for relevant Skript examples
-    const examples = await searchSkriptExamples(prompt.trim());
-    const ragContext = formatRAGContext(examples);
-    const pineconeIds = examples.map((ex) => ex.id);
+    // Step 1: Initialize SSE logic
+    const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
+    let pineconeIds: string[] = [];
+    let ragContext = '';
 
-    // Step 2: Build the system prompt with RAG context + guardrails
+    // Step 2: Search Pinecone with a timeout safeguard
+    try {
+      const searchPromise = searchSkriptExamples(prompt.trim());
+      const timeoutPromise = new Promise<[]>((resolve) => setTimeout(() => resolve([]), 5000));
+      
+      const examples = await Promise.race([searchPromise, timeoutPromise]);
+      ragContext = formatRAGContext(examples);
+      pineconeIds = examples.map((ex) => ex.id);
+    } catch (e) {
+      console.error('[Pinecone RAG Error]:', e);
+    }
+
+    // Step 3: Build the system prompt with RAG context + guardrails
     const systemPrompt = buildSystemPrompt(
       serverVersion,
       serverType,
@@ -36,7 +49,7 @@ export async function POST(request: NextRequest): Promise<Response> {
       ragContext,
     );
 
-    // Step 3: Assemble the message list
+    // Step 4: Assemble the message list
     const messages = [
       { role: 'system' as const, content: systemPrompt },
       // Include recent conversation history (last 10 exchanges)
@@ -47,13 +60,10 @@ export async function POST(request: NextRequest): Promise<Response> {
       { role: 'user' as const, content: prompt },
     ];
 
-    // Step 4: Stream from OpenRouter
+    // Step 5: Stream from OpenRouter
     const upstreamBody = await streamChatCompletion(messages);
 
-    // Step 5: Transform the SSE stream to extract content deltas
-    const encoder = new TextEncoder();
-    const decoder = new TextDecoder();
-
+    // Step 6: Transform the SSE stream to extract content deltas
     const transformedStream = new ReadableStream({
       async start(controller) {
         const send = (data: any) => controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
