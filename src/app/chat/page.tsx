@@ -5,7 +5,7 @@ import ChatPanel from '@/components/ChatPanel';
 import EditorPanel from '@/components/EditorPanel';
 import type { ChatMessage, FeedbackPayload } from '@/types';
 
-export default function ChatPage() {
+export default function Page() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [editorCode, setEditorCode] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);

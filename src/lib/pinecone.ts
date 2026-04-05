@@ -7,9 +7,16 @@ import { Pinecone } from '@pinecone-database/pinecone';
 import { PINECONE_INDEX, PINECONE_TOP_K } from './constants';
 import type { SkriptExample } from '@/types';
 
-const pc = new Pinecone({
-  apiKey: process.env.PINECONE_API_KEY ?? '',
-});
+let pcClient: Pinecone | null = null;
+
+function getPineconeClient() {
+  if (!pcClient) {
+    pcClient = new Pinecone({
+      apiKey: process.env.PINECONE_API_KEY ?? '',
+    });
+  }
+  return pcClient;
+}
 
 /**
  * Search the Skripted knowledge base for relevant Skript examples.
@@ -22,6 +29,7 @@ export async function searchSkriptExamples(
   const start = performance.now();
 
   try {
+    const pc = getPineconeClient();
     const index = pc.index(PINECONE_INDEX).namespace('examples');
 
     const results = await index.searchRecords({
