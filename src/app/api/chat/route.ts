@@ -56,15 +56,15 @@ export async function POST(request: NextRequest): Promise<Response> {
 
     const transformedStream = new ReadableStream({
       async start(controller) {
-        // Send pinecone metadata as the first chunk
-        controller.enqueue(
-          encoder.encode(`data: ${JSON.stringify({ type: 'meta', pineconeIds })}\n\n`),
-        );
-
-        const reader = upstreamBody.getReader();
-        let buffer = '';
+        const send = (data: any) => controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
 
         try {
+          // Send pinecone metadata immediately
+          send({ type: 'meta', pineconeIds });
+
+          const reader = upstreamBody.getReader();
+          let buffer = '';
+
           while (true) {
             const { done, value } = await reader.read();
             if (done) break;
@@ -77,29 +77,26 @@ export async function POST(request: NextRequest): Promise<Response> {
               const trimmed = line.trim();
               if (!trimmed || !trimmed.startsWith('data: ')) continue;
 
-              const data = trimmed.slice(6);
-              if (data === '[DONE]') {
-                controller.enqueue(encoder.encode('data: [DONE]\n\n'));
+              const dataStr = trimmed.slice(6);
+              if (dataStr === '[DONE]') {
+                send({ type: 'done' });
                 continue;
               }
 
               try {
-                const parsed = JSON.parse(data);
+                const parsed = JSON.parse(dataStr);
                 const content = parsed.choices?.[0]?.delta?.content;
-                if (content) {
-                  controller.enqueue(
-                    encoder.encode(`data: ${JSON.stringify({ type: 'content', content })}\n\n`),
-                  );
+                if (content !== undefined && content !== null) {
+                  send({ type: 'content', content });
                 }
-              } catch {
-                // Skip malformed JSON chunks
+              } catch (e) {
+                // Ignore parsing errors for non-JSON lines or heartbeats
               }
             }
           }
         } catch (error) {
-          controller.enqueue(
-            encoder.encode(`data: ${JSON.stringify({ type: 'error', error: String(error) })}\n\n`),
-          );
+          console.error('[Stream Error]:', error);
+          send({ type: 'error', error: String(error) });
         } finally {
           controller.close();
         }
