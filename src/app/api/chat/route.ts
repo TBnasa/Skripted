@@ -114,9 +114,10 @@ export async function POST(request: NextRequest): Promise<Response> {
       },
     });
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown internal error';
     console.error('[Chat API] Error:', error);
     return Response.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', details: errorMessage },
       { status: 500 },
     );
   }
