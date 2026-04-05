@@ -61,7 +61,9 @@ export default function Page() {
         });
 
         if (!response.ok) {
-          throw new Error(`API error: ${response.status}`);
+          const errorData = await response.json().catch(() => ({}));
+          const errorMsg = errorData.details || errorData.error || `Status: ${response.status}`;
+          throw new Error(`API error: ${response.status} - ${errorMsg}`);
         }
 
         const reader = response.body?.getReader();
