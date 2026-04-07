@@ -16,6 +16,17 @@ export default function Page() {
   const lastPromptRef = useRef('');
 
   /**
+   * Safe UUID generation with fallback for non-secure contexts.
+   */
+  const generateId = useCallback(() => {
+    try {
+      return crypto.randomUUID();
+    } catch {
+      return Math.random().toString(36).substring(2, 15);
+    }
+  }, []);
+
+  /**
    * Extract code blocks (```vb ... ``` or ``` ... ```) from AI response.
    */
   const extractCode = useCallback((text: string): string => {
@@ -38,27 +49,35 @@ export default function Page() {
       lastPromptRef.current = content;
       setShowFeedback(false);
 
-      // Add user message locally
       const userMessage: ChatMessage = {
-        id: crypto.randomUUID(),
+        id: generateId(),
         role: 'user',
         content,
         timestamp: Date.now(),
       };
 
-      const updatedHistory = [...messages, userMessage];
-      setMessages(updatedHistory);
+      // Add user message locally using functional update to ensure we have latest history
+      setMessages((prev) => [...prev, userMessage]);
       setIsStreaming(true);
       setStreamingContent('');
 
       try {
         console.log('[Chat] Starting request to /api/chat...');
+        
+        // Get snapshot of current history for the API call
+        // We do this by reaching into the state just before the fetch
+        let currentHistory: ChatMessage[] = [];
+        setMessages(prev => {
+          currentHistory = prev.slice(-11); // Include the user message we just added
+          return prev;
+        });
+
         const response = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             prompt: content,
-            history: messages.slice(-10),
+            history: currentHistory.slice(0, -1), // Send history EXCEPT the current prompt
           }),
         });
 
@@ -66,24 +85,19 @@ export default function Page() {
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
-          const errorMsg = errorData.details || errorData.error || `Status: ${response.status}`;
-          throw new Error(`API error: ${response.status} - ${errorMsg}`);
+          throw new Error(errorData.details || errorData.error || `Status: ${response.status}`);
         }
 
         const reader = response.body?.getReader();
         if (!reader) throw new Error('No response stream');
 
-        console.log('[Chat] Stream reader obtained, starting to read...');
         const decoder = new TextDecoder();
         let fullContent = '';
         let buffer = '';
 
         while (true) {
           const { done, value } = await reader.read();
-          if (done) {
-            console.log('[Chat] Stream complete');
-            break;
-          }
+          if (done) break;
 
           buffer += decoder.decode(value, { stream: true });
           const lines = buffer.split('\n');
@@ -98,8 +112,6 @@ export default function Page() {
 
             try {
               const parsed = JSON.parse(dataStr);
-              console.log('[Chat] Received chunk type:', parsed.type);
-
               if (parsed.type === 'meta' && parsed.pineconeIds) {
                 pineconeIdsRef.current = parsed.pineconeIds;
               } else if (parsed.type === 'content') {
@@ -108,14 +120,14 @@ export default function Page() {
               } else if (parsed.type === 'error') {
                 console.error('[Stream] Server reported error:', parsed.error);
               }
-            } catch {
-              // Skip malformed
+            } catch (e) {
+              // Ignore malformed JSON lines
             }
           }
         }
 
         const assistantMessage: ChatMessage = {
-          id: crypto.randomUUID(),
+          id: generateId(),
           role: 'assistant',
           content: fullContent,
           timestamp: Date.now(),
@@ -123,19 +135,23 @@ export default function Page() {
           pineconeIds: [...pineconeIdsRef.current],
         };
 
-        const updatedMessages = [...updatedHistory, assistantMessage];
-        setMessages(updatedMessages);
+        // Update messages with the final assistant response
+        setMessages((prev) => {
+          const newMessages = [...prev, assistantMessage];
+          
+          // Async save session to Supabase
+          fetch('/api/session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              sessionId: sessionIdRef.current,
+              title: newMessages[0]?.content.substring(0, 40) || 'New Chat',
+              messages: newMessages,
+            }),
+          }).catch(err => console.error('[Session] Sync failed:', err));
 
-        // Async save session to Supabase
-        fetch('/api/session', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            sessionId: sessionIdRef.current,
-            title: updatedMessages[0]?.content.substring(0, 40) || 'New Chat',
-            messages: updatedMessages,
-          }),
-        }).catch(err => console.error('Failed to sync session', err));
+          return newMessages;
+        });
 
         // Extract code and set in editor
         const code = extractCode(fullContent);
@@ -146,7 +162,7 @@ export default function Page() {
       } catch (error) {
         console.error('[Chat] Error:', error);
         const errorMessage: ChatMessage = {
-          id: crypto.randomUUID(),
+          id: generateId(),
           role: 'assistant',
           content: `⚠️ An error occurred while generating your script. Please try again.\n\nError: ${error instanceof Error ? error.message : 'Unknown error'}`,
           timestamp: Date.now(),
@@ -157,7 +173,7 @@ export default function Page() {
         setStreamingContent('');
       }
     },
-    [messages, extractCode],
+    [generateId, extractCode],
   );
 
   /**

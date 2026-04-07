@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import MessageBubble from './MessageBubble';
 import FeedbackPoll from './FeedbackPoll';
 import type { ChatMessage } from '@/types';
@@ -60,6 +60,13 @@ export default function ChatPanel({
     },
     [],
   );
+
+  // Auto-scroll to bottom on new messages or streaming updates
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, streamingContent]);
 
   return (
     <div className="flex h-full flex-col">
