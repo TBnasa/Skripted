@@ -119,11 +119,19 @@ export default function Page() {
                 setStreamingContent(fullContent);
               } else if (parsed.type === 'error') {
                 console.error('[Stream] Server reported error:', parsed.error);
+                // Display the error directly in the UI so the user knows what's happening
+                fullContent = `⚠️ AI Service Error: ${parsed.error}`;
+                setStreamingContent(fullContent);
               }
             } catch (e) {
               // Ignore malformed JSON lines
             }
           }
+        }
+
+        if (!fullContent && !isStreaming) {
+          fullContent = '⚠️ The AI returned an empty response. This might be due to a temporary service interruption or rate limit. Please try again.';
+          setStreamingContent(fullContent);
         }
 
         const assistantMessage: ChatMessage = {
