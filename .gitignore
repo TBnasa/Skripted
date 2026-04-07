@@ -39,3 +39,18 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# scratch and tools
+*.js
+!package.json
+*.json
+!package*.json
+!tsconfig.json
+!next.config.json
+!components.json
+!mcp_config.json
+skript_records_to_upload.json
+batch*.json
+extract*.json
+prepare*.json
+upload*.json

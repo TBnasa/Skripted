@@ -12,7 +12,7 @@ export const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL ?? 'stepfun/step-3.
 
 // Pinecone
 export const PINECONE_INDEX = process.env.PINECONE_INDEX ?? 'skripted';
-export const PINECONE_TOP_K = 5 as const;
+export const PINECONE_TOP_K = 3 as const;
 
 // Skript defaults
 export const DEFAULT_SERVER_VERSION = '1.21.1' as const;

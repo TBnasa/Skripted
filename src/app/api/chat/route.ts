@@ -30,6 +30,7 @@ export async function POST(request: NextRequest): Promise<Response> {
     let ragContext = '';
 
     // Step 2: Search Pinecone with a timeout safeguard
+    const ragStart = performance.now();
     try {
       const searchPromise = searchSkriptExamples(prompt.trim());
       const timeoutPromise = new Promise<[]>((resolve) => setTimeout(() => resolve([]), 5000));
@@ -37,17 +38,20 @@ export async function POST(request: NextRequest): Promise<Response> {
       const examples = await Promise.race([searchPromise, timeoutPromise]);
       ragContext = formatRAGContext(examples);
       pineconeIds = examples.map((ex) => ex.id);
+      console.log(`[RAG] Search took ${Math.round(performance.now() - ragStart)}ms. Found ${examples.length} examples. Context size: ${ragContext.length} chars.`);
     } catch (e) {
       console.error('[Pinecone RAG Error]:', e);
     }
 
     // Step 3: Build the system prompt with RAG context + guardrails
+    const buildStart = performance.now();
     const systemPrompt = buildSystemPrompt(
       serverVersion,
       serverType,
       skriptVersion,
       ragContext,
     );
+    console.log(`[Prompt] Builder took ${Math.round(performance.now() - buildStart)}ms.`);
 
     // Step 4: Assemble the message list
     const messages = [
