@@ -31,8 +31,9 @@ export async function streamChatCompletion(
       messages,
       stream: true,
       temperature: 0.3,
-      max_tokens: 8192,
+      max_tokens: 32768,
       top_p: 0.9,
+      include_reasoning: true,
     }),
   });
 

@@ -101,16 +101,18 @@ export async function POST(request: NextRequest): Promise<Response> {
                 const parsed = JSON.parse(dataStr);
                 const delta = parsed.choices?.[0]?.delta;
                 
-                // Handle standard content
-                if (delta?.content) {
-                  send({ type: 'content', content: delta.content });
-                } 
-                // Handle reasoning/thought (some models use 'reasoning_content' or 'thought')
-                else if (delta?.reasoning_content) {
-                  send({ type: 'reasoning', content: delta.reasoning_content });
-                }
-                else if (delta?.reasoning) {
-                  send({ type: 'reasoning', content: delta.reasoning });
+                if (delta) {
+                  // Handle reasoning/thought
+                  if (delta.reasoning_content) {
+                    send({ type: 'reasoning', content: delta.reasoning_content });
+                  } else if (delta.reasoning) {
+                    send({ type: 'reasoning', content: delta.reasoning });
+                  }
+
+                  // Handle standard content
+                  if (delta.content !== undefined && delta.content !== null && delta.content !== '') {
+                    send({ type: 'content', content: delta.content });
+                  }
                 }
               } catch (e) {
                 // Ignore parsing errors
