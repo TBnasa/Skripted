@@ -128,12 +128,13 @@ export default function Page() {
           }
         }
 
-        const finalAssistantContent = fullContent || (fullReasoning ? `*Thinking complete, but no content generated.*` : '');
+        const finalAssistantContent = fullContent || (fullReasoning ? `*Thinking complete, but no main content was returned by the AI.*` : '');
 
         const assistantMessage: ChatMessage = {
           id: generateId(),
           role: 'assistant',
           content: finalAssistantContent,
+          reasoning: fullReasoning, // This was missing!
           timestamp: Date.now(),
           codeBlock: extractCode(finalAssistantContent),
           pineconeIds: [...pineconeIdsRef.current],
