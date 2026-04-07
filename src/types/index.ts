@@ -6,6 +6,7 @@ export interface ChatMessage {
   readonly id: string;
   readonly role: 'user' | 'assistant' | 'system';
   readonly content: string;
+  readonly reasoning?: string;
   readonly timestamp: number;
   readonly codeBlock?: string;
   readonly pineconeIds?: readonly string[];

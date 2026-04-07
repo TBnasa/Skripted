@@ -39,9 +39,26 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
             : 'bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]'
         }`}
       >
+        {/* Reasoning/Thinking block */}
+        {message.reasoning && (
+          <details className="mb-3 rounded-lg bg-[var(--color-bg-primary)]/50 p-2 text-xs text-[var(--color-text-muted)] border border-[var(--color-border)]/50 group" open={!message.content}>
+            <summary className="cursor-pointer font-bold select-none list-none flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-open:rotate-180 transition-transform">
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+              Thinking Process
+            </summary>
+            <div className="mt-2 pl-2 border-l-2 border-[var(--color-border)] whitespace-pre-wrap italic">
+              {message.reasoning}
+            </div>
+          </details>
+        )}
+
         {/* Render content with improved streaming-safe logic */}
         {(() => {
           const content = message.content;
+          if (!content && message.reasoning) return null; // Show nothing if content is empty but thinking exists
+          
           // Simple but robust split that handles unterminated blocks by treating them as plain code until finished
           const segments = content.split(/(```[\s\S]*?```|```[\s\S]*$)/g);
           

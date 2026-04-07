@@ -10,6 +10,7 @@ export default function Page() {
   const [editorCode, setEditorCode] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamingContent, setStreamingContent] = useState('');
+  const [streamingReasoning, setStreamingReasoning] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
   const pineconeIdsRef = useRef<string[]>([]);
   const sessionIdRef = useRef(crypto.randomUUID());
@@ -56,19 +57,17 @@ export default function Page() {
         timestamp: Date.now(),
       };
 
-      // Add user message locally using functional update to ensure we have latest history
       setMessages((prev) => [...prev, userMessage]);
       setIsStreaming(true);
       setStreamingContent('');
+      setStreamingReasoning('');
 
       try {
         console.log('[Chat] Starting request to /api/chat...');
         
-        // Get snapshot of current history for the API call
-        // We do this by reaching into the state just before the fetch
         let currentHistory: ChatMessage[] = [];
         setMessages(prev => {
-          currentHistory = prev.slice(-11); // Include the user message we just added
+          currentHistory = prev.slice(-11);
           return prev;
         });
 
@@ -77,11 +76,9 @@ export default function Page() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             prompt: content,
-            history: currentHistory.slice(0, -1), // Send history EXCEPT the current prompt
+            history: currentHistory.slice(0, -1),
           }),
         });
-
-        console.log('[Chat] Response received, status:', response.status);
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
@@ -93,6 +90,7 @@ export default function Page() {
 
         const decoder = new TextDecoder();
         let fullContent = '';
+        let fullReasoning = '';
         let buffer = '';
 
         while (true) {
@@ -114,12 +112,13 @@ export default function Page() {
               const parsed = JSON.parse(dataStr);
               if (parsed.type === 'meta' && parsed.pineconeIds) {
                 pineconeIdsRef.current = parsed.pineconeIds;
+              } else if (parsed.type === 'reasoning') {
+                fullReasoning += parsed.content;
+                setStreamingReasoning(fullReasoning);
               } else if (parsed.type === 'content') {
                 fullContent += parsed.content;
                 setStreamingContent(fullContent);
               } else if (parsed.type === 'error') {
-                console.error('[Stream] Server reported error:', parsed.error);
-                // Display the error directly in the UI so the user knows what's happening
                 fullContent = `⚠️ AI Service Error: ${parsed.error}`;
                 setStreamingContent(fullContent);
               }
@@ -129,25 +128,20 @@ export default function Page() {
           }
         }
 
-        if (!fullContent && !isStreaming) {
-          fullContent = '⚠️ The AI returned an empty response. This might be due to a temporary service interruption or rate limit. Please try again.';
-          setStreamingContent(fullContent);
-        }
+        const finalAssistantContent = fullContent || (fullReasoning ? `*Thinking complete, but no content generated.*` : '');
 
         const assistantMessage: ChatMessage = {
           id: generateId(),
           role: 'assistant',
-          content: fullContent,
+          content: finalAssistantContent,
           timestamp: Date.now(),
-          codeBlock: extractCode(fullContent),
+          codeBlock: extractCode(finalAssistantContent),
           pineconeIds: [...pineconeIdsRef.current],
         };
 
-        // Update messages with the final assistant response
         setMessages((prev) => {
           const newMessages = [...prev, assistantMessage];
           
-          // Async save session to Supabase
           fetch('/api/session', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -161,8 +155,7 @@ export default function Page() {
           return newMessages;
         });
 
-        // Extract code and set in editor
-        const code = extractCode(fullContent);
+        const code = extractCode(finalAssistantContent);
         if (code) {
           setEditorCode(code);
           setShowFeedback(true);
@@ -179,14 +172,12 @@ export default function Page() {
       } finally {
         setIsStreaming(false);
         setStreamingContent('');
+        setStreamingReasoning('');
       }
     },
     [generateId, extractCode],
   );
 
-  /**
-   * Handle user feedback (success/error).
-   */
   const handleFeedback = useCallback(
     async (success: boolean, errorLog?: string) => {
       const payload: FeedbackPayload = {
@@ -219,9 +210,7 @@ export default function Page() {
 
   return (
     <div className="flex h-screen flex-col pt-16">
-      {/* Split view container */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Left panel: Chat */}
         <div className="flex w-full flex-col border-r border-[var(--color-border)] bg-[var(--color-bg-secondary)] md:w-1/2 lg:w-[45%]">
           <ChatPanel
             messages={messages}
@@ -229,12 +218,12 @@ export default function Page() {
             onCodeExtracted={handleCodeExtracted}
             isStreaming={isStreaming}
             streamingContent={streamingContent}
+            streamingReasoning={streamingReasoning}
             onFeedback={handleFeedback}
             showFeedback={showFeedback}
           />
         </div>
 
-        {/* Right panel: Monaco Editor */}
         <div className="hidden flex-1 flex-col bg-[var(--color-bg-primary)] md:flex">
           <EditorPanel
             code={editorCode}
@@ -243,7 +232,6 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Mobile tab for editor (visible only on small screens) */}
       <div className="border-t border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-2 md:hidden">
         {editorCode.trim() ? (
           <details className="group">
