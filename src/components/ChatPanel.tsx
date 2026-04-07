@@ -29,7 +29,28 @@ export default function ChatPanel({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // ... (handleSubmit and handleKeyDown omitted)
+  const handleSubmit = useCallback(() => {
+    const trimmed = input.trim();
+    if (!trimmed || isStreaming) return;
+
+    onNewMessage(trimmed);
+    setInput('');
+
+    // Reset textarea height
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+    }
+  }, [input, isStreaming, onNewMessage]);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSubmit();
+      }
+    },
+    [handleSubmit],
+  );
 
   const handleTextareaInput = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
