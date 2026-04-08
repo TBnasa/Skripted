@@ -27,8 +27,8 @@ export const skriptTokensProvider: languages.IMonarchLanguage = {
   ],
 
   conditions: [
-    'is', 'are', 'isn\'t', 'aren\'t', 'was', 'were', 'will',
-    'can', 'cannot', 'has', 'have', 'doesn\'t have', 'contains',
+    'is', 'are', 'isn't', 'aren't', 'was', 'were', 'will',
+    'can', 'cannot', 'has', 'have', 'doesn't have', 'contains',
     'does not contain', 'is set', 'is not set', 'exists',
   ],
 
@@ -64,7 +64,7 @@ export const skriptTokensProvider: languages.IMonarchLanguage = {
       [/#.*$/, 'comment'],
 
       // Strings
-      [/"([^"\\]|\\.)*"/, 'string'],
+      [/"([^"\]|\.)*"/, 'string'],
 
       // Variables: {_local}, {global}, {list::*}
       [/\{_[^}]*\}/, 'variable.local'],
@@ -77,15 +77,15 @@ export const skriptTokensProvider: languages.IMonarchLanguage = {
       [/\b\d+(\.\d+)?\b/, 'number'],
 
       // Event triggers (lines starting with "on ...")
-      [/^[ \t]*(on\s+[\w\s]+):/, 'keyword.event'],
-      [/^[ \t]*(every\s+.+):/, 'keyword.event'],
-      [/^[ \t]*(at\s+.+):/, 'keyword.event'],
+      [/^[ 	]*(on\s+[\w\s]+):/, 'keyword.event'],
+      [/^[ 	]*(every\s+.+):/, 'keyword.event'],
+      [/^[ 	]*(at\s+.+):/, 'keyword.event'],
 
       // Command definitions
-      [/^[ \t]*(command\s+\/[\w]+):/, 'keyword.command'],
+      [/^[ 	]*(command\s+\/[\w]+):/, 'keyword.command'],
 
       // Function definitions
-      [/^[ \t]*(function\s+\w+)\(/, 'keyword.function'],
+      [/^[ 	]*(function\s+\w+)\(/, 'keyword.function'],
 
       // Options / Variables sections
       [/^(options|variables):/, 'keyword.section'],
@@ -107,42 +107,45 @@ export const skriptTokensProvider: languages.IMonarchLanguage = {
       [/@symbols/, 'operator'],
 
       // Whitespace
-      [/[ \t\r\n]+/, 'white'],
+      [/[ 	
+]+/, 'white'],
     ],
   },
 };
 
-export const skriptTheme = {
-  base: 'vs-dark' as const,
+export const skriptTheme: languages.IStandaloneThemeData = {
+  base: 'vs-dark',
   inherit: true,
   rules: [
-    { token: 'comment', foreground: '5c6370', fontStyle: 'italic' },
-    { token: 'string', foreground: '98c379' },
-    { token: 'string.escape', foreground: 'd19a66' },
-    { token: 'number', foreground: 'd19a66' },
-    { token: 'keyword', foreground: 'c678dd', fontStyle: 'bold' },
-    { token: 'keyword.event', foreground: 'e5c07b', fontStyle: 'bold' },
-    { token: 'keyword.command', foreground: 'e06c75', fontStyle: 'bold' },
-    { token: 'keyword.function', foreground: '61afef', fontStyle: 'bold' },
-    { token: 'keyword.section', foreground: 'e5c07b', fontStyle: 'bold' },
-    { token: 'keyword.effect', foreground: '61afef' },
-    { token: 'keyword.condition', foreground: 'c678dd' },
-    { token: 'type', foreground: 'e5c07b' },
-    { token: 'variable.local', foreground: '56b6c2' },
-    { token: 'variable.global', foreground: 'e06c75' },
-    { token: 'operator', foreground: '56b6c2' },
-    { token: 'delimiter.arrow', foreground: 'c678dd' },
-    { token: 'delimiter.colon', foreground: 'abb2bf' },
-    { token: 'identifier', foreground: 'abb2bf' },
+    { token: 'comment', foreground: '6272a4', fontStyle: 'italic' }, // Dracula: Comment
+    { token: 'string', foreground: 'f1fa8c' }, // Dracula: String
+    { token: 'string.escape', foreground: 'ffb86c' }, // Dracula: Orange
+    { token: 'number', foreground: 'bd93f9' }, // Dracula: Purple
+    { token: 'keyword', foreground: 'ff79c6', fontStyle: 'bold' }, // Dracula: Pink
+    { token: 'keyword.event', foreground: '50fa7b', fontStyle: 'bold' }, // Dracula: Green
+    { token: 'keyword.command', foreground: 'ff5555', fontStyle: 'bold' }, // Dracula: Red
+    { token: 'keyword.function', foreground: '8be9fd', fontStyle: 'bold' }, // Dracula: Cyan
+    { token: 'keyword.section', foreground: '50fa7b', fontStyle: 'bold' }, // Dracula: Green
+    { token: 'keyword.effect', foreground: '8be9fd' }, // Dracula: Cyan
+    { token: 'keyword.condition', foreground: 'ff79c6' }, // Dracula: Pink
+    { token: 'type', foreground: '8be9fd' }, // Dracula: Cyan
+    { token: 'variable.local', foreground: '50fa7b' }, // Dracula: Green
+    { token: 'variable.global', foreground: 'ffb86c' }, // Dracula: Orange
+    { token: 'operator', foreground: 'ff79c6' }, // Dracula: Pink
+    { token: 'delimiter.arrow', foreground: 'ff79c6' }, // Dracula: Pink
+    { token: 'delimiter.colon', foreground: 'f8f8f2' }, // Dracula: Foreground
+    { token: 'identifier', foreground: 'f8f8f2' }, // Dracula: Foreground
   ],
   colors: {
-    'editor.background': '#0d0d14',
-    'editor.foreground': '#abb2bf',
-    'editor.lineHighlightBackground': '#1a1a2e',
-    'editor.selectionBackground': '#3e4451',
-    'editorCursor.foreground': '#6c5ce7',
-    'editorLineNumber.foreground': '#3a3a5c',
-    'editorLineNumber.activeForeground': '#6c5ce7',
-    'editor.selectionHighlightBackground': '#3e445180',
+    'editor.background': '#1e1f29', // Slightly different from globals for focus
+    'editor.foreground': '#f8f8f2',
+    'editor.lineHighlightBackground': '#282a36', // Dracula: Background
+    'editor.selectionBackground': '#44475a', // Dracula: Selection
+    'editorCursor.foreground': '#f8f8f2',
+    'editorLineNumber.foreground': '#6272a4',
+    'editorLineNumber.activeForeground': '#f8f8f2',
+    'editor.selectionHighlightBackground': '#44475a80',
+    'editor.wordHighlightBackground': '#44475a80',
+    'editor.wordHighlightStrongBackground': '#44475a',
   },
 };
