@@ -65,7 +65,7 @@ export const skriptTokensProvider: languages.IMonarchLanguage = {
       [/#.*$/, 'comment'],
 
       // Strings
-      [/"([^"\]|\.)*"/, 'string'],
+      [/"([^"\\]|\\.)*"/, 'string'],
 
       // Variables: {_local}, {global}, {list::*}
       [/\{_[^}]*\}/, 'variable.local'],
