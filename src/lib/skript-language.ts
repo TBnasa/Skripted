@@ -28,8 +28,8 @@ export const skriptTokensProvider: languages.IMonarchLanguage = {
   ],
 
   conditions: [
-    'is', 'are', 'isn't', 'aren't', 'was', 'were', 'will',
-    'can', 'cannot', 'has', 'have', 'doesn't have', 'contains',
+    'is', 'are', 'isn\'t', 'aren\'t', 'was', 'were', 'will',
+    'can', 'cannot', 'has', 'have', 'doesn\'t have', 'contains',
     'does not contain', 'is set', 'is not set', 'exists',
   ],
 
