@@ -4,7 +4,7 @@
    Trigger new build
    ═══════════════════════════════════════════ */
 
-import type { languages } from 'monaco-editor';
+import type { languages, editor } from 'monaco-editor';
 
 export const SKRIPT_LANGUAGE_ID = 'skript' as const;
 
@@ -108,13 +108,12 @@ export const skriptTokensProvider: languages.IMonarchLanguage = {
       [/@symbols/, 'operator'],
 
       // Whitespace
-      [/[ 	
-]+/, 'white'],
+      [/[ \t\r\n]+/, 'white'],
     ],
   },
 };
 
-export const skriptTheme: languages.IStandaloneThemeData = {
+export const skriptTheme: editor.IStandaloneThemeData = {
   base: 'vs-dark',
   inherit: true,
   rules: [
