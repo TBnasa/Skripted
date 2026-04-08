@@ -24,10 +24,10 @@ export default function DownloadButton({ code, filename = 'script.sk' }: Downloa
     <button
       onClick={handleDownload}
       disabled={!code.trim()}
-      className="flex items-center gap-2 rounded-lg bg-[var(--color-accent-success)]/15 px-4 py-2 text-sm font-semibold text-[var(--color-accent-success)] transition-all duration-200 hover:bg-[var(--color-accent-success)]/25 disabled:cursor-not-allowed disabled:opacity-40"
+      className="mc-btn flex items-center gap-2 bg-[var(--color-accent-success)] px-3 py-2 text-xs font-bold uppercase tracking-widest text-black transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50 disabled:grayscale"
       title="Download as .sk file"
     >
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
         <polyline points="7 10 12 15 17 10" />
         <line x1="12" y1="15" x2="12" y2="3" />

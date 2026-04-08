@@ -23,32 +23,33 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
     >
       {/* Avatar */}
       <div
-        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-xs font-bold ${
+        className={`flex h-10 w-10 shrink-0 items-center justify-center border-4 border-black font-bold shadow-[2px_2px_0_#000] ${
           isUser
-            ? 'bg-[var(--color-accent-primary)]/20 text-[var(--color-accent-primary)]'
-            : 'bg-[var(--color-accent-success)]/20 text-[var(--color-accent-success)]'
+            ? 'bg-[var(--color-accent-primary)] text-black'
+            : 'bg-[var(--color-text-primary)] text-black'
         }`}
+        style={{ fontFamily: '"Press Start 2P", cursive', fontSize: '12px' }}
       >
-        {isUser ? 'U' : '⚡'}
+        {isUser ? 'U' : 'AI'}
       </div>
 
       <div
-        className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+        className={`max-w-[80%] border-4 border-black px-4 py-3 text-lg leading-relaxed shadow-[4px_4px_0_#000] ${
           isUser
-            ? 'bg-[var(--color-accent-primary)]/15 text-[var(--color-text-primary)]'
-            : 'bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]'
+            ? 'bg-[var(--color-bg-tertiary)] text-[var(--color-accent-primary)]'
+            : 'bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]'
         }`}
       >
         {/* Reasoning/Thinking block */}
         {message.reasoning && (
-          <details className="mb-3 rounded-lg bg-[var(--color-bg-primary)]/50 p-2 text-xs text-[var(--color-text-muted)] border border-[var(--color-border)]/50 group" open={!message.content}>
+          <details className="mb-3 border-4 border-black bg-[#1a1a1a] p-2 text-sm text-[var(--color-text-muted)] shadow-[2px_2px_0_#000] group" open={!message.content}>
             <summary className="cursor-pointer font-bold select-none list-none flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-open:rotate-180 transition-transform">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="square" strokeLinejoin="miter" className="group-open:rotate-180 transition-transform">
                 <path d="M6 9l6 6 6-6" />
               </svg>
-              Thinking Process
+              <span style={{ fontFamily: '"Press Start 2P", cursive', fontSize: '10px', textTransform: 'uppercase' }}>Thinking Process</span>
             </summary>
-            <div className="mt-2 pl-2 border-l-2 border-[var(--color-border)] whitespace-pre-wrap italic">
+            <div className="mt-2 pl-2 border-l-4 border-[var(--color-border)] whitespace-pre-wrap italic">
               {message.reasoning}
             </div>
           </details>
@@ -69,7 +70,7 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
               return (
                 <pre
                   key={i}
-                  className="my-2 overflow-x-auto rounded-lg bg-[var(--color-bg-primary)] p-3 font-[var(--font-mono)] text-xs leading-relaxed border border-[var(--color-border)]"
+                  className="my-3 overflow-x-auto bg-black p-3 font-mono text-base leading-relaxed border-4 border-[var(--color-border)] shadow-[inset_2px_2px_0_rgba(255,255,255,0.1)] text-[#a8ff60]"
                 >
                   <code className="block whitespace-pre">{codeContent || ' '}</code>
                 </pre>

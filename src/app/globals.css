@@ -5,154 +5,133 @@
    ═══════════════════════════════════════════ */
 
 @theme inline {
-  --color-bg-primary: #0a0a0f;
-  --color-bg-secondary: #12121a;
-  --color-bg-tertiary: #1a1a2e;
-  --color-bg-elevated: #1e1e32;
+  --color-bg-primary: #121212; /* Deep Cave Black */
+  --color-bg-secondary: #2b2b2b; /* Stone Gray */
+  --color-bg-tertiary: #383838; /* Cobblestone */
+  --color-bg-elevated: #4a4a4a;
 
-  --color-accent-primary: #6c5ce7;
-  --color-accent-secondary: #a29bfe;
-  --color-accent-glow: #6c5ce740;
-  --color-accent-success: #00cec9;
-  --color-accent-error: #ff7675;
-  --color-accent-warning: #fdcb6e;
+  --color-accent-primary: #55FF55; /* XP Green */
+  --color-accent-secondary: #00AA00; /* Darker Green */
+  --color-accent-glow: #55FF5540;
+  --color-accent-success: #55FF55;
+  --color-accent-error: #FF5555; /* Damage Red */
+  --color-accent-warning: #FFAA00; /* Gold */
 
-  --color-text-primary: #e8e8f0;
-  --color-text-secondary: #a0a0c0;
-  --color-text-muted: #6c6c8a;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #AAAAAA;
+  --color-text-muted: #777777;
 
-  --color-border: #2a2a44;
-  --color-border-active: #6c5ce7;
+  --color-border: #000000;
+  --color-border-active: #55FF55;
 
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  --font-sans: 'VT323', monospace;
+  --font-mono: 'VT323', monospace;
 }
 
 /* ── Base ── */
 html {
   scroll-behavior: smooth;
-  -webkit-font-smoothing: antialiased;
+  -webkit-font-smoothing: none;
   -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   font-family: var(--font-sans);
+  font-size: 1.25rem; /* VT323 feels smaller, boost base size */
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
   min-height: 100dvh;
 }
 
+/* ── UI Enhancements ── */
+.terminal-border {
+  border: 4px solid var(--color-border);
+  position: relative;
+  background-color: var(--color-bg-secondary);
+  box-shadow: inset -2px -2px 0px 0px rgba(0,0,0,0.3), inset 2px 2px 0px 0px rgba(255,255,255,0.1);
+}
+
+.terminal-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--color-accent-primary);
+}
+
 /* ── Scrollbar ── */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 14px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--color-bg-secondary);
+  border-left: 4px solid var(--color-border);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 3px;
+  background: var(--color-bg-elevated);
+  border: 4px solid var(--color-border);
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-accent-primary);
 }
 
-/* ── Selection ── */
-::selection {
-  background: var(--color-accent-primary);
-  color: white;
-}
-
 /* ── Animations ── */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px var(--color-accent-glow); }
-  50% { box-shadow: 0 0 40px var(--color-accent-glow), 0 0 60px var(--color-accent-glow); }
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-
-@keyframes typing-dot {
-  0%, 60%, 100% { opacity: 0.3; transform: scale(0.8); }
-  30% { opacity: 1; transform: scale(1); }
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.4s ease-out forwards;
+  animation: fadeIn 0.3s ease-out forwards;
 }
 
-.animate-slide-up {
-  animation: slideUp 0.6s ease-out forwards;
+/* ── Skripted Engine Background (Minecraft Block Grid) ── */
+.engine-bg {
+  background-color: var(--color-bg-primary);
+  background-image: 
+    linear-gradient(var(--color-bg-secondary) 2px, transparent 2px),
+    linear-gradient(90deg, var(--color-bg-secondary) 2px, transparent 2px);
+  background-size: 64px 64px;
 }
 
-.animate-pulse-glow {
-  animation: pulse-glow 3s ease-in-out infinite;
+/* ── Structured Message (Blocky) ── */
+.message-entry {
+  border: 4px solid var(--color-border);
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+  background-color: var(--color-bg-secondary);
+  box-shadow: 4px 4px 0px var(--color-border);
 }
 
-.animate-float {
-  animation: float 6s ease-in-out infinite;
+.message-entry.user {
+  border-color: var(--color-accent-primary);
+  background: var(--color-bg-tertiary);
 }
 
-/* ── Gradient Mesh Background ── */
-.gradient-mesh {
-  background:
-    radial-gradient(ellipse at 20% 50%, #6c5ce710 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, #a29bfe08 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 80%, #00cec908 0%, transparent 50%),
-    var(--color-bg-primary);
+.message-entry.assistant {
+  border-color: var(--color-border);
+  background: var(--color-bg-secondary);
 }
 
-/* ── Glass Card ── */
-.glass-card {
-  background: linear-gradient(135deg, #12121a80, #1a1a2e60);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
+/* ── Minecraft Button Style ── */
+.mc-btn {
+  border: 4px solid #000;
+  box-shadow: inset -4px -4px 0px 0px rgba(0,0,0,0.4), inset 4px 4px 0px 0px rgba(255,255,255,0.2);
+  transition: all 0.1s;
+  border-radius: 0;
+}
+.mc-btn:active {
+  box-shadow: inset 4px 4px 0px 0px rgba(0,0,0,0.4), inset -4px -4px 0px 0px rgba(255,255,255,0.1);
+  transform: translateY(4px);
 }
 
-/* ── Typing Indicator ── */
-.typing-indicator span {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  background-color: var(--color-accent-primary);
-  border-radius: 50%;
-  margin: 0 2px;
-  animation: typing-dot 1.4s ease-in-out infinite;
-}
-
-.typing-indicator span:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.typing-indicator span:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-/* ── Code block styling ── */
-pre code {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  line-height: 1.6;
-}

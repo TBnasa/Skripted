@@ -86,39 +86,39 @@ export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
   return (
     <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-4">
+      <div className="flex items-center justify-between border-b-4 border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-5 py-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--color-accent-warning)]/15 text-[var(--color-accent-warning)]">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <div className="flex h-10 w-10 items-center justify-center border-4 border-black bg-[var(--color-accent-warning)] text-black shadow-[2px_2px_0_#000]">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter">
               <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />
             </svg>
           </div>
           <div>
-            <h2 className="text-sm font-bold text-[var(--color-text-primary)]">Script Editor</h2>
-            <p className="text-xs text-[var(--color-text-muted)]">
+            <h2 className="text-sm font-bold uppercase tracking-widest text-[var(--color-text-primary)]" style={{ fontFamily: '"Press Start 2P", cursive' }}>Script Editor</h2>
+            <p className="text-xs font-mono font-bold tracking-widest uppercase text-[var(--color-text-muted)] mt-1">
               {code.trim() ? `${code.split('\n').length} lines` : 'Waiting for generation...'}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {/* Copy button */}
           <button
             onClick={handleCopy}
             disabled={!code.trim()}
-            className="flex items-center gap-1.5 rounded-lg bg-[var(--color-bg-tertiary)] px-3 py-2 text-xs font-medium text-[var(--color-text-secondary)] transition-all duration-200 hover:bg-[var(--color-bg-elevated)] hover:text-[var(--color-text-primary)] disabled:cursor-not-allowed disabled:opacity-40"
+            className="mc-btn flex items-center gap-2 bg-[var(--color-bg-tertiary)] px-3 py-2 text-xs font-bold uppercase tracking-widest text-[var(--color-text-primary)] transition-all hover:bg-[var(--color-bg-elevated)] disabled:cursor-not-allowed disabled:opacity-40 disabled:grayscale"
           >
             {copied ? (
               <>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-success)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-success)" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
                 Copied!
               </>
             ) : (
               <>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter">
+                  <rect x="9" y="9" width="13" height="13" /><path d="M5 15H4V4h9v1" />
                 </svg>
                 Copy
               </>
@@ -129,7 +129,7 @@ export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
           <button
             onClick={handleVerify}
             disabled={!code.trim() || verifying}
-            className="flex items-center gap-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 py-2 text-xs font-medium text-[var(--color-accent-primary)] transition-all duration-200 hover:bg-[var(--color-bg-tertiary)] disabled:cursor-not-allowed disabled:opacity-40"
+            className="mc-btn flex items-center gap-2 bg-[var(--color-bg-tertiary)] px-3 py-2 text-xs font-bold uppercase tracking-widest text-[var(--color-accent-primary)] transition-all hover:bg-[var(--color-bg-elevated)] disabled:cursor-not-allowed disabled:opacity-40 disabled:grayscale"
           >
             {verifying ? 'Verifying...' : 'Verify Syntax'}
           </button>
@@ -141,19 +141,19 @@ export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
       
       {/* Verification Result Toast */}
       {verifyResult && (
-        <div className={`flex items-center px-5 py-2 text-xs font-semibold ${
+        <div className={`flex items-center border-b-4 border-black px-5 py-3 text-sm font-bold uppercase tracking-widest shadow-[inset_0_-2px_0_rgba(0,0,0,0.2)] ${
           verifyResult.status === 'success' 
-            ? 'bg-[var(--color-accent-success)]/10 text-[var(--color-accent-success)]' 
-            : 'bg-[var(--color-accent-danger)]/10 text-[var(--color-accent-danger)]'
+            ? 'bg-[var(--color-accent-success)] text-black' 
+            : 'bg-[var(--color-accent-error)] text-black'
         }`}>
-          <span>{verifyResult.status === 'success' ? '✅' : '⚠️'}</span>
-          <span className="ml-2">{verifyResult.message}</span>
-          <button onClick={() => setVerifyResult(null)} className="ml-auto opacity-60 hover:opacity-100">✕</button>
+          <span style={{ fontFamily: '"Press Start 2P", cursive', fontSize: '12px' }}>{verifyResult.status === 'success' ? 'VALID' : 'ERROR'}</span>
+          <span className="ml-4 flex-1">{verifyResult.message}</span>
+          <button onClick={() => setVerifyResult(null)} className="ml-auto opacity-60 hover:opacity-100 font-mono text-xl">✕</button>
         </div>
       )}
 
       {/* Editor */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden bg-black">
         {code.trim() ? (
           <Editor
             height="100%"
@@ -163,9 +163,9 @@ export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
             onMount={handleEditorMount}
             theme="vs-dark"
             options={{
-              fontSize: 13,
-              fontFamily: 'JetBrains Mono, Fira Code, Cascadia Code, monospace',
-              fontLigatures: true,
+              fontSize: 16,
+              fontFamily: '"VT323", monospace',
+              fontLigatures: false,
               lineNumbers: 'on',
               minimap: { enabled: false },
               scrollBeyondLastLine: false,
@@ -173,28 +173,28 @@ export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
               tabSize: 4,
               insertSpaces: false,
               renderLineHighlight: 'gutter',
-              cursorBlinking: 'smooth',
-              cursorSmoothCaretAnimation: 'on',
-              smoothScrolling: true,
+              cursorBlinking: 'solid',
+              cursorSmoothCaretAnimation: 'off',
+              smoothScrolling: false,
               padding: { top: 16, bottom: 16 },
-              roundedSelection: true,
+              roundedSelection: false,
               readOnly: false,
               automaticLayout: true,
             }}
           />
         ) : (
-          <div className="flex h-full items-center justify-center">
-            <div className="text-center">
-              <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-2xl bg-[var(--color-bg-tertiary)]">
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <div className="flex h-full items-center justify-center bg-black engine-bg">
+            <div className="text-center bg-[var(--color-bg-secondary)] border-4 border-black p-8 shadow-[8px_8px_0_#000]">
+              <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center border-4 border-black bg-[var(--color-bg-tertiary)] shadow-[inset_4px_4px_0_rgba(0,0,0,0.5)]">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter">
                   <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />
                 </svg>
               </div>
-              <p className="text-sm text-[var(--color-text-muted)]">
-                Generated script will appear here
+              <p className="text-lg font-bold uppercase tracking-widest text-[var(--color-text-primary)]" style={{ fontFamily: '"Press Start 2P", cursive', fontSize: '10px', lineHeight: '2' }}>
+                Generated script will<br/>appear here
               </p>
-              <p className="mt-1 text-xs text-[var(--color-text-muted)]/60">
-                With full syntax highlighting
+              <p className="mt-4 text-sm font-mono text-[var(--color-accent-primary)] uppercase tracking-widest">
+                Waiting for input...
               </p>
             </div>
           </div>

@@ -31,18 +31,18 @@ export default function AuthButton() {
 
   if (loading) {
     return (
-      <div className="h-9 w-20 animate-pulse rounded-lg bg-[var(--color-bg-tertiary)]" />
+      <div className="h-10 w-24 animate-pulse border-4 border-[var(--color-border)] bg-[var(--color-bg-tertiary)] shadow-[2px_2px_0_#000]" />
     );
   }
 
   return user ? (
     <div className="flex items-center gap-3">
-      <span className="text-sm font-medium text-[var(--color-text-secondary)] hidden sm:block">
+      <span className="text-lg font-bold text-[var(--color-text-secondary)] hidden sm:block uppercase tracking-widest">
         {user.email?.split('@')[0]}
       </span>
       <button
         onClick={handleSignOut}
-        className="rounded-lg px-3 py-2 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)] transition-colors"
+        className="mc-btn px-4 py-2 text-lg font-bold uppercase tracking-widest text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] bg-[var(--color-bg-secondary)] transition-colors"
       >
         Sign Out
       </button>
@@ -50,7 +50,7 @@ export default function AuthButton() {
   ) : (
     <Link
       href="/login"
-      className="rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-4 py-2 text-sm font-semibold text-[var(--color-text-primary)] transition-all hover:bg-[var(--color-bg-tertiary)] hover:border-[var(--color-accent-primary)]/50"
+      className="mc-btn bg-[var(--color-bg-secondary)] px-4 py-2 text-lg font-bold uppercase tracking-widest text-[var(--color-text-primary)] transition-all hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-accent-primary)]"
     >
       Sign In
     </Link>
