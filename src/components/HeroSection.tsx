@@ -23,7 +23,7 @@ export default function HeroSection() {
 
         {/* Description */}
         <p className="mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-[var(--color-text-secondary)] sm:text-2xl">
-          An elite scripting workspace powered by RAG technology. Generate, analyze, and optimize Paper 1.21.1 Skript code with production-ready precision.
+          An elite cloud-based script IDE powered by Deep Context Engine. Generate, analyze, and optimize Skript code with Universal Compatibility.
         </p>
 
         {/* Actions */}
@@ -54,9 +54,9 @@ export default function HeroSection() {
         {/* Feature Grid */}
         <div className="mt-24 grid grid-cols-1 gap-6 text-left sm:grid-cols-3">
           {[
-            { title: 'RAG-Powered', desc: 'Context-aware generation from 1000+ verified examples.' },
-            { title: 'Syntax Aware', desc: 'Strict adherence to Paper 1.21.1 and Skript 2.14.3 standards.' },
-            { title: 'Fast Inference', desc: 'Engineered for low latency with real-time reasoning feedback.' },
+            { title: 'Deep Context Engine', desc: '250+ seçkin mimari örnekle beslenen derin bağlam motoru.' },
+            { title: 'Live Logic Guard', desc: 'Siz yazarken hataları yakalayan canlı mantık koruması.' },
+            { title: 'Universal Compatibility', desc: 'Tüm Minecraft sürümleri ve Skript addonları ile tam uyum.' },
           ].map((feature, i) => (
             <div key={i} className="terminal-border p-6 transition-transform hover:-translate-y-1">
               <h3 className="mb-3 text-lg font-bold uppercase tracking-widest text-[var(--color-accent-primary)]" style={{ fontFamily: '"Press Start 2P", cursive', fontSize: '10px', lineHeight: '1.6' }}>

@@ -5,25 +5,25 @@
    ═══════════════════════════════════════════ */
 
 @theme inline {
-  /* -- Eye-Comfort Palette -- */
-  --color-bg-primary: #12141c;     /* Deep Navy-Gray */
-  --color-bg-secondary: #1a1d29;   /* Slightly Lighter Navy */
-  --color-bg-tertiary: #24283b;    /* Raised Elements */
-  --color-bg-elevated: #3b4264;
+  /* -- Deep Sea Night Palette -- */
+  --color-bg-primary: #0b1426;     /* Deep Sea Dark */
+  --color-bg-secondary: #121e36;   /* Deep Sea Medium */
+  --color-bg-tertiary: #1b2946;    /* Deep Sea Light */
+  --color-bg-elevated: #26365a;
 
-  --color-accent-primary: #9f7aea;   /* Pastel Purple */
-  --color-accent-secondary: #4fd1c5;  /* Soft Turquoise */
-  --color-accent-glow: #9f7aea30;
-  --color-accent-success: #4fd1c5;
-  --color-accent-error: #f56565;    /* Softer Red */
-  --color-accent-warning: #f6ad55;   /* Softer Orange */
+  --color-accent-primary: #8cb6ce;   /* Pastel Ocean Blue */
+  --color-accent-secondary: #a3c9be;  /* Pastel Seafoam Green */
+  --color-accent-glow: #8cb6ce30;
+  --color-accent-success: #a3c9be;
+  --color-accent-error: #e5989b;    /* Pastel Coral Red */
+  --color-accent-warning: #f4cda5;   /* Pastel Sand Orange */
 
-  --color-text-primary: #e2e8f0;    /* Soft White/Light Gray */
-  --color-text-secondary: #a0aec0;   /* Medium Gray */
-  --color-text-muted: #718096;      /* Darker Gray */
+  --color-text-primary: #e5eef5;    /* Soft Ice White */
+  --color-text-secondary: #b5c7d6;   /* Muted Light Blue */
+  --color-text-muted: #7f95a8;      /* Darker Blue Gray */
 
   --color-border: #000000;
-  --color-border-active: #9f7aea;
+  --color-border-active: #8cb6ce;
 
   --font-sans: 'VT323', monospace;
   --font-mono: 'VT323', monospace;

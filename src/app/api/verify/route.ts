@@ -8,12 +8,21 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: 'No code provided' }, { status: 400 });
     }
 
-    const systemPrompt = `You are a Minecraft Skript expert. 
-    Analyze the following Skript code for compatibility with Paper 1.21.1 and Skript parser 2.14.3.
+    const systemPrompt = `You are an AI Expert Reviewer for Minecraft Skript.
+    Analyze the following Skript code for:
+    1. Syntax errors and formatting mistakes.
+    2. Performance leaks (e.g., laggy loops, heavy variable usage).
+    3. Missing addon requirements (e.g., SkBee, SkRayFall).
+    4. Logical errors.
+    
     Reply strictly in JSON format:
     {
-      "valid": true/false, // true if there are NO syntax errors and bad practices. false if there are syntax errors.
-      "message": "A short, 1-2 sentence description of the errors found. If valid, say 'No errors found.'"
+      "status": "Safe" | "Warning" | "Critical Error",
+      "issues": [
+        { "type": "Safe" | "Warning" | "Critical", "message": "Short description of the issue or praise." }
+      ],
+      "message": "A short, 1-2 sentence overall summary.",
+      "addons": ["addon_name"]
     }
     DO NOT output anything other than the JSON object.`;
 
