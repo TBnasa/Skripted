@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
+import { useTranslation } from '@/lib/useTranslation';
 import type { ChatMessage } from '@/types';
 
 interface MessageBubbleProps {
@@ -8,6 +9,7 @@ interface MessageBubbleProps {
 }
 
 export default function MessageBubble({ message }: MessageBubbleProps) {
+  const { t } = useTranslation();
   const bubbleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -21,33 +23,45 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
       ref={bubbleRef}
       className={`animate-fade-in flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
     >
-      {/* Avatar */}
-      <div
-        className={`flex h-10 w-10 shrink-0 items-center justify-center border-4 border-black font-bold shadow-[2px_2px_0_#000] ${
-          isUser
-            ? 'bg-[var(--color-accent-primary)] text-black'
-            : 'bg-[var(--color-text-primary)] text-black'
-        }`}
-        style={{ fontFamily: '"Press Start 2P", cursive', fontSize: '12px' }}
-      >
-        {isUser ? 'U' : 'AI'}
+      {/* Avatar & Label */}
+      <div className={`flex flex-col items-center gap-1.5 shrink-0 ${isUser ? 'order-last' : ''}`}>
+        <div
+          className={`flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-bg-tertiary)] shadow-sm transition-transform duration-300 hover:scale-105 ${
+            isUser
+              ? 'bg-[var(--color-bg-tertiary)] text-[var(--color-accent-primary)]'
+              : 'bg-[var(--color-bg-secondary)] text-[var(--color-accent-secondary)]'
+          }`}
+        >
+          {isUser ? (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+            </svg>
+          ) : (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+            </svg>
+          )}
+        </div>
+        <span className={`text-[9px] uppercase font-bold tracking-widest ${isUser ? 'text-[var(--color-accent-primary)]' : 'text-[var(--color-accent-secondary)]'}`}>
+          {isUser ? t('user_profile') : t('ai_asistan')}
+        </span>
       </div>
 
       <div
-        className={`max-w-[80%] border-4 border-black px-4 py-3 text-lg leading-relaxed shadow-[4px_4px_0_#000] ${
+        className={`max-w-[80%] border border-[var(--color-bg-tertiary)] px-5 py-4 text-sm leading-relaxed shadow-lg transition-all ${
           isUser
-            ? 'bg-[var(--color-bg-tertiary)] text-[var(--color-accent-primary)]'
-            : 'bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]'
+            ? 'bg-[var(--color-bg-tertiary)]/50 text-[var(--color-text-primary)] rounded-2xl rounded-tr-none'
+            : 'bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] rounded-2xl rounded-tl-none border-l-sage-green mt-1'
         }`}
       >
         {/* Reasoning/Thinking block */}
         {message.reasoning && (
           <details className="mb-3 border-4 border-black bg-[#1a1a1a] p-2 text-sm text-[var(--color-text-muted)] shadow-[2px_2px_0_#000] group" open={!message.content}>
             <summary className="cursor-pointer font-bold select-none list-none flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="square" strokeLinejoin="miter" className="group-open:rotate-180 transition-transform">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-open:rotate-180 transition-transform">
                 <path d="M6 9l6 6 6-6" />
               </svg>
-              <span style={{ fontFamily: '"Press Start 2P", cursive', fontSize: '10px', textTransform: 'uppercase' }}>Thinking Process</span>
+              <span className="text-[10px] tracking-wider uppercase">{t('thinking_process')}</span>
             </summary>
             <div className="mt-2 pl-2 border-l-4 border-[var(--color-border)] whitespace-pre-wrap italic">
               {message.reasoning}

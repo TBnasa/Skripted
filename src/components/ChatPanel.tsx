@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { useTranslation } from '@/lib/useTranslation';
 import MessageBubble from './MessageBubble';
 import FeedbackPoll from './FeedbackPoll';
 import type { ChatMessage } from '@/types';
@@ -25,6 +26,7 @@ export default function ChatPanel({
   onFeedback,
   showFeedback,
 }: ChatPanelProps) {
+  const { t } = useTranslation();
   const [input, setInput] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -70,16 +72,16 @@ export default function ChatPanel({
   return (
     <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="flex items-center gap-3 border-b-4 border-[var(--color-border)] px-5 py-4 bg-[var(--color-bg-secondary)]">
-        <div className="flex h-10 w-10 items-center justify-center border-4 border-black bg-[var(--color-accent-primary)] shadow-[2px_2px_0_#000]">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter">
-            <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />
+      <div className="flex items-center gap-3 border-b border-[var(--color-bg-tertiary)] px-5 py-4 bg-[var(--color-bg-secondary)]">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--color-bg-tertiary)] bg-[var(--color-bg-primary)] text-[var(--color-accent-primary)] shadow-sm">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="4 17 10 11 4 5" /><line x1="12" y1="19" x2="20" y2="19" />
           </svg>
         </div>
         <div>
-          <h2 className="text-sm font-bold uppercase tracking-widest text-[var(--color-text-primary)]" style={{ fontFamily: '"Press Start 2P", cursive' }}>Terminal / Chat</h2>
-          <p className="text-xs font-mono text-[var(--color-accent-primary)] uppercase font-bold tracking-widest mt-1">
-            {isStreaming ? 'Status: Compiling Response...' : 'Status: Ready'}
+          <h2 className="text-sm font-bold uppercase tracking-widest text-[var(--color-text-primary)]">{t('terminal_header')}</h2>
+          <p className="text-[10px] font-mono text-[var(--color-accent-primary)] uppercase font-bold tracking-[0.15em] mt-1">
+            {isStreaming ? t('status_compiling') : t('status_ready')}
           </p>
         </div>
       </div>
@@ -88,12 +90,12 @@ export default function ChatPanel({
       <div className="flex-1 overflow-y-auto px-5 py-4 space-y-6 engine-bg">
         {messages.length === 0 && !isStreaming && (
           <div className="flex h-full flex-col items-center justify-center text-center opacity-90">
-            <div className="mb-4 border-4 border-[var(--color-border)] p-6 bg-[var(--color-bg-secondary)] shadow-[4px_4px_0_#000]">
-              <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-[var(--color-accent-primary)]" style={{ fontFamily: '"Press Start 2P", cursive' }}>
-                Input Required
+            <div className="mb-4 border border-[var(--color-bg-tertiary)] p-8 bg-[var(--color-bg-secondary)] shadow-xl rounded-xl">
+              <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-[var(--color-accent-primary)]">
+                {t('input_required')}
               </h3>
-              <p className="mb-6 max-w-sm text-lg leading-relaxed font-mono text-[var(--color-text-primary)] uppercase">
-                Initialize script generation by describing your requirements.
+              <p className="mb-8 max-w-sm text-sm leading-relaxed text-[var(--color-text-secondary)] uppercase tracking-wide">
+                {t('input_desc')}
               </p>
               <div className="flex flex-wrap justify-center gap-4">
                 {[
@@ -137,13 +139,20 @@ export default function ChatPanel({
 
         {/* Typing indicator */}
         {isStreaming && !streamingContent && (
-          <div className="flex gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center border-4 border-black text-sm shadow-[2px_2px_0_#000] bg-[var(--color-text-primary)] text-black" style={{ fontFamily: '"Press Start 2P", cursive' }}>
-              AI
+          <div className="flex gap-4 items-start">
+            <div className="flex flex-col items-center gap-1.5">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--color-bg-tertiary)] bg-[var(--color-bg-secondary)] text-[var(--color-accent-secondary)] shadow-sm">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                </svg>
+              </div>
+              <span className="text-[9px] uppercase font-bold tracking-widest text-[var(--color-accent-secondary)]">{t('ai_asistan')}</span>
             </div>
-            <div className="bg-[var(--color-bg-secondary)] px-4 py-3 border-4 border-[var(--color-border)] shadow-[4px_4px_0_#000]">
-              <div className="typing-indicator font-mono text-xl text-[var(--color-accent-primary)] animate-pulse font-bold tracking-widest">
-                _
+            <div className="bg-[var(--color-bg-secondary)] px-5 py-4 border border-[var(--color-bg-tertiary)] shadow-lg rounded-2xl rounded-tl-none mt-1">
+              <div className="typing-indicator flex gap-1">
+                <span className="h-1.5 w-1.5 bg-[var(--color-accent-primary)] rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                <span className="h-1.5 w-1.5 bg-[var(--color-accent-primary)] rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                <span className="h-1.5 w-1.5 bg-[var(--color-accent-primary)] rounded-full animate-bounce"></span>
               </div>
             </div>
           </div>
@@ -156,16 +165,16 @@ export default function ChatPanel({
       </div>
 
       {/* Input area */}
-      <div className="border-t-4 border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-4">
-        <div className="flex items-end gap-3 border-4 border-[var(--color-border)] bg-[#111111] px-4 py-3 shadow-[inset_4px_4px_0_rgba(0,0,0,0.5)] focus-within:border-[var(--color-accent-primary)] transition-colors">
+      <div className="border-t border-[var(--color-bg-tertiary)] bg-[var(--color-bg-secondary)] p-5">
+        <div className="flex items-end gap-3 rounded-xl border border-[var(--color-bg-tertiary)] bg-[var(--color-bg-primary)] px-4 py-3 shadow-inner focus-within:border-[var(--color-accent-primary)] transition-all">
           <textarea
             ref={textareaRef}
             value={input}
             onChange={handleTextareaInput}
             onKeyDown={handleKeyDown}
-            placeholder="Describe logic to generate..."
+            placeholder={t('placeholder')}
             rows={1}
-            className="flex-1 resize-none bg-transparent font-mono text-xl leading-relaxed text-[var(--color-accent-primary)] placeholder:text-[var(--color-text-muted)] focus:outline-none"
+            className="flex-1 resize-none bg-transparent font-mono text-sm leading-relaxed text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:outline-none py-1"
             disabled={isStreaming}
           />
           <button
@@ -178,8 +187,8 @@ export default function ChatPanel({
             </svg>
           </button>
         </div>
-        <p className="mt-3 text-center font-bold uppercase tracking-widest text-[var(--color-text-muted)]" style={{ fontFamily: '"Press Start 2P", cursive', fontSize: '10px', lineHeight: '1.5' }}>
-          Kernel: Paper 1.21.1 · Build: Skript 2.14.3
+        <p className="mt-4 text-center font-bold uppercase tracking-[0.2em] text-[var(--color-text-muted)] text-[9px]">
+          {t('kernel_info')}
         </p>
       </div>
     </div>

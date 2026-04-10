@@ -1,6 +1,10 @@
+'use client';
+
 import Link from 'next/link';
+import { useTranslation } from '@/lib/useTranslation';
 
 export default function HeroSection() {
+  const { t } = useTranslation();
   return (
     <div className="relative flex min-h-[90vh] flex-col items-center justify-center overflow-hidden engine-bg px-6 pt-20">
       {/* Structural Elements */}
@@ -16,8 +20,8 @@ export default function HeroSection() {
         </div>
 
         {/* Main Title */}
-        <h1 className="mb-6 text-3xl font-black text-[var(--color-text-primary)] sm:text-5xl md:text-6xl" style={{ fontFamily: '"Press Start 2P", cursive', lineHeight: '1.4' }}>
-          Build <span className="text-[var(--color-accent-primary)] drop-shadow-[2px_2px_0_#000]">Better</span> <br />
+        <h1 className="mb-6 text-4xl font-black text-[var(--color-text-primary)] sm:text-6xl md:text-7xl tracking-tight leading-[1.1]">
+          Build <span className="text-[var(--color-accent-primary)]">Better</span> <br />
           Minecraft Scripts.
         </h1>
 
@@ -30,11 +34,11 @@ export default function HeroSection() {
         <div className="flex flex-col items-center justify-center gap-6 sm:flex-row">
           <Link
             href="/chat"
-            className="mc-btn group relative flex h-14 w-full items-center justify-center gap-3 bg-[var(--color-accent-primary)] px-8 text-xl font-bold text-black sm:w-auto"
+            className="mc-btn group relative flex h-14 w-full items-center justify-center gap-3 bg-[var(--color-accent-primary)] px-8 text-sm font-bold text-black sm:w-auto rounded-xl shadow-lg hover:shadow-var(--color-accent-glow)"
           >
-            <span className="relative z-10 flex items-center gap-2 uppercase tracking-widest">
-              Access Engine
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter" className="transition-transform duration-300 group-hover:translate-x-1">
+            <span className="relative z-10 flex items-center gap-2 uppercase tracking-[0.2em]">
+              {t('access_engine')}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-1">
                 <line x1="5" y1="12" x2="19" y2="12" />
                 <polyline points="12 5 19 12 12 19" />
               </svg>
@@ -45,28 +49,35 @@ export default function HeroSection() {
             href="https://github.com/TBnasa/Skripted"
             target="_blank"
             rel="noopener noreferrer"
-            className="mc-btn flex h-14 w-full items-center justify-center gap-3 bg-[var(--color-bg-secondary)] px-8 text-xl font-bold text-[var(--color-text-primary)] uppercase tracking-widest hover:bg-[var(--color-bg-tertiary)] sm:w-auto"
+            className="mc-btn flex h-14 w-full items-center justify-center gap-3 bg-[var(--color-bg-secondary)] px-8 text-sm font-bold text-[var(--color-text-primary)] uppercase tracking-[0.2em] hover:bg-[var(--color-bg-tertiary)] sm:w-auto rounded-xl border border-[var(--color-bg-tertiary)]"
           >
-            View Architecture
+            {t('view_architecture')}
           </a>
         </div>
 
         {/* Feature Grid */}
-        <div className="mt-24 grid grid-cols-1 gap-6 text-left sm:grid-cols-3">
+        <div className="mt-24 grid grid-cols-1 gap-8 text-left sm:grid-cols-3">
           {[
-            { title: 'Deep Context Engine', desc: '250+ seçkin mimari örnekle beslenen derin bağlam motoru.' },
-            { title: 'Live Logic Guard', desc: 'Siz yazarken hataları yakalayan canlı mantık koruması.' },
-            { title: 'Universal Compatibility', desc: 'Tüm Minecraft sürümleri ve Skript addonları ile tam uyum.' },
+            { title: 'Deep Context Engine', desc: t('tr') === 'tr' ? '250+ seçkin mimari örnekle beslenen derin bağlam motoru.' : 'Expert context engine trained on 250+ elite architectural patterns.' },
+            { title: 'Live Logic Guard', desc: t('tr') === 'tr' ? 'Siz yazarken hataları yakalayan canlı mantık koruması.' : 'Real-time logic guard detecting errors as you type.' },
+            { title: 'Universal Compatibility', desc: t('tr') === 'tr' ? 'Tüm Minecraft sürümleri ve Skript addonları ile tam uyum.' : 'Full compatibility with all Minecraft versions and Skript addons.' },
           ].map((feature, i) => (
-            <div key={i} className="terminal-border p-6 transition-transform hover:-translate-y-1">
-              <h3 className="mb-3 text-lg font-bold uppercase tracking-widest text-[var(--color-accent-primary)]" style={{ fontFamily: '"Press Start 2P", cursive', fontSize: '10px', lineHeight: '1.6' }}>
+            <div key={i} className="p-8 rounded-2xl bg-[var(--color-bg-secondary)] border border-[var(--color-bg-tertiary)] transition-all hover:border-[var(--color-accent-primary)]/50 group">
+              <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-[var(--color-accent-primary)] group-hover:scale-105 transition-transform origin-left">
                 {feature.title}
               </h3>
-              <p className="text-lg text-[var(--color-text-muted)]">
+              <p className="text-sm leading-relaxed text-[var(--color-text-secondary)]">
                 {feature.desc}
               </p>
             </div>
           ))}
+        </div>
+
+        {/* Footer / Legal Disclaimer */}
+        <div className="mt-32 pb-12 opacity-40 hover:opacity-100 transition-opacity">
+          <p className="text-[10px] font-medium tracking-[0.1em] text-[var(--color-text-muted)] uppercase">
+            {t('legal_disclaimer')}
+          </p>
         </div>
       </div>
     </div>

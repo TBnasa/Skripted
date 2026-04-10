@@ -5,28 +5,28 @@
    ═══════════════════════════════════════════ */
 
 @theme inline {
-  /* -- Deep Sea Night Palette -- */
-  --color-bg-primary: #0b1426;     /* Deep Sea Dark */
-  --color-bg-secondary: #121e36;   /* Deep Sea Medium */
-  --color-bg-tertiary: #1b2946;    /* Deep Sea Light */
-  --color-bg-elevated: #26365a;
+  /* -- professional Slate & Sage Palette -- */
+  --color-bg-primary: #0f172a;     /* Slate Darker */
+  --color-bg-secondary: #1e293b;   /* Slate Dark */
+  --color-bg-tertiary: #334155;    /* Slate Light */
+  --color-bg-elevated: #475569;
 
-  --color-accent-primary: #8cb6ce;   /* Pastel Ocean Blue */
-  --color-accent-secondary: #a3c9be;  /* Pastel Seafoam Green */
-  --color-accent-glow: #8cb6ce30;
+  --color-accent-primary: #9dc183;   /* Sage Green */
+  --color-accent-secondary: #c3e0ae;  /* Light Sage */
+  --color-accent-glow: #9dc18320;
   --color-accent-success: #a3c9be;
-  --color-accent-error: #e5989b;    /* Pastel Coral Red */
-  --color-accent-warning: #f4cda5;   /* Pastel Sand Orange */
+  --color-accent-error: #e5989b;    /* Pastel Coral */
+  --color-accent-warning: #f4cda5;   /* Pastel Sand */
 
-  --color-text-primary: #e5eef5;    /* Soft Ice White */
-  --color-text-secondary: #b5c7d6;   /* Muted Light Blue */
-  --color-text-muted: #7f95a8;      /* Darker Blue Gray */
+  --color-text-primary: #f1f5f9;    /* Slate 100 */
+  --color-text-secondary: #cbd5e1;   /* Slate 300 */
+  --color-text-muted: #64748b;      /* Slate 500 */
 
-  --color-border: #000000;
-  --color-border-active: #8cb6ce;
+  --color-border: #00000000;
+  --color-border-active: #9dc183;
 
-  --font-sans: 'VT323', monospace;
-  --font-mono: 'VT323', monospace;
+  --font-sans: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
 /* ── Base ── */
