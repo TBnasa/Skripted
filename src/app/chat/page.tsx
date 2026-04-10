@@ -238,9 +238,10 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="flex min-h-screen h-screen flex-col pt-16 overflow-hidden">
+    <div className="flex h-screen max-h-screen flex-col pt-16 overflow-hidden bg-[var(--color-bg-primary)]">
       <div className="flex flex-1 overflow-hidden min-h-0">
-        <div className="flex w-full flex-col border-r border-[var(--color-border)] bg-[var(--color-bg-secondary)] md:w-1/2 lg:w-[45%] flex-grow">
+        {/* Terminal (Chat) - 35% Width */}
+        <div className="flex w-full flex-col border-r border-[var(--color-border)] md:w-[35%] lg:w-[35%] flex-shrink-0">
           <ChatPanel
             messages={messages}
             onNewMessage={handleNewMessage}
@@ -253,7 +254,8 @@ export default function Page() {
           />
         </div>
 
-        <div className="hidden flex-1 flex-col bg-[var(--color-bg-primary)] md:flex flex-grow shadow-2xl">
+        {/* Editor - 65% Width */}
+        <div className="hidden flex-1 flex-col md:flex md:w-[65%] lg:w-[65%] min-w-0">
           <EditorPanel
             code={editorCode}
             onCodeChange={setEditorCode}

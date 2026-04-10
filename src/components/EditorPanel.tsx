@@ -111,31 +111,7 @@ export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
     setTimeout(() => setCopied(false), 2000);
   }, [code]);
 
-  const handleVerify = useCallback(async () => {
-    if (!code.trim()) return;
-    setVerifying(true);
-    setAiReport(null);
-    setShowInsight(true);
 
-    try {
-      const res = await fetch('/api/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code }),
-      });
-      
-      const data = await res.json();
-      if (res.ok && data.status) {
-        setAiReport(data);
-      } else {
-        setAiReport({ status: 'Critical Error', message: data.message || 'API Hatası', issues: [] });
-      }
-    } catch (e) {
-      setAiReport({ status: 'Critical Error', message: 'Verification failed to respond.', issues: [] });
-    }
-    
-    setVerifying(false);
-  }, [code]);
 
   return (
     <div className="flex flex-1 flex-col min-h-0 glass-panel overflow-hidden m-2 rounded-xl">
