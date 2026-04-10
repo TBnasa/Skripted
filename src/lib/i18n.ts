@@ -39,7 +39,7 @@ export const translations: Translations = {
     appear_here: "Oluşturulan kod burada görünecek",
     thinking_process: "Düşünme Süreci",
     admin_tools: "Yönetici Araçları",
-    system_status_ok: "System Architecture: Optimized for Developers | Editor: Ultra-Wide",
+    system_status_ok: "Visual Balance: Golden Ratio | References: Purged",
     code_verified: "✅ Skripted Engine Tarafından Doğrulandı",
     hero_title: "Daha İyi Minecraft Scriptleri Yazın",
     hero_desc: "Deep Context Engine tarafından desteklenen elit bulut tabanlı script IDE'si. Evrensel Uyumluluk ile Skript kodunu oluşturun, analiz edin ve optimize edin.",
