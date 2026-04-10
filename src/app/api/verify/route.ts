@@ -4,7 +4,7 @@ import { OPENROUTER_MODEL, OPENROUTER_BASE_URL } from '@/lib/constants';
 import { fetchWithKeyRotation } from '@/lib/openrouter';
 import { VerifyRequestSchema } from '@/types/schemas';
 
-export const runtime = 'edge';
+// export const runtime = 'edge';
 
 /** Per-user rate limiting for verify: max 20 requests per minute */
 const RATE_LIMIT_WINDOW_MS = 60_000;

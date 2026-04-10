@@ -3,7 +3,7 @@ import { auth, currentUser } from '@clerk/nextjs/server';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
 import { GalleryPostSchema } from '@/types/schemas';
 
-export const runtime = 'edge';
+// export const runtime = 'edge';
 
 export async function GET(request: NextRequest) {
   try {
@@ -15,7 +15,8 @@ export async function GET(request: NextRequest) {
     // Fetch popular posts by default
     const { data, error } = await supabase
       .from('gallery_posts')
-      .select('id, user_id, author_name, title, description, image_urls, likes_count, downloads_count, created_at')
+      .select('id, user_id, author_name, title, description, image_urls, likes_count, downloads_count, created_at, is_public')
+      .eq('is_public', true)
       .order('created_at', { ascending: false })
       .limit(limit);
 
@@ -62,6 +63,7 @@ export async function POST(request: NextRequest) {
         description: description || null,
         code_snippet: codeSnippet,
         image_urls: imageUrls || [],
+        is_public: true,
       })
       .select('id')
       .single();

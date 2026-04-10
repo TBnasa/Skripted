@@ -2,7 +2,8 @@ import React, { useState, useCallback, useRef } from 'react';
 import { processImageForGallery } from '@/lib/image-processor';
 import { uploadGalleryImage } from '@/lib/supabase-browser';
 import { useAuth } from '@clerk/nextjs';
-import { X, UploadCloud, Loader2, Image as ImageIcon } from 'lucide-react';
+import { X, UploadCloud, Loader2, Image as ImageIcon, CheckCircle2, AlertCircle } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface GalleryPostModalProps {
   readonly code: string;
@@ -18,34 +19,39 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
   const [images, setImages] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [error, setError] = useState('');
+  const [uploadStatus, setUploadStatus] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newFiles = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
-      setImages(prev => [...prev, ...newFiles].slice(0, 5)); // max 5 images
+      if (images.length + newFiles.length > 5) {
+        toast.error('Maximum 5 images allowed');
+        return;
+      }
+      setImages(prev => [...prev, ...newFiles]);
     }
   };
 
   const removeImage = (index: number) => {
     setImages(prev => prev.filter((_, i) => i !== index));
+    toast.info('Image removed');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId) {
-      setError('You must be logged in to post.');
+      toast.error('Giriş yapmalısınız!');
       return;
     }
     if (title.length < 3) {
-      setError('Title must be at least 3 characters.');
+      toast.error('Başlık en az 3 karakter olmalıdır.');
       return;
     }
 
     setIsUploading(true);
-    setProgress(10);
-    setError('');
+    setProgress(5);
+    setUploadStatus('Başlatılıyor...');
 
     try {
       const uploadedUrls: string[] = [];
@@ -53,15 +59,17 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
       // Process and Upload Images
       for (let i = 0; i < images.length; i++) {
         const file = images[i];
-        setProgress(10 + Math.round((i / images.length) * 40)); // 10-50% for processing
+        setUploadStatus(`${i + 1}/${images.length} Görsel sıkıştırılıyor...`);
         const compressedFile = await processImageForGallery(file);
         
-        setProgress(50 + Math.round((i / images.length) * 40)); // 50-90% for uploading
+        setProgress(10 + Math.round((i / images.length) * 70));
+        setUploadStatus(`${i + 1}/${images.length} Sunucuya yükleniyor...`);
         const url = await uploadGalleryImage(compressedFile, userId);
         uploadedUrls.push(url);
       }
 
-      setProgress(95);
+      setProgress(85);
+      setUploadStatus('Gönderi oluşturuluyor...');
 
       // Submit Post
       const res = await fetch('/api/gallery', {
@@ -77,22 +85,26 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
 
       if (!res.ok) {
         const errData = await res.json();
-        throw new Error(errData.error || 'Failed to create post');
+        throw new Error(errData.error || 'Gönderi oluşturulurken hata oluştu');
       }
 
       const data = await res.json();
       setProgress(100);
+      setUploadStatus('Başarılı!');
+      toast.success('Skript başarıyla galeriye eklendi!');
+      
       setTimeout(() => {
         setIsUploading(false);
         onClose();
         if (onSuccess) onSuccess(data.id);
-      }, 500);
+      }, 800);
 
     } catch (err: any) {
       console.error(err);
-      setError(err.message || 'An unexpected error occurred.');
+      toast.error(err.message || 'Beklenmedik bir hata oluştu');
       setIsUploading(false);
       setProgress(0);
+      setUploadStatus('');
     }
   };
 
@@ -100,58 +112,65 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#0f0f11] border border-white/[0.08] w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+      <div className="bg-[#0f0f11] border border-white/[0.08] w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col animate-scale-up">
+        {/* Header */}
         <div className="px-6 py-4 border-b border-white/[0.08] flex justify-between items-center bg-white/[0.02]">
-          <h2 className="text-lg font-semibold text-white">Share to Gallery</h2>
-          <button onClick={onClose} className="text-zinc-400 hover:text-white transition-colors">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+            <h2 className="text-lg font-semibold text-white">Galeriye Paylaş</h2>
+          </div>
+          <button onClick={onClose} className="text-zinc-400 hover:text-white transition-colors p-1 hover:bg-white/5 rounded-lg">
             <X size={20} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-5 overflow-y-auto max-h-[80vh]">
-          {error && (
-            <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-500 rounded-lg text-sm">
-              {error}
-            </div>
-          )}
-
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium text-zinc-300">Title <span className="text-red-400">*</span></label>
+        <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto max-h-[80vh] custom-scrollbar">
+          {/* Title Input */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-zinc-400">Başlık <span className="text-red-500/50">*</span></label>
             <input 
               type="text" 
               required
               maxLength={100}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3 py-2.5 bg-black/50 border border-white/[0.1] rounded-xl focus:outline-none focus:border-emerald-500/50 text-white placeholder-zinc-600 transition-colors"
-              placeholder="e.g., Advanced Economy System"
+              className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-emerald-500/50 text-white placeholder-zinc-600 transition-all"
+              placeholder="Örn: Gelişmiş Ekonomi Sistemi"
             />
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium text-zinc-300">Description</label>
+          {/* Description Input */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-zinc-400">Açıklama</label>
             <textarea 
               maxLength={1000}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-3 py-2.5 bg-black/50 border border-white/[0.1] rounded-xl focus:outline-none focus:border-emerald-500/50 text-white placeholder-zinc-600 min-h-[100px] resize-y transition-colors"
-              placeholder="Explain how it works, commands, permissions..."
+              className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-emerald-500/50 text-white placeholder-zinc-600 min-h-[120px] resize-none transition-all"
+              placeholder="Skriptin özellikleri, gereksinimleri ve kullanımı hakkında bilgi verin..."
             />
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium text-zinc-300 flex justify-between">
-              <span>Server Screenshots</span>
-              <span className="text-zinc-500 text-xs">{images.length} / 5</span>
+          {/* Image Upload Area */}
+          <div className="space-y-3">
+            <label className="text-sm font-medium text-zinc-400 flex justify-between items-center">
+              <span>Sunucu Görselleri</span>
+              <span className={`text-xs ${images.length === 5 ? 'text-amber-400' : 'text-zinc-500'}`}>
+                {images.length} / 5
+              </span>
             </label>
             
             <div 
-              onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-white/[0.1] hover:border-emerald-500/50 hover:bg-emerald-500/5 rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer transition-all group"
+              onClick={() => !isUploading && fileInputRef.current?.click()}
+              className={`border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center transition-all group ${
+                isUploading ? 'opacity-50 cursor-not-allowed border-white/[0.05]' : 'border-white/[0.1] hover:border-emerald-500/40 hover:bg-emerald-500/[0.02] cursor-pointer'
+              }`}
             >
-              <UploadCloud className="w-8 h-8 text-zinc-500 group-hover:text-emerald-400 mb-2 transition-colors" />
-              <p className="text-sm text-zinc-400 group-hover:text-zinc-300">Click to upload images</p>
-              <p className="text-xs text-zinc-600 mt-1">WebP, PNG, JPG (Max 500KB auto-compressed)</p>
+              <div className="w-12 h-12 rounded-full bg-white/[0.03] flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <UploadCloud className="w-6 h-6 text-zinc-500 group-hover:text-emerald-400" />
+              </div>
+              <p className="text-sm text-zinc-300 font-medium">Görsel Seçmek İçin Tıklayın</p>
+              <p className="text-[11px] text-zinc-500 mt-1">WebP, PNG, JPG (Maks 500KB - Otomatik Sıkıştırılır)</p>
               <input 
                 ref={fileInputRef}
                 type="file" 
@@ -159,57 +178,67 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
                 accept="image/*"
                 className="hidden"
                 onChange={handleFileChange}
+                disabled={isUploading}
               />
             </div>
 
+            {/* Image Previews */}
             {images.length > 0 && (
-              <div className="grid grid-cols-5 gap-2 mt-3">
+              <div className="flex flex-wrap gap-2 mt-2">
                 {images.map((file, idx) => (
-                  <div key={idx} className="relative aspect-square rounded-lg bg-black/50 border border-white/[0.1] overflow-hidden group">
-                    <img src={URL.createObjectURL(file)} alt="Preview" className="object-cover w-full h-full opacity-80" />
-                    <button 
-                      type="button" 
-                      onClick={() => removeImage(idx)}
-                      className="absolute inset-0 m-auto w-6 h-6 bg-black/70 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
-                    >
-                      <X size={14} />
-                    </button>
+                  <div key={idx} className="relative w-[calc(20%-8px)] aspect-square rounded-xl bg-black/50 border border-white/[0.05] overflow-hidden group shadow-lg">
+                    <img src={URL.createObjectURL(file)} alt="Preview" className="object-cover w-full h-full opacity-70 group-hover:opacity-100 transition-opacity" />
+                    {!isUploading && (
+                      <button 
+                        type="button" 
+                        onClick={(e) => { e.stopPropagation(); removeImage(idx); }}
+                        className="absolute top-1 right-1 w-5 h-5 bg-black/80 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
+                      >
+                        <X size={12} />
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
             )}
           </div>
 
-          <div className="pt-4 border-t border-white/[0.08] flex items-center justify-end gap-3">
+          {/* Progress / Status */}
+          {isUploading && (
+            <div className="space-y-3 pt-2">
+              <div className="flex justify-between items-end">
+                <span className="text-xs font-medium text-emerald-400 flex items-center gap-2">
+                  <Loader2 size={12} className="animate-spin" />
+                  {uploadStatus}
+                </span>
+                <span className="text-xs font-bold text-emerald-500">{progress}%</span>
+              </div>
+              <div className="h-1.5 w-full bg-white/[0.03] rounded-full overflow-hidden border border-white/[0.05]">
+                <div 
+                  className="h-full bg-gradient-to-r from-emerald-600 to-cyan-500 transition-all duration-300"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Footer Actions */}
+          <div className="pt-6 border-t border-white/[0.08] flex items-center justify-end gap-4">
             <button 
               type="button" 
               onClick={onClose}
               disabled={isUploading}
-              className="px-4 py-2 text-sm text-zinc-400 hover:text-white transition-colors"
+              className="px-4 py-2 text-sm font-medium text-zinc-500 hover:text-white transition-colors disabled:opacity-30"
             >
-              Cancel
+              İptal
             </button>
             <button 
               type="submit"
               disabled={isUploading || !title}
-              className="relative px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-xl transition-all disabled:opacity-50 flex items-center gap-2 overflow-hidden"
+              className="btn-premium px-8 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold rounded-xl transition-all disabled:opacity-50 flex items-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.2)]"
             >
-              {isUploading ? (
-                <>
-                  <Loader2 size={16} className="animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                'Share to Gallery'
-              )}
-              
-              {/* Progress bar overlay inside button */}
-              {isUploading && (
-                <div 
-                  className="absolute bottom-0 left-0 h-1 bg-white/30 transition-all duration-300"
-                  style={{ width: `${progress}%` }}
-                />
-              )}
+              {isUploading ? 'Paylaşılıyor...' : 'Galeriye Aktar'}
+              {!isUploading && <CheckCircle2 size={16} />}
             </button>
           </div>
         </form>
