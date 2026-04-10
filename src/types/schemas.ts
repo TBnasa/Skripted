@@ -36,3 +36,10 @@ export const FeedbackPayloadSchema = z.object({
 export const VerifyRequestSchema = z.object({
   code: z.string().min(1, 'Code is required').max(10_000, 'Code too long for verification'),
 });
+
+export const GalleryPostSchema = z.object({
+  title: z.string().min(3, 'Title must be at least 3 characters').max(100, 'Title is too long'),
+  description: z.string().max(1000, 'Description is too long').optional(),
+  codeSnippet: z.string().min(1, 'Code snippet is required').max(20000, 'Code is too long'),
+  imageUrls: z.array(z.string().url()).max(5, 'Maximum 5 images allowed'),
+});

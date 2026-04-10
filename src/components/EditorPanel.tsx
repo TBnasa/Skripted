@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { useTranslation } from '@/lib/useTranslation';
 import DownloadButton from './DownloadButton';
+import GalleryPostModal from './GalleryPostModal';
 import { SKRIPT_LANGUAGE_ID, skriptTokensProvider, skriptTheme } from '@/lib/skript-language';
 import type { editor } from 'monaco-editor';
 
@@ -22,6 +23,7 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
   const [verifying, setVerifying] = useState(false);
   const [aiReport, setAiReport] = useState<any>(null);
   const [showInsight, setShowInsight] = useState(false);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
 
   const handleEditorMount = useCallback(
     (editorInstance: editor.IStandaloneCodeEditor, monaco: typeof import('monaco-editor')) => {
@@ -144,6 +146,16 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
             )}
           </button>
           <DownloadButton code={code} />
+          <button
+            onClick={() => setIsGalleryOpen(true)}
+            disabled={!code.trim()}
+            className="flex items-center gap-1.5 bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 px-3 py-2 text-[11px] font-medium text-emerald-400 rounded-xl transition-all duration-300 hover:shadow-[0_0_15px_rgba(16,185,129,0.15)] disabled:opacity-30 disabled:hover:shadow-none"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+            Share
+          </button>
         </div>
       </div>
       
@@ -289,6 +301,15 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
           )}
         </div>
       </div>
+
+      <GalleryPostModal
+        code={code}
+        isOpen={isGalleryOpen}
+        onClose={() => setIsGalleryOpen(false)}
+        onSuccess={(id) => {
+          window.open(`/gallery/${id}`, '_blank');
+        }}
+      />
     </div>
   );
 }
