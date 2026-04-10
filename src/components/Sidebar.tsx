@@ -1,10 +1,9 @@
 'use client';
 
-import ChatSessionItem from './ChatSessionItem';
 import { useTranslation } from '@/lib/useTranslation';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useAuth } from '@clerk/nextjs';
-import { useChats } from '@/lib/hooks/use-chats';
+import { useChats, type ChatSession } from '@/lib/hooks/use-chats';
 import Link from 'next/link';
 
 interface SidebarProps {

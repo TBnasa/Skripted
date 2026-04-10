@@ -96,8 +96,8 @@ export async function POST(req: NextRequest) {
       throw new Error('Empty response from verification service');
     }
 
-    const result = JSON.parse(content);
-    return Response.json(result);
+    const parsedResult = JSON.parse(content);
+    return Response.json(parsedResult);
 
   } catch (err) {
     console.error('[Verify API] error:', err);

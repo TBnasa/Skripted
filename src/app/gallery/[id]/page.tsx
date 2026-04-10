@@ -5,7 +5,7 @@ import useSWR from 'swr';
 import Link from 'next/link';
 import { Heart, Search, Code, Download, User, ArrowLeft, Share2, Copy, CheckCircle2 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Editor from '@monaco-editor/react';
 
 interface GalleryPost {
@@ -29,9 +29,10 @@ const fetcher = (url: string) => fetch(url).then(async (res) => {
   return res.json();
 });
 
-export default function GalleryPostPage({ params }: { params: { id: string } }) {
+export default function GalleryPostPage({ params }: { params: Promise<{ id: string }> }) {
   const { t } = useTranslation();
-  const { data: post, error, isLoading } = useSWR<GalleryPost>(`/api/gallery/${params.id}`, fetcher);
+  const { id } = React.use(params);
+  const { data: post, error, isLoading } = useSWR<GalleryPost>(`/api/gallery/${id}`, fetcher);
   const [copied, setCopied] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
 

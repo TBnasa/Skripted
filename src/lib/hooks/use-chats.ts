@@ -29,8 +29,8 @@ export function useChats() {
   // We use SWR's fallback data and revalidation logic.
   // The cache key is an array so we can pass the token to the fetcher.
   const { data, error, isLoading, mutate } = useSWR<ChatSession[]>(
-    isLoaded && userId ? ['/api/chats', getToken] : null,
-    async ([url, getTokenFunc]) => {
+    isLoaded && userId ? ['/api/chats', getToken] as const : null,
+    async ([url, getTokenFunc]: [string, typeof getToken]) => {
       const token = await getTokenFunc();
       return fetcher([url, token || '']);
     },

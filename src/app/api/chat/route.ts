@@ -7,7 +7,7 @@ import type { ChatRequest } from '@/types';
 
 import { ChatRequestSchema } from '@/types/schemas';
 
-export const runtime = 'edge';
+// export const runtime = 'edge';
 
 /** Per-isolate rate limiting (Edge): max 30 requests per minute */
 const RATE_LIMIT_WINDOW_MS = 60_000;
