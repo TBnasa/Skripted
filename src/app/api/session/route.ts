@@ -1,60 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import { createClient } from '@supabase/supabase-js';
-import { NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY } from '@/lib/constants';
+import { getSupabaseAdmin } from '@/lib/supabase-server';
 
 export async function POST(request: NextRequest) {
-  let clerkAuth;
   try {
-    clerkAuth = await auth();
-  } catch (authError) {
-    console.error('[Session API] Clerk auth() failed:', authError);
-    return NextResponse.json({ error: 'Authentication failed' }, { status: 500 });
-  }
+    const { userId } = await auth();
 
-  const { userId, getToken } = clerkAuth;
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-  if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  try {
     const { sessionId, title, messages } = await request.json();
-    
-    // Check if middleware has already provided a swapped token
-    const incomingAuth = request.headers.get('Authorization');
-    const authSource = request.headers.get('x-auth-source');
-    
-    let supabaseToken: string | null = null;
-    
-    if (incomingAuth && (authSource === 'clerk-swap' || authSource === 'clerk-template')) {
-      supabaseToken = incomingAuth.replace('Bearer ', '');
-      console.log(`[Session API] Using ${authSource} Supabase token from middleware`);
-    } else {
-      try {
-        supabaseToken = await getToken({ template: 'supabase' });
-      } catch (tokenError) {
-        console.error('[Session API] Clerk getToken() failed:', tokenError);
-      }
-    }
 
-    if (!supabaseToken) {
-      console.error('[Session API] Supabase token is missing.');
-      return NextResponse.json({ error: 'Auth token missing' }, { status: 401 });
-    }
-
-    const supabase = createClient(
-      NEXT_PUBLIC_SUPABASE_URL,
-      NEXT_PUBLIC_SUPABASE_ANON_KEY,
-      {
-        global: {
-          headers: {
-            Authorization: `Bearer ${supabaseToken}`,
-            apikey: NEXT_PUBLIC_SUPABASE_ANON_KEY
-          }
-        }
-      }
-    );
+    const supabase = getSupabaseAdmin();
 
     const { error } = await supabase
       .from('chats')
@@ -63,7 +21,6 @@ export async function POST(request: NextRequest) {
         user_id: userId,
         title: title || 'New Chat',
         content: messages,
-        updated_at: new Date().toISOString(),
       }, { onConflict: 'id' });
 
     if (error) {

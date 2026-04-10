@@ -3,8 +3,6 @@
 import { useTranslation } from '@/lib/useTranslation';
 import { useEffect, useState } from 'react';
 import { useAuth } from '@clerk/nextjs';
-import { createClient } from '@supabase/supabase-js';
-import { NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY } from '@/lib/constants';
 
 interface SidebarProps {
   onNewChat: () => void;

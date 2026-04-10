@@ -5,13 +5,12 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import { createClient } from '@supabase/supabase-js';
-import { NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY } from '@/lib/constants';
+import { getSupabaseAdmin } from '@/lib/supabase-server';
 import type { FeedbackPayload } from '@/types';
 
 export async function POST(request: NextRequest): Promise<Response> {
   try {
-    const { userId, getToken } = await auth();
+    const { userId } = await auth();
     
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -35,45 +34,13 @@ export async function POST(request: NextRequest): Promise<Response> {
       );
     }
 
-    // Check if middleware has already provided a swapped token
-    const incomingAuth = request.headers.get('Authorization');
-    const authSource = request.headers.get('x-auth-source');
-    
-    let supabaseToken: string | null = null;
-    
-    if (incomingAuth && (authSource === 'clerk-swap' || authSource === 'clerk-template')) {
-      supabaseToken = incomingAuth.replace('Bearer ', '');
-      console.log(`[Feedback API] Using ${authSource} Supabase token from middleware`);
-    } else {
-      try {
-        supabaseToken = await getToken({ template: 'supabase' });
-      } catch (tokenError) {
-        console.error('[Feedback API] Clerk getToken() failed:', tokenError);
-      }
-    }
-
-    if (!supabaseToken) {
-      console.error('[Feedback API] Supabase token is missing.');
-      return NextResponse.json({ error: 'Auth token missing' }, { status: 401 });
-    }
-
-    const supabase = createClient(
-      NEXT_PUBLIC_SUPABASE_URL,
-      NEXT_PUBLIC_SUPABASE_ANON_KEY,
-      {
-        global: {
-          headers: {
-            Authorization: `Bearer ${supabaseToken}`,
-            apikey: NEXT_PUBLIC_SUPABASE_ANON_KEY
-          }
-        }
-      }
-    );
+    const supabase = getSupabaseAdmin();
 
     const { error } = await supabase
       .from('feedback_logs')
       .insert({
         session_id: sessionId,
+        user_id: userId,
         prompt,
         generated_code: generatedCode,
         success,

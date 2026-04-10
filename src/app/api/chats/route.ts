@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import { createClient } from '@supabase/supabase-js';
-import { NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY } from '@/lib/constants';
+import { getSupabaseAdmin } from '@/lib/supabase-server';
 
 /**
  * Proxy route for fetching user chats.
- * Uses the token swap mechanism implemented in middleware.
+ * Uses service_role key server-side with manual user_id filtering.
  */
-export async function GET(request: Request) {
+export async function GET() {
   try {
     const { userId } = await auth();
     
@@ -15,37 +14,12 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // The middleware will swap the Authorization header for us
-    // So we just pass it through or re-initialize a client
-    const incomingAuth = request.headers.get('Authorization');
-    const authSource = request.headers.get('x-auth-source');
-    
-    let supabaseToken: string | null = null;
-    if (incomingAuth && (authSource === 'clerk-swap' || authSource === 'clerk-template')) {
-      supabaseToken = incomingAuth.replace('Bearer ', '');
-    }
-
-    if (!supabaseToken) {
-      console.error('[Chats API] Token swap failed or token missing');
-      return NextResponse.json({ error: 'Authentication failed' }, { status: 500 });
-    }
-
-    const supabase = createClient(
-      NEXT_PUBLIC_SUPABASE_URL,
-      NEXT_PUBLIC_SUPABASE_ANON_KEY,
-      {
-        global: {
-          headers: {
-            Authorization: `Bearer ${supabaseToken}`,
-            apikey: NEXT_PUBLIC_SUPABASE_ANON_KEY
-          }
-        }
-      }
-    );
+    const supabase = getSupabaseAdmin();
 
     const { data, error } = await supabase
       .from('chats')
       .select('id, title, created_at')
+      .eq('user_id', userId)
       .order('created_at', { ascending: false });
 
     if (error) {
