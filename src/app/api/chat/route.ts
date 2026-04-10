@@ -82,14 +82,26 @@ export async function POST(request: NextRequest): Promise<Response> {
     );
     console.log(`[Prompt] Builder took ${Math.round(performance.now() - buildStart)}ms.`);
 
-    // Step 4: Assemble the message list
+    // Step 4: Assemble the message list with smart history truncation
+    // Limit history depth and truncate large messages (code blocks) to control token usage
+    const MAX_HISTORY = 6;
+    const MAX_MSG_CHARS = 500;
+
+    const truncatedHistory = history.slice(-MAX_HISTORY).map((msg) => {
+      let content = msg.content;
+      // Truncate long messages but preserve first part for context
+      if (content.length > MAX_MSG_CHARS) {
+        content = content.substring(0, MAX_MSG_CHARS) + '\n...[truncated]';
+      }
+      return {
+        role: msg.role as 'user' | 'assistant',
+        content,
+      };
+    });
+
     const messages = [
       { role: 'system' as const, content: systemPrompt },
-      // Include recent conversation history (last 10 exchanges)
-      ...history.slice(-10).map((msg) => ({
-        role: msg.role as 'user' | 'assistant',
-        content: msg.content,
-      })),
+      ...truncatedHistory,
       { role: 'user' as const, content: prompt },
     ];
 

@@ -81,7 +81,7 @@ export default function Page() {
   }, [extractCode]);
 
   /**
-   * Send a message and stream the AI response. Includes Self-Healing logic.
+   * Send a message and stream the AI response.
    */
   const handleNewMessage = useCallback(
     async (content: string) => {
@@ -166,80 +166,7 @@ export default function Page() {
         let initialResponse = await fetchChat(content, currentHistory.slice(0, -1));
         let { fullContent, fullReasoning } = await streamResponse(initialResponse);
 
-        // --- SELF-HEALING ENGINE (Non-blocking) ---
-        // Runs verification in the background; if issues are found,
-        // appends a corrected version as a follow-up message.
-        const initialCode = extractCode(fullContent);
-        if (initialCode) {
-          // Fire-and-forget: don't block the user from seeing the initial response
-          (async () => {
-            try {
-              console.log('[Self-Healing] Verifying initial code in background...');
-              const verifyRes = await fetch('/api/verify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code: initialCode }),
-              });
-
-              if (!verifyRes.ok) return;
-              const verifyData = await verifyRes.json();
-
-              if (verifyData.status !== 'Safe' && verifyData.issues?.length > 0) {
-                console.log('[Self-Healing] Issues detected, triggering background correction...');
-
-                const correctionPrompt = `The previous code you generated has errors. Please fix them immediately.\n\nErrors detected:\n${verifyData.issues.map((i: any) => `- ${i.message}`).join('\n')}\n\nCode to fix:\n\`\`\`sk\n${initialCode}\n\`\`\``;
-
-                const fixedResponse = await fetchChat(correctionPrompt, [...currentHistory, {
-                  id: 'temp', role: 'assistant', content: fullContent, timestamp: Date.now()
-                }]);
-
-                const reader = fixedResponse.body?.getReader();
-                if (!reader) return;
-
-                const decoder = new TextDecoder();
-                let fixedContent = '';
-                let buffer = '';
-
-                while (true) {
-                  const { done, value } = await reader.read();
-                  if (done) break;
-                  buffer += decoder.decode(value, { stream: true });
-                  const lines = buffer.split('\n');
-                  buffer = lines.pop() ?? '';
-                  for (const line of lines) {
-                    const trimmed = line.trim();
-                    if (!trimmed?.startsWith('data: ')) continue;
-                    const dataStr = trimmed.slice(6);
-                    if (dataStr === '[DONE]') continue;
-                    try {
-                      const parsed = JSON.parse(dataStr);
-                      if (parsed.type === 'content') fixedContent += parsed.content;
-                    } catch {}
-                  }
-                }
-
-                if (fixedContent) {
-                  const fixedCode = extractCode(fixedContent);
-                  if (fixedCode) {
-                    setMessages(prev => [...prev, {
-                      id: generateId(),
-                      role: 'assistant',
-                      content: `🔧 **Self-Healing Correction**\n\nOtomatik doğrulama sonucu düzeltilmiş versiyon:\n\n\`\`\`sk\n${fixedCode}\n\`\`\``,
-                      timestamp: Date.now(),
-                      codeBlock: fixedCode,
-                    }]);
-                    setEditorCode(fixedCode);
-                  }
-                }
-              }
-            } catch (err) {
-              console.error('[Self-Healing] Background error:', err);
-            }
-          })();
-        }
-        // --- END SELF-HEALING ---
-
-        const finalAssistantContent = fullContent + '\n\n' + t('code_verified');
+        const finalAssistantContent = fullContent;
 
         const assistantMessage: ChatMessage = {
           id: generateId(),

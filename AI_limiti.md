@@ -1,33 +1,28 @@
-# AI Limitlerini Hızla Tüketebilecek Sistemler Analizi
+# AI Limitlerini Hızla Tüketebilecek Sistemler Analizi — DURUM
 
-Proje içerisinde LLM (OpenRouter) ve Vektör Veritabanı (Pinecone) limitlerini hızla bitirebilecek ve maliyet artışına sebep olabilecek kritik mekanizmalar aşağıdadır:
+Proje içerisinde LLM (OpenRouter) ve Vektör Veritabanı (Pinecone) limitlerini hızla bitirebilecek ve maliyet artışına sebep olabilecek kritik mekanizmalar ve çözümleri:
 
-## 1. Otonom Self-Healing (Kendi Kendine İyileştirme) Motoru 🚨
-`src/app/chat/page.tsx` içerisindeki bu mekanizma, AI limitleri için en büyük "sessiz" tüketicidir:
-- **Çift İstek:** Her kod üretiminden sonra önce `/api/verify` (LLM tabanlı analiz) çalışır.
-- **Düzeltme İstekleri:** Eğer hata bulunursa, kullanıcı hiçbir şey yapmadan arka planda **ikinci bir tam LLM isteği** atılarak kod düzeltilmeye çalışılır.
-- **Sonuç:** Tek bir kullanıcı sorusu, arka planda 3 farklı LLM çağrısına (Üretim + Analiz + Düzeltme) dönüşebilir. Bu da limitlerin 3 kat hızlı bitmesi demektir.
+## 1. ✅ ~~Otonom Self-Healing Motoru~~ — KALDIRILDI
+- Self-healing mekanizması tamamen kaldırıldı.
+- Artık her sorgu yalnızca **1 LLM çağrısı** yapıyor (önceden 3'e kadar çıkabiliyordu).
 
-## 2. Kimlik Doğrulaması Olmayan API Rotaları 🔓
-`/api/chat` ve `/api/verify` rotalarında Clerk `auth()` kontrolü bulunmamaktadır:
-- **Bot Saldırıları:** Herhangi bir bot veya kötü niyetli kullanıcı, sisteme giriş yapmadan bu API uçlarını milyonlarca kez çağırabilir.
-- **Maliyet:** Giriş zorunluluğu olmadığı için API anahtarlarınız (OpenRouter/Pinecone) halka açık bir kaynak gibi tüketilebilir.
+## 2. ✅ ~~Kimlik Doğrulaması Olmayan API Rotaları~~ — ÇÖZÜLDÜ
+- `/api/chat` ve `/api/verify` rotalarına Clerk `auth()` kontrolü eklendi.
+- Per-user rate limiting: chat 30/dk, verify 20/dk.
 
-## 3. RAG Bağlam (Context) Yoğunluğu 📚
-`src/lib/pinecone.ts` ve `src/app/api/chat/route.ts` içerisindeki RAG yapısı:
-- **Top-K Örnekler:** Her soruda Pinecone'dan gelen çok sayıda kod örneği sistem promptuna eklenir.
-- **Token Şişmesi:** Eğer gelen örnekler uzunsa, her istekte LLM'e gönderilen "Input Token" miktarı çok yüksek olur. Bu da hem gecikmeye hem de kotanın hızla dolmasına neden olur.
+## 3. ✅ ~~RAG Bağlam Yoğunluğu~~ — ÇÖZÜLDÜ
+- `formatRAGContext` fonksiyonuna 8000 karakter (≈2000 token) limiti eklendi.
+- Sınır aşılırsa düşük alaka skorlu örnekler otomatik olarak kırpılır.
 
-## 4. Uzun Sohbet Geçmişi (Chat History) 💬
-Sistem her istekte son 10 mesajı LLM'e göndermektedir:
-- Sohbet uzadıkça her yeni soruda gönderilen veri miktarı (context) artar. 
-- Özellikle büyük kod blokları içeren geçmiş mesajlar, her seferinde tekrar tekrar LLM'e gönderildiği için token tüketimi katlanarak artar.
+## 4. ✅ ~~Uzun Sohbet Geçmişi~~ — OPTİMİZE EDİLDİ
+- History derinliği 10'dan 6'ya düşürüldü.
+- Her mesaj 500 karakterle sınırlandırıldı (büyük kod blokları truncate edilir).
+- Bu sayede input token kullanımı önemli ölçüde azaltıldı.
 
-## 5. Hız Sınırlaması (Rate Limiting) Eksikliği ⏳
-Sunucu tarafında (Edge/Node.js) istek başına bir sınırlama yoktur:
-- Bir kullanıcı saniyeler içinde onlarca "Ağır" (heavy) istek atarak API limitlerini dakikalar içinde sıfırlayabilir.
+## 5. ✅ ~~Hız Sınırlaması Eksikliği~~ — ÇÖZÜLDÜ
+- In-memory per-user rate limiter her iki LLM rotasına eklendi.
 
 ---
 
-### Öneri:
-Bu limitlerin korunması için **Self-Healing** mekanizmasının sadece kullanıcı onayladığında çalışması ve tüm AI rotalarına **Clerk Auth + Rate Limit** eklenmesi kritik önem taşımaktadır.
+### Mevcut Durum:
+Tüm optimizasyonlar tamamlandı. Tek bir kullanıcı sorusu artık yalnızca **1 Pinecone arama + 1 LLM çağrısı** tetikler.
