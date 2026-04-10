@@ -94,7 +94,7 @@ export default function ChatPanel({
               <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-[var(--color-accent-primary)]">
                 {t('input_required')}
               </h3>
-              <p className="mb-8 max-w-sm text-sm leading-relaxed text-[var(--color-text-secondary)] uppercase tracking-wide">
+              <p className="mb-8 max-w-sm mx-auto text-sm leading-relaxed text-[var(--color-text-secondary)] uppercase tracking-wide">
                 {t('input_desc')}
               </p>
               <div className="flex flex-wrap justify-center gap-4">
