@@ -4,7 +4,8 @@ import { swapClerkTokenForSupabase } from "@/lib/supabase-auth-swap";
 
 const isSupabaseRoute = createRouteMatcher([
   "/api/session(.*)",
-  "/api/feedback(.*)"
+  "/api/feedback(.*)",
+  "/api/chats(.*)"
 ]);
 
 export default clerkMiddleware(async (auth, req) => {

@@ -33,36 +33,21 @@ export default function Sidebar({ onNewChat }: SidebarProps) {
 
       setLoading(true);
       try {
-        // template: 'supabase' must be configured in Clerk Dashboard
-        const token = await getToken({ template: 'supabase' });
-        
-        if (!token) {
-          console.warn("[Clerk] Supabase JWT template not found or token empty. Ensure 'supabase' template is set up in Clerk Dashboard.");
-        }
-
-        const supabase = createClient(
-          NEXT_PUBLIC_SUPABASE_URL,
-          NEXT_PUBLIC_SUPABASE_ANON_KEY,
-          {
-            global: {
-              headers: {
-                ...(token ? { Authorization: `Bearer ${token}` } : {}),
-                apikey: NEXT_PUBLIC_SUPABASE_ANON_KEY
-              }
-            }
+        // Fetch history through our internal API proxy to use the token swap mechanism
+        const response = await fetch('/api/chats', {
+          headers: {
+            // Need to pass the original token so middleware can swap it
+            'Authorization': `Bearer ${await getToken()}`
           }
-        );
+        });
 
-        const { data, error } = await supabase
-          .from('chats')
-          .select('id, title, created_at')
-          .order('created_at', { ascending: false });
-
-        if (error) {
-          console.error("Supabase fetch error:", error);
-        } else {
-          setSessions(data || []);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to fetch history');
         }
+
+        const data = await response.json();
+        setSessions(data || []);
       } catch (err) {
         console.error("Error loading chat history:", err);
       } finally {
