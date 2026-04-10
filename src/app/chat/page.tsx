@@ -15,6 +15,7 @@ export default function Page() {
   const [streamingContent, setStreamingContent] = useState('');
   const [streamingReasoning, setStreamingReasoning] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
+  const [sidebarRefreshKey, setSidebarRefreshKey] = useState(0);
   const pineconeIdsRef = useRef<string[]>([]);
   const sessionIdRef = useRef(crypto.randomUUID());
   const lastPromptRef = useRef('');
@@ -44,6 +45,40 @@ export default function Page() {
 
     return blocks.join('\n\n');
   }, []);
+
+  /**
+   * Load a saved chat from database by its ID.
+   */
+  const handleLoadChat = useCallback(async (chatId: string) => {
+    try {
+      const res = await fetch(`/api/chats/${chatId}`);
+      if (!res.ok) {
+        console.error('[LoadChat] Failed to load chat:', res.status);
+        return;
+      }
+
+      const chat = await res.json();
+      sessionIdRef.current = chat.id;
+
+      // content is the messages array stored as JSONB
+      const loadedMessages: ChatMessage[] = Array.isArray(chat.content) ? chat.content : [];
+      setMessages(loadedMessages);
+
+      // Restore editor code from last assistant message
+      const lastAssistant = [...loadedMessages].reverse().find(m => m.role === 'assistant');
+      if (lastAssistant) {
+        const code = extractCode(lastAssistant.content);
+        setEditorCode(code);
+      } else {
+        setEditorCode('');
+      }
+
+      setShowFeedback(false);
+      console.log(`[LoadChat] Loaded chat "${chat.title}" with ${loadedMessages.length} messages`);
+    } catch (err) {
+      console.error('[LoadChat] Error:', err);
+    }
+  }, [extractCode]);
 
   /**
    * Send a message and stream the AI response. Includes Self-Healing logic.
@@ -182,7 +217,12 @@ export default function Page() {
               title: newMessages[0]?.content.substring(0, 40) || 'New Chat',
               messages: newMessages,
             }),
-          }).catch(err => console.error('[Session] Sync failed:', err));
+          })
+          .then(() => {
+            // Refresh sidebar after saving
+            setSidebarRefreshKey(k => k + 1);
+          })
+          .catch(err => console.error('[Session] Sync failed:', err));
           return newMessages;
         });
 
@@ -250,6 +290,7 @@ export default function Page() {
           messages: messages,
         }),
       });
+      setSidebarRefreshKey(k => k + 1);
       console.log('Saved to Supabase');
     } catch (e) {
       console.error('Error saving', e);
@@ -289,7 +330,12 @@ export default function Page() {
     <div className="flex h-screen max-h-screen flex-col pt-16 overflow-hidden bg-[var(--color-bg-primary)]">
       <div className="flex flex-1 overflow-hidden min-h-0 flex-row">
         {/* Sidebar */}
-        <Sidebar onNewChat={handleNewChat} />
+        <Sidebar
+          onNewChat={handleNewChat}
+          onLoadChat={handleLoadChat}
+          activeChatId={sessionIdRef.current}
+          refreshKey={sidebarRefreshKey}
+        />
 
         <div className="flex flex-1 overflow-hidden min-h-0">
           {/* Terminal (Chat) - 55% Width */}
