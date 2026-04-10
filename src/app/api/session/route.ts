@@ -1,22 +1,36 @@
-import { NextRequest } from 'next/server';
-import { createClient } from '@/lib/supabase-server';
+import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
+import { createClient } from '@supabase/supabase-js';
+import { NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY } from '@/lib/constants';
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const { userId, getToken } = await auth();
 
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { sessionId, title, messages } = await request.json();
+    const token = await getToken({ template: 'supabase' });
+
+    const supabase = createClient(
+      NEXT_PUBLIC_SUPABASE_URL,
+      NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      {
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      }
+    );
 
     const { error } = await supabase
-      .from('messages')
+      .from('chats')
       .upsert({
         id: sessionId,
-        user_id: user.id,
+        user_id: userId,
         title: title || 'New Chat',
         content: messages,
         updated_at: new Date().toISOString(),
@@ -24,11 +38,11 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('[Session API] Error saving session:', error);
-      return Response.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return Response.json({ success: true });
+    return NextResponse.json({ success: true });
   } catch (error) {
-    return Response.json({ error: 'Internal error' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal error' }, { status: 500 });
   }
 }

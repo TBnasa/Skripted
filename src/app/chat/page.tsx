@@ -238,17 +238,34 @@ export default function Page() {
     setEditorCode(code);
   }, []);
 
+  const manualSave = useCallback(async () => {
+    if (messages.length === 0) return;
+    try {
+      await fetch('/api/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId: sessionIdRef.current,
+          title: messages[0]?.content.substring(0, 40) || 'Manual Saved Chat',
+          messages: messages,
+        }),
+      });
+      console.log('Saved to Supabase');
+    } catch (e) {
+      console.error('Error saving', e);
+    }
+  }, [messages]);
+
   // Keyboard Shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
-        // Save action
-        console.log('Saved to Supabase mock');
+        manualSave();
       } else if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault();
-        // Trigger code analysis (if custom logic goes here) or focus input
-        console.log('Code analyzed');
+        // Trigger code analysis
+        console.log('Engine Fire');
       } else if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
         // Focus search/chat
@@ -258,7 +275,7 @@ export default function Page() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [manualSave]);
 
   const handleNewChat = useCallback(() => {
     setMessages([]);
@@ -271,7 +288,7 @@ export default function Page() {
     <div className="flex h-screen max-h-screen flex-col pt-16 overflow-hidden bg-[var(--color-bg-primary)]">
       <div className="flex flex-1 overflow-hidden min-h-0 flex-row">
         {/* Sidebar */}
-        <Sidebar onNewChat={handleNewChat} history={[]} />
+        <Sidebar onNewChat={handleNewChat} />
 
         <div className="flex flex-1 overflow-hidden min-h-0">
           {/* Terminal (Chat) - 55% Width */}

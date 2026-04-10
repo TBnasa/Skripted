@@ -14,6 +14,10 @@ export const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL ?? 'openai/gpt-oss-
 export const PINECONE_INDEX = process.env.PINECONE_INDEX ?? 'skripted';
 export const PINECONE_TOP_K = 3 as const;
 
+// Supabase
+export const NEXT_PUBLIC_SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+export const NEXT_PUBLIC_SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
 // Skript defaults
 export const DEFAULT_SERVER_VERSION = '1.21.1' as const;
 export const DEFAULT_SERVER_TYPE = 'Paper' as const;
