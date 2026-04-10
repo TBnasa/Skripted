@@ -10,8 +10,17 @@ export function createClient() {
 /**
  * Upload an image to the 'gallery-images' bucket
  */
-export async function uploadGalleryImage(file: File, userId: string): Promise<string> {
-  const supabase = createClient();
+export async function uploadGalleryImage(file: File, userId: string, clerkToken?: string): Promise<string> {
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      global: {
+        headers: clerkToken ? { Authorization: `Bearer ${clerkToken}` } : {},
+      },
+    }
+  );
+
   const timestamp = Date.now();
   const filePath = `${userId}/${timestamp}.webp`;
 

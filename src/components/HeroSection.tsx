@@ -56,15 +56,6 @@ export default function HeroSection() {
               </svg>
             </span>
           </Link>
-
-          <a
-            href="https://github.com/TBnasa/Skripted"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-premium btn-ghost px-8 py-4 text-sm"
-          >
-            {t('view_architecture')}
-          </a>
         </div>
 
         {/* Feature Grid */}

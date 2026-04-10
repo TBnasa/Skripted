@@ -13,7 +13,7 @@ interface GalleryPostModalProps {
 }
 
 export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: GalleryPostModalProps) {
-  const { userId } = useAuth();
+  const { userId, getToken } = useAuth();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [images, setImages] = useState<File[]>([]);
@@ -55,6 +55,7 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
 
     try {
       const uploadedUrls: string[] = [];
+      const token = await getToken({ template: 'supabase' });
 
       // Process and Upload Images
       for (let i = 0; i < images.length; i++) {
@@ -64,7 +65,7 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
         
         setProgress(10 + Math.round((i / images.length) * 70));
         setUploadStatus(`${i + 1}/${images.length} Sunucuya yükleniyor...`);
-        const url = await uploadGalleryImage(compressedFile, userId);
+        const url = await uploadGalleryImage(compressedFile, userId, token || '');
         uploadedUrls.push(url);
       }
 
