@@ -138,7 +138,7 @@ export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
   }, [code]);
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex flex-1 flex-col min-h-0 bg-[var(--color-bg-primary)]">
       {/* Header */}
       <div className="flex items-center justify-between border-b-4 border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-5 py-4">
         <div className="flex items-center gap-3">
@@ -179,14 +179,6 @@ export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
             )}
           </button>
 
-          {/* Verify button */}
-          <button
-            onClick={handleVerify}
-            disabled={!code.trim() || verifying}
-            className="mc-btn flex items-center gap-2 bg-[var(--color-bg-tertiary)] px-3 py-2 text-xs font-bold uppercase tracking-widest text-[var(--color-accent-primary)] transition-all hover:bg-[var(--color-bg-elevated)] disabled:cursor-not-allowed disabled:opacity-40 disabled:grayscale"
-          >
-            {verifying ? t('verifying') : t('verify')}
-          </button>
 
           {/* Download button */}
           <DownloadButton code={code} />
@@ -305,7 +297,7 @@ export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
                 fontSize: 14,
                 fontFamily: '"JetBrains Mono", "Cascadia Code", monospace',
                 fontLigatures: true,
-                lineHeight: 21, // 1.5 * 14px
+                lineHeight: 22.4, // 1.6 * 14px
                 lineNumbers: 'on',
                 minimap: { enabled: false },
                 scrollBeyondLastLine: false,
@@ -316,7 +308,7 @@ export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
                 cursorBlinking: 'solid',
                 cursorSmoothCaretAnimation: 'on',
                 smoothScrolling: true,
-                padding: { top: 20, bottom: 40 }, // Extra padding at bottom to prevent cutoff
+                padding: { top: 20, bottom: 60 }, // Extra padding at bottom
                 roundedSelection: true,
                 readOnly: false,
                 automaticLayout: true,

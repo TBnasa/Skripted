@@ -19,7 +19,7 @@ export default function Navbar() {
             </svg>
           </div>
           <span className="text-lg font-black tracking-tight text-[var(--color-text-primary)]">
-            {APP_NAME} <span className="text-[var(--color-accent-primary)]">Engine</span>
+            Skripted <span className="text-[var(--color-accent-primary)]">Engine</span>
           </span>
         </Link>
 

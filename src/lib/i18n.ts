@@ -5,51 +5,6 @@ type Translations = {
 };
 
 export const translations: Translations = {
-  en: {
-    terminal_header: "Terminal / Chat",
-    status_ready: "Status: Ready",
-    status_compiling: "Status: Compiling Response...",
-    input_required: "Input Required",
-    input_desc: "Initialize script generation by describing your requirements.",
-    placeholder: "Describe logic to generate...",
-    kernel_info: "Kernel: Paper 1.21.1 · Build: Skript 2.14.3",
-    launch_engine: "Launch Engine",
-    access_engine: "Access Engine",
-    view_architecture: "View Architecture",
-    ai_asistan: "Assistant",
-    user_profile: "Profile",
-    copy: "Copy",
-    copied: "Copied!",
-    verify: "Verify Syntax",
-    verifying: "Verifying...",
-    ai_expert_insight: "AI Expert Insight",
-    scanning_code: "Scanning Code...",
-    safe: "Safe",
-    warning: "Warning",
-    critical_error: "Critical Error",
-    required_addons: "Required Addons",
-    performance_analysis: "Performance Analysis",
-    syntax_analysis: "Syntax Analysis",
-    analysis_details: "Analysis Details",
-    legal_disclaimer: "© 2026 Skripted IDE. All rights reserved. This platform is not affiliated with Mojang AB or Microsoft.",
-    sign_in: "Sign In",
-    sign_out: "Sign Out",
-    script_editor: "Script Editor",
-    waiting_generation: "Waiting for generation...",
-    appear_here: "Generated script will appear here",
-    thinking_process: "Thinking Process",
-    admin_tools: "Admin Tools",
-    system_status_ok: "System Language: English | Status: Perfect",
-    code_verified: "✅ Code Passed Expert Approval",
-    hero_title: "Build Better Minecraft Scripts",
-    hero_desc: "An elite cloud-based script IDE powered by Deep Context Engine. Generate, analyze, and optimize Skript code with Universal Compatibility.",
-    feature1_title: "Deep Context Engine",
-    feature1_desc: "Expert context engine trained on 250+ elite architectural patterns.",
-    feature2_title: "Live Logic Guard",
-    feature2_desc: "Real-time logic guard detecting errors as you type.",
-    feature3_title: "Universal Compatibility",
-    feature3_desc: "Full compatibility with all Minecraft versions and Skript addons.",
-  },
   tr: {
     terminal_header: "Terminal / Sohbet",
     status_ready: "Durum: Hazır",
@@ -85,7 +40,7 @@ export const translations: Translations = {
     thinking_process: "Düşünme Süreci",
     admin_tools: "Yönetici Araçları",
     system_status_ok: "Sistem Dili: Türkçe | Durum: Kusursuz",
-    code_verified: "✅ Kod Uzman Onayından Geçti",
+    code_verified: "✅ Skripted Engine Tarafından Doğrulandı",
     hero_title: "Daha İyi Minecraft Scriptleri Yazın",
     hero_desc: "Deep Context Engine tarafından desteklenen elit bulut tabanlı script IDE'si. Evrensel Uyumluluk ile Skript kodunu oluşturun, analiz edin ve optimize edin.",
     feature1_title: "Deep Context Engine",
@@ -97,7 +52,7 @@ export const translations: Translations = {
   }
 };
 
-export const getTranslation = (key: string, lang: string = 'en') => {
-  const dictionary = translations[lang.startsWith('tr') ? 'tr' : 'en'];
-  return dictionary[key] || translations['en'][key] || key;
+export const getTranslation = (key: string, _lang: string = 'tr') => {
+  const dictionary = translations['tr'];
+  return dictionary[key] || key;
 };

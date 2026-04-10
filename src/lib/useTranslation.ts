@@ -7,10 +7,7 @@ export function useTranslation() {
   const [lang, setLang] = useState('en');
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const browserLang = navigator.language.split('-')[0];
-      setLang(browserLang);
-    }
+    setLang('tr');
   }, []);
 
   const t = (key: string) => getTranslation(key, lang);

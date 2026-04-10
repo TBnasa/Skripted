@@ -3,7 +3,7 @@
    ═══════════════════════════════════════════ */
 
 export const APP_NAME = 'Skripted' as const;
-export const APP_DESCRIPTION = 'AI-Powered Minecraft Skript Generation' as const;
+export const APP_DESCRIPTION = 'Skripted Engine — Minecraft Skript Mimarı' as const;
 export const APP_URL = 'https://skripted.dev' as const;
 
 // OpenRouter

@@ -3,9 +3,11 @@
 import { useState, useCallback, useRef } from 'react';
 import ChatPanel from '@/components/ChatPanel';
 import EditorPanel from '@/components/EditorPanel';
+import { useTranslation } from '@/lib/useTranslation';
 import type { ChatMessage, FeedbackPayload } from '@/types';
 
 export default function Page() {
+  const { t } = useTranslation();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [editorCode, setEditorCode] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
@@ -157,7 +159,7 @@ export default function Page() {
         }
         // --- END SELF-HEALING ---
 
-        const finalAssistantContent = fullContent + '\n\n✅ Kod Uzman Onayından Geçti';
+        const finalAssistantContent = fullContent + '\n\n' + t('code_verified');
 
         const assistantMessage: ChatMessage = {
           id: generateId(),
@@ -193,7 +195,7 @@ export default function Page() {
         setMessages((prev) => [...prev, {
           id: generateId(),
           role: 'assistant',
-          content: `⚠️ An error occurred. Error: ${error instanceof Error ? error.message : 'Unknown'}`,
+          content: `⚠️ Bir hata oluştu. Hata: ${error instanceof Error ? error.message : 'Bilinmiyor'}`,
           timestamp: Date.now(),
         }]);
       } finally {
@@ -202,7 +204,7 @@ export default function Page() {
         setStreamingReasoning('');
       }
     },
-    [generateId, extractCode],
+    [generateId, extractCode, t],
   );
 
   const handleFeedback = useCallback(
@@ -236,9 +238,9 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="flex h-screen flex-col pt-16">
-      <div className="flex flex-1 overflow-hidden">
-        <div className="flex w-full flex-col border-r border-[var(--color-border)] bg-[var(--color-bg-secondary)] md:w-1/2 lg:w-[45%]">
+    <div className="flex min-h-screen h-screen flex-col pt-16 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden min-h-0">
+        <div className="flex w-full flex-col border-r border-[var(--color-border)] bg-[var(--color-bg-secondary)] md:w-1/2 lg:w-[45%] flex-grow">
           <ChatPanel
             messages={messages}
             onNewMessage={handleNewMessage}
@@ -251,7 +253,7 @@ export default function Page() {
           />
         </div>
 
-        <div className="hidden flex-1 flex-col bg-[var(--color-bg-primary)] md:flex">
+        <div className="hidden flex-1 flex-col bg-[var(--color-bg-primary)] md:flex flex-grow shadow-2xl">
           <EditorPanel
             code={editorCode}
             onCodeChange={setEditorCode}
@@ -263,7 +265,7 @@ export default function Page() {
         {editorCode.trim() ? (
           <details className="group">
             <summary className="cursor-pointer rounded-lg bg-[var(--color-bg-tertiary)] px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)]">
-              📝 View Generated Code ({editorCode.split('\n').length} lines)
+              📝 Kod Önizleme ({editorCode.split('\n').length} satır)
             </summary>
             <pre className="mt-2 max-h-64 overflow-auto rounded-lg bg-[var(--color-bg-primary)] p-4 font-[var(--font-mono)] text-xs text-[var(--color-text-primary)]">
               <code>{editorCode}</code>
