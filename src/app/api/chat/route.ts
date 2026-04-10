@@ -5,9 +5,11 @@ import { searchSkriptExamples, formatRAGContext } from '@/lib/pinecone';
 import { buildSystemPrompt } from '@/lib/system-prompt';
 import type { ChatRequest } from '@/types';
 
-export const runtime = 'nodejs';
+import { ChatRequestSchema } from '@/types/schemas';
 
-/** Per-user rate limiting: max 30 requests per minute */
+export const runtime = 'edge';
+
+/** Per-isolate rate limiting (Edge): max 30 requests per minute */
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 30;
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
@@ -42,15 +44,17 @@ export async function POST(request: NextRequest): Promise<Response> {
       );
     }
 
-    const body: ChatRequest = await request.json();
-    const { prompt, history, serverVersion, serverType, skriptVersion } = body;
+    const rawBody = await request.json();
+    const result = ChatRequestSchema.safeParse(rawBody);
 
-    if (!prompt || typeof prompt !== 'string' || prompt.trim().length === 0) {
+    if (!result.success) {
       return Response.json(
-        { error: 'Prompt is required' },
+        { error: 'Invalid request data', details: result.error.format() },
         { status: 400 },
       );
     }
+
+    const { prompt, history, serverVersion, serverType, skriptVersion, addons } = result.data;
 
     // Step 1: Initialize SSE logic
     const encoder = new TextEncoder();
@@ -79,6 +83,7 @@ export async function POST(request: NextRequest): Promise<Response> {
       serverType,
       skriptVersion,
       ragContext,
+      addons
     );
     console.log(`[Prompt] Builder took ${Math.round(performance.now() - buildStart)}ms.`);
 

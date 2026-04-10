@@ -2,6 +2,9 @@ import { NextRequest } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { OPENROUTER_MODEL, OPENROUTER_BASE_URL } from '@/lib/constants';
 import { fetchWithKeyRotation } from '@/lib/openrouter';
+import { VerifyRequestSchema } from '@/types/schemas';
+
+export const runtime = 'edge';
 
 /** Per-user rate limiting for verify: max 20 requests per minute */
 const RATE_LIMIT_WINDOW_MS = 60_000;
@@ -38,15 +41,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { code } = await req.json();
-    if (!code || typeof code !== 'string') {
-      return Response.json({ error: 'No code provided' }, { status: 400 });
+    const rawBody = await req.json();
+    const result = VerifyRequestSchema.safeParse(rawBody);
+
+    if (!result.success) {
+      return Response.json(
+        { error: 'Invalid request data', details: result.error.format() },
+        { status: 400 }
+      );
     }
 
-    // Limit code length to prevent abuse (max ~10KB)
-    if (code.length > 10_000) {
-      return Response.json({ error: 'Code too long for verification' }, { status: 400 });
-    }
+    const { code } = result.data;
 
     const systemPrompt = `You are an AI Expert Reviewer for Minecraft Skript.
     Analyze the following Skript code for:

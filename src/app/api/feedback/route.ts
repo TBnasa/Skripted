@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
 import type { FeedbackPayload } from '@/types';
+import { FeedbackPayloadSchema } from '@/types/schemas';
 
 export async function POST(request: NextRequest): Promise<Response> {
   try {
@@ -16,7 +17,16 @@ export async function POST(request: NextRequest): Promise<Response> {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body: FeedbackPayload = await request.json();
+    const rawBody = await request.json();
+    const result = FeedbackPayloadSchema.safeParse(rawBody);
+
+    if (!result.success) {
+      return NextResponse.json(
+        { error: 'Invalid feedback data', details: result.error.format() },
+        { status: 400 },
+      );
+    }
+    
     const {
       sessionId,
       prompt,
@@ -25,14 +35,7 @@ export async function POST(request: NextRequest): Promise<Response> {
       errorLog,
       consoleOutput,
       pineconeIds,
-    } = body;
-
-    if (!sessionId || !prompt || !generatedCode || typeof success !== 'boolean') {
-      return NextResponse.json(
-        { error: 'Missing required fields: sessionId, prompt, generatedCode, success' },
-        { status: 400 },
-      );
-    }
+    } = result.data;
 
     const supabase = getSupabaseAdmin();
 

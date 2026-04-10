@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
+import { SessionRequestSchema } from '@/types/schemas';
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,11 +11,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { sessionId, title, messages } = await request.json();
+    const rawBody = await request.json();
+    const result = SessionRequestSchema.safeParse(rawBody);
 
-    if (!sessionId || typeof sessionId !== 'string') {
-      return NextResponse.json({ error: 'sessionId is required' }, { status: 400 });
+    if (!result.success) {
+      return NextResponse.json(
+        { error: 'Invalid request data', details: result.error.format() },
+        { status: 400 }
+      );
     }
+
+    const { sessionId, title, messages } = result.data;
 
     const supabase = getSupabaseAdmin();
 

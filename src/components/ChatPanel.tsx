@@ -8,9 +8,10 @@ import type { ChatMessage } from '@/types';
 
 interface ChatPanelProps {
   readonly messages: ChatMessage[];
-  readonly onNewMessage: (content: string) => void;
+  readonly onNewMessage: (content: string, addons: string[]) => void;
   readonly onCodeExtracted: (code: string) => void;
   readonly isStreaming: boolean;
+  readonly isAnalyzing?: boolean;
   readonly streamingContent: string;
   readonly streamingReasoning?: string;
   readonly onFeedback: (success: boolean, errorLog?: string) => void;
@@ -21,6 +22,7 @@ export default function ChatPanel({
   messages,
   onNewMessage,
   isStreaming,
+  isAnalyzing,
   streamingContent,
   streamingReasoning,
   onFeedback,
@@ -28,6 +30,7 @@ export default function ChatPanel({
 }: ChatPanelProps) {
   const { t } = useTranslation();
   const [input, setInput] = useState('');
+  const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -35,7 +38,7 @@ export default function ChatPanel({
     const trimmed = input.trim();
     if (!trimmed || isStreaming) return;
 
-    onNewMessage(trimmed);
+    onNewMessage(trimmed, selectedAddons);
     setInput('');
 
     if (textareaRef.current) {
@@ -83,11 +86,22 @@ export default function ChatPanel({
           <p className="text-[10px] font-mono text-emerald-500/70 mt-0.5">
             {isStreaming ? (
               <span className="flex items-center gap-1.5">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 animate-ping" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                </span>
-                {t('status_compiling')}
+                {isAnalyzing ? (
+                  <>
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-spin absolute inline-flex h-full w-full rounded-full border-2 border-emerald-400 border-t-transparent" />
+                    </span>
+                    <span className="text-emerald-400">⚙️ Kod Analiz Ediliyor...</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 animate-ping" />
+                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                    </span>
+                    {t('status_compiling')}
+                  </>
+                )}
               </span>
             ) : t('system_status_ok')}
           </p>
@@ -151,7 +165,7 @@ export default function ChatPanel({
         )}
 
         {/* Typing indicator */}
-        {isStreaming && !streamingContent && (
+        {isStreaming && !isAnalyzing && !streamingContent && (
           <div className="animate-fade-in flex gap-3 items-start">
             <div className="flex flex-col items-center gap-1.5">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400 shadow-sm">
@@ -177,8 +191,25 @@ export default function ChatPanel({
       </div>
 
       {/* Input area */}
-      <div className="border-t border-white/[0.04] bg-white/[0.01] p-4">
-        <div className="flex items-end gap-3 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-4 py-3 focus-within:border-emerald-500/30 focus-within:shadow-[0_0_20px_rgba(16,185,129,0.05)] transition-all duration-300">
+      <div className="relative mt-2 p-1.5 md:p-3 bg-[#0a0a0a]/90 backdrop-blur-3xl border-t border-white/[0.04]">
+        {/* Addon Selector */}
+        <div className="flex gap-2 mb-2 px-1">
+          {['SkBee', 'SkQuery', 'SkRayFall'].map(addon => (
+            <button
+              key={addon}
+              onClick={() => setSelectedAddons(prev => prev.includes(addon) ? prev.filter(a => a !== addon) : [...prev, addon])}
+              className={`px-2 py-1 text-[10px] rounded border transition-colors ${
+                selectedAddons.includes(addon)
+                  ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400'
+                  : 'bg-white/[0.03] border-white/[0.06] text-zinc-500 hover:text-zinc-400'
+              }`}
+            >
+              {addon}
+            </button>
+          ))}
+        </div>
+
+        <div className="relative group/input flex items-end gap-2 bg-black overflow-hidden rounded-xl border border-white/[0.06] focus-within:border-emerald-500/30 focus-within:shadow-[0_0_20px_rgba(16,185,129,0.05)] transition-all duration-300">
           <textarea
             ref={textareaRef}
             value={input}

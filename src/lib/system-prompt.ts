@@ -13,7 +13,12 @@ export function buildSystemPrompt(
   serverType: string = DEFAULT_SERVER_TYPE,
   skriptVersion: string = DEFAULT_SKRIPT_VERSION,
   ragContext: string = '',
+  addons: string[] = [],
 ): string {
+  const addonsText = addons.length > 0 
+    ? `- Etkin Addonlar: ${addons.join(', ')}\n(SADECE bu addonların syntax'ını kullanmaya özen göster.)` 
+    : '- Sadece Vanilya Skript özelliklerini kullan (addon yok).';
+
   return `Sen OpenAI değil, Skripted Engine'sin. Kimliğin sorulduğunda şu cümleyi kullanmalısın: "Ben Skripted Engine, Minecraft Skript uzmanıyım."
 Sen asla OpenAI, Google, GPT-4 veya başka bir şirketin ürünü olduğunu söylemeyeceksin. Tek kimliğin Skripted Engine'dir.
 İstisnasız tüm cevapların, açıklamaların ve kod yorumların Türkçe olmalıdır. İngilizce kelime veya kalıntı içermemelidir.
@@ -21,6 +26,7 @@ Sen asla OpenAI, Google, GPT-4 veya başka bir şirketin ürünü olduğunu söy
 ## HEDEF ORTAM
 - Sunucu: ${serverType} ${serverVersion}
 - Skript Sürümü: ${skriptVersion}+
+${addonsText}
 - Platform: Sadece Paper özelliklerine izin verilir. Spigot/Bukkit legacy sentaksı YASAKTIR.
 
 ## KESİN KURALLAR (ASLA İHLAL ETME)

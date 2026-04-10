@@ -3,6 +3,7 @@
 import { useTranslation } from '@/lib/useTranslation';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useAuth } from '@clerk/nextjs';
+import { useChats } from '@/lib/hooks/use-chats';
 
 interface SidebarProps {
   readonly onNewChat: () => void;
@@ -13,72 +14,45 @@ interface SidebarProps {
   readonly onToggle?: () => void;
 }
 
-interface ChatSession {
-  id: string;
-  title: string;
-  created_at: string;
-}
-
 export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKey, isOpen = true, onToggle }: SidebarProps) {
   const { t } = useTranslation();
-  const { getToken, userId, isLoaded } = useAuth();
-  const [sessions, setSessions] = useState<ChatSession[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { chats, isLoading, mutateChats } = useChats();
 
-  const loadHistory = useCallback(async () => {
-    if (!isLoaded) return;
-    if (!userId) {
-      setSessions([]);
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const response = await fetch('/api/chats', {
-        headers: {
-          'Authorization': `Bearer ${await getToken()}`
-        }
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to fetch history');
-      }
-
-      const data = await response.json();
-      setSessions(data || []);
-    } catch (err) {
-      console.error("Error loading chat history:", err);
-    } finally {
-      setLoading(false);
-    }
-  }, [getToken, userId, isLoaded]);
-
+  // Force revalidation when refreshKey changes (e.g. from new chat creation in parent)
   useEffect(() => {
-    loadHistory();
-  }, [loadHistory, refreshKey]);
+    mutateChats();
+  }, [refreshKey, mutateChats]);
 
   const handleRename = async (chatId: string, newTitle: string) => {
+    // Optimistic cache update
+    mutateChats(
+      chats.map((s) => (s.id === chatId ? { ...s, title: newTitle } : s)),
+      false
+    );
+
     try {
-      const res = await fetch(`/api/chats/${chatId}`, {
+      await fetch(`/api/chats/${chatId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title: newTitle }),
       });
-      if (res.ok) {
-        setSessions(prev => prev.map(s => s.id === chatId ? { ...s, title: newTitle } : s));
-      }
+      mutateChats(); // Re-fetch to sync
     } catch (err) {
       console.error('[Sidebar] Rename error:', err);
     }
   };
 
   const handleDelete = async (chatId: string) => {
+    // Optimistic cache update
+    mutateChats(
+      chats.filter((s) => s.id !== chatId),
+      false
+    );
+
     try {
       const res = await fetch(`/api/chats/${chatId}`, { method: 'DELETE' });
       if (res.ok) {
-        setSessions(prev => prev.filter(s => s.id !== chatId));
+        mutateChats(); // Re-fetch to sync
         if (activeChatId === chatId) {
           onNewChat();
         }
@@ -92,9 +66,9 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
   const todayDate = new Date().toDateString();
   const yesterdayDate = new Date(Date.now() - 86400000).toDateString();
 
-  const today = sessions.filter(s => new Date(s.created_at).toDateString() === todayDate);
-  const yesterday = sessions.filter(s => new Date(s.created_at).toDateString() === yesterdayDate);
-  const older = sessions.filter(s => {
+  const today = chats.filter(s => new Date(s.created_at).toDateString() === todayDate);
+  const yesterday = chats.filter(s => new Date(s.created_at).toDateString() === yesterdayDate);
+  const older = chats.filter(s => {
     const d = new Date(s.created_at).toDateString();
     return d !== todayDate && d !== yesterdayDate;
   });
@@ -164,7 +138,7 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
         </div>
 
         <div className="flex-1 overflow-y-auto px-3 custom-scrollbar space-y-6">
-          {loading ? (
+          {isLoading ? (
             <div className="space-y-4">
               {[1, 2].map((i) => (
                 <div key={i} className="space-y-2">
@@ -174,7 +148,7 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
                 </div>
               ))}
             </div>
-          ) : sessions.length === 0 ? (
+          ) : chats.length === 0 ? (
             <div className="text-center py-12">
               <div className="inline-block p-3 rounded-xl bg-white/[0.03] mb-4">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[var(--color-text-muted)]">

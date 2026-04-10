@@ -12,6 +12,8 @@ export default function Page() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [editorCode, setEditorCode] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [globalError, setGlobalError] = useState<string | null>(null);
   const [streamingContent, setStreamingContent] = useState('');
   const [streamingReasoning, setStreamingReasoning] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
@@ -85,9 +87,10 @@ export default function Page() {
    * Send a message and stream the AI response.
    */
   const handleNewMessage = useCallback(
-    async (content: string) => {
+    async (content: string, addons: string[] = []) => {
       lastPromptRef.current = content;
       setShowFeedback(false);
+      setGlobalError(null);
 
       const userMessage: ChatMessage = {
         id: generateId(),
@@ -98,6 +101,7 @@ export default function Page() {
 
       setMessages((prev) => [...prev, userMessage]);
       setIsStreaming(true);
+      setIsAnalyzing(true);
       setStreamingContent('');
       setStreamingReasoning('');
 
@@ -114,7 +118,7 @@ export default function Page() {
           const response = await fetch('/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ prompt, history }),
+            body: JSON.stringify({ prompt, history, addons }),
           });
 
           if (!response.ok) {
@@ -125,6 +129,7 @@ export default function Page() {
         };
 
         const streamResponse = async (response: Response) => {
+          setIsAnalyzing(false); // Stop analyzing animation when stream starts
           const reader = response.body?.getReader();
           if (!reader) throw new Error('No response stream');
 
@@ -204,13 +209,16 @@ export default function Page() {
           setShowFeedback(true);
         }
       } catch (error) {
-        console.error('[Chat] Error:', error);
-        setMessages((prev) => [...prev, {
-          id: generateId(),
-          role: 'assistant',
-          content: `⚠️ Bir hata oluştu. Hata: ${error instanceof Error ? error.message : 'Bilinmiyor'}`,
-          timestamp: Date.now(),
-        }]);
+        console.error('[Chat] Stream error:', error);
+        setIsAnalyzing(false);
+        setGlobalError(error instanceof Error ? error.message : 'Sohbet sırasında beklenmeyen bir hata oluştu.');
+        setMessages((prev) => {
+          const last = prev[prev.length - 1];
+          if (last && last.role === 'assistant') {
+            return [...prev.slice(0, -1), { ...last, content: last.content + '\n\n**[Bağlantı Kesildi veya Hata Oluştu]**' }];
+          }
+          return prev;
+        });
       } finally {
         setIsStreaming(false);
         setStreamingContent('');
@@ -300,6 +308,21 @@ export default function Page() {
 
   return (
     <div className="flex h-screen max-h-screen flex-col pt-16 overflow-hidden bg-[var(--color-bg-primary)]">
+      {/* Global Error Banner */}
+      {globalError && (
+        <div className="absolute top-16 left-0 right-0 z-50 p-3 bg-red-500/10 border-b border-red-500/20 text-red-400 text-xs font-mono text-center flex items-center justify-center gap-2">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          {globalError}
+          <button onClick={() => setGlobalError(null)} className="ml-2 hover:text-red-300">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      )}
+
       <div className="flex flex-1 overflow-hidden min-h-0 flex-row">
         {/* Mobile hamburger */}
         <button
@@ -330,6 +353,7 @@ export default function Page() {
               onNewMessage={handleNewMessage}
               onCodeExtracted={handleCodeExtracted}
               isStreaming={isStreaming}
+              isAnalyzing={isAnalyzing}
               streamingContent={streamingContent}
               streamingReasoning={streamingReasoning}
               onFeedback={handleFeedback}
