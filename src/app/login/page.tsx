@@ -11,9 +11,9 @@ export default function LoginPage() {
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Sign in to {APP_NAME}</h1>
+          <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">{APP_NAME} Giriş</h1>
           <p className="mt-2 text-sm text-[var(--color-text-muted)]">
-            Save your generated Skripts and sync your history across devices.
+            Ürettiğiniz tüm scriptleri kaydedin ve her yerden erişin.
           </p>
         </div>
 

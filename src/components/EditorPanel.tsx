@@ -13,9 +13,10 @@ const Editor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 interface EditorPanelProps {
   readonly code: string;
   readonly onCodeChange: (code: string) => void;
+  readonly isStreaming?: boolean;
 }
 
-export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
+export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorPanelProps) {
   const { t } = useTranslation();
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const [copied, setCopied] = useState(false);
@@ -290,6 +291,26 @@ export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
                 automaticLayout: true,
               }}
             />
+          ) : isStreaming ? (
+            <div className="flex h-full w-full flex-col p-8 bg-black">
+              {/* Skeleton UI for code loading */}
+              <div className="flex gap-4 mb-4 opacity-50 animate-pulse">
+                <div className="w-6 h-4 bg-[var(--color-bg-tertiary)] rounded"></div>
+                <div className="w-48 h-4 bg-[var(--color-bg-tertiary)] rounded"></div>
+              </div>
+              <div className="flex gap-4 mb-4 opacity-40 animate-pulse delay-75">
+                <div className="w-6 h-4 bg-[var(--color-bg-tertiary)] rounded"></div>
+                <div className="ml-8 w-64 h-4 bg-[var(--color-bg-tertiary)] rounded"></div>
+              </div>
+              <div className="flex gap-4 mb-4 opacity-30 animate-pulse delay-150">
+                <div className="w-6 h-4 bg-[var(--color-bg-tertiary)] rounded"></div>
+                <div className="ml-8 w-32 h-4 bg-[var(--color-bg-tertiary)] rounded"></div>
+              </div>
+              <div className="flex gap-4 mb-4 opacity-20 animate-pulse">
+                <div className="w-6 h-4 bg-[var(--color-bg-tertiary)] rounded"></div>
+                <div className="ml-16 w-56 h-4 bg-[var(--color-bg-tertiary)] rounded"></div>
+              </div>
+            </div>
           ) : (
             <div className="flex h-full items-center justify-center bg-black engine-bg">
               <div className="text-center rounded-2xl max-w-sm mx-auto">

@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import ChatPanel from '@/components/ChatPanel';
 import EditorPanel from '@/components/EditorPanel';
+import Sidebar from '@/components/Sidebar';
 import { useTranslation } from '@/lib/useTranslation';
 import type { ChatMessage, FeedbackPayload } from '@/types';
 
@@ -237,29 +238,64 @@ export default function Page() {
     setEditorCode(code);
   }, []);
 
+  // Keyboard Shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        // Save action
+        console.log('Saved to Supabase mock');
+      } else if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        // Trigger code analysis (if custom logic goes here) or focus input
+        console.log('Code analyzed');
+      } else if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        // Focus search/chat
+        console.log('Search opened');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const handleNewChat = useCallback(() => {
+    setMessages([]);
+    setEditorCode('');
+    lastPromptRef.current = '';
+    sessionIdRef.current = generateId();
+  }, [generateId]);
+
   return (
     <div className="flex h-screen max-h-screen flex-col pt-16 overflow-hidden bg-[var(--color-bg-primary)]">
-      <div className="flex flex-1 overflow-hidden min-h-0">
-        {/* Terminal (Chat) - 55% Width */}
-        <div className="flex w-full flex-col border-r border-[var(--color-border)] md:w-[55%] lg:w-[55%] flex-shrink-0">
-          <ChatPanel
-            messages={messages}
-            onNewMessage={handleNewMessage}
-            onCodeExtracted={handleCodeExtracted}
-            isStreaming={isStreaming}
-            streamingContent={streamingContent}
-            streamingReasoning={streamingReasoning}
-            onFeedback={handleFeedback}
-            showFeedback={showFeedback}
-          />
-        </div>
+      <div className="flex flex-1 overflow-hidden min-h-0 flex-row">
+        {/* Sidebar */}
+        <Sidebar onNewChat={handleNewChat} history={[]} />
 
-        {/* Editor - 45% Width */}
-        <div className="hidden flex-1 flex-col md:flex md:w-[45%] lg:w-[45%] min-w-0">
-          <EditorPanel
-            code={editorCode}
-            onCodeChange={setEditorCode}
-          />
+        <div className="flex flex-1 overflow-hidden min-h-0">
+          {/* Terminal (Chat) - 55% Width */}
+          <div className="flex w-full flex-col border-r border-[var(--color-border)] md:w-[55%] lg:w-[55%] flex-shrink-0">
+            <ChatPanel
+              messages={messages}
+              onNewMessage={handleNewMessage}
+              onCodeExtracted={handleCodeExtracted}
+              isStreaming={isStreaming}
+              streamingContent={streamingContent}
+              streamingReasoning={streamingReasoning}
+              onFeedback={handleFeedback}
+              showFeedback={showFeedback}
+            />
+          </div>
+
+          {/* Editor - 45% Width */}
+          <div className="hidden flex-1 flex-col md:flex md:w-[45%] lg:w-[45%] min-w-0">
+            <EditorPanel
+              code={editorCode}
+              onCodeChange={setEditorCode}
+              isStreaming={isStreaming}
+            />
+          </div>
         </div>
       </div>
 

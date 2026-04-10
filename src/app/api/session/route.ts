@@ -13,12 +13,12 @@ export async function POST(request: NextRequest) {
     const { sessionId, title, messages } = await request.json();
 
     const { error } = await supabase
-      .from('chat_sessions')
+      .from('messages')
       .upsert({
         id: sessionId,
         user_id: user.id,
         title: title || 'New Chat',
-        messages: messages,
+        content: messages,
         updated_at: new Date().toISOString(),
       }, { onConflict: 'id' });
 
