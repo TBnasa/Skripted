@@ -1,11 +1,50 @@
 import { NextRequest } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
 import { OPENROUTER_MODEL, OPENROUTER_BASE_URL } from '@/lib/constants';
+
+/** Per-user rate limiting for verify: max 20 requests per minute */
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX = 20;
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+
+function checkRateLimit(userId: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(userId);
+
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(userId, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return true;
+  }
+
+  if (entry.count >= RATE_LIMIT_MAX) return false;
+  entry.count++;
+  return true;
+}
 
 export async function POST(req: NextRequest) {
   try {
+    // Auth guard — prevent unauthenticated LLM resource consumption
+    const { userId } = await auth();
+    if (!userId) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Rate limit guard
+    if (!checkRateLimit(userId)) {
+      return Response.json(
+        { error: 'Rate limit exceeded. Please wait a moment.' },
+        { status: 429 },
+      );
+    }
+
     const { code } = await req.json();
-    if (!code) {
+    if (!code || typeof code !== 'string') {
       return Response.json({ error: 'No code provided' }, { status: 400 });
+    }
+
+    // Limit code length to prevent abuse (max ~10KB)
+    if (code.length > 10_000) {
+      return Response.json({ error: 'Code too long for verification' }, { status: 400 });
     }
 
     const systemPrompt = `You are an AI Expert Reviewer for Minecraft Skript.
@@ -43,17 +82,26 @@ export async function POST(req: NextRequest) {
     });
 
     if (!res.ok) {
-      throw new Error('Verification API failed');
+      const errorText = await res.text().catch(() => 'Unknown error');
+      console.error('[Verify API] OpenRouter error:', res.status, errorText);
+      throw new Error(`Verification API failed: ${res.status}`);
     }
 
     const data = await res.json();
-    const content = data.choices[0].message.content;
-    const result = JSON.parse(content);
+    const content = data.choices?.[0]?.message?.content;
 
+    if (!content) {
+      throw new Error('Empty response from verification service');
+    }
+
+    const result = JSON.parse(content);
     return Response.json(result);
 
   } catch (err) {
     console.error('[Verify API] error:', err);
-    return Response.json({ valid: false, message: 'Verification service error' }, { status: 500 });
+    return Response.json(
+      { valid: false, message: err instanceof Error ? err.message : 'Verification service error' },
+      { status: 500 },
+    );
   }
 }

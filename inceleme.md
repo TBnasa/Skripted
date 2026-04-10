@@ -4,32 +4,32 @@ Bu rapor, projenin mevcut durumunu güvenlik, performans ve mimari açılardan d
 
 ## 1. Güvenlik Açıkları (Security Vulnerabilities)
 
-### 🚨 Kimlik Doğrulaması Eksik API Rotaları (KRİTİK)
-- **`/api/chat`**: Bu rota üzerinde herhangi bir kimlik doğrulaması (`auth()`) bulunmamaktadır. Bu durum, kötü niyetli kişilerin Pinecone ve OpenRouter kaynaklarını limitsizce kullanmasına ve yüksek maliyetlere yol açabilir.
-- **`/api/verify`**: Skript doğrulama rotası da kimlik doğrulaması içermemektedir. Herkes bu rotayı kullanarak LLM kaynaklarını tüketebilir.
+### ✅ ~~Kimlik Doğrulaması Eksik API Rotaları (KRİTİK)~~ — ÇÖZÜLDÜ
+- **`/api/chat`**: Clerk `auth()` kontrolü ve per-user rate limiting (30/dk) eklendi.
+- **`/api/verify`**: Clerk `auth()` kontrolü, per-user rate limiting (20/dk) ve code length limit (10KB) eklendi.
 
-### 🟠 Session ID Hijacking / Overwriting (YÜKSEK)
-- **`/api/session`**: Bu rota `upsert` işlemi kullanmaktadır. Kullanıcıdan gelen `sessionId` üzerinden işlem yapıldığı ve Sunucu tarafında `service_role` anahtarı kullanıldığı için (RLS bypass edilir), bir kullanıcı başka bir kullanıcının `UUID`'sini bilirse veya tahmin ederse o kullanıcının sohbet verilerini üzerine yazabilir veya sahipliğini alabilir.
+### ✅ ~~Session ID Hijacking / Overwriting (YÜKSEK)~~ — ÇÖZÜLDÜ
+- **`/api/session`**: Upsert öncesi sahiplik kontrolü eklendi. Mevcut bir chat başka bir kullanıcıya aitse 403 Forbidden dönülür.
 
 ### 🟡 Servis Rolü Anahtarı (Service Role Key) Kullanımı
 - Proje genelinde Supabase `service_role` anahtarı kullanılmaktadır. Bu anahtar tüm RLS (Row Level Security) kurallarını bypass eder. Bu durum, geliştirici hatasıyla yanlış `user_id` filtrelemesi yapıldığında tüm veritabanının sızmasına neden olabilir. Mümkün olan yerlerde (istemci tarafında veya kullanıcı yetkisiyle) `anon` key ve RLS kullanılması önerilir.
 
-### 🟡 Hız Sınırlaması (Rate Limiting) Eksikliği
-- API rotalarında (özellikle LLM tüketen rotalarda) herhangi bir hız sınırlaması (Rate Limiting) bulunmamaktadır. Bu durum hem maliyet hem de DOS (Denial of Service) saldırıları açısından büyük bir risktir.
+### ✅ ~~Hız Sınırlaması (Rate Limiting) Eksikliği~~ — ÇÖZÜLDÜ
+- `/api/chat` (30/dk) ve `/api/verify` (20/dk) rotalarına in-memory per-user rate limiting eklendi.
 
 ---
 
 ## 2. Performans İyileştirmeleri (Performance Improvements)
 
-### 🚀 Self-Healing Mekanizması ve Gecikme (Latency)
-- Sohbet akışında bulunan "Self-Healing" motoru, her kod üretimi sonrası `/api/verify` rotasına ek bir istek atmaktadır. Eğer hata bulunursa bir LLM isteği daha atılmaktadır.
-  - **İyileştirme**: Bu işlem asenkron olarak arka planda yapılabilir veya kullanıcıya bir seçenek olarak sunulabilir. Mevcut haliyle "Time to First Token" süresini değilse bile toplam yanıt süresini iki katına çıkarabilir.
+### ✅ ~~Self-Healing Mekanizması ve Gecikme (Latency)~~ — ÇÖZÜLDÜ
+- Self-healing artık non-blocking (fire-and-forget) olarak arka planda çalışır.
+- Kullanıcı ilk yanıtı anında görür; düzeltme gerekiyorsa ayrı bir mesaj olarak eklenir.
 
-### 📦 RAG Bağlam (Context) Yönetimi
-- Pinecone'dan dönen tüm örnekler doğrudan LLM bağlamına (context) eklenmektedir. Örneklerin toplam token boyutu kontrol edilmemektedir. Çok büyük örnekler geldiğinde OpenRouter üzerinde `context window` aşılabilir veya maliyet artabilir.
+### ✅ ~~RAG Bağlam (Context) Yönetimi~~ — ÇÖZÜLDÜ
+- `formatRAGContext` fonksiyonuna MAX_CONTEXT_CHARS (8000 karakter / ~2000 token) sınırı eklendi. Sınır aşılırsa en az alakalı örnekler kırpılır.
 
-### ⚡ Veritabanı Sorguları
-- `supabase-server.ts` içerisinde her seferinde yeni bir istemci oluşturulmaktadır. Next.js içerisinde bu istemcinin bir singleton olarak saklanması veya `cache` kullanılması performans avantajı sağlar.
+### ⚪ Veritabanı Sorguları — ZATEN ÇÖZÜLMÜŞ
+- `supabase-server.ts` zaten singleton pattern kullanıyor (`_client` cache).
 
 ---
 
@@ -47,9 +47,10 @@ Bu rapor, projenin mevcut durumunu güvenlik, performans ve mimari açılardan d
 
 ---
 
-## 4. Öncelikli Aksiyon Planı
+## 4. Öncelikli Aksiyon Planı — DURUM
 
-1.  **ACİL**: `/api/chat` ve `/api/verify` rotalarına Clerk `auth()` kontrolü eklenmelidir.
-2.  **ACİL**: API rotalarına hız sınırlaması (Upstash Ratelimit veya benzeri) eklenmelidir.
-3.  **ÖNEMLİ**: `/api/session` rotasında `upsert` öncesi sahiplik kontrolü yapılmalıdır.
-4.  **İYİLEŞTİRME**: Self-healing mekanizması optimize edilerek kullanıcı deneyimi hızlandırılmalıdır.
+1.  ✅ **ACİL**: `/api/chat` ve `/api/verify` rotalarına Clerk `auth()` kontrolü eklendi.
+2.  ✅ **ACİL**: API rotalarına hız sınırlaması eklendi (in-memory per-user).
+3.  ✅ **ÖNEMLİ**: `/api/session` rotasında `upsert` öncesi sahiplik kontrolü eklendi.
+4.  ✅ **İYİLEŞTİRME**: Self-healing mekanizması non-blocking hale getirildi.
+5.  ✅ **İYİLEŞTİRME**: RAG context boyutu sınırlandırıldı (8000 chars).

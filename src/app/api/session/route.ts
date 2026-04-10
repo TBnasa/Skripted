@@ -12,7 +12,24 @@ export async function POST(request: NextRequest) {
 
     const { sessionId, title, messages } = await request.json();
 
+    if (!sessionId || typeof sessionId !== 'string') {
+      return NextResponse.json({ error: 'sessionId is required' }, { status: 400 });
+    }
+
     const supabase = getSupabaseAdmin();
+
+    // Ownership check: prevent session hijacking by verifying the existing
+    // chat belongs to the current user before allowing an upsert.
+    const { data: existing } = await supabase
+      .from('chats')
+      .select('user_id')
+      .eq('id', sessionId)
+      .maybeSingle();
+
+    if (existing && existing.user_id !== userId) {
+      console.warn(`[Session API] User ${userId} attempted to overwrite chat ${sessionId} owned by ${existing.user_id}`);
+      return NextResponse.json({ error: 'Forbidden: session belongs to another user' }, { status: 403 });
+    }
 
     const { error } = await supabase
       .from('chats')

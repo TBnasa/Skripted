@@ -66,21 +66,36 @@ export async function searchSkriptExamples(
 
 /**
  * Format retrieved examples into a context string for the LLM.
+ * Caps total context at MAX_CONTEXT_CHARS to prevent token overflow.
  */
+const MAX_CONTEXT_CHARS = 8000; // ~2000 tokens
+
 export function formatRAGContext(examples: readonly SkriptExample[]): string {
   if (examples.length === 0) return '';
 
-  return examples
-    .map((ex, i) => {
-      const header = ex.title ? `### Example ${i + 1}: ${ex.title}` : `### Example ${i + 1}`;
-      const meta = [
-        ex.version && `Version: ${ex.version}`,
-        ex.quality && `Quality: ${ex.quality}`,
-        ex.addonRequired && ex.addonRequired !== 'none' && `Requires: ${ex.addonRequired}`,
-        ex.score !== undefined && `Relevance: ${(ex.score * 100).toFixed(1)}%`,
-      ].filter(Boolean).join(' | ');
+  let totalChars = 0;
+  const selected: string[] = [];
 
-      return `${header}\n${meta ? `*${meta}*\n` : ''}\n\`\`\`vb\n${ex.text}\n\`\`\``;
-    })
-    .join('\n\n');
+  for (let i = 0; i < examples.length; i++) {
+    const ex = examples[i];
+    const header = ex.title ? `### Example ${i + 1}: ${ex.title}` : `### Example ${i + 1}`;
+    const meta = [
+      ex.version && `Version: ${ex.version}`,
+      ex.quality && `Quality: ${ex.quality}`,
+      ex.addonRequired && ex.addonRequired !== 'none' && `Requires: ${ex.addonRequired}`,
+      ex.score !== undefined && `Relevance: ${(ex.score * 100).toFixed(1)}%`,
+    ].filter(Boolean).join(' | ');
+
+    const block = `${header}\n${meta ? `*${meta}*\n` : ''}\n\`\`\`vb\n${ex.text}\n\`\`\``;
+
+    if (totalChars + block.length > MAX_CONTEXT_CHARS) {
+      console.log(`[RAG] Context limit reached at example ${i + 1}/${examples.length}. Total: ${totalChars} chars.`);
+      break;
+    }
+
+    selected.push(block);
+    totalChars += block.length;
+  }
+
+  return selected.join('\n\n');
 }

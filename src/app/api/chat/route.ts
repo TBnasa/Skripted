@@ -1,9 +1,5 @@
-/* ═══════════════════════════════════════════
-   Skripted — RAG Chat API Route
-   Flow: User Prompt → Pinecone Search → OpenRouter Stream
-   ═══════════════════════════════════════════ */
-
 import { NextRequest } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
 import { streamChatCompletion } from '@/lib/openrouter';
 import { searchSkriptExamples, formatRAGContext } from '@/lib/pinecone';
 import { buildSystemPrompt } from '@/lib/system-prompt';
@@ -11,8 +7,41 @@ import type { ChatRequest } from '@/types';
 
 export const runtime = 'nodejs';
 
+/** Per-user rate limiting: max 30 requests per minute */
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX = 30;
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+
+function checkRateLimit(userId: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(userId);
+
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(userId, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return true;
+  }
+
+  if (entry.count >= RATE_LIMIT_MAX) return false;
+  entry.count++;
+  return true;
+}
+
 export async function POST(request: NextRequest): Promise<Response> {
   try {
+    // Auth guard — prevent unauthenticated access to LLM resources
+    const { userId } = await auth();
+    if (!userId) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Rate limit guard
+    if (!checkRateLimit(userId)) {
+      return Response.json(
+        { error: 'Rate limit exceeded. Please wait a moment.' },
+        { status: 429 },
+      );
+    }
+
     const body: ChatRequest = await request.json();
     const { prompt, history, serverVersion, serverType, skriptVersion } = body;
 
