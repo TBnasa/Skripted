@@ -9,6 +9,8 @@ interface SidebarProps {
   readonly onLoadChat: (chatId: string) => void;
   readonly activeChatId?: string;
   readonly refreshKey?: number;
+  readonly isOpen?: boolean;
+  readonly onToggle?: () => void;
 }
 
 interface ChatSession {
@@ -17,7 +19,7 @@ interface ChatSession {
   created_at: string;
 }
 
-export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKey }: SidebarProps) {
+export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKey, isOpen = true, onToggle }: SidebarProps) {
   const { t } = useTranslation();
   const { getToken, userId, isLoaded } = useAuth();
   const [sessions, setSessions] = useState<ChatSession[]>([]);
@@ -122,51 +124,87 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
   };
 
   return (
-    <div className="w-60 h-full border-r border-white/[0.04] bg-[#0e0e0e]/95 backdrop-blur-2xl flex flex-col pt-4 pb-4 transition-all duration-300">
-      <div className="px-3 mb-6">
-        <button
-          onClick={onNewChat}
-          className="btn-premium btn-primary w-full py-3 text-[11px] font-bold"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-          Yeni Sohbet
-        </button>
-      </div>
+    <>
+      {/* Mobile backdrop */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
+          onClick={onToggle}
+          aria-hidden="true"
+        />
+      )}
 
-      <div className="flex-1 overflow-y-auto px-3 custom-scrollbar space-y-6">
-        {loading ? (
-          <div className="space-y-4">
-            {[1, 2].map((i) => (
-              <div key={i} className="space-y-2">
-                <div className="h-2 w-14 shimmer-bg rounded"></div>
-                <div className="h-9 w-full shimmer-bg rounded-xl"></div>
-                <div className="h-9 w-full shimmer-bg rounded-xl opacity-60"></div>
-              </div>
-            ))}
-          </div>
-        ) : sessions.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="inline-block p-3 rounded-xl bg-white/[0.03] mb-4">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[var(--color-text-muted)]">
-                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-              </svg>
+      {/* Sidebar */}
+      <div className={`fixed md:relative z-50 md:z-auto h-full w-64 md:w-60 border-r border-white/[0.04] bg-[#0e0e0e]/98 md:bg-[#0e0e0e]/95 backdrop-blur-2xl flex flex-col pt-4 pb-4 transition-transform duration-300 ease-out md:translate-x-0 ${
+        isOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}>
+        {/* Mobile close button */}
+        <button
+          onClick={onToggle}
+          className="absolute top-4 right-3 p-1.5 rounded-lg bg-white/[0.04] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] md:hidden transition-colors"
+          aria-label="Close sidebar"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+
+        <div className="px-3 mb-6">
+          <button
+            onClick={() => { onNewChat(); onToggle?.(); }}
+            className="btn-premium btn-primary w-full py-3 text-[11px] font-bold"
+            aria-label="Start new chat"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Yeni Sohbet
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-3 custom-scrollbar space-y-6">
+          {loading ? (
+            <div className="space-y-4">
+              {[1, 2].map((i) => (
+                <div key={i} className="space-y-2">
+                  <div className="h-2 w-14 shimmer-bg rounded"></div>
+                  <div className="h-9 w-full shimmer-bg rounded-xl"></div>
+                  <div className="h-9 w-full shimmer-bg rounded-xl opacity-60"></div>
+                </div>
+              ))}
             </div>
-            <p className="text-[10px] font-medium tracking-widest text-[var(--color-text-muted)] uppercase">
-              Sohbet Bulunamadı
-            </p>
-          </div>
-        ) : (
-          <>
-            {renderGroup('Bugün', today, '0s')}
-            {renderGroup('Dün', yesterday, '0.1s')}
-            {renderGroup('Geçmiş', older, '0.2s')}
-          </>
-        )}
+          ) : sessions.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="inline-block p-3 rounded-xl bg-white/[0.03] mb-4">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[var(--color-text-muted)]">
+                  <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+                </svg>
+              </div>
+              <p className="text-[10px] font-medium tracking-widest text-[var(--color-text-muted)] uppercase">
+                Sohbet Bulunamadı
+              </p>
+            </div>
+          ) : (
+            <>
+              {renderGroup('Bugün', today, '0s')}
+              {renderGroup('Dün', yesterday, '0.1s')}
+              {renderGroup('Geçmiş', older, '0.2s')}
+            </>
+          )}
+        </div>
+
+        {/* Keyboard shortcut hint */}
+        <div className="hidden md:block px-3 pt-3 border-t border-white/[0.04]">
+          <p className="text-[9px] text-[var(--color-text-muted)] text-center">
+            <kbd className="px-1.5 py-0.5 rounded bg-white/[0.04] border border-white/[0.06] font-mono text-[8px]">Ctrl</kbd>
+            +
+            <kbd className="px-1.5 py-0.5 rounded bg-white/[0.04] border border-white/[0.06] font-mono text-[8px]">S</kbd>
+            &nbsp;Kaydet
+          </p>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

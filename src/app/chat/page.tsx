@@ -16,6 +16,7 @@ export default function Page() {
   const [streamingReasoning, setStreamingReasoning] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
   const [sidebarRefreshKey, setSidebarRefreshKey] = useState(0);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const pineconeIdsRef = useRef<string[]>([]);
   const sessionIdRef = useRef(crypto.randomUUID());
   const lastPromptRef = useRef('');
@@ -300,17 +301,30 @@ export default function Page() {
   return (
     <div className="flex h-screen max-h-screen flex-col pt-16 overflow-hidden bg-[var(--color-bg-primary)]">
       <div className="flex flex-1 overflow-hidden min-h-0 flex-row">
+        {/* Mobile hamburger */}
+        <button
+          onClick={() => setSidebarOpen(o => !o)}
+          className="fixed top-[1.125rem] left-4 z-50 p-2 rounded-xl bg-white/[0.04] border border-white/[0.06] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] md:hidden transition-all"
+          aria-label="Toggle sidebar"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+
         {/* Sidebar */}
         <Sidebar
           onNewChat={handleNewChat}
           onLoadChat={handleLoadChat}
           activeChatId={sessionIdRef.current}
           refreshKey={sidebarRefreshKey}
+          isOpen={sidebarOpen}
+          onToggle={() => setSidebarOpen(o => !o)}
         />
 
         <div className="flex flex-1 overflow-hidden min-h-0">
           {/* Terminal (Chat) - 55% Width */}
-          <div className="flex w-full flex-col border-r border-[var(--color-border)] md:w-[55%] lg:w-[55%] flex-shrink-0">
+          <div className="flex w-full flex-col border-r border-white/[0.04] md:w-[55%] lg:w-[55%] flex-shrink-0">
             <ChatPanel
               messages={messages}
               onNewMessage={handleNewMessage}
@@ -323,7 +337,7 @@ export default function Page() {
             />
           </div>
 
-          {/* Editor - 45% Width */}
+          {/* Editor - 45% Width (desktop only) */}
           <div className="hidden flex-1 flex-col md:flex md:w-[45%] lg:w-[45%] min-w-0">
             <EditorPanel
               code={editorCode}
@@ -334,18 +348,31 @@ export default function Page() {
         </div>
       </div>
 
-      <div className="border-t border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-2 md:hidden">
-        {editorCode.trim() ? (
+      {/* Mobile Code Preview (read-only with copy) */}
+      {editorCode.trim() ? (
+        <div className="border-t border-white/[0.04] bg-[#0e0e0e] p-3 md:hidden">
           <details className="group">
-            <summary className="cursor-pointer rounded-lg bg-[var(--color-bg-tertiary)] px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)]">
-              📝 Kod Önizleme ({editorCode.split('\n').length} satır)
+            <summary className="cursor-pointer rounded-xl bg-white/[0.03] border border-white/[0.06] px-4 py-2.5 text-xs font-medium text-[var(--color-text-secondary)] flex items-center justify-between">
+              <span>📝 Kod Önizleme ({editorCode.split('\n').length} satır)</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-open:rotate-180 transition-transform">
+                <path d="M6 9l6 6 6-6" />
+              </svg>
             </summary>
-            <pre className="mt-2 max-h-64 overflow-auto rounded-lg bg-[var(--color-bg-primary)] p-4 font-[var(--font-mono)] text-xs text-[var(--color-text-primary)]">
-              <code>{editorCode}</code>
-            </pre>
+            <div className="mt-2 relative">
+              <button
+                onClick={() => { navigator.clipboard.writeText(editorCode); }}
+                className="absolute top-2 right-2 z-10 px-2.5 py-1 rounded-lg bg-white/[0.06] border border-white/[0.08] text-[10px] font-medium text-[var(--color-text-muted)] hover:text-emerald-400 transition-colors"
+                aria-label="Copy code"
+              >
+                Kopyala
+              </button>
+              <pre className="max-h-64 overflow-auto rounded-xl bg-black/40 p-4 font-mono text-xs text-emerald-300/80 leading-relaxed border border-white/[0.04]">
+                <code>{editorCode}</code>
+              </pre>
+            </div>
           </details>
-        ) : null}
-      </div>
+        </div>
+      ) : null}
     </div>
   );
 }
