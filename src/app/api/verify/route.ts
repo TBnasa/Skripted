@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { OPENROUTER_MODEL, OPENROUTER_BASE_URL } from '@/lib/constants';
+import { fetchWithKeyRotation } from '@/lib/openrouter';
 
 /** Per-user rate limiting for verify: max 20 requests per minute */
 const RATE_LIMIT_WINDOW_MS = 60_000;
@@ -65,12 +66,8 @@ export async function POST(req: NextRequest) {
     }
     DO NOT output anything other than the JSON object.`;
 
-    const res = await fetch(OPENROUTER_BASE_URL, {
+    const res = await fetchWithKeyRotation(OPENROUTER_BASE_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-      },
       body: JSON.stringify({
         model: OPENROUTER_MODEL,
         messages: [
