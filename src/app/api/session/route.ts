@@ -4,15 +4,35 @@ import { createClient } from '@supabase/supabase-js';
 import { NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY } from '@/lib/constants';
 
 export async function POST(request: NextRequest) {
+  let clerkAuth;
   try {
-    const { userId, getToken } = await auth();
+    clerkAuth = await auth();
+  } catch (authError) {
+    console.error('[Session API] Clerk auth() failed:', authError);
+    return NextResponse.json({ error: 'Authentication failed' }, { status: 500 });
+  }
 
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { userId, getToken } = clerkAuth;
+
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    const { sessionId, title, messages } = await request.json();
+    
+    let token;
+    try {
+      token = await getToken({ template: 'supabase' });
+    } catch (tokenError) {
+      console.error('[Session API] Clerk getToken() failed:', tokenError);
+      return NextResponse.json({ error: 'Failed to retrieve auth token' }, { status: 500 });
     }
 
-    const { sessionId, title, messages } = await request.json();
-    const token = await getToken({ template: 'supabase' });
+    if (!token) {
+      console.error('[Session API] Supabase token is missing. Ensure the "supabase" template is configured in Clerk.');
+      return NextResponse.json({ error: 'Auth token missing' }, { status: 401 });
+    }
 
     const supabase = createClient(
       NEXT_PUBLIC_SUPABASE_URL,
@@ -20,7 +40,8 @@ export async function POST(request: NextRequest) {
       {
         global: {
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            apikey: NEXT_PUBLIC_SUPABASE_ANON_KEY
           }
         }
       }
@@ -37,12 +58,13 @@ export async function POST(request: NextRequest) {
       }, { onConflict: 'id' });
 
     if (error) {
-      console.error('[Session API] Error saving session:', error);
+      console.error('[Session API] Supabase error:', error);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ error: 'Internal error' }, { status: 500 });
+    console.error('[Session API] Request processing error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

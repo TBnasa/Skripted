@@ -3,12 +3,20 @@
    Stores user feedback for RAG quality improvement
    ═══════════════════════════════════════════ */
 
-import { NextRequest } from 'next/server';
-import { createClient } from '@/lib/supabase-server';
+import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
+import { createClient } from '@supabase/supabase-js';
+import { NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY } from '@/lib/constants';
 import type { FeedbackPayload } from '@/types';
 
 export async function POST(request: NextRequest): Promise<Response> {
   try {
+    const { userId, getToken } = await auth();
+    
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body: FeedbackPayload = await request.json();
     const {
       sessionId,
@@ -21,13 +29,25 @@ export async function POST(request: NextRequest): Promise<Response> {
     } = body;
 
     if (!sessionId || !prompt || !generatedCode || typeof success !== 'boolean') {
-      return Response.json(
+      return NextResponse.json(
         { error: 'Missing required fields: sessionId, prompt, generatedCode, success' },
         { status: 400 },
       );
     }
 
-    const supabase = await createClient();
+    const token = await getToken({ template: 'supabase' });
+    const supabase = createClient(
+      NEXT_PUBLIC_SUPABASE_URL,
+      NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      {
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            apikey: NEXT_PUBLIC_SUPABASE_ANON_KEY
+          }
+        }
+      }
+    );
 
     const { error } = await supabase
       .from('feedback_logs')

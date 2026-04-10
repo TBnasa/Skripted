@@ -45,7 +45,10 @@ export default function Sidebar({ onNewChat }: SidebarProps) {
           NEXT_PUBLIC_SUPABASE_ANON_KEY,
           {
             global: {
-              headers: token ? { Authorization: `Bearer ${token}` } : {}
+              headers: {
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                apikey: NEXT_PUBLIC_SUPABASE_ANON_KEY
+              }
             }
           }
         );
