@@ -35,14 +35,35 @@ export async function POST(request: NextRequest): Promise<Response> {
       );
     }
 
-    const token = await getToken({ template: 'supabase' });
+    // Check if middleware has already provided a swapped token
+    const incomingAuth = request.headers.get('Authorization');
+    const isSwapped = request.headers.get('x-auth-source') === 'clerk-swap';
+    
+    let supabaseToken: string | null = null;
+    
+    if (incomingAuth && isSwapped) {
+      supabaseToken = incomingAuth.replace('Bearer ', '');
+      console.log('[Feedback API] Using swapped Supabase token from middleware');
+    } else {
+      try {
+        supabaseToken = await getToken({ template: 'supabase' });
+      } catch (tokenError) {
+        console.error('[Feedback API] Clerk getToken() failed:', tokenError);
+      }
+    }
+
+    if (!supabaseToken) {
+      console.error('[Feedback API] Supabase token is missing.');
+      return NextResponse.json({ error: 'Auth token missing' }, { status: 401 });
+    }
+
     const supabase = createClient(
       NEXT_PUBLIC_SUPABASE_URL,
       NEXT_PUBLIC_SUPABASE_ANON_KEY,
       {
         global: {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${supabaseToken}`,
             apikey: NEXT_PUBLIC_SUPABASE_ANON_KEY
           }
         }

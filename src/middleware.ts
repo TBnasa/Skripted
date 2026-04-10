@@ -1,6 +1,36 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+import { swapClerkTokenForSupabase } from "@/lib/supabase-auth-swap";
 
-export default clerkMiddleware();
+const isSupabaseRoute = createRouteMatcher([
+  "/api/session(.*)",
+  "/api/feedback(.*)"
+]);
+
+export default clerkMiddleware(async (auth, req) => {
+  const { userId } = await auth();
+
+  // If the user is logged in and calling a Supabase-dependent API route
+  if (userId && isSupabaseRoute(req)) {
+    const supabaseToken = await swapClerkTokenForSupabase(userId);
+    
+    if (supabaseToken) {
+      // Clone headers and inject the new Supabase-compatible JWT
+      const requestHeaders = new Headers(req.headers);
+      requestHeaders.set('Authorization', `Bearer ${supabaseToken}`);
+      // Add a marker header for debugging
+      requestHeaders.set('x-auth-source', 'clerk-swap');
+      
+      return NextResponse.next({
+        request: {
+          headers: requestHeaders,
+        },
+      });
+    }
+  }
+
+  return NextResponse.next();
+});
 
 export const config = {
   matcher: [

@@ -21,16 +21,25 @@ export async function POST(request: NextRequest) {
   try {
     const { sessionId, title, messages } = await request.json();
     
-    let token;
-    try {
-      token = await getToken({ template: 'supabase' });
-    } catch (tokenError) {
-      console.error('[Session API] Clerk getToken() failed:', tokenError);
-      return NextResponse.json({ error: 'Failed to retrieve auth token' }, { status: 500 });
+    // Check if middleware has already provided a swapped token
+    const incomingAuth = request.headers.get('Authorization');
+    const isSwapped = request.headers.get('x-auth-source') === 'clerk-swap';
+    
+    let supabaseToken: string | null = null;
+    
+    if (incomingAuth && isSwapped) {
+      supabaseToken = incomingAuth.replace('Bearer ', '');
+      console.log('[Session API] Using swapped Supabase token from middleware');
+    } else {
+      try {
+        supabaseToken = await getToken({ template: 'supabase' });
+      } catch (tokenError) {
+        console.error('[Session API] Clerk getToken() failed:', tokenError);
+      }
     }
 
-    if (!token) {
-      console.error('[Session API] Supabase token is missing. Ensure the "supabase" template is configured in Clerk.');
+    if (!supabaseToken) {
+      console.error('[Session API] Supabase token is missing.');
       return NextResponse.json({ error: 'Auth token missing' }, { status: 401 });
     }
 
@@ -40,7 +49,7 @@ export async function POST(request: NextRequest) {
       {
         global: {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${supabaseToken}`,
             apikey: NEXT_PUBLIC_SUPABASE_ANON_KEY
           }
         }
