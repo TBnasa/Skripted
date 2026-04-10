@@ -7,7 +7,6 @@ import DownloadButton from './DownloadButton';
 import { SKRIPT_LANGUAGE_ID, skriptTokensProvider, skriptTheme } from '@/lib/skript-language';
 import type { editor } from 'monaco-editor';
 
-// Dynamic import to avoid SSR issues with Monaco
 const Editor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
 interface EditorPanelProps {
@@ -28,15 +27,11 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
     (editorInstance: editor.IStandaloneCodeEditor, monaco: typeof import('monaco-editor')) => {
       editorRef.current = editorInstance;
 
-      // Register Skript language
       monaco.languages.register({ id: SKRIPT_LANGUAGE_ID });
       monaco.languages.setMonarchTokensProvider(SKRIPT_LANGUAGE_ID, skriptTokensProvider);
-
-      // Register Skripted theme
       monaco.editor.defineTheme('skripted-dark', skriptTheme);
       monaco.editor.setTheme('skripted-dark');
 
-      // Set editor model language
       const model = editorInstance.getModel();
       if (model) {
         monaco.editor.setModelLanguage(model, SKRIPT_LANGUAGE_ID);
@@ -50,7 +45,6 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
             const lineNum = i + 1;
             const trimmed = line.trim();
             
-            // Check missing colon for block starters
             const blockStarters = ['on ', 'command ', 'function ', 'trigger', 'every ', 'choose '];
             if (blockStarters.some(s => trimmed.startsWith(s)) && !trimmed.endsWith(':')) {
               markers.push({
@@ -63,11 +57,10 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
               });
             }
             
-            // Check invalid variable formatting like { %var% } instead of %var% or %{var}%
             if (line.match(/\{\s*%.*?%\s*\}/)) {
               markers.push({
                 severity: monaco.MarkerSeverity.Error,
-                message: 'Live Logic Guard: Hatalı değişken formatı. Skript değişkenleri için "%değişken%" kullanın.',
+                message: 'Live Logic Guard: Hatalı değişken formatı.',
                 startLineNumber: lineNum,
                 startColumn: 1,
                 endLineNumber: lineNum,
@@ -75,11 +68,10 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
               });
             }
             
-            // Check indentation (space instead of tab warning if starts with 1-3 spaces)
             if (line.match(/^[ ]{1,3}[^ ]/)) {
               markers.push({
                 severity: monaco.MarkerSeverity.Warning,
-                message: 'Live Logic Guard: Hatalı boşluklandırma (Indentation). 1 Tab = 4 Boşluk veya 1 Tab tuşu olmalıdır.',
+                message: 'Live Logic Guard: Hatalı boşluklandırma.',
                 startLineNumber: lineNum,
                 startColumn: 1,
                 endLineNumber: lineNum,
@@ -95,7 +87,6 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
     [],
   );
 
-  // Update editor content when code prop changes
   useEffect(() => {
     if (editorRef.current) {
       const currentValue = editorRef.current.getValue();
@@ -112,52 +103,46 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
     setTimeout(() => setCopied(false), 2000);
   }, [code]);
 
-
-
   return (
-    <div className="flex flex-1 flex-col min-h-0 glass-panel overflow-hidden m-2 rounded-xl">
+    <div className="flex flex-1 flex-col min-h-0 glass-panel overflow-hidden m-2 rounded-2xl">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)]/50 px-5 py-4">
+      <div className="flex items-center justify-between border-b border-white/[0.04] bg-white/[0.01] px-5 py-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center border-4 border-black bg-[var(--color-accent-warning)] text-black shadow-[2px_2px_0_#000]">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 text-amber-400">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />
             </svg>
           </div>
           <div>
-            <h2 className="text-sm font-bold uppercase tracking-widest text-[var(--color-text-primary)]">{t('script_editor')}</h2>
-            <p className="text-xs font-mono font-medium tracking-widest uppercase text-[var(--color-text-muted)] mt-1">
+            <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t('script_editor')}</h2>
+            <p className="text-[10px] font-mono text-[var(--color-text-muted)] mt-0.5">
               {code.trim() ? `${code.split('\n').length} lines` : t('waiting_generation')}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          {/* Copy button */}
+        <div className="flex items-center gap-2">
           <button
             onClick={handleCopy}
             disabled={!code.trim()}
-            className="mc-btn flex items-center gap-2 bg-[var(--color-bg-tertiary)] px-3 py-2 text-xs font-bold uppercase tracking-widest text-[var(--color-text-primary)] transition-all hover:bg-[var(--color-bg-elevated)] disabled:cursor-not-allowed disabled:opacity-40 disabled:grayscale"
+            className="flex items-center gap-1.5 bg-white/[0.03] border border-white/[0.06] px-3 py-2 text-[11px] font-medium text-[var(--color-text-secondary)] rounded-xl transition-all duration-300 hover:bg-white/[0.06] hover:text-[var(--color-text-primary)] disabled:opacity-30"
           >
             {copied ? (
               <>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-success)" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-success)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
                 {t('copied')}
               </>
             ) : (
               <>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter">
-                  <rect x="9" y="9" width="13" height="13" /><path d="M5 15H4V4h9v1" />
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
                 </svg>
                 {t('copy')}
               </>
             )}
           </button>
-
-
-          {/* Download button */}
           <DownloadButton code={code} />
         </div>
       </div>
@@ -166,66 +151,55 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
       <div className="relative flex-1 overflow-hidden flex">
         {/* AI Expert Insight Panel */}
         {showInsight && (
-          <div className="w-96 h-full bg-[var(--color-bg-secondary)] border-r border-[var(--color-bg-tertiary)] shadow-[8px_0_32px_rgba(0,0,0,0.3)] flex flex-col z-10 animate-fade-in relative">
-            <div className="flex items-center justify-between bg-[var(--color-bg-primary)] p-4 border-b border-[var(--color-bg-tertiary)]">
+          <div className="w-96 h-full bg-[var(--color-bg-secondary)] border-r border-white/[0.04] flex flex-col z-10 animate-slide-left">
+            <div className="flex items-center justify-between p-4 border-b border-white/[0.04]">
               <div className="flex items-center gap-2">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                 </svg>
-                <h3 className="text-xs font-bold tracking-[0.2em] text-[var(--color-text-primary)] uppercase">
+                <h3 className="text-xs font-semibold tracking-wider text-[var(--color-text-primary)] uppercase">
                   {t('ai_expert_insight')}
                 </h3>
               </div>
-              <button 
-                onClick={() => setShowInsight(false)} 
-                className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
-                title="Close"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <button onClick={() => setShowInsight(false)} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors rounded-lg hover:bg-white/[0.05] p-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
               </button>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-5 py-6 flex flex-col gap-6 text-sm custom-scrollbar">
+            <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-5 text-sm custom-scrollbar">
               {verifying ? (
                 <div className="flex flex-col items-center justify-center py-20 text-center gap-4">
-                  <div className="h-10 w-10 border-2 border-[var(--color-bg-tertiary)] border-t-[var(--color-accent-primary)] rounded-full animate-spin"></div>
-                  <p className="text-[var(--color-text-muted)] font-mono text-xs uppercase tracking-widest animate-pulse">{t('scanning_code')}</p>
+                  <div className="h-8 w-8 border-2 border-white/[0.06] border-t-emerald-500 rounded-full animate-spin"></div>
+                  <p className="text-[var(--color-text-muted)] font-mono text-xs uppercase tracking-widest">{t('scanning_code')}</p>
                 </div>
               ) : aiReport ? (
                 <>
-                  <div className={`p-4 rounded-lg flex items-center gap-3 border transition-all ${
-                    aiReport.status === 'Safe' ? 'bg-[var(--color-accent-success)]/10 border-[var(--color-accent-success)]/30 text-[var(--color-accent-success)]' :
-                    aiReport.status === 'Warning' ? 'bg-[var(--color-accent-warning)]/10 border-[var(--color-accent-warning)]/30 text-[var(--color-accent-warning)]' :
-                    'bg-[var(--color-accent-error)]/10 border-[var(--color-accent-error)]/30 text-[var(--color-accent-error)]'
+                  <div className={`p-4 rounded-xl flex items-center gap-3 border transition-all ${
+                    aiReport.status === 'Safe' ? 'bg-emerald-500/5 border-emerald-500/20 text-emerald-400' :
+                    aiReport.status === 'Warning' ? 'bg-amber-500/5 border-amber-500/20 text-amber-400' :
+                    'bg-red-500/5 border-red-500/20 text-red-400'
                   }`}>
                     <div className="shrink-0">
                       {aiReport.status === 'Safe' ? (
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      ) : aiReport.status === 'Warning' ? (
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                       ) : (
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                       )}
                     </div>
                     <div>
-                      <p className="font-bold text-xs uppercase tracking-widest">
-                        {aiReport.status === 'Safe' ? t('safe') : aiReport.status === 'Warning' ? t('warning') : t('critical_error')}
-                      </p>
-                      <p className="text-xs opacity-90 mt-0.5">{aiReport.message}</p>
+                      <p className="font-semibold text-xs uppercase tracking-wider">{aiReport.status === 'Safe' ? t('safe') : aiReport.status === 'Warning' ? t('warning') : t('critical_error')}</p>
+                      <p className="text-xs opacity-80 mt-0.5">{aiReport.message}</p>
                     </div>
                   </div>
 
-                  {aiReport.addons && aiReport.addons.length > 0 && (
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-                        <p className="text-[10px] uppercase font-bold tracking-widest text-[var(--color-text-muted)]">{t('required_addons')}</p>
-                      </div>
+                  {aiReport.addons?.length > 0 && (
+                    <div className="space-y-2">
+                      <p className="text-[10px] uppercase font-medium tracking-widest text-[var(--color-text-muted)]">{t('required_addons')}</p>
                       <div className="flex flex-wrap gap-2">
                         {aiReport.addons.map((addon: string, idx: number) => (
-                          <span key={idx} className="bg-[var(--color-bg-tertiary)] px-2.5 py-1.5 text-[10px] font-mono text-[var(--color-accent-secondary)] rounded-md border border-[var(--color-bg-elevated)]">
+                          <span key={idx} className="bg-white/[0.03] px-2.5 py-1 text-[10px] font-mono text-emerald-400/80 rounded-lg border border-white/[0.04]">
                             {addon}
                           </span>
                         ))}
@@ -233,23 +207,19 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
                     </div>
                   )}
 
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>
-                      <p className="text-[10px] uppercase font-bold tracking-widest text-[var(--color-text-muted)]">{t('analysis_details')}</p>
-                    </div>
+                  <div className="space-y-3">
+                    <p className="text-[10px] uppercase font-medium tracking-widest text-[var(--color-text-muted)]">{t('analysis_details')}</p>
                     <div className="grid gap-2">
-                      {aiReport.issues && aiReport.issues.length > 0 ? aiReport.issues.map((issue: any, idx: number) => (
-                        <div key={idx} className={`p-4 rounded-lg bg-[var(--color-bg-tertiary)]/30 border-l-4 text-xs ${
-                          issue.type === 'Critical' ? 'border-[var(--color-accent-error)]' :
-                          issue.type === 'Warning' ? 'border-[var(--color-accent-warning)]' :
-                          'border-[var(--color-accent-success)]'
+                      {aiReport.issues?.length > 0 ? aiReport.issues.map((issue: any, idx: number) => (
+                        <div key={idx} className={`p-3 rounded-xl bg-white/[0.02] border-l-2 text-xs ${
+                          issue.type === 'Critical' ? 'border-red-500' :
+                          issue.type === 'Warning' ? 'border-amber-500' : 'border-emerald-500'
                         }`}>
-                          <p className="text-[var(--color-text-primary)] leading-relaxed">{issue.message}</p>
+                          <p className="text-[var(--color-text-secondary)] leading-relaxed">{issue.message}</p>
                         </div>
                       )) : (
-                        <div className="p-4 rounded-lg bg-[var(--color-bg-tertiary)]/20 border-l-4 border-[var(--color-accent-success)] text-xs text-[var(--color-text-muted)] italic">
-                          No issues detected by the engine.
+                        <div className="p-3 rounded-xl bg-white/[0.02] border-l-2 border-emerald-500 text-xs text-[var(--color-text-muted)] italic">
+                          No issues detected.
                         </div>
                       )}
                     </div>
@@ -274,7 +244,7 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
                 fontSize: 14,
                 fontFamily: '"JetBrains Mono", "Cascadia Code", monospace',
                 fontLigatures: true,
-                lineHeight: 22.4, // 1.6 * 14px
+                lineHeight: 22.4,
                 lineNumbers: 'on',
                 minimap: { enabled: false },
                 scrollBeyondLastLine: false,
@@ -282,47 +252,36 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
                 tabSize: 4,
                 insertSpaces: false,
                 renderLineHighlight: 'gutter',
-                cursorBlinking: 'solid',
+                cursorBlinking: 'smooth',
                 cursorSmoothCaretAnimation: 'on',
                 smoothScrolling: true,
-                padding: { top: 20, bottom: 60 }, // Extra padding at bottom
+                padding: { top: 20, bottom: 60 },
                 roundedSelection: true,
                 readOnly: false,
                 automaticLayout: true,
               }}
             />
           ) : isStreaming ? (
-            <div className="flex h-full w-full flex-col p-8 bg-black">
-              {/* Skeleton UI for code loading */}
-              <div className="flex gap-4 mb-4 opacity-50 animate-pulse">
-                <div className="w-6 h-4 bg-[var(--color-bg-tertiary)] rounded"></div>
-                <div className="w-48 h-4 bg-[var(--color-bg-tertiary)] rounded"></div>
-              </div>
-              <div className="flex gap-4 mb-4 opacity-40 animate-pulse delay-75">
-                <div className="w-6 h-4 bg-[var(--color-bg-tertiary)] rounded"></div>
-                <div className="ml-8 w-64 h-4 bg-[var(--color-bg-tertiary)] rounded"></div>
-              </div>
-              <div className="flex gap-4 mb-4 opacity-30 animate-pulse delay-150">
-                <div className="w-6 h-4 bg-[var(--color-bg-tertiary)] rounded"></div>
-                <div className="ml-8 w-32 h-4 bg-[var(--color-bg-tertiary)] rounded"></div>
-              </div>
-              <div className="flex gap-4 mb-4 opacity-20 animate-pulse">
-                <div className="w-6 h-4 bg-[var(--color-bg-tertiary)] rounded"></div>
-                <div className="ml-16 w-56 h-4 bg-[var(--color-bg-tertiary)] rounded"></div>
-              </div>
+            <div className="flex h-full w-full flex-col p-8 bg-[#0a0a0a]">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="flex gap-4 mb-4 animate-pulse" style={{ opacity: 0.6 - i * 0.1, animationDelay: `${i * 0.1}s` }}>
+                  <div className="w-6 h-4 shimmer-bg rounded"></div>
+                  <div className={`h-4 shimmer-bg rounded ${i % 2 === 0 ? 'w-48 ml-8' : 'w-64'}`}></div>
+                </div>
+              ))}
             </div>
           ) : (
-            <div className="flex h-full items-center justify-center bg-black engine-bg">
-              <div className="text-center rounded-2xl max-w-sm mx-auto">
-                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-bg-tertiary)] text-[var(--color-accent-primary)] shadow-sm">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <div className="flex h-full items-center justify-center bg-[#0a0a0a] mesh-gradient">
+              <div className="text-center max-w-sm mx-auto animate-fade-in">
+                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/[0.03] text-[var(--color-text-muted)] animate-float border border-white/[0.04]">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />
                   </svg>
                 </div>
-                <p className="text-lg font-bold uppercase tracking-widest text-[var(--color-text-primary)]">
+                <p className="text-base font-semibold text-[var(--color-text-secondary)]">
                   {t('appear_here')}
                 </p>
-                <p className="mt-4 text-xs font-mono text-[var(--color-accent-primary)] uppercase tracking-widest animate-pulse">
+                <p className="mt-3 text-xs font-mono text-emerald-500/50 uppercase tracking-widest">
                   {t('status_ready')}
                 </p>
               </div>

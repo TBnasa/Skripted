@@ -122,13 +122,13 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
   };
 
   return (
-    <div className="w-64 h-full border-r border-[var(--color-border)] bg-[var(--color-bg-secondary)] backdrop-blur-[24px] flex flex-col pt-4 pb-4 transition-all duration-300">
-      <div className="px-4 mb-6">
+    <div className="w-60 h-full border-r border-white/[0.04] bg-[#0e0e0e]/95 backdrop-blur-2xl flex flex-col pt-4 pb-4 transition-all duration-300">
+      <div className="px-3 mb-6">
         <button
           onClick={onNewChat}
-          className="mc-btn w-full flex items-center justify-center gap-3 bg-[var(--color-accent-primary)] px-4 py-3 text-[11px] font-black uppercase tracking-[0.2em] text-black hover:bg-[var(--color-accent-secondary)] rounded-xl transition-all shadow-[0_4px_12px_var(--color-accent-glow)]"
+          className="btn-premium btn-primary w-full py-3 text-[11px] font-bold"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
@@ -136,25 +136,25 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 custom-scrollbar space-y-8">
+      <div className="flex-1 overflow-y-auto px-3 custom-scrollbar space-y-6">
         {loading ? (
-          <div className="space-y-6">
+          <div className="space-y-4">
             {[1, 2].map((i) => (
-              <div key={i} className="space-y-3">
-                <div className="h-2 w-16 shimmer-bg opacity-40"></div>
-                <div className="h-10 w-full shimmer-bg opacity-30"></div>
-                <div className="h-10 w-full shimmer-bg opacity-20"></div>
+              <div key={i} className="space-y-2">
+                <div className="h-2 w-14 shimmer-bg rounded"></div>
+                <div className="h-9 w-full shimmer-bg rounded-xl"></div>
+                <div className="h-9 w-full shimmer-bg rounded-xl opacity-60"></div>
               </div>
             ))}
           </div>
         ) : sessions.length === 0 ? (
-          <div className="text-center py-10">
-            <div className="inline-block p-4 rounded-full bg-[var(--color-bg-tertiary)] mb-4 opacity-50">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <div className="text-center py-12">
+            <div className="inline-block p-3 rounded-xl bg-white/[0.03] mb-4">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[var(--color-text-muted)]">
                 <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
               </svg>
             </div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-muted)]">
+            <p className="text-[10px] font-medium tracking-widest text-[var(--color-text-muted)] uppercase">
               Sohbet Bulunamadı
             </p>
           </div>
@@ -246,10 +246,10 @@ function ChatListItem({ session, isActive, onClick, onRename, onDelete }: ChatLi
       <button
         onClick={onClick}
         onContextMenu={handleContextMenu}
-        className={`group w-full text-left px-4 py-3 text-[11px] font-medium border rounded-xl transition-all duration-300 truncate shadow-sm flex items-center justify-between ${
+        className={`group w-full text-left px-3 py-2.5 text-[11px] font-medium border rounded-xl transition-all duration-300 truncate flex items-center justify-between ${
           isActive
-            ? 'bg-[var(--color-accent-primary)]/10 border-[var(--color-accent-primary)]/40 text-[var(--color-accent-primary)]'
-            : 'text-[var(--color-text-secondary)] bg-[var(--color-bg-tertiary)]/20 border-[var(--color-bg-tertiary)]/50 hover:bg-[var(--color-bg-tertiary)]/40 hover:border-[var(--color-accent-primary)]/30'
+            ? 'bg-emerald-500/8 border-emerald-500/20 text-emerald-400'
+            : 'text-[var(--color-text-secondary)] bg-white/[0.02] border-white/[0.04] hover:bg-white/[0.04] hover:border-white/[0.08]'
         }`}
       >
         <span className="truncate group-hover:text-[var(--color-text-primary)] transition-colors">
@@ -259,7 +259,7 @@ function ChatListItem({ session, isActive, onClick, onRename, onDelete }: ChatLi
         {/* Three-dot menu trigger */}
         <button
           onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
-          className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-[var(--color-bg-tertiary)] shrink-0"
+          className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-lg hover:bg-white/[0.05] shrink-0"
           aria-label="Chat menu"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -272,10 +272,10 @@ function ChatListItem({ session, isActive, onClick, onRename, onDelete }: ChatLi
 
       {/* Context menu */}
       {showMenu && (
-        <div className="absolute right-0 top-full mt-1 z-50 w-40 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl shadow-2xl overflow-hidden animate-fade-in" style={{ animationDuration: '0.15s' }}>
+        <div className="absolute right-0 top-full mt-1 z-50 w-40 bg-[#141414] border border-white/[0.06] rounded-xl shadow-2xl overflow-hidden animate-fade-in" style={{ animationDuration: '0.15s' }}>
           <button
             onClick={(e) => { e.stopPropagation(); setIsEditing(true); setEditTitle(session.title || ''); setShowMenu(false); }}
-            className="w-full text-left px-4 py-2.5 text-[11px] font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)] transition-colors flex items-center gap-3"
+            className="w-full text-left px-4 py-2.5 text-[11px] font-medium text-[var(--color-text-secondary)] hover:bg-white/[0.04] hover:text-[var(--color-text-primary)] transition-colors flex items-center gap-3"
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -285,7 +285,7 @@ function ChatListItem({ session, isActive, onClick, onRename, onDelete }: ChatLi
           </button>
           <button
             onClick={(e) => { e.stopPropagation(); onDelete(session.id); setShowMenu(false); }}
-            className="w-full text-left px-4 py-2.5 text-[11px] font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors flex items-center gap-3"
+            className="w-full text-left px-4 py-2.5 text-[11px] font-medium text-red-400 hover:bg-red-500/8 hover:text-red-300 transition-colors flex items-center gap-3"
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="3 6 5 6 21 6" />
