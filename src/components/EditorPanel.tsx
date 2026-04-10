@@ -138,9 +138,9 @@ export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
   }, [code]);
 
   return (
-    <div className="flex flex-1 flex-col min-h-0 bg-[var(--color-bg-primary)]">
+    <div className="flex flex-1 flex-col min-h-0 glass-panel overflow-hidden m-2 rounded-xl">
       {/* Header */}
-      <div className="flex items-center justify-between border-b-4 border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-5 py-4">
+      <div className="flex items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)]/50 px-5 py-4">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center border-4 border-black bg-[var(--color-accent-warning)] text-black shadow-[2px_2px_0_#000]">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter">
@@ -186,7 +186,7 @@ export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
       </div>
       
       {/* Editor & Panel Region */}
-      <div className="relative flex-1 overflow-hidden bg-black flex">
+      <div className="relative flex-1 overflow-hidden flex">
         {/* AI Expert Insight Panel */}
         {showInsight && (
           <div className="w-96 h-full bg-[var(--color-bg-secondary)] border-r border-[var(--color-bg-tertiary)] shadow-[8px_0_32px_rgba(0,0,0,0.3)] flex flex-col z-10 animate-fade-in relative">
@@ -284,7 +284,7 @@ export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
         )}
 
         {/* Monaco Editor */}
-        <div className="flex-1 h-full overflow-hidden bg-black [overflow-anchor:none]">
+        <div className="flex-1 h-full overflow-hidden [overflow-anchor:none] bg-transparent">
           {code.trim() ? (
             <Editor
               height="100%"
@@ -316,7 +316,7 @@ export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
             />
           ) : (
             <div className="flex h-full items-center justify-center bg-black engine-bg">
-              <div className="text-center bg-[var(--color-bg-secondary)] border border-[var(--color-bg-tertiary)] p-8 shadow-xl rounded-2xl max-w-sm mx-auto">
+              <div className="text-center rounded-2xl max-w-sm mx-auto">
                 <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-bg-tertiary)] text-[var(--color-accent-primary)] shadow-sm">
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />

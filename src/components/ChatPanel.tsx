@@ -70,9 +70,9 @@ export default function ChatPanel({
   }, [messages, streamingContent, streamingReasoning]);
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col min-h-0 glass-panel overflow-hidden m-2 rounded-xl">
       {/* Header */}
-      <div className="flex items-center gap-3 border-b border-[var(--color-bg-tertiary)] px-5 py-4 bg-[var(--color-bg-secondary)]">
+      <div className="flex items-center gap-3 border-b border-[var(--color-border)] px-5 py-4 bg-[var(--color-bg-secondary)]/50">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--color-bg-tertiary)] bg-[var(--color-bg-primary)] text-[var(--color-accent-primary)] shadow-sm">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="4 17 10 11 4 5" /><line x1="12" y1="19" x2="20" y2="19" />
@@ -87,7 +87,7 @@ export default function ChatPanel({
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-6 engine-bg">
+      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-6 bg-transparent">
         {messages.length === 0 && !isStreaming && (
           <div className="flex h-full flex-col items-center justify-center text-center opacity-90">
             <div className="mb-4 border border-[var(--color-bg-tertiary)] p-8 bg-[var(--color-bg-secondary)] shadow-xl rounded-xl">
@@ -165,7 +165,7 @@ export default function ChatPanel({
       </div>
 
       {/* Input area */}
-      <div className="border-t border-[var(--color-bg-tertiary)] bg-[var(--color-bg-secondary)] p-5">
+      <div className="border-t border-[var(--color-border)] bg-[var(--color-bg-secondary)]/50 p-5">
         <div className="flex items-end gap-3 rounded-xl border border-[var(--color-bg-tertiary)] bg-[var(--color-bg-primary)] px-4 py-3 shadow-inner focus-within:border-[var(--color-accent-primary)] transition-all">
           <textarea
             ref={textareaRef}

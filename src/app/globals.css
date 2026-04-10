@@ -6,27 +6,28 @@
 
 @theme inline {
   /* -- professional Slate & Sage Palette -- */
-  --color-bg-primary: #0f172a;     /* Slate Darker */
-  --color-bg-secondary: #1e293b;   /* Slate Dark */
-  --color-bg-tertiary: #334155;    /* Slate Light */
-  --color-bg-elevated: #475569;
+  --color-bg-primary: #090e17;     /* Deep Slate Blue */
+  --color-bg-secondary: rgba(30, 41, 59, 0.8);   /* Slate Glass */
+  --color-bg-tertiary: rgba(51, 65, 85, 0.6);    /* Lighter Slate Glass */
+  --color-bg-elevated: rgba(71, 85, 105, 0.8);
 
   --color-accent-primary: #9dc183;   /* Sage Green */
   --color-accent-secondary: #c3e0ae;  /* Light Sage */
-  --color-accent-glow: #9dc18320;
+  --color-accent-glow: rgba(157, 193, 131, 0.3);
+  --color-accent-gold: #fbbf24;      /* Gold Glow */
   --color-accent-success: #a3c9be;
   --color-accent-error: #e5989b;    /* Pastel Coral */
   --color-accent-warning: #f4cda5;   /* Pastel Sand */
 
-  --color-text-primary: #f1f5f9;    /* Slate 100 */
+  --color-text-primary: #f8fafc;    /* Slate 50 */
   --color-text-secondary: #cbd5e1;   /* Slate 300 */
   --color-text-muted: #64748b;      /* Slate 500 */
 
-  --color-border: #00000000;
-  --color-border-active: #9dc183;
+  --color-border: rgba(157, 193, 131, 0.1); /* Very subtle pastel border */
+  --color-border-active: rgba(157, 193, 131, 0.4);
 
-  --font-sans: 'JetBrains Mono', 'Fira Code', monospace;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-sans: 'Inter', 'Poppins', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Cascadia Code', monospace;
 }
 
 /* ── Base ── */
@@ -104,7 +105,22 @@ pre, code, .code-block {
 /* ── Skripted Engine Background ── */
 .engine-bg {
   background-color: var(--color-bg-primary);
-  /* Optional: a more subtle background pattern if needed */
+  background-image: radial-gradient(circle at 50% 0%, rgba(157, 193, 131, 0.05) 0%, transparent 70%);
+}
+
+/* ── Deep Glassmorphism Panel ── */
+.glass-panel {
+  background: var(--color-bg-secondary);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.glass-panel:hover {
+  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6), 0 0 15px var(--color-accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  border-color: var(--color-border-active);
 }
 
 /* ── Structured Message ── */
