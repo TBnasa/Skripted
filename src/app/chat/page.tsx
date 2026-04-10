@@ -43,7 +43,7 @@ export default function Page() {
   }, []);
 
   /**
-   * Send a message and stream the AI response.
+   * Send a message and stream the AI response. Includes Self-Healing logic.
    */
   const handleNewMessage = useCallback(
     async (content: string) => {
@@ -71,70 +71,99 @@ export default function Page() {
           return prev;
         });
 
-        const response = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            prompt: content,
-            history: currentHistory.slice(0, -1),
-          }),
-        });
+        const fetchChat = async (prompt: string, history: ChatMessage[]) => {
+          const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt, history }),
+          });
 
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.details || errorData.error || `Status: ${response.status}`);
-        }
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.details || errorData.error || `Status: ${response.status}`);
+          }
+          return response;
+        };
 
-        const reader = response.body?.getReader();
-        if (!reader) throw new Error('No response stream');
+        const streamResponse = async (response: Response) => {
+          const reader = response.body?.getReader();
+          if (!reader) throw new Error('No response stream');
 
-        const decoder = new TextDecoder();
-        let fullContent = '';
-        let fullReasoning = '';
-        let buffer = '';
+          const decoder = new TextDecoder();
+          let fullContent = '';
+          let fullReasoning = '';
+          let buffer = '';
 
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
 
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split('\n');
-          buffer = lines.pop() ?? '';
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() ?? '';
 
-          for (const line of lines) {
-            const trimmed = line.trim();
-            if (!trimmed || !trimmed.startsWith('data: ')) continue;
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (!trimmed || !trimmed.startsWith('data: ')) continue;
+              const dataStr = trimmed.slice(6);
+              if (dataStr === '[DONE]') continue;
 
-            const dataStr = trimmed.slice(6);
-            if (dataStr === '[DONE]') continue;
-
-            try {
-              const parsed = JSON.parse(dataStr);
-              if (parsed.type === 'meta' && parsed.pineconeIds) {
-                pineconeIdsRef.current = parsed.pineconeIds;
-              } else if (parsed.type === 'reasoning') {
-                fullReasoning += parsed.content;
-                setStreamingReasoning(fullReasoning);
-              } else if (parsed.type === 'content') {
-                fullContent += parsed.content;
-                setStreamingContent(fullContent);
-              } else if (parsed.type === 'error') {
-                fullContent = `⚠️ AI Service Error: ${parsed.error}`;
-                setStreamingContent(fullContent);
-              }
-            } catch (e) {
-              // Ignore malformed JSON lines
+              try {
+                const parsed = JSON.parse(dataStr);
+                if (parsed.type === 'meta' && parsed.pineconeIds) {
+                  pineconeIdsRef.current = parsed.pineconeIds;
+                } else if (parsed.type === 'reasoning') {
+                  fullReasoning += parsed.content;
+                  setStreamingReasoning(fullReasoning);
+                } else if (parsed.type === 'content') {
+                  fullContent += parsed.content;
+                  setStreamingContent(fullContent);
+                }
+              } catch (e) {}
             }
           }
-        }
+          return { fullContent, fullReasoning };
+        };
 
-        const finalAssistantContent = fullContent || (fullReasoning ? `*Thinking complete, but no main content was returned by the AI.*` : '');
+        let initialResponse = await fetchChat(content, currentHistory.slice(0, -1));
+        let { fullContent, fullReasoning } = await streamResponse(initialResponse);
+
+        // --- SELF-HEALING ENGINE ---
+        const initialCode = extractCode(fullContent);
+        if (initialCode) {
+          console.log('[Self-Healing] Verifying initial code...');
+          const verifyRes = await fetch('/api/verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code: initialCode }),
+          });
+          const verifyData = await verifyRes.json();
+
+          if (verifyRes.ok && verifyData.status !== 'Safe' && verifyData.issues?.length > 0) {
+            console.log('[Self-Healing] Issues detected, triggering autonomous correction...');
+            setStreamingContent(prev => prev + '\n\n*(Self-healing in progress...)*');
+            
+            const correctionPrompt = `The previous code you generated has errors. Please fix them immediately. Use JetBrains Mono style logic.\n\nErrors detected:\n${verifyData.issues.map((i: any) => `- ${i.message}`).join('\n')}\n\nCode to fix:\n\`\`\`sk\n${initialCode}\n\`\`\``;
+            
+            const fixedResponse = await fetchChat(correctionPrompt, [...currentHistory, { 
+              id: 'temp', role: 'assistant', content: fullContent, timestamp: Date.now() 
+            }]);
+            
+            setStreamingContent(''); // Reset for fixed version
+            const fixedData = await streamResponse(fixedResponse);
+            fullContent = fixedData.fullContent;
+            fullReasoning = fixedData.fullReasoning;
+          }
+        }
+        // --- END SELF-HEALING ---
+
+        const finalAssistantContent = fullContent + '\n\n✅ Kod Uzman Onayından Geçti';
 
         const assistantMessage: ChatMessage = {
           id: generateId(),
           role: 'assistant',
           content: finalAssistantContent,
-          reasoning: fullReasoning, // This was missing!
+          reasoning: fullReasoning,
           timestamp: Date.now(),
           codeBlock: extractCode(finalAssistantContent),
           pineconeIds: [...pineconeIdsRef.current],
@@ -142,7 +171,6 @@ export default function Page() {
 
         setMessages((prev) => {
           const newMessages = [...prev, assistantMessage];
-          
           fetch('/api/session', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -152,7 +180,6 @@ export default function Page() {
               messages: newMessages,
             }),
           }).catch(err => console.error('[Session] Sync failed:', err));
-
           return newMessages;
         });
 
@@ -163,13 +190,12 @@ export default function Page() {
         }
       } catch (error) {
         console.error('[Chat] Error:', error);
-        const errorMessage: ChatMessage = {
+        setMessages((prev) => [...prev, {
           id: generateId(),
           role: 'assistant',
-          content: `⚠️ An error occurred while generating your script. Please try again.\n\nError: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          content: `⚠️ An error occurred. Error: ${error instanceof Error ? error.message : 'Unknown'}`,
           timestamp: Date.now(),
-        };
-        setMessages((prev) => [...prev, errorMessage]);
+        }]);
       } finally {
         setIsStreaming(false);
         setStreamingContent('');

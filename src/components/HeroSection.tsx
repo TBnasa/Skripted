@@ -21,13 +21,13 @@ export default function HeroSection() {
 
         {/* Main Title */}
         <h1 className="mb-6 text-4xl font-black text-[var(--color-text-primary)] sm:text-6xl md:text-7xl tracking-tight leading-[1.1]">
-          Build <span className="text-[var(--color-accent-primary)]">Better</span> <br />
-          Minecraft Scripts.
+          {t('tr') === 'tr' ? 'Daha İyi' : 'Build'} <span className="text-[var(--color-accent-primary)]">{t('tr') === 'tr' ? 'Minecraft' : 'Better'}</span> <br />
+          {t('tr') === 'tr' ? 'Scriptleri Yazın' : 'Minecraft Scripts.'}
         </h1>
 
         {/* Description */}
         <p className="mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-[var(--color-text-secondary)] sm:text-2xl">
-          An elite cloud-based script IDE powered by Deep Context Engine. Generate, analyze, and optimize Skript code with Universal Compatibility.
+          {t('hero_desc')}
         </p>
 
         {/* Actions */}
@@ -58,9 +58,9 @@ export default function HeroSection() {
         {/* Feature Grid */}
         <div className="mt-24 grid grid-cols-1 gap-8 text-left sm:grid-cols-3">
           {[
-            { title: 'Deep Context Engine', desc: t('tr') === 'tr' ? '250+ seçkin mimari örnekle beslenen derin bağlam motoru.' : 'Expert context engine trained on 250+ elite architectural patterns.' },
-            { title: 'Live Logic Guard', desc: t('tr') === 'tr' ? 'Siz yazarken hataları yakalayan canlı mantık koruması.' : 'Real-time logic guard detecting errors as you type.' },
-            { title: 'Universal Compatibility', desc: t('tr') === 'tr' ? 'Tüm Minecraft sürümleri ve Skript addonları ile tam uyum.' : 'Full compatibility with all Minecraft versions and Skript addons.' },
+            { title: t('feature1_title'), desc: t('feature1_desc') },
+            { title: t('feature2_title'), desc: t('feature2_desc') },
+            { title: t('feature3_title'), desc: t('feature3_desc') },
           ].map((feature, i) => (
             <div key={i} className="p-8 rounded-2xl bg-[var(--color-bg-secondary)] border border-[var(--color-bg-tertiary)] transition-all hover:border-[var(--color-accent-primary)]/50 group">
               <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-[var(--color-accent-primary)] group-hover:scale-105 transition-transform origin-left">

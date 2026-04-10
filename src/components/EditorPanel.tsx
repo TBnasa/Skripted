@@ -292,7 +292,7 @@ export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
         )}
 
         {/* Monaco Editor */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 h-full overflow-hidden bg-black [overflow-anchor:none]">
           {code.trim() ? (
             <Editor
               height="100%"
@@ -303,8 +303,9 @@ export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
               theme="vs-dark"
               options={{
                 fontSize: 14,
-                fontFamily: '"JetBrains Mono", monospace',
+                fontFamily: '"JetBrains Mono", "Cascadia Code", monospace',
                 fontLigatures: true,
+                lineHeight: 21, // 1.5 * 14px
                 lineNumbers: 'on',
                 minimap: { enabled: false },
                 scrollBeyondLastLine: false,
@@ -313,18 +314,18 @@ export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
                 insertSpaces: false,
                 renderLineHighlight: 'gutter',
                 cursorBlinking: 'solid',
-                cursorSmoothCaretAnimation: 'off',
-                smoothScrolling: false,
-                padding: { top: 16, bottom: 16 },
-                roundedSelection: false,
+                cursorSmoothCaretAnimation: 'on',
+                smoothScrolling: true,
+                padding: { top: 20, bottom: 40 }, // Extra padding at bottom to prevent cutoff
+                roundedSelection: true,
                 readOnly: false,
                 automaticLayout: true,
               }}
             />
           ) : (
             <div className="flex h-full items-center justify-center bg-black engine-bg">
-              <div className="text-center bg-[var(--color-bg-secondary)] border border-[var(--color-bg-tertiary)] p-8 shadow-xl rounded-2xl">
-                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] shadow-inner">
+              <div className="text-center bg-[var(--color-bg-secondary)] border border-[var(--color-bg-tertiary)] p-8 shadow-xl rounded-2xl max-w-sm mx-auto">
+                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-bg-tertiary)] text-[var(--color-accent-primary)] shadow-sm">
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />
                   </svg>
@@ -332,7 +333,7 @@ export default function EditorPanel({ code, onCodeChange }: EditorPanelProps) {
                 <p className="text-lg font-bold uppercase tracking-widest text-[var(--color-text-primary)]">
                   {t('appear_here')}
                 </p>
-                <p className="mt-4 text-sm font-mono text-[var(--color-accent-primary)] uppercase tracking-widest">
+                <p className="mt-4 text-xs font-mono text-[var(--color-accent-primary)] uppercase tracking-widest animate-pulse">
                   {t('status_ready')}
                 </p>
               </div>

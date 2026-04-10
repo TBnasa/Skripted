@@ -80,8 +80,8 @@ export default function ChatPanel({
         </div>
         <div>
           <h2 className="text-sm font-bold uppercase tracking-widest text-[var(--color-text-primary)]">{t('terminal_header')}</h2>
-          <p className="text-[10px] font-mono text-[var(--color-accent-primary)] uppercase font-bold tracking-[0.15em] mt-1">
-            {isStreaming ? t('status_compiling') : t('status_ready')}
+          <p className="text-[9px] font-mono text-[var(--color-accent-primary)] uppercase font-bold tracking-[0.1em] mt-1 opacity-80">
+            {isStreaming ? t('status_compiling') : t('system_status_ok')}
           </p>
         </div>
       </div>
@@ -101,7 +101,7 @@ export default function ChatPanel({
                 {[
                   'Economy System',
                   'Custom /warp',
-                  'Admin Tools',
+                  t('admin_tools'),
                   'Item Editor',
                 ].map((suggestion) => (
                   <button
@@ -142,8 +142,8 @@ export default function ChatPanel({
           <div className="flex gap-4 items-start">
             <div className="flex flex-col items-center gap-1.5">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--color-bg-tertiary)] bg-[var(--color-bg-secondary)] text-[var(--color-accent-secondary)] shadow-sm">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="10" rx="2" /><circle cx="12" cy="5" r="2" /><path d="M12 7v4M8 16v.01M16 16v.01" />
                 </svg>
               </div>
               <span className="text-[9px] uppercase font-bold tracking-widest text-[var(--color-accent-secondary)]">{t('ai_asistan')}</span>
