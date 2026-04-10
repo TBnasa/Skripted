@@ -8,7 +8,6 @@ import { NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY } from '@/lib/c
 
 interface SidebarProps {
   onNewChat: () => void;
-  // history is passed from parent or fetched here? We'll fetch here.
 }
 
 interface ChatSession {
@@ -34,16 +33,19 @@ export default function Sidebar({ onNewChat }: SidebarProps) {
 
       setLoading(true);
       try {
+        // template: 'supabase' must be configured in Clerk Dashboard
         const token = await getToken({ template: 'supabase' });
         
+        if (!token) {
+          console.warn("[Clerk] Supabase JWT template not found or token empty. Ensure 'supabase' template is set up in Clerk Dashboard.");
+        }
+
         const supabase = createClient(
           NEXT_PUBLIC_SUPABASE_URL,
           NEXT_PUBLIC_SUPABASE_ANON_KEY,
           {
             global: {
-              headers: {
-                Authorization: `Bearer ${token}`
-              }
+              headers: token ? { Authorization: `Bearer ${token}` } : {}
             }
           }
         );
@@ -68,18 +70,25 @@ export default function Sidebar({ onNewChat }: SidebarProps) {
     loadHistory();
   }, [getToken, userId, isLoaded]);
 
-  // Grouping by date pseudo-logic
-  const today = sessions.filter(s => new Date(s.created_at).toDateString() === new Date().toDateString());
-  const older = sessions.filter(s => new Date(s.created_at).toDateString() !== new Date().toDateString());
+  // Grouping logic
+  const todayDate = new Date().toDateString();
+  const yesterdayDate = new Date(Date.now() - 86400000).toDateString();
+
+  const today = sessions.filter(s => new Date(s.created_at).toDateString() === todayDate);
+  const yesterday = sessions.filter(s => new Date(s.created_at).toDateString() === yesterdayDate);
+  const older = sessions.filter(s => {
+    const d = new Date(s.created_at).toDateString();
+    return d !== todayDate && d !== yesterdayDate;
+  });
 
   return (
-    <div className="w-64 h-full border-r border-[var(--color-border)] bg-[var(--color-bg-secondary)] backdrop-blur-[20px] flex flex-col pt-4 pb-4">
+    <div className="w-64 h-full border-r border-[var(--color-border)] bg-[var(--color-bg-secondary)] backdrop-blur-[24px] flex flex-col pt-4 pb-4 transition-all duration-300">
       <div className="px-4 mb-6">
         <button
           onClick={onNewChat}
-          className="mc-btn w-full flex items-center justify-center gap-2 bg-[var(--color-accent-primary)] px-4 py-2 text-sm font-bold uppercase tracking-widest text-black hover:bg-[var(--color-accent-secondary)] rounded-lg transition-all"
+          className="mc-btn w-full flex items-center justify-center gap-3 bg-[var(--color-accent-primary)] px-4 py-3 text-[11px] font-black uppercase tracking-[0.2em] text-black hover:bg-[var(--color-accent-secondary)] rounded-xl transition-all shadow-[0_4px_12px_var(--color-accent-glow)]"
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
@@ -87,52 +96,56 @@ export default function Sidebar({ onNewChat }: SidebarProps) {
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 custom-scrollbar">
+      <div className="flex-1 overflow-y-auto px-4 custom-scrollbar space-y-8">
         {loading ? (
-          <div className="space-y-4">
-            <div className="animate-pulse flex flex-col gap-2">
-              <div className="h-2 w-12 bg-[var(--color-bg-tertiary)] rounded mb-1"></div>
-              <div className="h-8 w-full bg-[var(--color-bg-tertiary)] rounded"></div>
-              <div className="h-8 w-full bg-[var(--color-bg-tertiary)] rounded"></div>
-            </div>
-            <div className="animate-pulse flex flex-col gap-2">
-              <div className="h-2 w-12 bg-[var(--color-bg-tertiary)] rounded mb-1"></div>
-              <div className="h-8 w-full bg-[var(--color-bg-tertiary)] rounded"></div>
-              <div className="h-8 w-full bg-[var(--color-bg-tertiary)] rounded"></div>
-            </div>
+          <div className="space-y-6">
+            {[1, 2].map((i) => (
+              <div key={i} className="space-y-3">
+                <div className="h-2 w-16 shimmer-bg opacity-40"></div>
+                <div className="h-10 w-full shimmer-bg opacity-30"></div>
+                <div className="h-10 w-full shimmer-bg opacity-20"></div>
+              </div>
+            ))}
           </div>
         ) : sessions.length === 0 ? (
-          <div className="text-center text-xs text-[var(--color-text-muted)] mt-10">
-            Henüz sohbet geçmişi yok.
+          <div className="text-center py-10">
+            <div className="inline-block p-4 rounded-full bg-[var(--color-bg-tertiary)] mb-4 opacity-50">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+              </svg>
+            </div>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-muted)]">
+              Sohbet Bulunamadı
+            </p>
           </div>
         ) : (
           <>
             {today.length > 0 && (
-              <div className="mb-6">
-                <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--color-text-muted)] mb-3">Bugün</h3>
-                <ul className="space-y-1">
-                  {today.map(session => (
-                    <li key={session.id}>
-                      <button className="w-full text-left px-3 py-2 text-xs font-medium text-[var(--color-text-primary)] bg-[var(--color-bg-tertiary)]/50 border border-[var(--color-bg-tertiary)] rounded-md hover:border-[var(--color-accent-primary)]/50 transition-all truncate">
-                        {session.title || 'İsimsiz Sohbet'}
-                      </button>
-                    </li>
-                  ))}
+              <div className="animate-fade-in">
+                <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-[var(--color-text-muted)] mb-4 flex items-center gap-2">
+                  <span className="w-1 h-1 rounded-full bg-[var(--color-accent-primary)]"></span>
+                  Bugün
+                </h3>
+                <ul className="space-y-2">
+                  {today.map(session => <ChatListItem key={session.id} session={session} />)}
                 </ul>
               </div>
             )}
             
+            {yesterday.length > 0 && (
+              <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
+                <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-[var(--color-text-muted)] mb-4">Dün</h3>
+                <ul className="space-y-2">
+                  {yesterday.map(session => <ChatListItem key={session.id} session={session} />)}
+                </ul>
+              </div>
+            )}
+
             {older.length > 0 && (
-              <div>
-                <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--color-text-muted)] mb-3">Önceki Sohbetler</h3>
-                <ul className="space-y-1">
-                  {older.map(session => (
-                    <li key={session.id}>
-                      <button className="w-full text-left px-3 py-2 text-xs font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)]/30 rounded-md transition-all truncate">
-                        {session.title || 'İsimsiz Sohbet'}
-                      </button>
-                    </li>
-                  ))}
+              <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
+                <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-[var(--color-text-muted)] mb-4">Geçmiş</h3>
+                <ul className="space-y-2">
+                  {older.map(session => <ChatListItem key={session.id} session={session} />)}
                 </ul>
               </div>
             )}
@@ -140,5 +153,20 @@ export default function Sidebar({ onNewChat }: SidebarProps) {
         )}
       </div>
     </div>
+  );
+}
+
+function ChatListItem({ session }: { session: ChatSession }) {
+  return (
+    <li>
+      <button className="group w-full text-left px-4 py-3 text-[11px] font-medium text-[var(--color-text-secondary)] bg-[var(--color-bg-tertiary)]/20 border border-[var(--color-bg-tertiary)]/50 rounded-xl hover:bg-[var(--color-bg-tertiary)]/40 hover:border-[var(--color-accent-primary)]/30 transition-all duration-300 truncate shadow-sm flex items-center justify-between">
+        <span className="truncate group-hover:text-[var(--color-text-primary)] transition-colors">
+          {session.title || 'İsimsiz Sohbet'}
+        </span>
+        <svg className="opacity-0 group-hover:opacity-100 transition-opacity text-[var(--color-accent-primary)]" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </button>
+    </li>
   );
 }

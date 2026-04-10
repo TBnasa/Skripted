@@ -262,10 +262,11 @@ export default function Page() {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
         manualSave();
+        console.log('Premium Logic: Saved to Cloud');
       } else if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault();
         // Trigger code analysis
-        console.log('Engine Fire');
+        console.log('Supabase MCP: Code Analysis Triggered');
       } else if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
         // Focus search/chat

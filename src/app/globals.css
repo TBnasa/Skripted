@@ -180,3 +180,32 @@ pre, code, .code-block {
   transform: translateY(0);
   background-color: var(--color-accent-secondary);
 }
+
+/* ── Shimmer Animation for Premium Loading ── */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.shimmer-bg {
+  position: relative;
+  overflow: hidden;
+  background-color: rgba(30, 41, 59, 0.4);
+  border-radius: 4px;
+}
+
+.shimmer-bg::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.08),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
