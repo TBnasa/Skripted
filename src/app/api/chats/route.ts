@@ -18,10 +18,10 @@ export async function GET(request: Request) {
     // The middleware will swap the Authorization header for us
     // So we just pass it through or re-initialize a client
     const incomingAuth = request.headers.get('Authorization');
-    const isSwapped = request.headers.get('x-auth-source') === 'clerk-swap';
+    const authSource = request.headers.get('x-auth-source');
     
     let supabaseToken: string | null = null;
-    if (incomingAuth && isSwapped) {
+    if (incomingAuth && (authSource === 'clerk-swap' || authSource === 'clerk-template')) {
       supabaseToken = incomingAuth.replace('Bearer ', '');
     }
 

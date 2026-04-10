@@ -9,24 +9,37 @@ const isSupabaseRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
-  const { userId } = await auth();
+  const { userId, getToken } = await auth();
 
   // If the user is logged in and calling a Supabase-dependent API route
   if (userId && isSupabaseRoute(req)) {
-    const supabaseToken = await swapClerkTokenForSupabase(userId);
-    
-    if (supabaseToken) {
-      // Clone headers and inject the new Supabase-compatible JWT
-      const requestHeaders = new Headers(req.headers);
-      requestHeaders.set('Authorization', `Bearer ${supabaseToken}`);
-      // Add a marker header for debugging
-      requestHeaders.set('x-auth-source', 'clerk-swap');
+    try {
+      // Prioritize Clerk's official Supabase template integration
+      const supabaseToken = await getToken({ template: 'supabase' });
       
-      return NextResponse.next({
-        request: {
-          headers: requestHeaders,
-        },
-      });
+      if (supabaseToken) {
+        // Clone headers and inject the new Supabase-compatible JWT
+        const requestHeaders = new Headers(req.headers);
+        requestHeaders.set('Authorization', `Bearer ${supabaseToken}`);
+        requestHeaders.set('x-auth-source', 'clerk-template');
+        
+        return NextResponse.next({
+          request: {
+            headers: requestHeaders,
+          },
+        });
+      } else {
+        console.warn('[Middleware] Supabase template token is empty. Falling back to manual swap.');
+        const swappedToken = await swapClerkTokenForSupabase(userId);
+        if (swappedToken) {
+          const requestHeaders = new Headers(req.headers);
+          requestHeaders.set('Authorization', `Bearer ${swappedToken}`);
+          requestHeaders.set('x-auth-source', 'clerk-swap');
+          return NextResponse.next({ request: { headers: requestHeaders } });
+        }
+      }
+    } catch (error) {
+      console.error('[Middleware] Token error:', error);
     }
   }
 

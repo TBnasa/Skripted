@@ -23,13 +23,13 @@ export async function POST(request: NextRequest) {
     
     // Check if middleware has already provided a swapped token
     const incomingAuth = request.headers.get('Authorization');
-    const isSwapped = request.headers.get('x-auth-source') === 'clerk-swap';
+    const authSource = request.headers.get('x-auth-source');
     
     let supabaseToken: string | null = null;
     
-    if (incomingAuth && isSwapped) {
+    if (incomingAuth && (authSource === 'clerk-swap' || authSource === 'clerk-template')) {
       supabaseToken = incomingAuth.replace('Bearer ', '');
-      console.log('[Session API] Using swapped Supabase token from middleware');
+      console.log(`[Session API] Using ${authSource} Supabase token from middleware`);
     } else {
       try {
         supabaseToken = await getToken({ template: 'supabase' });
