@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import { useTranslation } from '@/lib/useTranslation';
 import DownloadButton from './DownloadButton';
 import GalleryPostModal from './GalleryPostModal';
-import { SKRIPT_LANGUAGE_ID, skriptTokensProvider, skriptTheme } from '@/lib/skript-language';
+import { SKRIPT_LANGUAGE_ID, registerSkriptLanguage } from '@/lib/skript-language';
 import type { editor } from 'monaco-editor';
 import { useAuth } from '@clerk/nextjs';
 import { toast } from 'sonner';
@@ -34,9 +34,7 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
     (editorInstance: editor.IStandaloneCodeEditor, monaco: typeof import('monaco-editor')) => {
       editorRef.current = editorInstance;
 
-      monaco.languages.register({ id: SKRIPT_LANGUAGE_ID });
-      monaco.languages.setMonarchTokensProvider(SKRIPT_LANGUAGE_ID, skriptTokensProvider);
-      monaco.editor.defineTheme('skripted-dark', skriptTheme);
+      registerSkriptLanguage(monaco);
       monaco.editor.setTheme('skripted-dark');
 
       const model = editorInstance.getModel();

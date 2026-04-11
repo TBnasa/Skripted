@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import { X, Save, Loader2, CheckCircle2, AlertCircle, FileCode } from 'lucide-react';
 import { toast } from 'sonner';
-import { SKRIPT_LANGUAGE_ID, skriptTokensProvider, skriptTheme } from '@/lib/skript-language';
+import { SKRIPT_LANGUAGE_ID, registerSkriptLanguage } from '@/lib/skript-language';
 
 interface QuickEditModalProps {
   readonly script: { id?: string; title: string; content: string; version?: string } | null;
@@ -32,11 +32,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
   }, [script, isOpen]);
 
   const handleEditorWillMount = (monaco: any) => {
-    monaco.editor.defineTheme('skripted-dark', skriptTheme);
-    if (!monaco.languages.getLanguages().some((lang: any) => lang.id === SKRIPT_LANGUAGE_ID)) {
-      monaco.languages.register({ id: SKRIPT_LANGUAGE_ID });
-      monaco.languages.setMonarchTokensProvider(SKRIPT_LANGUAGE_ID, skriptTokensProvider);
-    }
+    registerSkriptLanguage(monaco);
   };
 
   const handleEditorMount = (editor: any, monaco: any) => {

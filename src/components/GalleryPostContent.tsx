@@ -8,7 +8,7 @@ import Editor from '@monaco-editor/react';
 import { toast } from 'sonner';
 import { createClerkClient } from '@/lib/supabase-browser';
 import { useAuth } from '@clerk/nextjs';
-import { SKRIPT_LANGUAGE_ID, skriptTokensProvider, skriptTheme } from '@/lib/skript-language';
+import { SKRIPT_LANGUAGE_ID, registerSkriptLanguage } from '@/lib/skript-language';
 
 interface GalleryPost {
   id: string;
@@ -228,11 +228,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
   };
 
   const handleEditorWillMount = (monaco: any) => {
-    monaco.editor.defineTheme('skripted-dark', skriptTheme);
-    if (!monaco.languages.getLanguages().some((lang: any) => lang.id === SKRIPT_LANGUAGE_ID)) {
-      monaco.languages.register({ id: SKRIPT_LANGUAGE_ID });
-      monaco.languages.setMonarchTokensProvider(SKRIPT_LANGUAGE_ID, skriptTokensProvider);
-    }
+    registerSkriptLanguage(monaco);
   };
 
   const handleEditorMount = (editor: any, monaco: any) => {
