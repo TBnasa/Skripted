@@ -5,6 +5,7 @@ import Editor from '@monaco-editor/react';
 import { X, Save, Loader2, CheckCircle2, AlertCircle, FileCode, Clock, RotateCcw, History, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
 import { SKRIPT_LANGUAGE_ID, registerSkriptLanguage } from '@/lib/skript-language';
+import { setupSkriptLinter } from '@/lib/skript-linter';
 
 interface QuickEditModalProps {
   readonly script: { id?: string; title: string; content: string; version?: string } | null;
@@ -72,6 +73,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
 
   const handleEditorMount = (editor: any, monaco: any) => {
     monaco.editor.setTheme('skripted-dark');
+    setupSkriptLinter(editor, monaco);
   };
 
   if (!isOpen) return null;

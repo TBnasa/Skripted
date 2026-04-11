@@ -9,7 +9,8 @@ import { SKRIPT_LANGUAGE_ID, registerSkriptLanguage } from '@/lib/skript-languag
 import type { editor } from 'monaco-editor';
 import { useAuth } from '@clerk/nextjs';
 import { toast } from 'sonner';
-import { Cloud, Save, Share2, Copy, FileCode, Loader2, Sparkles, AlertCircle, ChevronRight, Code, Undo2, Redo2, ClipboardPaste, ArrowRightToLine } from 'lucide-react';
+import { Cloud, Save, Share2, Copy, FileCode, Loader2, Sparkles, AlertCircle, ChevronRight, Code, Undo2, Redo2, ClipboardPaste, ArrowRightToLine, CheckCircle2 } from 'lucide-react';
+import { setupSkriptLinter } from '@/lib/skript-linter';
 
 const Editor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
@@ -48,30 +49,10 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
       if (model) {
         monaco.editor.setModelLanguage(model, SKRIPT_LANGUAGE_ID);
         
-        // Live Logic Guard (Linter)
-        editorInstance.onDidChangeModelContent(() => {
-          const lines = model.getLinesContent();
-          const markers: editor.IMarkerData[] = [];
-          
-          lines.forEach((line, i) => {
-            const lineNum = i + 1;
-            const trimmed = line.trim();
-            
-            const blockStarters = ['on ', 'command ', 'function ', 'trigger', 'every ', 'choose '];
-            if (blockStarters.some(s => trimmed.startsWith(s)) && !trimmed.endsWith(':')) {
-              markers.push({
-                severity: monaco.MarkerSeverity.Error,
-                message: 'Live Logic Guard: Eksik ":" - Skript blokları iki nokta ile bitmelidir.',
-                startLineNumber: lineNum,
-                startColumn: 1,
-                endLineNumber: lineNum,
-                endColumn: line.length + 1,
-              });
-            }
-          });
-          
-          monaco.editor.setModelMarkers(model, 'skript-guard', markers);
-        });
+        monaco.editor.setModelLanguage(model, SKRIPT_LANGUAGE_ID);
+        
+        // Setup the Skript Linter
+        setupSkriptLinter(editorInstance, monaco);
       }
     },
     [],

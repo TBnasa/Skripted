@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import { createClerkClient } from '@/lib/supabase-browser';
 import { useAuth } from '@clerk/nextjs';
 import { SKRIPT_LANGUAGE_ID, registerSkriptLanguage } from '@/lib/skript-language';
+import { setupSkriptLinter } from '@/lib/skript-linter';
 
 interface GalleryPost {
   id: string;
@@ -236,6 +237,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
 
   const handleEditorMount = (editor: any, monaco: any) => {
     monaco.editor.setTheme('skripted-dark');
+    setupSkriptLinter(editor, monaco);
   };
 
   return (
