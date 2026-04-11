@@ -41,14 +41,15 @@ export const translations: Translations = {
     admin_tools: "Yönetici Araçları",
     system_status_ok: "Supabase MCP: Database Deployed | Sidebar: Connected | Security: RLS Active",
     code_verified: "✅ Skripted Engine Tarafından Doğrulandı",
-    hero_title: "Daha İyi Minecraft Scriptleri Yazın",
-    hero_desc: "Deep Context Engine tarafından desteklenen elit bulut tabanlı script IDE'si. Evrensel Uyumluluk ile Skript kodunu oluşturun, analiz edin ve optimize edin.",
-    feature1_title: "Deep Context Engine",
-    feature1_desc: "250+ seçkin mimari örnekle beslenen derin bağlam motoru.",
-    feature2_title: "Live Logic Guard",
-    feature2_desc: "Siz yazarken hataları yakalayan canlı mantık koruması.",
-    feature3_title: "Evrensel Uyumluluk",
-    feature3_desc: "Tüm Minecraft sürümleri ve Skript addonları ile tam uyum.",
+    code_verified: "✅ Skripted Engine Tarafından Doğrulandı",
+    hero_title: "Skript Yazmanın En Akılcı Hali",
+    hero_desc: "Türkiye'nin ilk AI destekli Minecraft Skript IDE'si. 120 Milyar parametreli modellerle kodunuzu yazın, denetleyin ve saniyeler içinde yayına alın.",
+    feature1_title: "Yapay Zeka Denetleyicisi",
+    feature1_desc: "Kodunuz sadece yazılmaz; AI Judge tarafından mantık hatalarına karşı 120B parametreli modellerle denetlenir.",
+    feature2_title: "Hibrit Bulut Depolama",
+    feature2_desc: "Sınırsız script kapasitesi. Kodlarınız en güvenli hibrit bulut sisteminde (Postgres + Storage) şifrelenmiş olarak saklanır.",
+    feature3_title: "Evrensel Addon Desteği",
+    feature3_desc: "TuSKe'den SkQuantum'a kadar tüm popüler addonlar için otomatik sentaks ve optimizasyon desteği.",
   }
 };
 

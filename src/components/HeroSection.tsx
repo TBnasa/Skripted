@@ -28,58 +28,66 @@ export default function HeroSection() {
         </div>
 
         {/* Main Title */}
-        <h1 className="animate-slide-up mb-8 text-5xl font-extrabold text-white sm:text-6xl md:text-7xl tracking-tight leading-[1.05]">
-          Daha İyi{' '}
-          <span className="bg-gradient-to-r from-emerald-400 via-emerald-300 to-cyan-400 bg-clip-text text-transparent animate-gradient">
-            Minecraft
+        <h1 className="animate-slide-up mb-8 text-5xl font-black text-white sm:text-7xl md:text-8xl tracking-tight leading-[0.95]">
+          Hayal Edin, <br />
+          <span className="bg-gradient-to-r from-emerald-400 via-cyan-300 to-blue-500 bg-clip-text text-transparent animate-gradient drop-shadow-[0_0_25px_rgba(16,185,129,0.3)]">
+            AI Yazsın.
           </span>
-          <br />
-          Scriptleri Yazın.
         </h1>
 
         {/* Description */}
-        <p className="animate-fade-in mx-auto mb-14 max-w-xl text-lg leading-relaxed text-[var(--color-text-secondary)]" style={{ animationDelay: '0.2s' }}>
+        <p className="animate-fade-in mx-auto mb-14 max-w-2xl text-xl leading-relaxed text-zinc-400 font-medium" style={{ animationDelay: '0.2s' }}>
           {t('hero_desc')}
         </p>
 
         {/* Actions */}
-        <div className="animate-fade-in flex flex-col items-center justify-center gap-4 sm:flex-row" style={{ animationDelay: '0.3s' }}>
+        <div className="animate-fade-in flex flex-col items-center justify-center gap-6 sm:flex-row" style={{ animationDelay: '0.3s' }}>
           <Link
             href="/chat"
-            className="btn-premium btn-primary group relative px-10 py-4 text-sm font-bold"
+            className="group relative inline-flex items-center justify-center px-12 py-5 font-black text-black transition-all duration-300 bg-emerald-500 rounded-2xl hover:bg-emerald-400 hover:scale-105 hover:shadow-[0_0_40px_rgba(16,185,129,0.4)] active:scale-95"
           >
-            <span className="relative z-10 flex items-center gap-2.5">
+            <span className="flex items-center gap-3">
               {t('access_engine')}
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-500 group-hover:translate-x-1">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-500 group-hover:translate-x-1.5">
                 <line x1="5" y1="12" x2="19" y2="12" />
                 <polyline points="12 5 19 12 12 19" />
               </svg>
             </span>
           </Link>
 
-          <a
-            href="https://github.com/TBnasa/Skripted"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-premium btn-ghost px-8 py-4 text-sm"
+          <Link
+            href="/gallery"
+            className="group px-10 py-5 text-sm font-bold text-white transition-all border border-white/10 rounded-2xl bg-white/[0.03] backdrop-blur-xl hover:bg-white/[0.08] hover:border-white/20"
           >
-            {t('view_architecture')}
-          </a>
+            Galeriyi Keşfet
+          </Link>
         </div>
 
         {/* Feature Grid */}
-        <div className="mt-32 grid grid-cols-1 gap-5 text-left sm:grid-cols-3 stagger-children">
+        <div className="mt-40 grid grid-cols-1 gap-8 text-left sm:grid-cols-3">
           {[
-            { title: t('feature1_title'), desc: t('feature1_desc'), icon: '🧠' },
-            { title: t('feature2_title'), desc: t('feature2_desc'), icon: '🛡️' },
-            { title: t('feature3_title'), desc: t('feature3_desc'), icon: '⚡' },
+            { 
+              title: t('feature1_title'), 
+              desc: t('feature1_desc'), 
+              icon: <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(16,185,129,0.1)]">🧠</div> 
+            },
+            { 
+              title: t('feature2_title'), 
+              desc: t('feature2_desc'), 
+              icon: <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(59,130,246,0.1)]">🛡️</div> 
+            },
+            { 
+              title: t('feature3_title'), 
+              desc: t('feature3_desc'), 
+              icon: <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(6,182,212,0.1)]">⚡</div> 
+            },
           ].map((feature, i) => (
-            <div key={i} className="animate-fade-in-scale glass-card p-7 group cursor-default">
-              <div className="text-2xl mb-4">{feature.icon}</div>
-              <h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.15em] text-emerald-400 group-hover:text-emerald-300 transition-colors">
+            <div key={i} className="animate-fade-in-scale p-8 rounded-[2rem] bg-white/[0.02] border border-white/[0.04] backdrop-blur-md group hover:bg-white/[0.05] hover:border-white/[0.1] transition-all duration-500 hover:-translate-y-2">
+              <div className="mb-6 group-hover:scale-110 transition-transform duration-500 w-fit">{feature.icon}</div>
+              <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-white">
                 {feature.title}
               </h3>
-              <p className="text-sm leading-relaxed text-[var(--color-text-muted)] group-hover:text-[var(--color-text-secondary)] transition-colors">
+              <p className="text-sm leading-relaxed text-zinc-500 group-hover:text-zinc-300 transition-colors">
                 {feature.desc}
               </p>
             </div>
