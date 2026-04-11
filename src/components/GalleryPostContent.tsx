@@ -2,10 +2,12 @@
 
 import { useTranslation } from '@/lib/useTranslation';
 import Link from 'next/link';
-import { Heart, Code, Download, User, ArrowLeft, Share2, Copy, CheckCircle2, AlertCircle } from 'lucide-react';
-import React, { useState } from 'react';
+import { Heart, Code, Download, User, ArrowLeft, Share2, Copy, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import { toast } from 'sonner';
+import { createClerkClient } from '@/lib/supabase-browser';
+import { useAuth } from '@clerk/nextjs';
 
 interface GalleryPost {
   id: string;
@@ -21,9 +23,47 @@ interface GalleryPost {
 }
 
 export default function GalleryPostContent({ post }: { post: GalleryPost }) {
-  const { t } = useTranslation();
+  const { userId, getToken } = useAuth();
   const [copied, setCopied] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
+  
+  // States for dynamic updates
+  const [likes, setLikes] = useState(post.likes_count);
+  const [downloads, setDownloads] = useState(post.downloads_count);
+  const [isLiked, setIsLiked] = useState(false);
+  const [isLoadingLike, setIsLoadingLike] = useState(true);
+
+  // Check if user has liked the post on mount
+  useEffect(() => {
+    const checkUserLike = async () => {
+      if (!userId) {
+        setIsLoadingLike(false);
+        return;
+      }
+
+      try {
+        const token = await getToken({ template: 'supabase' });
+        const supabase = createClerkClient(token || '');
+        
+        const { data, error } = await supabase
+          .from('post_likes')
+          .select('post_id')
+          .eq('post_id', post.id)
+          .eq('user_id', userId)
+          .maybeSingle();
+
+        if (data) {
+          setIsLiked(true);
+        }
+      } catch (err) {
+        console.error('Error checking like status:', err);
+      } finally {
+        setIsLoadingLike(false);
+      }
+    };
+
+    checkUserLike();
+  }, [post.id, userId, getToken]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(post.code_snippet);
@@ -32,7 +72,18 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
+    try {
+      // 1. Increment download count via API
+      const res = await fetch(`/api/gallery/${post.id}/download`, { method: 'POST' });
+      if (res.ok) {
+        setDownloads(prev => prev + 1);
+      }
+    } catch (error) {
+      console.error('Failed to increment download count:', error);
+    }
+
+    // 2. Trigger local download
     const blob = new Blob([post.code_snippet], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -43,6 +94,52 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
     toast.success('İndirme başlatıldı!');
   };
 
+  const handleLike = async () => {
+    if (!userId) {
+      toast.error('Beğeni yapmak için giriş yapmalısınız.');
+      return;
+    }
+    
+    if (isLoadingLike) return;
+
+    // Optimistic update
+    const previousIsLiked = isLiked;
+    const previousLikes = likes;
+    
+    setIsLiked(!previousIsLiked);
+    setLikes(prev => previousIsLiked ? prev - 1 : prev + 1);
+    setIsLoadingLike(true);
+
+    try {
+      const response = await fetch(`/api/gallery/${post.id}/like`, {
+        method: 'POST',
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Beğenme işlemi başarısız oldu.');
+      }
+
+      // Sync state with server response just in case
+      if (result.action === 'liked') {
+        setIsLiked(true);
+        // setLikes(prev => prev + 1); // Already done optimistically
+        toast.success('Beğenildi!');
+      } else {
+        setIsLiked(false);
+        // setLikes(prev => prev - 1); // Already done optimistically
+        toast.info('Beğeni geri alındı.');
+      }
+    } catch (error: any) {
+      // Rollback on error
+      setIsLiked(previousIsLiked);
+      setLikes(previousLikes);
+      toast.error(error.message);
+    } finally {
+      setIsLoadingLike(false);
+    }
+  };
+
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
     toast.success('Paylaşım linki kopyalandı!');
@@ -50,7 +147,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
 
   return (
     <div className="flex min-h-screen flex-col bg-[var(--color-bg-primary)] text-white">
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 animate-fade-in">
         <Link href="/gallery" className="inline-flex items-center gap-2 text-zinc-400 hover:text-emerald-400 transition-colors mb-8 group">
           <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
           <span>Galeriye Dön</span>
@@ -58,7 +155,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
 
         {/* Top Header */}
         <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-8 mb-12">
-          <div className="flex-1">
+          <div className="flex-1 animate-slide-up">
             <h1 className="text-4xl md:text-6xl font-black text-white mb-6 leading-tight tracking-tight">
               {post.title}
             </h1>
@@ -74,10 +171,22 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
             </div>
           </div>
           
-          <div className="flex items-center gap-3">
-             <button className="flex items-center gap-2 px-5 py-2.5 bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.08] rounded-2xl transition-all active:scale-95 shadow-lg">
-               <Heart size={18} className="text-rose-500 fill-rose-500/10" />
-               <span className="font-bold">{post.likes_count}</span>
+          <div className="flex items-center gap-3 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+             <button 
+               onClick={handleLike}
+               disabled={isLoadingLike}
+               className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl transition-all active:scale-95 shadow-lg border ${
+                 isLiked 
+                  ? 'bg-rose-500/10 border-rose-500/30 text-rose-500' 
+                  : 'bg-white/[0.02] border-white/[0.05] hover:bg-white/[0.08] text-zinc-400'
+               }`}
+             >
+               {isLoadingLike ? (
+                 <Loader2 size={18} className="animate-spin" />
+               ) : (
+                 <Heart size={18} className={isLiked ? 'fill-rose-500' : ''} />
+               )}
+               <span className="font-bold">{likes}</span>
              </button>
              <button onClick={handleShare} className="flex items-center gap-2 px-5 py-2.5 bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.08] rounded-2xl transition-all active:scale-95 shadow-lg">
                <Share2 size={18} className="text-cyan-400" />
@@ -93,7 +202,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           
           {/* Details & Images */}
-          <div className="lg:col-span-5 space-y-10">
+          <div className="lg:col-span-5 space-y-10 animate-slide-up" style={{ animationDelay: '0.2s' }}>
             <div className="bg-white/[0.01] border border-white/[0.04] rounded-[2rem] p-8 md:p-10 shadow-2xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-[80px] -mr-16 -mt-16 group-hover:bg-emerald-500/10 transition-colors"></div>
               <h3 className="text-xl font-bold mb-6 flex items-center gap-3 text-emerald-400">
@@ -139,17 +248,17 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
             <div className="grid grid-cols-2 gap-4">
                <div className="p-6 rounded-[1.5rem] bg-white/[0.02] border border-white/[0.04] flex flex-col items-center">
                   <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest mb-1">BEĞENİ</span>
-                  <span className="text-2xl font-black text-white">{post.likes_count}</span>
+                  <span className="text-2xl font-black text-white">{likes}</span>
                </div>
                <div className="p-6 rounded-[1.5rem] bg-white/[0.02] border border-white/[0.04] flex flex-col items-center">
                   <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest mb-1">İNDİRME</span>
-                  <span className="text-2xl font-black text-white">{post.downloads_count}</span>
+                  <span className="text-2xl font-black text-white">{downloads}</span>
                </div>
             </div>
           </div>
 
           {/* Code Viewer */}
-          <div className="lg:col-span-7 flex flex-col bg-[#0a0a0b] border border-white/[0.06] rounded-[2rem] overflow-hidden min-h-[700px] shadow-2xl ring-1 ring-white/5">
+          <div className="lg:col-span-7 flex flex-col bg-[#0a0a0b] border border-white/[0.06] rounded-[2rem] overflow-hidden min-h-[700px] shadow-2xl ring-1 ring-white/5 animate-slide-up" style={{ animationDelay: '0.3s' }}>
             <div className="flex items-center justify-between px-8 py-5 border-b border-white/[0.06] bg-white/[0.02] shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/40"></div>
