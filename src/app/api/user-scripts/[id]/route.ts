@@ -5,8 +5,8 @@ import { getSupabaseAdmin } from '@/lib/supabase-server';
 export const runtime = 'nodejs';
 
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -14,13 +14,14 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
     const supabase = getSupabaseAdmin();
     
     // Check ownership
     const { data: script, error: checkError } = await supabase
       .from('user_scripts')
       .select('user_id')
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (checkError || !script) {
@@ -34,7 +35,7 @@ export async function DELETE(
     const { error } = await supabase
       .from('user_scripts')
       .delete()
-      .eq('id', params.id);
+      .eq('id', id);
 
     if (error) throw error;
     return NextResponse.json({ success: true });

@@ -6,15 +6,16 @@ import { GalleryPostSchema } from '@/types/schemas';
 export const runtime = 'nodejs';
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const supabase = getSupabaseAdmin();
     const { data, error } = await supabase
       .from('gallery_posts')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (error || !data) {
@@ -29,7 +30,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -37,6 +38,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Yetkisiz erişim' }, { status: 401 });
     }
 
+    const { id } = await params;
     const body = await request.json();
     const validation = GalleryPostSchema.partial().safeParse(body);
 
@@ -50,7 +52,7 @@ export async function PUT(
     const { data: post, error: checkError } = await supabase
       .from('gallery_posts')
       .select('user_id')
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (checkError || !post) {
@@ -64,7 +66,7 @@ export async function PUT(
     const { data, error } = await supabase
       .from('gallery_posts')
       .update(validation.data)
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
       .single();
 
@@ -77,8 +79,8 @@ export async function PUT(
 }
 
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -86,13 +88,14 @@ export async function DELETE(
       return NextResponse.json({ error: 'Yetkisiz erişim' }, { status: 401 });
     }
 
+    const { id } = await params;
     const supabase = getSupabaseAdmin();
     
     // Check ownership
     const { data: post, error: checkError } = await supabase
       .from('gallery_posts')
       .select('user_id')
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (checkError || !post) {
@@ -106,7 +109,7 @@ export async function DELETE(
     const { error } = await supabase
       .from('gallery_posts')
       .delete()
-      .eq('id', params.id);
+      .eq('id', id);
 
     if (error) throw error;
     return NextResponse.json({ success: true });
