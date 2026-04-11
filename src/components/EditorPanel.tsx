@@ -9,7 +9,7 @@ import { SKRIPT_LANGUAGE_ID, registerSkriptLanguage } from '@/lib/skript-languag
 import type { editor } from 'monaco-editor';
 import { useAuth } from '@clerk/nextjs';
 import { toast } from 'sonner';
-import { Cloud, Save, Share2, Copy, FileCode, Loader2, Sparkles, AlertCircle, ChevronRight, Code } from 'lucide-react';
+import { Cloud, Save, Share2, Copy, FileCode, Loader2, Sparkles, AlertCircle, ChevronRight, Code, Undo2, Redo2, ClipboardPaste, ArrowRightToLine } from 'lucide-react';
 
 const Editor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
@@ -29,6 +29,13 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
   const [showInsight, setShowInsight] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+
+  const triggerAction = (actionId: string) => {
+    if (editorRef.current) {
+      editorRef.current.trigger('keyboard', actionId, null);
+      editorRef.current.focus();
+    }
+  };
 
   const handleEditorMount = useCallback(
     (editorInstance: editor.IStandaloneCodeEditor, monaco: typeof import('monaco-editor')) => {
@@ -178,39 +185,56 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
       </div>
       
       {/* Editor & Panel Region */}
-      <div className="relative flex-1 overflow-hidden flex">
+      <div className="relative flex-1 overflow-hidden flex flex-col">
         {/* Monaco Editor */}
-        <div className="flex-1 h-full overflow-hidden [overflow-anchor:none] bg-transparent">
+        <div className="flex-1 overflow-hidden [overflow-anchor:none] bg-transparent relative">
           {code.trim() ? (
-            <Editor
-              height="100%"
-              defaultLanguage={SKRIPT_LANGUAGE_ID}
-              value={code}
-              onChange={(value) => onCodeChange(value ?? '')}
-              onMount={handleEditorMount}
-              theme="skripted-dark"
-              options={{
-                fontSize: 14,
-                fontFamily: '"JetBrains Mono", "Cascadia Code", monospace',
-                fontLigatures: true,
-                lineHeight: 22.4,
-                lineNumbers: 'on',
-                minimap: { enabled: false },
-                scrollBeyondLastLine: false,
-                wordWrap: 'on',
-                tabSize: 4,
-                insertSpaces: false,
-                renderLineHighlight: 'all',
-                cursorBlinking: 'smooth',
-                cursorSmoothCaretAnimation: 'on',
-                smoothScrolling: true,
-                padding: { top: 20, bottom: 60 },
-                roundedSelection: true,
-                readOnly: false,
-                automaticLayout: true,
-                contextmenu: false,
-              }}
-            />
+            <>
+              <Editor
+                height="100%"
+                defaultLanguage={SKRIPT_LANGUAGE_ID}
+                value={code}
+                onChange={(value) => onCodeChange(value ?? '')}
+                onMount={handleEditorMount}
+                theme="skripted-dark"
+                options={{
+                  fontSize: 14,
+                  fontFamily: '"JetBrains Mono", "Cascadia Code", monospace',
+                  fontLigatures: true,
+                  lineHeight: 22.4,
+                  lineNumbers: 'on',
+                  minimap: { enabled: false },
+                  scrollBeyondLastLine: false,
+                  wordWrap: 'on',
+                  tabSize: 4,
+                  insertSpaces: false,
+                  renderLineHighlight: 'all',
+                  cursorBlinking: 'smooth',
+                  cursorSmoothCaretAnimation: 'on',
+                  smoothScrolling: true,
+                  padding: { top: 20, bottom: 60 },
+                  roundedSelection: true,
+                  readOnly: false,
+                  automaticLayout: true,
+                  contextmenu: false,
+                }}
+              />
+              
+              {/* Mobile Touch Toolbar */}
+              <div className="md:hidden absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 p-1.5 bg-[#141414]/90 backdrop-blur-xl border border-white/[0.08] rounded-2xl shadow-2xl z-10">
+                <button onClick={() => triggerAction('undo')} className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl active:scale-90 transition-all"><Undo2 size={16} /></button>
+                <button onClick={() => triggerAction('redo')} className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl active:scale-90 transition-all"><Redo2 size={16} /></button>
+                <div className="w-px h-6 bg-white/[0.06] mx-1"></div>
+                <button onClick={() => triggerAction('editor.action.clipboardPasteAction')} className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl active:scale-90 transition-all"><ClipboardPaste size={16} /></button>
+                <button onClick={() => triggerAction('editor.action.formatDocument')} className="p-2 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 rounded-xl active:scale-90 transition-all font-bold text-[10px] uppercase tracking-widest"><Sparkles size={16} /></button>
+                <button onClick={() => {
+                  if (editorRef.current) {
+                    editorRef.current.trigger('keyboard', 'tab', null);
+                    editorRef.current.focus();
+                  }
+                }} className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl active:scale-90 transition-all"><ArrowRightToLine size={16} /></button>
+              </div>
+            </>
           ) : isStreaming ? (
             <div className="flex h-full w-full flex-col p-8 bg-[#0a0a0a]">
               {[1, 2, 3, 4].map((i) => (

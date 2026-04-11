@@ -3,8 +3,9 @@
 import { useTranslation } from '@/lib/useTranslation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, Code, Download, User, ArrowLeft, Share2, Copy, CheckCircle2, AlertCircle, Loader2, MessageSquare, Send, Trash2, Hash, Tag, Sparkles, ImageOff } from 'lucide-react';
+import { Heart, Code, Download, User, ArrowLeft, Share2, Copy, CheckCircle2, AlertCircle, Loader2, MessageSquare, Send, Trash2, Hash, Tag, Sparkles, ImageOff, Maximize2, Shrink } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Editor from '@monaco-editor/react';
 import { toast } from 'sonner';
 import { createClerkClient } from '@/lib/supabase-browser';
@@ -48,6 +49,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
   const { userId, getToken } = useAuth();
   const [copied, setCopied] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   
   // States for dynamic updates
   const [likes, setLikes] = useState(post.likes_count);
@@ -437,24 +439,42 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
           {/* Code Viewer & Comments */}
           <div className="lg:col-span-7 space-y-10 animate-slide-up" style={{ animationDelay: '0.3s' }}>
             {/* Code Viewer */}
-            <div className="flex flex-col bg-[#0a0a0b] border border-white/[0.06] rounded-[2.5rem] overflow-hidden min-h-[500px] max-h-[700px] shadow-2xl ring-1 ring-white/5">
-              <div className="flex items-center justify-between px-8 py-5 border-b border-white/[0.06] bg-white/[0.02] shrink-0">
+            <motion.div 
+              layout
+              className={`flex flex-col bg-[#0a0a0c]/90 backdrop-blur-2xl border border-white/[0.08] overflow-hidden shadow-2xl ring-1 ring-white/5 transition-all z-50 ${
+                isFullscreen 
+                  ? 'fixed inset-4 md:inset-8 rounded-[2rem]' 
+                  : 'relative rounded-[2.5rem] min-h-[500px] h-[700px] max-h-[700px]'
+              }`}
+            >
+              <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06] bg-black/40 shrink-0">
                 <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/40"></div>
-                  <div className="w-3 h-3 rounded-full bg-amber-500/20 border border-amber-500/40"></div>
-                  <div className="w-3 h-3 rounded-full bg-emerald-500/20 border border-emerald-500/40"></div>
-                  <span className="ml-2 font-mono text-xs font-bold text-zinc-500 uppercase tracking-widest">script.sk</span>
+                  <div className="flex gap-2">
+                    <div className="w-3 h-3 rounded-full bg-red-500/80 border border-red-500/40 shadow-[0_0_10px_rgba(239,68,68,0.5)]"></div>
+                    <div className="w-3 h-3 rounded-full bg-amber-500/80 border border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.5)]"></div>
+                    <div className="w-3 h-3 rounded-full bg-emerald-500/80 border border-emerald-500/40 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
+                  </div>
+                  <span className="ml-3 font-mono text-xs font-bold text-zinc-400 uppercase tracking-widest">script.sk</span>
                 </div>
-                <button 
-                  onClick={handleCopy}
-                  className="flex items-center gap-2 text-xs font-bold text-zinc-400 hover:text-emerald-400 transition-all bg-white/5 px-4 py-2 rounded-xl border border-white/5 group"
-                >
-                  {copied ? <CheckCircle2 size={14} className="text-emerald-500" /> : <Copy size={14} className="group-hover:scale-110 transition-transform" />}
-                  {copied ? 'Kopyalandı' : 'Kopyala'}
-                </button>
+                <div className="flex items-center gap-3">
+                  <button 
+                    onClick={handleCopy}
+                    className="flex items-center gap-2 text-[11px] font-bold text-zinc-300 hover:text-emerald-400 transition-all bg-white/5 hover:bg-emerald-500/10 px-4 py-2 rounded-xl border border-white/5 hover:border-emerald-500/30 group active:scale-95"
+                  >
+                    {copied ? <CheckCircle2 size={14} className="text-emerald-500" /> : <Copy size={14} className="group-hover:scale-110 transition-transform" />}
+                    {copied ? 'Kopyalandı' : 'Kopyala'}
+                  </button>
+                  <button 
+                    onClick={() => setIsFullscreen(!isFullscreen)}
+                    className="flex items-center justify-center text-zinc-400 hover:text-white bg-white/5 hover:bg-white/10 w-8 h-8 rounded-xl border border-white/5 hover:border-white/20 transition-all active:scale-95"
+                    title={isFullscreen ? "Küçült" : "Tam Ekran"}
+                  >
+                    {isFullscreen ? <Shrink size={14} /> : <Maximize2 size={14} />}
+                  </button>
+                </div>
               </div>
               
-              <div className="relative min-h-[500px] h-[600px]">
+              <div className={`relative flex-1 ${isFullscreen ? 'h-full' : 'min-h-[500px] h-[600px]'}`}>
                 <Editor
                   height="600px"
                   language={SKRIPT_LANGUAGE_ID}
@@ -487,7 +507,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                   }}
                 />
               </div>
-            </div>
+            </motion.div>
 
             {/* Comments Section */}
             <div className="bg-[#0c0c0e] border border-white/[0.06] rounded-[2.5rem] p-8 md:p-10 shadow-2xl">
