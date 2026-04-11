@@ -41,7 +41,6 @@ export const translations: Translations = {
     admin_tools: "Yönetici Araçları",
     system_status_ok: "Supabase MCP: Database Deployed | Sidebar: Connected | Security: RLS Active",
     code_verified: "✅ Skripted Engine Tarafından Doğrulandı",
-    code_verified: "✅ Skripted Engine Tarafından Doğrulandı",
     hero_title: "Skript Yazmanın En Akılcı Hali",
     hero_desc: "Türkiye'nin ilk AI destekli Minecraft Skript IDE'si. 120 Milyar parametreli modellerle kodunuzu yazın, denetleyin ve saniyeler içinde yayına alın.",
     feature1_title: "Yapay Zeka Denetleyicisi",
