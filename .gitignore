@@ -16,6 +16,8 @@
 .env*.local
 !.env.example
 mcp_config.json
+.agents/
+.augment/
 
 # Logs
 npm-debug.log*
@@ -31,7 +33,6 @@ yarn-error.log*
 *.pem
 
 # Personal Notes & Drafts
-# These files appear to be personal notes or temporary documents.
 Açıklama.md
 AGENTS.md
 AI_limiti.md
@@ -40,7 +41,6 @@ inceleme.md
 son.md
 
 # Local Scripts & Scratchpad
-# These directories contain one-off scripts and temporary files not needed by the project itself.
 /scripts/
 /scratch/
 /hatalar/
