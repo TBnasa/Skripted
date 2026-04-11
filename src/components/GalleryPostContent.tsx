@@ -228,10 +228,12 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
   };
 
   const handleEditorWillMount = (monaco: any) => {
+    // Always define the theme to ensure it's available
+    monaco.editor.defineTheme('skripted-dark', skriptTheme);
+
     if (!monaco.languages.getLanguages().some((lang: any) => lang.id === SKRIPT_LANGUAGE_ID)) {
       monaco.languages.register({ id: SKRIPT_LANGUAGE_ID });
       monaco.languages.setMonarchTokensProvider(SKRIPT_LANGUAGE_ID, skriptTokensProvider);
-      monaco.editor.defineTheme('skripted-dark', skriptTheme);
     }
   };
 
@@ -443,24 +445,28 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                 </button>
               </div>
               
-              <div className="flex-1 relative bg-transparent">
+              <div className="flex-1 relative min-h-[400px]">
                 <Editor
                   height="100%"
                   language={SKRIPT_LANGUAGE_ID}
                   theme="skripted-dark"
                   beforeMount={handleEditorWillMount}
                   value={post.code_snippet}
+                  loading={<div className="flex items-center justify-center h-full bg-[#0a0a0b] text-zinc-500 animate-pulse font-mono text-xs uppercase tracking-widest">Editor Hazırlanıyor...</div>}
                   options={{
                     readOnly: true,
                     minimap: { enabled: false },
                     scrollBeyondLastLine: false,
                     fontSize: 15,
+                    lineHeight: 24,
                     padding: { top: 24, bottom: 24 },
-                    fontFamily: '"JetBrains Mono", monospace',
+                    fontFamily: '"JetBrains Mono", "Cascadia Code", monospace',
                     lineNumbers: 'on',
                     renderLineHighlight: 'all',
                     smoothScrolling: true,
                     contextmenu: false,
+                    automaticLayout: true,
+                    tabSize: 4,
                   }}
                 />
               </div>
