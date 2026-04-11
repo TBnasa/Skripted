@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import { getSupabaseAdmin } from '@/lib/supabase-server';
+import { GalleryService } from '@/lib/services/gallery-service';
+import { checkRateLimit } from '@/lib/utils/rate-limit';
 
 export const runtime = 'nodejs';
+
+const LIKE_RATE_LIMIT = { windowMs: 60_000, max: 10 }; // 10 likes per minute
 
 export async function POST(
   request: NextRequest,
@@ -16,38 +19,16 @@ export async function POST(
       return NextResponse.json({ error: 'Beğenmek için giriş yapmalısınız' }, { status: 401 });
     }
 
-    const supabase = getSupabaseAdmin();
-
-    const { data: existingLike, error: selectError } = await supabase
-      .from('post_likes')
-      .select('*')
-      .eq('post_id', postId)
-      .eq('user_id', userId)
-      .single();
-
-    if (selectError && selectError.code !== 'PGRST116') {
-      throw selectError;
+    // Rate limiting
+    const { success } = checkRateLimit(`like:${userId}`, LIKE_RATE_LIMIT);
+    if (!success) {
+      return NextResponse.json({ error: 'Çok fazla beğeni yaptınız. Lütfen bekleyin.' }, { status: 429 });
     }
 
-    if (existingLike) {
-      const { error: deleteError } = await supabase
-        .from('post_likes')
-        .delete()
-        .eq('post_id', postId)
-        .eq('user_id', userId);
-
-      if (deleteError) throw deleteError;
-      return NextResponse.json({ success: true, action: 'unliked' });
-    } else {
-      const { error: insertError } = await supabase
-        .from('post_likes')
-        .insert({ post_id: postId, user_id: userId });
-
-      if (insertError) throw insertError;
-      return NextResponse.json({ success: true, action: 'liked' });
-    }
+    const data = await GalleryService.toggleLike(postId, userId);
+    return NextResponse.json(data);
   } catch (err: any) {
-    console.error('[Gallery Like POST] Exception:', err);
-    return NextResponse.json({ error: 'Bir hata oluştu', details: err.message }, { status: 500 });
+    console.error('[Gallery Like POST] Error:', err);
+    return NextResponse.json({ error: 'Bir hata oluştu' }, { status: 500 });
   }
 }

@@ -297,6 +297,26 @@ export function registerSkriptLanguage(monaco: any) {
             ].join('\n'),
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
             range
+          },
+          {
+            label: 'loop players',
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            insertText: [
+              'loop all players:',
+              '\tsend "${1:Mesaj}" to loop-player'
+            ].join('\n'),
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range
+          },
+          {
+            label: 'if-permission',
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            insertText: [
+              'if player has permission "${1:admin}":',
+              '\t${2:send "Yetkili Girişi"}'
+            ].join('\n'),
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range
           }
         ];
 

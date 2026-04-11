@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSupabaseAdmin } from '@/lib/supabase-server';
+import { GalleryService } from '@/lib/services/gallery-service';
 import { auth } from '@clerk/nextjs/server';
-import { GalleryPostSchema } from '@/types/schemas';
 
 export const runtime = 'nodejs';
 
@@ -11,20 +10,11 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const supabase = getSupabaseAdmin();
-    const { data, error } = await supabase
-      .from('gallery_posts')
-      .select('*')
-      .eq('id', id)
-      .single();
-
-    if (error || !data) {
-      return NextResponse.json({ error: 'Gönderi bulunamadı' }, { status: 404 });
-    }
-
+    const data = await GalleryService.getPostById(id);
     return NextResponse.json(data);
   } catch (err: any) {
-    return NextResponse.json({ error: 'Sunucu hatası' }, { status: 500 });
+    console.error('[Gallery GET ID] Error:', err);
+    return NextResponse.json({ error: 'Gönderi bulunamadı' }, { status: 404 });
   }
 }
 
@@ -40,41 +30,12 @@ export async function PUT(
 
     const { id } = await params;
     const body = await request.json();
-    const validation = GalleryPostSchema.partial().safeParse(body);
+    const data = await GalleryService.updatePost(id, userId, body);
 
-    if (!validation.success) {
-      return NextResponse.json({ error: 'Geçersiz veri formatı' }, { status: 400 });
-    }
-
-    const supabase = getSupabaseAdmin();
-    
-    // First check ownership
-    const { data: post, error: checkError } = await supabase
-      .from('gallery_posts')
-      .select('user_id')
-      .eq('id', id)
-      .single();
-
-    if (checkError || !post) {
-      return NextResponse.json({ error: 'Gönderi bulunamadı' }, { status: 404 });
-    }
-
-    if (post.user_id !== userId) {
-      return NextResponse.json({ error: 'Bu gönderiyi düzenleme yetkiniz yok' }, { status: 403 });
-    }
-
-    const { data, error } = await supabase
-      .from('gallery_posts')
-      .update(validation.data)
-      .eq('id', id)
-      .select()
-      .single();
-
-    if (error) throw error;
     return NextResponse.json(data);
   } catch (err: any) {
     console.error('[Gallery PUT] Error:', err);
-    return NextResponse.json({ error: 'Gönderi güncellenemedi' }, { status: 500 });
+    return NextResponse.json({ error: err.message || 'Gönderi güncellenemedi' }, { status: 500 });
   }
 }
 
@@ -89,32 +50,11 @@ export async function DELETE(
     }
 
     const { id } = await params;
-    const supabase = getSupabaseAdmin();
-    
-    // Check ownership
-    const { data: post, error: checkError } = await supabase
-      .from('gallery_posts')
-      .select('user_id')
-      .eq('id', id)
-      .single();
+    const result = await GalleryService.deletePost(id, userId);
 
-    if (checkError || !post) {
-      return NextResponse.json({ error: 'Gönderi bulunamadı' }, { status: 404 });
-    }
-
-    if (post.user_id !== userId) {
-      return NextResponse.json({ error: 'Bu gönderiyi silme yetkiniz yok' }, { status: 403 });
-    }
-
-    const { error } = await supabase
-      .from('gallery_posts')
-      .delete()
-      .eq('id', id);
-
-    if (error) throw error;
-    return NextResponse.json({ success: true });
+    return NextResponse.json(result);
   } catch (err: any) {
     console.error('[Gallery DELETE] Error:', err);
-    return NextResponse.json({ error: 'Gönderi silinemedi' }, { status: 500 });
+    return NextResponse.json({ error: err.message || 'Gönderi silinemedi' }, { status: 500 });
   }
 }

@@ -1,33 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { GalleryService } from '@/lib/services/gallery-service';
 import { auth, currentUser } from '@clerk/nextjs/server';
-import { getSupabaseAdmin } from '@/lib/supabase-server';
-import { z } from 'zod';
 
 export const runtime = 'nodejs';
 
-const commentSchema = z.object({
-  content: z.string().min(2, "Yorum en az 2 karakter olmalıdır").max(500, "Yorum en fazla 500 karakter olmalıdır"),
-});
-
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id: postId } = await params;
-    const supabase = getSupabaseAdmin();
-
-    const { data, error } = await supabase
-      .from('post_comments')
-      .select('*')
-      .eq('post_id', postId)
-      .order('created_at', { ascending: true });
-
-    if (error) throw error;
-
+    const data = await GalleryService.getComments(postId);
     return NextResponse.json(data);
   } catch (err: any) {
-    console.error('[Gallery Comments GET] Exception:', err);
+    console.error('[Gallery Comments GET] Error:', err);
     return NextResponse.json({ error: 'Yorumlar yüklenemedi' }, { status: 500 });
   }
 }
@@ -45,32 +31,17 @@ export async function POST(
       return NextResponse.json({ error: 'Yorum yapmak için giriş yapmalısınız' }, { status: 401 });
     }
 
-    const body = await request.json();
-    const validation = commentSchema.safeParse(body);
-
-    if (!validation.success) {
-      return NextResponse.json({ error: validation.error.issues[0].message }, { status: 400 });
+    const { content } = await request.json();
+    if (!content || content.length < 2) {
+      return NextResponse.json({ error: 'Yorum en az 2 karakter olmalıdır' }, { status: 400 });
     }
 
-    const supabase = getSupabaseAdmin();
     const authorName = user.fullName || user.username || 'Anonim';
-
-    const { data, error } = await supabase
-      .from('post_comments')
-      .insert({
-        post_id: postId,
-        user_id: userId,
-        author_name: authorName,
-        content: validation.data.content,
-      })
-      .select()
-      .single();
-
-    if (error) throw error;
+    const data = await GalleryService.addComment(postId, userId, authorName, content);
 
     return NextResponse.json(data);
   } catch (err: any) {
-    console.error('[Gallery Comments POST] Exception:', err);
+    console.error('[Gallery Comments POST] Error:', err);
     return NextResponse.json({ error: 'Yorum gönderilemedi' }, { status: 500 });
   }
 }

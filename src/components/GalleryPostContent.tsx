@@ -2,7 +2,8 @@
 
 import { useTranslation } from '@/lib/useTranslation';
 import Link from 'next/link';
-import { Heart, Code, Download, User, ArrowLeft, Share2, Copy, CheckCircle2, AlertCircle, Loader2, MessageSquare, Send, Trash2, Hash, Tag, Sparkles } from 'lucide-react';
+import Image from 'next/image';
+import { Heart, Code, Download, User, ArrowLeft, Share2, Copy, CheckCircle2, AlertCircle, Loader2, MessageSquare, Send, Trash2, Hash, Tag, Sparkles, ImageOff } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import { toast } from 'sonner';
@@ -387,11 +388,21 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
             {post.image_urls && post.image_urls.length > 0 && (
               <div className="bg-black/20 border border-white/[0.05] rounded-[2rem] overflow-hidden shadow-2xl ring-1 ring-white/5">
                 <div className="relative aspect-video bg-black/40 flex items-center justify-center overflow-hidden group">
-                  <img 
-                    src={post.image_urls[activeImage]} 
-                    alt="Server Preview" 
-                    className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
-                  />
+                  {post.image_urls[activeImage] ? (
+                    <Image 
+                      src={post.image_urls[activeImage]} 
+                      alt={post.title}
+                      fill
+                      className="object-contain transition-transform duration-700 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      priority
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center gap-3 text-zinc-600">
+                      <ImageOff size={48} />
+                      <span className="text-xs font-bold uppercase tracking-widest">Görsel Bulunamadı</span>
+                    </div>
+                  )}
                 </div>
                 {post.image_urls.length > 1 && (
                   <div className="p-5 bg-white/[0.01] border-t border-white/[0.04] flex gap-3 overflow-x-auto custom-scrollbar">
@@ -403,7 +414,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                           activeImage === idx ? 'border-emerald-500 scale-105 shadow-lg' : 'border-transparent opacity-40 hover:opacity-100'
                         }`}
                       >
-                        <img src={url} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
+                        <Image src={url} alt={`${post.title} preview ${idx + 1}`} fill className="object-cover" sizes="96px" />
                       </button>
                     ))}
                   </div>

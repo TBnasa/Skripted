@@ -1,0 +1,106 @@
+import { getSupabaseAdmin } from '@/lib/supabase-server';
+import { UserScriptSchema } from '@/types/schemas';
+import { stripHtmlTags } from '@/lib/utils/sanitize';
+
+export class UserScriptService {
+  private static supabase = getSupabaseAdmin();
+
+  static async getUserScripts(userId: string) {
+    const { data, error } = await this.supabase
+      .from('user_scripts')
+      .select('*')
+      .eq('user_id', userId)
+      .order('updated_at', { ascending: false });
+
+    if (error) throw error;
+    return data;
+  }
+
+  static async getScriptById(id: string, userId: string) {
+    const { data, error } = await this.supabase
+      .from('user_scripts')
+      .select('*')
+      .eq('id', id)
+      .eq('user_id', userId)
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  static async createScript(userId: string, scriptData: any) {
+    const validation = UserScriptSchema.safeParse(scriptData);
+    if (!validation.success) {
+      throw new Error(validation.error.issues[0].message);
+    }
+
+    const { title, content, version } = validation.data;
+    const sanitizedTitle = stripHtmlTags(title);
+
+    const { data, error } = await this.supabase
+      .from('user_scripts')
+      .insert({
+        user_id: userId,
+        title: sanitizedTitle,
+        content,
+        version: version || '1.0.0',
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  static async updateScript(id: string, userId: string, updateData: any) {
+    const validation = UserScriptSchema.partial().safeParse(updateData);
+    if (!validation.success) {
+      throw new Error('Invalid update data');
+    }
+
+    // Verify ownership
+    await this.getScriptById(id, userId);
+
+    if (validation.data.title) {
+      validation.data.title = stripHtmlTags(validation.data.title);
+    }
+
+    const { data, error } = await this.supabase
+      .from('user_scripts')
+      .update({
+        ...validation.data,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id)
+      .eq('user_id', userId)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    // Create a version snapshot
+    try {
+      await this.supabase
+        .from('user_script_versions')
+        .insert({
+          script_id: id,
+          content: data.content,
+        });
+    } catch (versionErr) {
+      console.error('[UserScriptService] Failed to save version:', versionErr);
+    }
+
+    return data;
+  }
+
+  static async deleteScript(id: string, userId: string) {
+    const { error } = await this.supabase
+      .from('user_scripts')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', userId);
+
+    if (error) throw error;
+    return { success: true };
+  }
+}
