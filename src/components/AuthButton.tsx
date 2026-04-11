@@ -2,6 +2,7 @@
 
 import { useTranslation } from '@/lib/useTranslation';
 import { SignInButton, UserButton, useAuth } from '@clerk/nextjs';
+import { User } from 'lucide-react';
 
 export default function AuthButton() {
   const { t } = useTranslation();
@@ -12,15 +13,25 @@ export default function AuthButton() {
   }
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center gap-3">
       {isSignedIn ? (
-        <UserButton 
-          appearance={{
-            elements: {
-              userButtonAvatarBox: "w-9 h-9 rounded-xl border border-white/[0.06] shadow-sm",
-            }
-          }}
-        />
+        <>
+          <UserButton 
+            appearance={{
+              elements: {
+                userButtonAvatarBox: "w-9 h-9 rounded-xl border border-white/[0.06] shadow-sm",
+              }
+            }}
+          >
+            <UserButton.MenuItems>
+              <UserButton.Link
+                label="Profilim"
+                labelIcon={<User size={14} />}
+                href={`/u/me`}
+              />
+            </UserButton.MenuItems>
+          </UserButton>
+        </>
       ) : (
         <SignInButton mode="modal">
           <button 

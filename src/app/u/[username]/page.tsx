@@ -11,17 +11,22 @@ import useSWR, { mutate } from 'swr';
 import Link from 'next/link';
 import ProfileEditModal from '@/components/ProfileEditModal';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 export default function ProfilePage() {
   const { username } = useParams();
-  const { userId } = useAuth();
+  const { userId, isLoaded: isAuthLoaded } = useAuth();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<'scripts' | 'about'>('scripts');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isFollowingLoading, setIsFollowingLoading] = useState(false);
 
-  const { data: profile, error: profileError } = useSWR(`/api/profiles/${username}`, fetcher);
+  const isMe = username === 'me';
+  const fetchUrl = isMe ? `/api/profiles/me` : `/api/profiles/${username}`;
+  
+  const { data: profile, error: profileError, isLoading: isProfileLoading } = useSWR(fetchUrl, fetcher);
   const { data: scripts, error: scriptsError } = useSWR(profile ? `/api/gallery?userId=${profile.id}` : null, fetcher);
 
   if (!profile && !profileError) return <div className="min-h-screen bg-[#0a0a0b] flex items-center justify-center text-zinc-500 font-mono text-xs tracking-widest uppercase">Profil Yükleniyor...</div>;
