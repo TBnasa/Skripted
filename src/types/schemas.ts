@@ -11,6 +11,7 @@ export const MessageSchema = z.object({
 export const ChatRequestSchema = z.object({
   prompt: z.string().min(1, 'Prompt is required'),
   history: z.array(z.any()), // We can simplify or use a full Message Schema
+  currentCode: z.string().optional(),
   serverVersion: z.string().optional(),
   serverType: z.string().optional(),
   skriptVersion: z.string().optional(),

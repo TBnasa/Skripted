@@ -25,7 +25,7 @@ export async function POST(request: NextRequest): Promise<Response> {
       return Response.json({ error: 'Invalid data', details: result.error.format() }, { status: 400 });
     }
 
-    const { prompt, history, serverVersion, serverType, skriptVersion, addons } = result.data;
+    const { prompt, history, serverVersion, serverType, skriptVersion, addons, currentCode } = result.data;
 
     const { systemPrompt, pineconeIds } = await ChatService.prepareChatContext(prompt, {
       serverVersion,
@@ -39,8 +39,17 @@ export async function POST(request: NextRequest): Promise<Response> {
     const messages = [
       { role: 'system' as const, content: systemPrompt },
       ...truncatedHistory,
-      { role: 'user' as const, content: prompt },
     ];
+
+    // Inject editor context if available to keep the AI aware of the current code
+    if (currentCode && currentCode.trim()) {
+      messages.push({
+        role: 'user' as const,
+        content: `[CONTEXT] Current Editor Content:\n\`\`\`sk\n${currentCode}\n\`\`\``,
+      });
+    }
+
+    messages.push({ role: 'user' as const, content: prompt });
 
     const upstreamBody = await streamChatCompletion(messages);
     const encoder = new TextEncoder();
