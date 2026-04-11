@@ -13,7 +13,7 @@ export default function GalleryHighlights() {
   if (error || !posts || !Array.isArray(posts) || posts.length === 0) return null;
 
   return (
-    <section className="relative z-10 py-32 px-6 bg-[var(--color-bg-primary)]">
+    <section className="relative z-10 py-32 px-6 bg-[var(--color-bg-primary)] content-visibility-auto">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
           <div>

@@ -11,9 +11,9 @@ export default function HeroSection() {
       <div className="absolute inset-0 mesh-gradient" />
       <div className="absolute inset-0 dot-grid opacity-40" />
       
-      {/* Animated Glow Orbs */}
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full bg-emerald-500/[0.03] blur-[120px] animate-float" />
-      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-cyan-500/[0.02] blur-[100px] animate-float" style={{ animationDelay: '1.5s' }} />
+      {/* Animated Glow Orbs (GPU Accelerated) */}
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full bg-emerald-500/[0.03] blur-[120px] animate-float transition-transform transform-gpu" />
+      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-cyan-500/[0.02] blur-[100px] animate-float transition-transform transform-gpu hidden md:block" style={{ animationDelay: '1.5s' }} />
 
       <div className="relative z-10 mx-auto max-w-4xl text-center">
         {/* Version Badge */}
