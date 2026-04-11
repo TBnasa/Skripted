@@ -1,62 +1,53 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { auth } from '@clerk/nextjs/server';
+import { getSupabaseAdmin } from '@/lib/supabase-server';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const postId = params.id;
-  const cookieStore = cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { get: (name) => cookieStore.get(name)?.value } }
-  );
-
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-  if (authError || !user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
   try {
-    // Check if the user has already liked the post
+    const { userId } = await auth();
+    const { id: postId } = await params;
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Beğenmek için giriş yapmalısınız' }, { status: 401 });
+    }
+
+    const supabase = getSupabaseAdmin();
+
     const { data: existingLike, error: selectError } = await supabase
       .from('post_likes')
       .select('*')
       .eq('post_id', postId)
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .single();
 
-    if (selectError && selectError.code !== 'PGRST116') { // PGRST116 = no rows found
+    if (selectError && selectError.code !== 'PGRST116') {
       throw selectError;
     }
 
     if (existingLike) {
-      // User has liked it, so unlike it (DELETE)
       const { error: deleteError } = await supabase
         .from('post_likes')
         .delete()
         .eq('post_id', postId)
-        .eq('user_id', user.id);
+        .eq('user_id', userId);
 
       if (deleteError) throw deleteError;
       return NextResponse.json({ success: true, action: 'unliked' });
-
     } else {
-      // User has not liked it, so like it (INSERT)
       const { error: insertError } = await supabase
         .from('post_likes')
-        .insert({ post_id: postId, user_id: user.id });
+        .insert({ post_id: postId, user_id: userId });
 
       if (insertError) throw insertError;
       return NextResponse.json({ success: true, action: 'liked' });
     }
   } catch (err: any) {
     console.error('[Gallery Like POST] Exception:', err);
-    return NextResponse.json({ error: 'Internal Server Error', details: err.message }, { status: 500 });
+    return NextResponse.json({ error: 'Bir hata oluştu', details: err.message }, { status: 500 });
   }
 }
