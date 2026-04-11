@@ -1,59 +1,50 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
+# Dependencies
 /node_modules
 /.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+.pnp.js
+.pnp.cjs
 
-# testing
-/coverage
-
-# next.js
+# Build outputs
 /.next/
 /out/
+/build/
 
-# production
-/build
+# Vercel
+.vercel
 
-# misc
-.DS_Store
-*.pem
+# Local Environment
+.env*.local
+!.env.example
 
-# debug
+# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
-
-# env files (can opt-in for committing if needed)
-.env*
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# scratch and tools
-*.js
-*.mjs
-!package.json
-*.json
-!package*.json
-!tsconfig.json
-!next.config.json
-!components.json
-!mcp_config.json
-skript_records_to_upload.json
-batch*.json
-extract*.json
-prepare*.json
-upload*.json
-*.txt
 *.log
+
+# Caches
+*.tsbuildinfo
+
+# Operating System files
+.DS_Store
+*.pem
+
+# Personal Notes & Drafts
+# These files appear to be personal notes or temporary documents.
+Açıklama.md
+AGENTS.md
+AI_limiti.md
+CLAUDE.md
+inceleme.md
+son.md
+
+# Local Scripts & Scratchpad
+# These directories contain one-off scripts and temporary files not needed by the project itself.
+/scripts/
+/scratch/
+/hatalar/
+
+# Lock files from other package managers if you only use one
+# package-lock.json (if you use yarn or pnpm)
+# yarn.lock (if you use npm or pnpm)
+# pnpm-lock.yaml (if you use npm or yarn)

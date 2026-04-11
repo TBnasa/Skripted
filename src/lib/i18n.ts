@@ -15,6 +15,7 @@ export const translations: Translations = {
     kernel_info: "Çekirdek: Paper 1.21.1 · Sürüm: Skript 2.14.3",
     launch_engine: "Motoru Başlat",
     access_engine: "Motora Eriş",
+    view_architecture: "Mimariyi Görüntüle",
     ai_asistan: "Asistan",
     user_profile: "Profil",
     copy: "Kopyala",
