@@ -180,7 +180,7 @@ export class GalleryService {
     return data;
   }
 
-  static async addComment(postId: string, userId: string, authorName: string, content: string) {
+  static async addComment(postId: string, userId: string, authorName: string, content: string, parentId?: string) {
     const sanitizedContent = stripHtmlTags(content);
 
     const { data, error } = await this.supabase
@@ -190,6 +190,7 @@ export class GalleryService {
         user_id: userId,
         author_name: authorName,
         content: sanitizedContent,
+        parent_id: parentId || null,
       })
       .select()
       .single();

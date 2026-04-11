@@ -12,6 +12,7 @@ import { createClerkClient } from '@/lib/supabase-browser';
 import { useAuth } from '@clerk/nextjs';
 import { SKRIPT_LANGUAGE_ID, registerSkriptLanguage } from '@/lib/skript-language';
 import { setupSkriptLinter } from '@/lib/skript-linter';
+import CommentThread from './CommentThread';
 
 interface GalleryPost {
   id: string;
@@ -35,6 +36,9 @@ interface Comment {
   author_name: string;
   content: string;
   created_at: string;
+  parent_id: string | null;
+  avatar_url?: string;
+  author_username?: string;
 }
 
 const CATEGORIES: Record<string, { name: string, icon: string }> = {
@@ -321,12 +325,15 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
             )}
             
             <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-500">
-              <div className="flex items-center gap-2 px-4 py-2 bg-white/[0.03] border border-white/[0.06] rounded-full text-zinc-300">
+              <Link 
+                href={`/u/${postData.author_name.toLowerCase().replace(/\s+/g, '_')}`}
+                className="flex items-center gap-2 px-4 py-2 bg-white/[0.03] border border-white/[0.06] rounded-full text-zinc-300 hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all group/author"
+              >
                 <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
                   <User size={10} className="text-emerald-400" />
                 </div>
-                <span className="font-semibold">{postData.author_name}</span>
-              </div>
+                <span className="font-semibold text-zinc-300 group-hover/author:text-white transition-colors">{postData.author_name}</span>
+              </Link>
               <span className="hidden sm:inline opacity-20">•</span>
               <span className="font-mono text-xs uppercase tracking-widest">{new Date(postData.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
             </div>
@@ -478,7 +485,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
               
               <div className={`relative flex-1 ${isFullscreen ? 'h-full' : 'min-h-[500px] h-[600px]'}`}>
                 <Editor
-                  height="600px"
+                  height={isFullscreen ? "100%" : "600px"}
                   language={SKRIPT_LANGUAGE_ID}
                   theme="skripted-dark"
                   beforeMount={handleEditorWillMount}
@@ -512,7 +519,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
             </motion.div>
 
             {/* Comments Section */}
-            <div className="bg-[#0c0c0e] border border-white/[0.06] rounded-[2.5rem] p-8 md:p-10 shadow-2xl">
+            <div className="bg-[#0c0c0e] border border-white/[0.06] rounded-[2.5rem] p-8 md:p-10 shadow-2xl uppercase">
                <h3 className="text-2xl font-black text-white mb-8 flex items-center gap-3">
                   <MessageSquare size={24} className="text-emerald-400" />
                   Yorumlar <span className="text-zinc-600 font-mono text-lg">({comments.length})</span>
@@ -543,41 +550,18 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                )}
 
                {/* Comments List */}
-               <div className="space-y-6 max-h-[500px] overflow-y-auto custom-scrollbar pr-2">
+               <div className="max-h-[800px] overflow-y-auto custom-scrollbar pr-2">
                  {isLoadingComments ? (
-                   [...Array(3)].map((_, i) => (
-                     <div key={i} className="flex gap-4 animate-pulse">
-                        <div className="w-10 h-10 rounded-full bg-white/5"></div>
-                        <div className="flex-1 space-y-2">
-                           <div className="h-4 w-32 bg-white/5 rounded"></div>
-                           <div className="h-12 w-full bg-white/5 rounded-xl"></div>
-                        </div>
-                     </div>
-                   ))
-                 ) : comments.length === 0 ? (
-                   <div className="text-center py-10 opacity-30">
-                      <MessageSquare size={48} className="mx-auto mb-4" />
-                      <p className="text-sm">Henüz yorum yapılmamış.</p>
+                   <div className="flex justify-center py-10">
+                     <Loader2 className="animate-spin text-emerald-500" />
                    </div>
                  ) : (
-                   comments.map((comment) => (
-                     <div key={comment.id} className="flex gap-4 group/comment">
-                        <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 shrink-0 text-emerald-400 font-black text-xs">
-                           {comment.author_name[0].toUpperCase()}
-                        </div>
-                        <div className="flex-1">
-                           <div className="flex items-center justify-between mb-1">
-                              <span className="font-bold text-sm text-zinc-300">{comment.author_name}</span>
-                              <span className="text-[10px] text-zinc-600 font-mono italic">
-                                 {new Date(comment.created_at).toLocaleDateString('tr-TR')}
-                              </span>
-                           </div>
-                           <div className="p-4 bg-white/[0.03] border border-white/[0.05] rounded-[1.5rem] rounded-tl-none text-zinc-400 text-sm leading-relaxed font-medium">
-                              {comment.content}
-                           </div>
-                        </div>
-                     </div>
-                   ))
+                   <CommentThread 
+                     comments={comments} 
+                     postId={post.id} 
+                     currentUserId={userId}
+                     onCommentAdded={(newC) => setComments(prev => [...prev, newC])}
+                   />
                  )}
                </div>
             </div>
