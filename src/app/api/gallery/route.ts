@@ -11,12 +11,23 @@ export async function GET(request: NextRequest) {
     // Parse pagination (if any)
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get('limit') || '50');
+    const filter = searchParams.get('filter');
 
-    // Fetch popular posts by default
-    const { data, error } = await supabase
+    let query = supabase
       .from('gallery_posts')
-      .select('id, user_id, author_name, title, description, image_urls, likes_count, downloads_count, created_at, is_public')
-      .eq('is_public', true)
+      .select('id, user_id, author_name, title, description, image_urls, likes_count, downloads_count, created_at, is_public');
+
+    if (filter === 'mine') {
+      const { userId } = await auth();
+      if (!userId) {
+        return NextResponse.json({ error: 'Bu işlem için giriş yapmalısınız' }, { status: 401 });
+      }
+      query = query.eq('user_id', userId);
+    } else {
+      query = query.eq('is_public', true);
+    }
+
+    const { data, error } = await query
       .order('created_at', { ascending: false })
       .limit(limit);
 

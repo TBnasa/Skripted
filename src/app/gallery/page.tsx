@@ -3,8 +3,10 @@
 import { useTranslation } from '@/lib/useTranslation';
 import useSWR from 'swr';
 import Link from 'next/link';
-import { Heart, Search, Code, Download, User, Sparkles } from 'lucide-react';
+import { Heart, Search, Code, Download, User, Sparkles, Filter } from 'lucide-react';
 import Navbar from '@/components/Navbar';
+import { useState } from 'react';
+import { useAuth } from '@clerk/nextjs';
 
 interface GalleryPost {
   id: string;
@@ -22,7 +24,19 @@ const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 export default function GalleryPage() {
   const { t } = useTranslation();
-  const { data: posts, error, isLoading } = useSWR<GalleryPost[]>('/api/gallery', fetcher);
+  const { userId } = useAuth();
+  const [filter, setFilter] = useState<'all' | 'mine'>('all');
+  const [search, setSearch] = useState('');
+  
+  const { data: posts, error, isLoading } = useSWR<GalleryPost[]>(
+    `/api/gallery?limit=50${filter === 'mine' ? '&filter=mine' : ''}`, 
+    fetcher
+  );
+
+  const filteredPosts = posts?.filter(post => 
+    post.title.toLowerCase().includes(search.toLowerCase()) ||
+    post.author_name.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="flex min-h-screen flex-col bg-[var(--color-bg-primary)] text-white">
@@ -40,9 +54,29 @@ export default function GalleryPage() {
             <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tighter">
               Skript <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 antialiased">Galerisi</span>
             </h1>
-            <p className="text-zinc-500 text-xl max-w-2xl leading-relaxed">
+            <p className="text-zinc-500 text-xl max-w-2xl leading-relaxed mb-8">
               En iyi Minecraft skriptlerini keşfedin, indirin ve topluluğumuzla kendi kodlarınızı paylaşın.
             </p>
+
+            {/* Filter Tabs */}
+            <div className="flex items-center p-1 bg-white/[0.03] border border-white/[0.06] rounded-2xl w-fit">
+              <button 
+                onClick={() => setFilter('all')}
+                className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                  filter === 'all' ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20' : 'text-zinc-500 hover:text-zinc-300'
+                }`}
+              >
+                Tüm Skriptler
+              </button>
+              <button 
+                onClick={() => setFilter('mine')}
+                className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                  filter === 'mine' ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20' : 'text-zinc-500 hover:text-zinc-300'
+                }`}
+              >
+                Benim Paylaşımlarım
+              </button>
+            </div>
           </div>
           
           <div className="relative w-full md:w-96 group">
@@ -51,7 +85,9 @@ export default function GalleryPage() {
                <Search className="ml-4 text-zinc-600" size={20} />
                <input 
                  type="text" 
-                 placeholder="Skript ara..." 
+                 value={search}
+                 onChange={(e) => setSearch(e.target.value)}
+                 placeholder="Skript veya yazar ara..." 
                  className="w-full bg-transparent py-4 pl-3 pr-4 focus:outline-none text-white placeholder-zinc-700"
                />
             </div>
@@ -64,7 +100,9 @@ export default function GalleryPage() {
                <Code className="text-red-500" />
             </div>
             <h3 className="text-xl font-bold mb-2">Galeri Yüklenemedi</h3>
-            <p className="text-red-500/60 max-w-sm">Sunucuyla bağlantı kurulurken bir hata oluştu. Lütfen sayfayı yenilemeyi deneyin.</p>
+            <p className="text-red-500/60 max-w-sm">
+              {error.status === 401 ? 'Kendi paylaşımlarınızı görmek için giriş yapmalısınız.' : 'Sunucuyla bağlantı kurulurken bir hata oluştu.'}
+            </p>
           </div>
         )}
 
@@ -78,21 +116,21 @@ export default function GalleryPage() {
               </div>
             ))}
           </div>
-        ) : posts?.length === 0 ? (
+        ) : filteredPosts?.length === 0 ? (
           <div className="text-center py-32 bg-white/[0.01] border border-white/[0.03] rounded-[3rem] relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.02] to-transparent"></div>
             <div className="relative z-10 scale-110 group-hover:scale-125 transition-transform duration-700 ease-out mb-8 inline-block opacity-20">
-               <Code size={120} className="text-emerald-500" />
+               <Filter size={120} className="text-emerald-500" />
             </div>
-            <h3 className="text-2xl font-black text-white mb-3">Henüz Bir Şey Paylaşılmadı</h3>
-            <p className="text-zinc-500 max-w-sm mx-auto mb-10 text-lg">Galerimiz henüz boş. İlk skriptini paylaşarak topluluğu canlandırabilirsin!</p>
-            <Link href="/chat" className="btn-premium px-10 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl transition-all shadow-xl shadow-emerald-500/10">
-               Hemen Kod Üret
-            </Link>
+            <h3 className="text-2xl font-black text-white mb-3">Sonuç Bulunamadı</h3>
+            <p className="text-zinc-500 max-w-sm mx-auto mb-10 text-lg">Aramanıza veya seçili filtreye uygun skript bulunamadı.</p>
+            <button onClick={() => {setFilter('all'); setSearch('');}} className="px-10 py-4 bg-white/[0.05] hover:bg-white/[0.1] text-white rounded-2xl transition-all border border-white/10">
+               Filtreleri Temizle
+            </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {posts?.map((post) => (
+            {filteredPosts?.map((post) => (
               <Link href={`/gallery/${post.id}`} key={post.id} className="group flex flex-col bg-[#0f0f12] border border-white/[0.06] rounded-[2.5rem] overflow-hidden hover:border-emerald-500/40 hover:bg-[#121216] transition-all duration-500 hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] hover:-translate-y-2 relative">
                 
                 {/* Image Container */}
@@ -110,10 +148,14 @@ export default function GalleryPage() {
                   )}
                   
                   {/* Glass Stats Overlay */}
-                  <div className="absolute top-4 right-4 z-20">
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-black/40 backdrop-blur-xl border border-white/10 rounded-full text-xs font-black text-white shadow-2xl transition-transform group-hover:scale-110">
+                  <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-black/40 backdrop-blur-xl border border-white/10 rounded-full text-[10px] font-black text-white shadow-2xl transition-transform group-hover:scale-110">
                       <Heart size={14} className="text-rose-500 fill-rose-500" />
                       {post.likes_count}
+                    </div>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-black/40 backdrop-blur-xl border border-white/10 rounded-full text-[10px] font-black text-white shadow-2xl transition-transform group-hover:scale-110">
+                      <Download size={14} className="text-emerald-400" />
+                      {post.downloads_count}
                     </div>
                   </div>
                   
