@@ -1,6 +1,7 @@
 import { getSupabaseAdmin } from '@/lib/supabase-server';
 import { UserScriptSchema } from '@/types/schemas';
 import { stripHtmlTags } from '@/lib/utils/sanitize';
+import { StorageArchiver } from '@/lib/storage-archiver';
 
 export class UserScriptService {
   private static supabase = getSupabaseAdmin();
@@ -13,7 +14,7 @@ export class UserScriptService {
       .order('updated_at', { ascending: false });
 
     if (error) throw error;
-    return data;
+    return await StorageArchiver.hydrateObject(data);
   }
 
   static async getScriptById(id: string, userId: string) {
@@ -25,7 +26,7 @@ export class UserScriptService {
       .single();
 
     if (error) throw error;
-    return data;
+    return await StorageArchiver.hydrateObject(data);
   }
 
   static async createScript(userId: string, scriptData: any) {
@@ -37,12 +38,15 @@ export class UserScriptService {
     const { title, content, version } = validation.data;
     const sanitizedTitle = stripHtmlTags(title);
 
+    // Archive large code to storage
+    const archivedContent = await StorageArchiver.archiveIfLarge(content, 'scripts');
+
     const { data, error } = await this.supabase
       .from('user_scripts')
       .insert({
         user_id: userId,
         title: sanitizedTitle,
-        content,
+        content: archivedContent,
         version: version || '1.0.0',
       })
       .select()
@@ -65,6 +69,10 @@ export class UserScriptService {
       validation.data.title = stripHtmlTags(validation.data.title);
     }
 
+    if (validation.data.content) {
+      validation.data.content = await StorageArchiver.archiveIfLarge(validation.data.content, 'scripts');
+    }
+
     const { data, error } = await this.supabase
       .from('user_scripts')
       .update({
@@ -80,6 +88,7 @@ export class UserScriptService {
 
     // Create a version snapshot
     try {
+      // Version content is already archived if data.content became a reference
       await this.supabase
         .from('user_script_versions')
         .insert({

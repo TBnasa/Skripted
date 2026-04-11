@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
+import { StorageArchiver } from '@/lib/storage-archiver';
 
 /**
  * GET /api/chats/[id] — Load a single chat with its messages
@@ -29,7 +30,10 @@ export async function GET(
       return NextResponse.json({ error: 'Chat not found' }, { status: 404 });
     }
 
-    return NextResponse.json(data);
+    // HYDRATE CONTENT FROM STORAGE (Restore large blobs)
+    const hydratedData = await StorageArchiver.hydrateObject(data);
+
+    return NextResponse.json(hydratedData);
   } catch (error) {
     console.error('[Chat GET] Error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

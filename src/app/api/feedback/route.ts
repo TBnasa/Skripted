@@ -9,6 +9,7 @@ import { getSupabaseAdmin } from '@/lib/supabase-server';
 import type { FeedbackPayload } from '@/types';
 import { FeedbackPayloadSchema } from '@/types/schemas';
 import { JudgeService } from '@/lib/services/judge-service';
+import { StorageArchiver } from '@/lib/storage-archiver';
 
 export async function POST(request: NextRequest): Promise<Response> {
   try {
@@ -39,6 +40,9 @@ export async function POST(request: NextRequest): Promise<Response> {
     } = result.data;
 
     const supabase = getSupabaseAdmin();
+    
+    // OFFLOAD CODE TO STORAGE (Save DB space)
+    const archivedCode = await StorageArchiver.archiveIfLarge(generatedCode, 'feedback');
 
     const { data: insertedData, error } = await supabase
       .from('feedback_logs')
@@ -46,7 +50,7 @@ export async function POST(request: NextRequest): Promise<Response> {
         session_id: sessionId,
         user_id: userId,
         prompt,
-        generated_code: generatedCode,
+        generated_code: archivedCode,
         success,
         error_log: errorLog ?? null,
         console_output: consoleOutput ?? null,

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
 import { SessionRequestSchema } from '@/types/schemas';
+import { StorageArchiver } from '@/lib/storage-archiver';
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,6 +25,9 @@ export async function POST(request: NextRequest) {
     const { sessionId, title, messages } = result.data;
 
     const supabase = getSupabaseAdmin();
+    
+    // ARCHIVE LARGE CONTENT TO STORAGE (Save DB space)
+    const archivedMessages = await StorageArchiver.archiveObject(messages);
 
     // Ownership check: prevent session hijacking by verifying the existing
     // chat belongs to the current user before allowing an upsert.
@@ -44,7 +48,7 @@ export async function POST(request: NextRequest) {
         id: sessionId,
         user_id: userId,
         title: title || 'New Chat',
-        content: messages,
+        content: archivedMessages,
       }, { onConflict: 'id' });
 
     if (error) {
