@@ -16,6 +16,9 @@ export const metadata: Metadata = {
     description: 'AI-powered Minecraft Skript generation backed by a curated knowledge base.',
     type: 'website',
   },
+  verification: {
+    google: 't73YW-32WK8B5fYAJjfUxTb1dSQ9M8TGnGLZgacmqYY',
+  },
 };
 
 import { ClerkProvider } from '@clerk/nextjs';
