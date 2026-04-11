@@ -9,7 +9,7 @@ import Navbar from '@/components/Navbar';
 import { useState, useEffect, Suspense } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 
 interface GalleryPost {
   id: string;
@@ -46,7 +46,7 @@ const fetcher = async (url: string) => {
   return res.json();
 };
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
@@ -56,7 +56,7 @@ const containerVariants = {
   }
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
 };
