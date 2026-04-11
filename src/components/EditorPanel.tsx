@@ -7,6 +7,9 @@ import DownloadButton from './DownloadButton';
 import GalleryPostModal from './GalleryPostModal';
 import { SKRIPT_LANGUAGE_ID, skriptTokensProvider, skriptTheme } from '@/lib/skript-language';
 import type { editor } from 'monaco-editor';
+import { useAuth } from '@clerk/nextjs';
+import { toast } from 'sonner';
+import { Cloud, Save, Share2, Copy, FileCode, Loader2, Sparkles, AlertCircle, ChevronRight } from 'lucide-react';
 
 const Editor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
@@ -18,12 +21,14 @@ interface EditorPanelProps {
 
 export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorPanelProps) {
   const { t } = useTranslation();
+  const { userId } = useAuth();
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const [copied, setCopied] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [aiReport, setAiReport] = useState<any>(null);
   const [showInsight, setShowInsight] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleEditorMount = useCallback(
     (editorInstance: editor.IStandaloneCodeEditor, monaco: typeof import('monaco-editor')) => {
@@ -58,28 +63,6 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
                 endColumn: line.length + 1,
               });
             }
-            
-            if (line.match(/\{\s*%.*?%\s*\}/)) {
-              markers.push({
-                severity: monaco.MarkerSeverity.Error,
-                message: 'Live Logic Guard: Hatalı değişken formatı.',
-                startLineNumber: lineNum,
-                startColumn: 1,
-                endLineNumber: lineNum,
-                endColumn: line.length + 1,
-              });
-            }
-            
-            if (line.match(/^[ ]{1,3}[^ ]/)) {
-              markers.push({
-                severity: monaco.MarkerSeverity.Warning,
-                message: 'Live Logic Guard: Hatalı boşluklandırma.',
-                startLineNumber: lineNum,
-                startColumn: 1,
-                endLineNumber: lineNum,
-                endColumn: line.length + 1,
-              });
-            }
           });
           
           monaco.editor.setModelMarkers(model, 'skript-guard', markers);
@@ -88,6 +71,16 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
     },
     [],
   );
+
+  useEffect(() => {
+    // Check for code sent from Bulut Scriptlerim
+    const pendingCode = localStorage.getItem('skripted_active_code');
+    if (pendingCode) {
+      onCodeChange(pendingCode);
+      localStorage.removeItem('skripted_active_code');
+      toast.success('Script buluttan yüklendi!');
+    }
+  }, [onCodeChange]);
 
   useEffect(() => {
     if (editorRef.current) {
@@ -102,146 +95,92 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
     if (!code.trim()) return;
     await navigator.clipboard.writeText(code);
     setCopied(true);
+    toast.success('Panoya kopyalandı!');
     setTimeout(() => setCopied(false), 2000);
   }, [code]);
+
+  const handleCloudSave = async () => {
+    if (!userId) {
+      toast.error('Giriş yapmalısınız!');
+      return;
+    }
+    if (!code.trim()) return;
+
+    setIsSaving(true);
+    try {
+      const res = await fetch('/api/user-scripts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: `Script ${new Date().toLocaleDateString('tr-TR')}`,
+          content: code,
+          version: '1.0.0'
+        })
+      });
+
+      if (!res.ok) throw new Error('Yükleme başarısız');
+      
+      toast.success('Script bulut hesabınıza kaydedildi!');
+    } catch (err) {
+      toast.error('Kaydedilirken bir hata oluştu');
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <div className="flex flex-1 flex-col min-h-0 glass-panel overflow-hidden m-2 rounded-2xl">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-white/[0.04] bg-white/[0.01] px-5 py-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 text-amber-400">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />
-            </svg>
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
+             <Code size={18} />
           </div>
           <div>
             <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t('script_editor')}</h2>
-            <p className="text-[10px] font-mono text-[var(--color-text-muted)] mt-0.5">
-              {code.trim() ? `${code.split('\n').length} lines` : t('waiting_generation')}
+            <p className="text-[10px] font-mono text-emerald-500/50 mt-0.5 uppercase tracking-widest italic">
+              {code.trim() ? `${code.split('\n').length} Satır` : 'Sistem Hazır'}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Copy Button */}
           <button
             onClick={handleCopy}
             disabled={!code.trim()}
-            className="flex items-center gap-1.5 bg-white/[0.03] border border-white/[0.06] px-3 py-2 text-[11px] font-medium text-[var(--color-text-secondary)] rounded-xl transition-all duration-300 hover:bg-white/[0.06] hover:text-[var(--color-text-primary)] disabled:opacity-30"
+            className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.06] px-3 py-2 text-[10px] font-black uppercase tracking-widest text-zinc-400 rounded-xl transition-all hover:bg-white/[0.06] hover:text-white disabled:opacity-30 active:scale-95"
           >
-            {copied ? (
-              <>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-success)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-                {t('copied')}
-              </>
-            ) : (
-              <>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                </svg>
-                {t('copy')}
-              </>
-            )}
+            {copied ? <CheckCircle2 size={12} className="text-emerald-500" /> : <Copy size={12} />}
+            {copied ? 'Kopyalandı' : 'Kopyala'}
           </button>
+
+          {/* Cloud Save Button */}
+          <button
+            onClick={handleCloudSave}
+            disabled={!code.trim() || isSaving}
+            className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.06] px-3 py-2 text-[10px] font-black uppercase tracking-widest text-cyan-400 rounded-xl transition-all hover:bg-cyan-500/10 hover:border-cyan-500/30 disabled:opacity-30 active:scale-95"
+          >
+            {isSaving ? <Loader2 size={12} className="animate-spin" /> : <Cloud size={12} />}
+            {isSaving ? 'Kaydediliyor' : 'Buluta Kaydet'}
+          </button>
+          
           <DownloadButton code={code} />
+          
+          {/* Share Button */}
           <button
             onClick={() => setIsGalleryOpen(true)}
             disabled={!code.trim()}
-            className="flex items-center gap-1.5 bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 px-3 py-2 text-[11px] font-medium text-emerald-400 rounded-xl transition-all duration-300 hover:shadow-[0_0_15px_rgba(16,185,129,0.15)] disabled:opacity-30 disabled:hover:shadow-none"
+            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white rounded-xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.15)] active:scale-95 disabled:opacity-30"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-            </svg>
-            Share
+            <Share2 size={14} />
+            YAYINLA
           </button>
         </div>
       </div>
       
       {/* Editor & Panel Region */}
       <div className="relative flex-1 overflow-hidden flex">
-        {/* AI Expert Insight Panel */}
-        {showInsight && (
-          <div className="w-96 h-full bg-[var(--color-bg-secondary)] border-r border-white/[0.04] flex flex-col z-10 animate-slide-left">
-            <div className="flex items-center justify-between p-4 border-b border-white/[0.04]">
-              <div className="flex items-center gap-2">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                </svg>
-                <h3 className="text-xs font-semibold tracking-wider text-[var(--color-text-primary)] uppercase">
-                  {t('ai_expert_insight')}
-                </h3>
-              </div>
-              <button onClick={() => setShowInsight(false)} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors rounded-lg hover:bg-white/[0.05] p-1">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </button>
-            </div>
-            
-            <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-5 text-sm custom-scrollbar">
-              {verifying ? (
-                <div className="flex flex-col items-center justify-center py-20 text-center gap-4">
-                  <div className="h-8 w-8 border-2 border-white/[0.06] border-t-emerald-500 rounded-full animate-spin"></div>
-                  <p className="text-[var(--color-text-muted)] font-mono text-xs uppercase tracking-widest">{t('scanning_code')}</p>
-                </div>
-              ) : aiReport ? (
-                <>
-                  <div className={`p-4 rounded-xl flex items-center gap-3 border transition-all ${
-                    aiReport.status === 'Safe' ? 'bg-emerald-500/5 border-emerald-500/20 text-emerald-400' :
-                    aiReport.status === 'Warning' ? 'bg-amber-500/5 border-amber-500/20 text-amber-400' :
-                    'bg-red-500/5 border-red-500/20 text-red-400'
-                  }`}>
-                    <div className="shrink-0">
-                      {aiReport.status === 'Safe' ? (
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      ) : (
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                      )}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-xs uppercase tracking-wider">{aiReport.status === 'Safe' ? t('safe') : aiReport.status === 'Warning' ? t('warning') : t('critical_error')}</p>
-                      <p className="text-xs opacity-80 mt-0.5">{aiReport.message}</p>
-                    </div>
-                  </div>
-
-                  {aiReport.addons?.length > 0 && (
-                    <div className="space-y-2">
-                      <p className="text-[10px] uppercase font-medium tracking-widest text-[var(--color-text-muted)]">{t('required_addons')}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {aiReport.addons.map((addon: string, idx: number) => (
-                          <span key={idx} className="bg-white/[0.03] px-2.5 py-1 text-[10px] font-mono text-emerald-400/80 rounded-lg border border-white/[0.04]">
-                            {addon}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="space-y-3">
-                    <p className="text-[10px] uppercase font-medium tracking-widest text-[var(--color-text-muted)]">{t('analysis_details')}</p>
-                    <div className="grid gap-2">
-                      {aiReport.issues?.length > 0 ? aiReport.issues.map((issue: any, idx: number) => (
-                        <div key={idx} className={`p-3 rounded-xl bg-white/[0.02] border-l-2 text-xs ${
-                          issue.type === 'Critical' ? 'border-red-500' :
-                          issue.type === 'Warning' ? 'border-amber-500' : 'border-emerald-500'
-                        }`}>
-                          <p className="text-[var(--color-text-secondary)] leading-relaxed">{issue.message}</p>
-                        </div>
-                      )) : (
-                        <div className="p-3 rounded-xl bg-white/[0.02] border-l-2 border-emerald-500 text-xs text-[var(--color-text-muted)] italic">
-                          No issues detected.
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </>
-              ) : null}
-            </div>
-          </div>
-        )}
-
         {/* Monaco Editor */}
         <div className="flex-1 h-full overflow-hidden [overflow-anchor:none] bg-transparent">
           {code.trim() ? (
@@ -251,7 +190,7 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
               value={code}
               onChange={(value) => onCodeChange(value ?? '')}
               onMount={handleEditorMount}
-              theme="vs-dark"
+              theme="skripted-dark"
               options={{
                 fontSize: 14,
                 fontFamily: '"JetBrains Mono", "Cascadia Code", monospace',
@@ -263,7 +202,7 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
                 wordWrap: 'on',
                 tabSize: 4,
                 insertSpaces: false,
-                renderLineHighlight: 'gutter',
+                renderLineHighlight: 'all',
                 cursorBlinking: 'smooth',
                 cursorSmoothCaretAnimation: 'on',
                 smoothScrolling: true,
@@ -271,6 +210,7 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
                 roundedSelection: true,
                 readOnly: false,
                 automaticLayout: true,
+                contextmenu: false,
               }}
             />
           ) : isStreaming ? (
@@ -283,18 +223,15 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
               ))}
             </div>
           ) : (
-            <div className="flex h-full items-center justify-center bg-[#0a0a0a] mesh-gradient">
-              <div className="text-center max-w-sm mx-auto animate-fade-in">
-                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/[0.03] text-[var(--color-text-muted)] animate-float border border-white/[0.04]">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />
-                  </svg>
+            <div className="flex h-full items-center justify-center bg-[#0a0a0a] mesh-gradient relative">
+               <div className="absolute inset-0 bg-emerald-500/[0.01] pointer-events-none"></div>
+              <div className="text-center max-w-sm mx-auto animate-fade-in relative z-10">
+                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-[2rem] bg-white/[0.03] text-emerald-500/30 animate-float border border-white/[0.04] shadow-2xl">
+                  <FileCode size={32} />
                 </div>
-                <p className="text-base font-semibold text-[var(--color-text-secondary)]">
-                  {t('appear_here')}
-                </p>
-                <p className="mt-3 text-xs font-mono text-emerald-500/50 uppercase tracking-widest">
-                  {t('status_ready')}
+                <h3 className="text-sm font-black text-zinc-500 uppercase tracking-[0.3em] mb-2">{t('status_ready')}</h3>
+                <p className="text-xs font-medium text-zinc-700 max-w-[200px] mx-auto leading-relaxed italic">
+                  Sol taraftaki terminali kullanarak kod üretmeye başlayabilirsin.
                 </p>
               </div>
             </div>
@@ -311,5 +248,15 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
         }}
       />
     </div>
+  );
+}
+
+// Helper component for Icons
+function CheckCircle2({ size, className }: { size: number, className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+      <polyline points="22 4 12 14.01 9 11.01" />
+    </svg>
   );
 }

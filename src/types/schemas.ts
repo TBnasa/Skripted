@@ -38,8 +38,16 @@ export const VerifyRequestSchema = z.object({
 });
 
 export const GalleryPostSchema = z.object({
-  title: z.string().min(3, 'Title must be at least 3 characters').max(100, 'Title is too long'),
-  description: z.string().max(1000, 'Description is too long').optional(),
-  codeSnippet: z.string().min(1, 'Code snippet is required').max(20000, 'Code is too long'),
-  imageUrls: z.array(z.string().url()).max(5, 'Maximum 5 images allowed'),
+  title: z.string().min(3, 'Başlık en az 3 karakter olmalıdır').max(100, 'Başlık çok uzun'),
+  description: z.string().max(1000, 'Açıklama çok uzun').optional(),
+  codeSnippet: z.string().min(1, 'Kod alanı boş bırakılamaz').max(20000, 'Kod çok uzun'),
+  imageUrls: z.array(z.string().url()).max(5, 'En fazla 5 görsel yüklenebilir'),
+  category: z.enum(['Economy', 'Admin', 'Minigame', 'Chat', 'Security', 'Other']).default('Other'),
+  tags: z.array(z.string()).max(5, 'En fazla 5 etiket eklenebilir').default([]),
+});
+
+export const UserScriptSchema = z.object({
+  title: z.string().min(1, 'Başlık gereklidir').max(100),
+  content: z.string().min(1, 'İçerik gereklidir'),
+  version: z.string().optional().default('1.0.0'),
 });

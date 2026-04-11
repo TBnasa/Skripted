@@ -2,12 +2,13 @@
 
 import { useTranslation } from '@/lib/useTranslation';
 import Link from 'next/link';
-import { Heart, Code, Download, User, ArrowLeft, Share2, Copy, CheckCircle2, AlertCircle, Loader2, MessageSquare, Send, Trash2 } from 'lucide-react';
+import { Heart, Code, Download, User, ArrowLeft, Share2, Copy, CheckCircle2, AlertCircle, Loader2, MessageSquare, Send, Trash2, Hash, Tag, Sparkles } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import { toast } from 'sonner';
 import { createClerkClient } from '@/lib/supabase-browser';
 import { useAuth } from '@clerk/nextjs';
+import { SKRIPT_LANGUAGE_ID, skriptTokensProvider, skriptTheme } from '@/lib/skript-language';
 
 interface GalleryPost {
   id: string;
@@ -20,6 +21,8 @@ interface GalleryPost {
   likes_count: number;
   downloads_count: number;
   created_at: string;
+  category: string;
+  tags: string[];
 }
 
 interface Comment {
@@ -30,6 +33,15 @@ interface Comment {
   content: string;
   created_at: string;
 }
+
+const CATEGORIES: Record<string, { name: string, icon: string }> = {
+  Economy: { name: 'Ekonomi', icon: '💰' },
+  Admin: { name: 'Admin', icon: '🛡️' },
+  Minigame: { name: 'Minigame', icon: '🎮' },
+  Chat: { name: 'Chat', icon: '💬' },
+  Security: { name: 'Güvenlik', icon: '🔐' },
+  Other: { name: 'Diğer', icon: '📁' },
+};
 
 export default function GalleryPostContent({ post }: { post: GalleryPost }) {
   const { userId, getToken } = useAuth();
@@ -172,6 +184,57 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
     toast.success('Paylaşım linki kopyalandı!');
   };
 
+  const [isEditingPost, setIsEditingPost] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(post.title);
+  const [editedDesc, setEditedDesc] = useState(post.description);
+  const [editedCategory, setEditedCategory] = useState(post.category);
+  const [isUpdatingPost, setIsUpdatingPost] = useState(false);
+  const [postData, setPostData] = useState(post);
+
+  const handleUpdatePost = async () => {
+    setIsUpdatingPost(true);
+    try {
+      const res = await fetch(`/api/gallery/${post.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: editedTitle,
+          description: editedDesc,
+          category: editedCategory,
+        }),
+      });
+      if (!res.ok) throw new Error('Güncelleme başarısız');
+      const updated = await res.json();
+      setPostData(updated);
+      setIsEditingPost(false);
+      toast.success('Gönderi güncellendi!');
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setIsUpdatingPost(false);
+    }
+  };
+
+  const handleDeletePost = async () => {
+    if (!confirm('Bu gönderiyi kalıcı olarak silmek istediğinize emin misiniz?')) return;
+    try {
+      const res = await fetch(`/api/gallery/${post.id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Silme işlemi başarısız');
+      toast.success('Gönderi silindi. Galeriye yönlendiriliyorsunuz...');
+      setTimeout(() => window.location.href = '/gallery', 1500);
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+  };
+
+  const handleEditorWillMount = (monaco: any) => {
+    if (!monaco.languages.getLanguages().some((lang: any) => lang.id === SKRIPT_LANGUAGE_ID)) {
+      monaco.languages.register({ id: SKRIPT_LANGUAGE_ID });
+      monaco.languages.setMonarchTokensProvider(SKRIPT_LANGUAGE_ID, skriptTokensProvider);
+      monaco.editor.defineTheme('skripted-dark', skriptTheme);
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col bg-[var(--color-bg-primary)] text-white">
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 animate-fade-in">
@@ -183,18 +246,84 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
         {/* Top Header */}
         <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-8 mb-12">
           <div className="flex-1 animate-slide-up">
-            <h1 className="text-4xl md:text-6xl font-black text-white mb-6 leading-tight tracking-tight">
-              {post.title}
-            </h1>
+            <div className="flex items-center gap-3 mb-4">
+               {isEditingPost ? (
+                 <select 
+                   value={editedCategory}
+                   onChange={(e) => setEditedCategory(e.target.value)}
+                   className="px-3 py-1 bg-[#121214] border border-emerald-500/30 rounded-lg text-emerald-400 text-xs font-bold focus:outline-none"
+                 >
+                   {Object.entries(CATEGORIES).map(([id, cat]) => (
+                     <option key={id} value={id}>{cat.icon} {cat.name}</option>
+                   ))}
+                 </select>
+               ) : (
+                 postData.category && (
+                   <span className="px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] shadow-lg">
+                     {CATEGORIES[postData.category]?.icon} {CATEGORIES[postData.category]?.name || postData.category}
+                   </span>
+                 )
+               )}
+               
+               {/* Owner Actions */}
+               {userId === post.user_id && !isEditingPost && (
+                 <div className="flex items-center gap-2 ml-auto lg:ml-0">
+                   <button 
+                     onClick={() => setIsEditingPost(true)}
+                     className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-[9px] font-bold text-zinc-400 hover:text-white transition-colors"
+                   >
+                     DÜZENLE
+                   </button>
+                   <button 
+                     onClick={handleDeletePost}
+                     className="px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-[9px] font-bold text-red-400 hover:bg-red-500 hover:text-white transition-all"
+                   >
+                     SİL
+                   </button>
+                 </div>
+               )}
+
+               {isEditingPost && (
+                 <div className="flex items-center gap-2">
+                   <button 
+                     onClick={handleUpdatePost}
+                     disabled={isUpdatingPost}
+                     className="px-3 py-1 bg-emerald-600 text-white rounded-lg text-[9px] font-bold disabled:opacity-50"
+                   >
+                     {isUpdatingPost ? '...' : 'KAYDET'}
+                   </button>
+                   <button 
+                     onClick={() => setIsEditingPost(false)}
+                     className="px-3 py-1 bg-white/5 text-zinc-400 rounded-lg text-[9px] font-bold"
+                   >
+                     İPTAL
+                   </button>
+                 </div>
+               )}
+            </div>
+            
+            {isEditingPost ? (
+              <input 
+                type="text" 
+                value={editedTitle}
+                onChange={(e) => setEditedTitle(e.target.value)}
+                className="text-4xl md:text-6xl font-black bg-white/5 border-b border-white/10 w-full focus:outline-none focus:border-emerald-500 transition-colors py-2 mb-6"
+              />
+            ) : (
+              <h1 className="text-4xl md:text-6xl font-black text-white mb-6 leading-tight tracking-tight">
+                {postData.title}
+              </h1>
+            )}
+            
             <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-500">
               <div className="flex items-center gap-2 px-4 py-2 bg-white/[0.03] border border-white/[0.06] rounded-full text-zinc-300">
                 <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
                   <User size={10} className="text-emerald-400" />
                 </div>
-                <span className="font-semibold">{post.author_name}</span>
+                <span className="font-semibold">{postData.author_name}</span>
               </div>
               <span className="hidden sm:inline opacity-20">•</span>
-              <span className="font-mono text-xs uppercase tracking-widest">{new Date(post.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+              <span className="font-mono text-xs uppercase tracking-widest">{new Date(postData.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
             </div>
           </div>
           
@@ -231,9 +360,28 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                  </div>
                  Açıklama
               </h3>
-              <div className="prose prose-invert prose-emerald text-zinc-400 whitespace-pre-wrap leading-relaxed max-w-none text-base italic">
-                {post.description || "Bu paylaşım için bir açıklama girilmemiş."}
-              </div>
+              {isEditingPost ? (
+                <textarea 
+                  value={editedDesc}
+                  onChange={(e) => setEditedDesc(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-zinc-300 focus:outline-none focus:border-emerald-500 min-h-[150px] resize-none"
+                />
+              ) : (
+                <div className="prose prose-invert prose-emerald text-zinc-400 whitespace-pre-wrap leading-relaxed max-w-none text-base italic">
+                  {postData.description || "Bu paylaşım için bir açıklama girilmemiş."}
+                </div>
+              )}
+
+              {post.tags && post.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-8">
+                  {post.tags.map(tag => (
+                    <span key={tag} className="px-3 py-1 bg-white/[0.03] border border-white/[0.06] rounded-lg text-[9px] font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-1.5">
+                       <Hash size={10} className="text-emerald-500" />
+                       {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
 
             {post.image_urls && post.image_urls.length > 0 && (
@@ -298,8 +446,9 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
               <div className="flex-1 relative bg-transparent">
                 <Editor
                   height="100%"
-                  language="vb"
-                  theme="vs-dark"
+                  language={SKRIPT_LANGUAGE_ID}
+                  theme="skripted-dark"
+                  beforeMount={handleEditorWillMount}
                   value={post.code_snippet}
                   options={{
                     readOnly: true,
@@ -311,6 +460,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                     lineNumbers: 'on',
                     renderLineHighlight: 'all',
                     smoothScrolling: true,
+                    contextmenu: false,
                   }}
                 />
               </div>
@@ -331,7 +481,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                           value={newComment}
                           onChange={(e) => setNewComment(e.target.value)}
                           placeholder="Fikrinizi paylaşın..."
-                          className="w-full bg-white/[0.02] border border-white/[0.08] rounded-2xl p-4 min-h-[120px] text-white placeholder-zinc-700 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.04] transition-all resize-none"
+                          className="w-full bg-white/[0.02] border border-white/[0.08] rounded-2xl p-4 min-h-[120px] text-white placeholder-zinc-700 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.04] transition-all resize-none font-medium"
                        />
                        <button 
                           disabled={isSubmittingComment}
@@ -377,7 +527,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                                  {new Date(comment.created_at).toLocaleDateString('tr-TR')}
                               </span>
                            </div>
-                           <div className="p-4 bg-white/[0.03] border border-white/[0.05] rounded-[1.5rem] rounded-tl-none text-zinc-400 text-sm leading-relaxed">
+                           <div className="p-4 bg-white/[0.03] border border-white/[0.05] rounded-[1.5rem] rounded-tl-none text-zinc-400 text-sm leading-relaxed font-medium">
                               {comment.content}
                            </div>
                         </div>

@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef } from 'react';
 import { processImageForGallery } from '@/lib/image-processor';
 import { uploadGalleryImage } from '@/lib/supabase-browser';
 import { useAuth } from '@clerk/nextjs';
-import { X, UploadCloud, Loader2, Image as ImageIcon, CheckCircle2, AlertCircle } from 'lucide-react';
+import { X, UploadCloud, Loader2, Image as ImageIcon, CheckCircle2, AlertCircle, Hash, Tag } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface GalleryPostModalProps {
@@ -12,10 +12,22 @@ interface GalleryPostModalProps {
   readonly onSuccess?: (postId: string) => void;
 }
 
+const CATEGORIES = [
+  { id: 'Economy', name: 'Ekonomi', icon: '💰' },
+  { id: 'Admin', name: 'Admin', icon: '🛡️' },
+  { id: 'Minigame', name: 'Minigame', icon: '🎮' },
+  { id: 'Chat', name: 'Chat', icon: '💬' },
+  { id: 'Security', name: 'Güvenlik', icon: '🔐' },
+  { id: 'Other', name: 'Diğer', icon: '📁' },
+];
+
 export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: GalleryPostModalProps) {
   const { userId, getToken } = useAuth();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [category, setCategory] = useState('Other');
+  const [tagInput, setTagInput] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
   const [images, setImages] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -26,7 +38,7 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
     if (e.target.files) {
       const newFiles = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
       if (images.length + newFiles.length > 5) {
-        toast.error('Maximum 5 images allowed');
+        toast.error('En fazla 5 görsel yüklenebilir');
         return;
       }
       setImages(prev => [...prev, ...newFiles]);
@@ -35,7 +47,24 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
 
   const removeImage = (index: number) => {
     setImages(prev => prev.filter((_, i) => i !== index));
-    toast.info('Image removed');
+    toast.info('Görsel kaldırıldı');
+  };
+
+  const handleAddTag = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      const val = tagInput.trim().replace(/[^a-zA-Z0-9çğışüöÇĞİŞÜÖ]/g, '');
+      if (val && !tags.includes(val) && tags.length < 5) {
+        setTags(prev => [...prev, val]);
+        setTagInput('');
+      } else if (tags.length >= 5) {
+        toast.error('En fazla 5 etiket ekleyebilirsiniz');
+      }
+    }
+  };
+
+  const removeTag = (tag: string) => {
+    setTags(prev => prev.filter(t => t !== tag));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -79,6 +108,8 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
         body: JSON.stringify({
           title,
           description,
+          category,
+          tags,
           codeSnippet: code,
           imageUrls: uploadedUrls,
         }),
@@ -125,7 +156,7 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto max-h-[80vh] custom-scrollbar">
+        <form onSubmit={handleSubmit} className="p-6 space-y-5 overflow-y-auto max-h-[85vh] custom-scrollbar">
           {/* Title Input */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-zinc-400">Başlık <span className="text-red-500/50">*</span></label>
@@ -135,10 +166,56 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
               maxLength={100}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-emerald-500/50 text-white placeholder-zinc-600 transition-all"
+              className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-emerald-500/50 text-white placeholder-zinc-600 transition-all font-medium"
               placeholder="Örn: Gelişmiş Ekonomi Sistemi"
             />
           </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            {/* Category Select */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-zinc-400">Kategori</label>
+              <select 
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-emerald-500/50 text-white transition-all appearance-none cursor-pointer"
+              >
+                {CATEGORIES.map(cat => (
+                  <option key={cat.id} value={cat.id} className="bg-[#121214]">{cat.icon} {cat.name}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Tags Input */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-zinc-400">Etiketler</label>
+              <div className="relative">
+                <input 
+                  type="text" 
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={handleAddTag}
+                  placeholder="admin, chat..."
+                  className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-emerald-500/50 text-white placeholder-zinc-700 transition-all"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Tags List */}
+          {tags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {tags.map(tag => (
+                <span key={tag} className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-400 text-xs font-bold">
+                  <Hash size={10} />
+                  {tag}
+                  <button type="button" onClick={() => removeTag(tag)} className="hover:text-white transition-colors">
+                    <X size={12} />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
 
           {/* Description Input */}
           <div className="space-y-2">
@@ -147,8 +224,8 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
               maxLength={1000}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-emerald-500/50 text-white placeholder-zinc-600 min-h-[120px] resize-none transition-all"
-              placeholder="Skriptin özellikleri, gereksinimleri ve kullanımı hakkında bilgi verin..."
+              className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-emerald-500/50 text-white placeholder-zinc-700 min-h-[100px] resize-none transition-all text-sm leading-relaxed"
+              placeholder="Skriptin özellikleri, gereksinimleri ve kullanımı..."
             />
           </div>
 
@@ -156,22 +233,21 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
           <div className="space-y-3">
             <label className="text-sm font-medium text-zinc-400 flex justify-between items-center">
               <span>Sunucu Görselleri</span>
-              <span className={`text-xs ${images.length === 5 ? 'text-amber-400' : 'text-zinc-500'}`}>
+              <span className={`text-[10px] font-bold tracking-widest uppercase ${images.length === 5 ? 'text-amber-400' : 'text-zinc-500'}`}>
                 {images.length} / 5
               </span>
             </label>
             
             <div 
               onClick={() => !isUploading && fileInputRef.current?.click()}
-              className={`border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center transition-all group ${
+              className={`border-2 border-dashed rounded-2xl p-6 flex flex-col items-center justify-center transition-all group ${
                 isUploading ? 'opacity-50 cursor-not-allowed border-white/[0.05]' : 'border-white/[0.1] hover:border-emerald-500/40 hover:bg-emerald-500/[0.02] cursor-pointer'
               }`}
             >
-              <div className="w-12 h-12 rounded-full bg-white/[0.03] flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                <UploadCloud className="w-6 h-6 text-zinc-500 group-hover:text-emerald-400" />
+              <div className="w-10 h-10 rounded-xl bg-white/[0.03] flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                <UploadCloud className="w-5 h-5 text-zinc-500 group-hover:text-emerald-400" />
               </div>
-              <p className="text-sm text-zinc-300 font-medium">Görsel Seçmek İçin Tıklayın</p>
-              <p className="text-[11px] text-zinc-500 mt-1">WebP, PNG, JPG (Maks 500KB - Otomatik Sıkıştırılır)</p>
+              <p className="text-xs text-zinc-400 font-bold">Görselleri Sürükleyin veya Seçin</p>
               <input 
                 ref={fileInputRef}
                 type="file" 
@@ -185,9 +261,9 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
 
             {/* Image Previews */}
             {images.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
+              <div className="flex flex-wrap gap-2">
                 {images.map((file, idx) => (
-                  <div key={idx} className="relative w-[calc(20%-8px)] aspect-square rounded-xl bg-black/50 border border-white/[0.05] overflow-hidden group shadow-lg">
+                  <div key={idx} className="relative w-[calc(25%-6px)] aspect-square rounded-xl bg-black/50 border border-white/[0.05] overflow-hidden group shadow-lg">
                     <img src={URL.createObjectURL(file)} alt="Preview" className="object-cover w-full h-full opacity-70 group-hover:opacity-100 transition-opacity" />
                     {!isUploading && (
                       <button 
@@ -195,7 +271,7 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
                         onClick={(e) => { e.stopPropagation(); removeImage(idx); }}
                         className="absolute top-1 right-1 w-5 h-5 bg-black/80 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
                       >
-                        <X size={12} />
+                        <X size={10} />
                       </button>
                     )}
                   </div>
@@ -208,11 +284,11 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
           {isUploading && (
             <div className="space-y-3 pt-2">
               <div className="flex justify-between items-end">
-                <span className="text-xs font-medium text-emerald-400 flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase text-emerald-400 flex items-center gap-2 tracking-widest">
                   <Loader2 size={12} className="animate-spin" />
                   {uploadStatus}
                 </span>
-                <span className="text-xs font-bold text-emerald-500">{progress}%</span>
+                <span className="text-[10px] font-bold text-emerald-500">{progress}%</span>
               </div>
               <div className="h-1.5 w-full bg-white/[0.03] rounded-full overflow-hidden border border-white/[0.05]">
                 <div 
@@ -224,22 +300,22 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
           )}
 
           {/* Footer Actions */}
-          <div className="pt-6 border-t border-white/[0.08] flex items-center justify-end gap-4">
+          <div className="pt-4 border-t border-white/[0.08] flex items-center justify-end gap-3">
             <button 
               type="button" 
               onClick={onClose}
               disabled={isUploading}
-              className="px-4 py-2 text-sm font-medium text-zinc-500 hover:text-white transition-colors disabled:opacity-30"
+              className="px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-zinc-500 hover:text-white transition-colors disabled:opacity-30"
             >
               İptal
             </button>
             <button 
               type="submit"
               disabled={isUploading || !title}
-              className="btn-premium px-8 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold rounded-xl transition-all disabled:opacity-50 flex items-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.2)]"
+              className="px-8 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all disabled:opacity-50 flex items-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.2)]"
             >
               {isUploading ? 'Paylaşılıyor...' : 'Galeriye Aktar'}
-              {!isUploading && <CheckCircle2 size={16} />}
+              {!isUploading && <CheckCircle2 size={14} />}
             </button>
           </div>
         </form>

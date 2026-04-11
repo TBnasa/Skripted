@@ -12,10 +12,11 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get('limit') || '50');
     const filter = searchParams.get('filter');
+    const categoryQuery = searchParams.get('category');
 
     let query = supabase
       .from('gallery_posts')
-      .select('id, user_id, author_name, title, description, image_urls, likes_count, downloads_count, created_at, is_public');
+      .select('id, user_id, author_name, title, description, image_urls, likes_count, downloads_count, created_at, is_public, category, tags');
 
     if (filter === 'mine') {
       const { userId } = await auth();
@@ -25,6 +26,10 @@ export async function GET(request: NextRequest) {
       query = query.eq('user_id', userId);
     } else {
       query = query.eq('is_public', true);
+    }
+
+    if (categoryQuery && categoryQuery !== 'All') {
+      query = query.eq('category', categoryQuery);
     }
 
     const { data, error } = await query
@@ -62,7 +67,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { title, description, codeSnippet, imageUrls } = result.data;
+    const { title, description, codeSnippet, imageUrls, category, tags } = result.data;
     const supabase = getSupabaseAdmin();
 
     const { data, error } = await supabase
@@ -74,6 +79,8 @@ export async function POST(request: NextRequest) {
         description: description || null,
         code_snippet: codeSnippet,
         image_urls: imageUrls || [],
+        category: category || 'Other',
+        tags: tags || [],
         is_public: true,
       })
       .select('id')

@@ -3,7 +3,7 @@
 import { useTranslation } from '@/lib/useTranslation';
 import useSWR from 'swr';
 import Link from 'next/link';
-import { Heart, Search, Code, Download, User, Sparkles, Filter } from 'lucide-react';
+import { Heart, Search, Code, Download, User, Sparkles, Filter, Hash, Tag } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import { useState } from 'react';
 import { useAuth } from '@clerk/nextjs';
@@ -18,7 +18,19 @@ interface GalleryPost {
   likes_count: number;
   downloads_count: number;
   created_at: string;
+  category: string;
+  tags: string[];
 }
+
+const CATEGORIES = [
+  { id: 'All', name: 'Tümü', icon: '✨' },
+  { id: 'Economy', name: 'Ekonomi', icon: '💰' },
+  { id: 'Admin', name: 'Admin', icon: '🛡️' },
+  { id: 'Minigame', name: 'Minigame', icon: '🎮' },
+  { id: 'Chat', name: 'Chat', icon: '💬' },
+  { id: 'Security', name: 'Güvenlik', icon: '🔐' },
+  { id: 'Other', name: 'Diğer', icon: '📁' },
+];
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
@@ -26,16 +38,18 @@ export default function GalleryPage() {
   const { t } = useTranslation();
   const { userId } = useAuth();
   const [filter, setFilter] = useState<'all' | 'mine'>('all');
+  const [activeCategory, setActiveCategory] = useState('All');
   const [search, setSearch] = useState('');
   
   const { data: posts, error, isLoading } = useSWR<GalleryPost[]>(
-    `/api/gallery?limit=50${filter === 'mine' ? '&filter=mine' : ''}`, 
+    `/api/gallery?limit=50${filter === 'mine' ? '&filter=mine' : ''}${activeCategory !== 'All' ? `&category=${activeCategory}` : ''}`, 
     fetcher
   );
 
   const filteredPosts = posts?.filter(post => 
     post.title.toLowerCase().includes(search.toLowerCase()) ||
-    post.author_name.toLowerCase().includes(search.toLowerCase())
+    post.author_name.toLowerCase().includes(search.toLowerCase()) ||
+    post.tags?.some(tag => tag.toLowerCase().includes(search.toLowerCase()))
   );
 
   return (
@@ -43,7 +57,7 @@ export default function GalleryPage() {
       <Navbar />
       
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 relative">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12 relative">
           <div className="absolute -top-24 -left-24 w-64 h-64 bg-emerald-500/10 blur-[120px] pointer-events-none"></div>
           
           <div className="relative z-10">
@@ -58,24 +72,43 @@ export default function GalleryPage() {
               En iyi Minecraft skriptlerini keşfedin, indirin ve topluluğumuzla kendi kodlarınızı paylaşın.
             </p>
 
-            {/* Filter Tabs */}
-            <div className="flex items-center p-1 bg-white/[0.03] border border-white/[0.06] rounded-2xl w-fit">
-              <button 
-                onClick={() => setFilter('all')}
-                className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                  filter === 'all' ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20' : 'text-zinc-500 hover:text-zinc-300'
-                }`}
-              >
-                Tüm Skriptler
-              </button>
-              <button 
-                onClick={() => setFilter('mine')}
-                className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                  filter === 'mine' ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20' : 'text-zinc-500 hover:text-zinc-300'
-                }`}
-              >
-                Benim Paylaşımlarım
-              </button>
+            {/* Filter Tabs & Categories */}
+            <div className="flex flex-col gap-6">
+              <div className="flex items-center p-1 bg-white/[0.03] border border-white/[0.06] rounded-2xl w-fit">
+                <button 
+                  onClick={() => setFilter('all')}
+                  className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                    filter === 'all' ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20' : 'text-zinc-500 hover:text-zinc-300'
+                  }`}
+                >
+                  Tüm Skriptler
+                </button>
+                <button 
+                  onClick={() => setFilter('mine')}
+                  className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                    filter === 'mine' ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20' : 'text-zinc-500 hover:text-zinc-300'
+                  }`}
+                >
+                  Benim Paylaşımlarım
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar no-scrollbar">
+                {CATEGORIES.map(cat => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setActiveCategory(cat.id)}
+                    className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-bold border transition-all whitespace-nowrap active:scale-95 ${
+                      activeCategory === cat.id 
+                        ? 'bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.15)]' 
+                        : 'bg-white/[0.02] border-white/[0.06] text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.05]'
+                    }`}
+                  >
+                    <span>{cat.icon}</span>
+                    {cat.name}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
           
@@ -87,8 +120,8 @@ export default function GalleryPage() {
                  type="text" 
                  value={search}
                  onChange={(e) => setSearch(e.target.value)}
-                 placeholder="Skript veya yazar ara..." 
-                 className="w-full bg-transparent py-4 pl-3 pr-4 focus:outline-none text-white placeholder-zinc-700"
+                 placeholder="Skript, yazar veya etiket..." 
+                 className="w-full bg-transparent py-4 pl-3 pr-4 focus:outline-none text-white placeholder-zinc-700 font-medium"
                />
             </div>
           </div>
@@ -110,7 +143,7 @@ export default function GalleryPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="flex flex-col gap-4">
-                <div className="aspect-[4/3] w-full bg-white/[0.02] animate-pulse rounded-[2rem] border border-white/5"></div>
+                <div className="aspect-[4/3] w-full bg-white/[0.02] animate-pulse rounded-[2.5rem] border border-white/5"></div>
                 <div className="h-6 w-3/4 bg-white/[0.02] animate-pulse rounded-full"></div>
                 <div className="h-4 w-1/2 bg-white/[0.02] animate-pulse rounded-full"></div>
               </div>
@@ -124,7 +157,7 @@ export default function GalleryPage() {
             </div>
             <h3 className="text-2xl font-black text-white mb-3">Sonuç Bulunamadı</h3>
             <p className="text-zinc-500 max-w-sm mx-auto mb-10 text-lg">Aramanıza veya seçili filtreye uygun skript bulunamadı.</p>
-            <button onClick={() => {setFilter('all'); setSearch('');}} className="px-10 py-4 bg-white/[0.05] hover:bg-white/[0.1] text-white rounded-2xl transition-all border border-white/10">
+            <button onClick={() => {setFilter('all'); setActiveCategory('All'); setSearch('');}} className="px-10 py-4 bg-white/[0.05] hover:bg-white/[0.1] text-white rounded-2xl transition-all border border-white/10 font-bold">
                Filtreleri Temizle
             </button>
           </div>
@@ -158,15 +191,34 @@ export default function GalleryPage() {
                       {post.downloads_count}
                     </div>
                   </div>
+
+                  {/* Category Badge */}
+                  <div className="absolute bottom-4 left-4 z-20 flex items-center gap-2">
+                    <span className="px-3 py-1 bg-emerald-500 text-black text-[10px] font-black uppercase tracking-widest rounded-lg shadow-lg">
+                      {CATEGORIES.find(c => c.id === post.category)?.name || post.category}
+                    </span>
+                  </div>
                   
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f12] via-transparent to-transparent opacity-100 group-hover:opacity-80 transition-opacity"></div>
                 </div>
 
                 {/* Content Area */}
                 <div className="p-8 flex flex-col flex-1 relative">
-                  <h3 className="text-xl font-bold text-white line-clamp-1 group-hover:text-emerald-400 transition-colors mb-4 tracking-tight">
+                  <h3 className="text-xl font-bold text-white line-clamp-1 group-hover:text-emerald-400 transition-colors mb-2 tracking-tight">
                     {post.title}
                   </h3>
+                  
+                  {/* Tags */}
+                  {post.tags && post.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mb-6">
+                      {post.tags.slice(0, 3).map(tag => (
+                        <span key={tag} className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest flex items-center gap-1">
+                          <Hash size={8} />
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                   
                   <div className="flex items-center justify-between mt-auto">
                     <div className="flex items-center gap-3">
@@ -178,7 +230,7 @@ export default function GalleryPage() {
                       </span>
                     </div>
                     
-                    <div className="text-[10px] font-black text-zinc-700 uppercase tracking-widest bg-white/[0.03] px-3 py-1.5 rounded-lg border border-white/[0.05]">
+                    <div className="text-[10px] font-black text-zinc-800 uppercase tracking-widest bg-white/[0.03] px-3 py-1.5 rounded-lg border border-white/[0.05]">
                       SKRIPT
                     </div>
                   </div>
