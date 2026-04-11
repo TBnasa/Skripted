@@ -87,6 +87,20 @@ export async function PATCH(
       .single();
 
     if (error) throw error;
+
+    // Create a version snapshot after successful update
+    try {
+      await supabase
+        .from('user_script_versions')
+        .insert({
+          script_id: id,
+          content: data.content,
+        });
+    } catch (versionErr) {
+      console.error('[UserScripts PATCH] Failed to save version:', versionErr);
+      // We don't fail the whole request if versioning fails
+    }
+
     return NextResponse.json(data);
   } catch (err: any) {
     console.error('[UserScripts PATCH] Error:', err);
