@@ -44,3 +44,52 @@ export async function DELETE(
     return NextResponse.json({ error: 'Script silinemedi' }, { status: 500 });
   }
 }
+
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { id } = await params;
+    const body = await request.json();
+    const supabase = getSupabaseAdmin();
+
+    // Check ownership
+    const { data: script, error: checkError } = await supabase
+      .from('user_scripts')
+      .select('user_id')
+      .eq('id', id)
+      .single();
+
+    if (checkError || !script) {
+      return NextResponse.json({ error: 'Script bulunamadı' }, { status: 404 });
+    }
+
+    if (script.user_id !== userId) {
+      return NextResponse.json({ error: 'Yetkisiz işlem' }, { status: 403 });
+    }
+
+    const { data, error } = await supabase
+      .from('user_scripts')
+      .update({
+        title: body.title,
+        content: body.content,
+        version: body.version,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return NextResponse.json(data);
+  } catch (err: any) {
+    console.error('[UserScripts PATCH] Error:', err);
+    return NextResponse.json({ error: 'Script güncellenemedi' }, { status: 500 });
+  }
+}

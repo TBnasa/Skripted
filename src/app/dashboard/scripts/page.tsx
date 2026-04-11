@@ -15,10 +15,13 @@ import {
   ChevronRight,
   Database,
   FileCode,
-  Loader2
+  Loader2,
+  Plus
 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import QuickEditModal from '@/components/QuickEditModal';
+import { FilePlus } from 'lucide-react';
 
 interface UserScript {
   id: string;
@@ -50,6 +53,10 @@ export default function UserScriptsPage() {
     fetcher
   );
 
+  const [editingScript, setEditingScript] = useState<UserScript | null>(null);
+  const [isNewModalOpen, setIsNewModalOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
   const filteredScripts = Array.isArray(scripts) ? scripts.filter(s => 
     s.title.toLowerCase().includes(search.toLowerCase())
   ) : [];
@@ -78,6 +85,32 @@ export default function UserScriptsPage() {
     } catch (err) {
       toast.error('İşlem başarısız');
       mutate();
+    }
+  };
+
+  const handleCreateOrUpdate = async (title: string, content: string, version: string) => {
+    setIsSaving(true);
+    try {
+      const isNew = !editingScript && isNewModalOpen;
+      const url = isNew ? '/api/user-scripts' : `/api/user-scripts/${editingScript?.id}`;
+      const method = isNew ? 'POST' : 'PATCH';
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, content, version })
+      });
+
+      if (!res.ok) throw new Error('İşlem başarısız');
+      
+      await mutate();
+      toast.success(isNew ? 'Yeni script oluşturuldu!' : 'Script güncellendi!');
+      setIsNewModalOpen(false);
+      setEditingScript(null);
+    } catch (err) {
+      toast.error('Bir hata oluştu');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -141,8 +174,15 @@ export default function UserScriptsPage() {
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-             <div className="relative group">
+          <div className="flex flex-col sm:flex-row items-center gap-4 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+             <button 
+                onClick={() => setIsNewModalOpen(true)}
+                className="flex items-center gap-2 px-6 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl transition-all font-black text-[10px] uppercase tracking-widest shadow-[0_0_20px_rgba(16,185,129,0.2)] active:scale-95 whitespace-nowrap"
+             >
+                <Plus size={18} />
+                Yeni Script
+             </button>
+             <div className="relative group w-full sm:w-auto">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600 group-focus-within:text-emerald-500 transition-colors" size={18} />
                 <input 
                   type="text" 
@@ -209,11 +249,18 @@ export default function UserScriptsPage() {
 
                 <div className="flex flex-col gap-3 mt-auto">
                    <button 
-                      onClick={() => handleSendToEditor(script.content)}
+                      onClick={() => setEditingScript(script)}
                       className="flex items-center justify-between px-6 py-3 bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.08] rounded-xl text-sm font-bold text-zinc-400 hover:text-white transition-all group/btn"
                    >
-                      <span>Editöre Gönder</span>
+                      <span>Hızlı Düzenle</span>
                       <ChevronRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+                   </button>
+                   
+                   <button 
+                      onClick={() => handleSendToEditor(script.content)}
+                      className="flex items-center justify-center gap-2 px-6 py-3 bg-white/[0.01] border border-white/[0.04] hover:bg-white/[0.06] rounded-xl text-[10px] uppercase tracking-widest font-black text-zinc-500 hover:text-zinc-300 transition-all"
+                   >
+                      Editöre Gönder
                    </button>
                    
                    <button 
@@ -229,6 +276,19 @@ export default function UserScriptsPage() {
           </div>
         )}
       </main>
+
+      {(editingScript || isNewModalOpen) && (
+        <QuickEditModal 
+          script={editingScript}
+          isOpen={!!editingScript || isNewModalOpen}
+          onClose={() => {
+            setEditingScript(null);
+            setIsNewModalOpen(false);
+          }}
+          onSave={handleCreateOrUpdate}
+          isSaving={isSaving}
+        />
+      )}
 
       {publishCode && (
         <GalleryPostModal 
