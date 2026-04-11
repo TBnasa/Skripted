@@ -14,7 +14,8 @@ import {
   Clock, 
   ChevronRight,
   Database,
-  FileCode
+  FileCode,
+  Loader2
 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -27,19 +28,31 @@ interface UserScript {
   updated_at: string;
 }
 
-const fetcher = (url: string) => fetch(url).then(res => res.json());
+const fetcher = async (url: string) => {
+  const res = await fetch(url);
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    const err = new Error(errorData.error || 'Veriler yüklenemedi');
+    (err as any).status = res.status;
+    throw err;
+  }
+  return res.json();
+};
 
 export default function UserScriptsPage() {
-  const { userId } = useAuth();
+  const { userId, isLoaded } = useAuth();
   const router = useRouter();
   const [search, setSearch] = useState('');
   const [publishCode, setPublishCode] = useState<string | null>(null);
   
-  const { data: scripts, error, isLoading, mutate } = useSWR<UserScript[]>('/api/user-scripts', fetcher);
-
-  const filteredScripts = scripts?.filter(s => 
-    s.title.toLowerCase().includes(search.toLowerCase())
+  const { data: scripts, error, isLoading, mutate } = useSWR<UserScript[]>(
+    isLoaded && userId ? '/api/user-scripts' : null, 
+    fetcher
   );
+
+  const filteredScripts = Array.isArray(scripts) ? scripts.filter(s => 
+    s.title.toLowerCase().includes(search.toLowerCase())
+  ) : [];
 
   const handleSendToEditor = (content: string) => {
     localStorage.setItem('skripted_active_code', content);
@@ -51,7 +64,9 @@ export default function UserScriptsPage() {
     if (!confirm('Bu scripti silmek istediğinize emin misiniz?')) return;
     
     // Optimistic UI
-    mutate(scripts?.filter(s => s.id !== id), false);
+    if (Array.isArray(scripts)) {
+      mutate(scripts.filter(s => s.id !== id), false);
+    }
 
     try {
       const res = await fetch(`/api/user-scripts/${id}`, { method: 'DELETE' });
@@ -66,12 +81,40 @@ export default function UserScriptsPage() {
     }
   };
 
+  if (!isLoaded) {
+    return (
+      <div className="flex min-h-screen flex-col bg-[var(--color-bg-primary)]">
+        <Navbar />
+        <div className="flex-1 flex items-center justify-center">
+           <Loader2 className="w-12 h-12 text-emerald-500 animate-spin" />
+        </div>
+      </div>
+    );
+  }
+
   if (!userId) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--color-bg-primary)]">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-white mb-4">Lütfen Giriş Yapın</h2>
-          <button onClick={() => router.push('/login')} className="btn-premium px-8 py-3 bg-emerald-600 rounded-xl text-white font-bold">Giriş Yap</button>
+      <div className="flex min-h-screen flex-col bg-[var(--color-bg-primary)]">
+        <Navbar />
+        <div className="flex-1 flex items-center justify-center py-20 px-4">
+          <div className="text-center p-12 bg-white/[0.02] border border-white/[0.06] rounded-[3rem] shadow-2xl relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.02] to-transparent"></div>
+            <div className="relative z-10">
+              <div className="w-20 h-20 bg-emerald-500/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-emerald-500/20">
+                 <Cloud className="text-emerald-500" size={40} />
+              </div>
+              <h2 className="text-3xl font-black text-white mb-4 tracking-tighter">Lütfen Giriş Yapın</h2>
+              <p className="text-zinc-500 max-w-sm mx-auto mb-10 text-lg leading-relaxed">
+                Kendi scriptlerinizi yönetmek ve bulutta saklamak için bir oturum açmanız gerekiyor.
+              </p>
+              <button 
+                onClick={() => router.push('/sign-in')} 
+                className="btn-premium px-12 py-4 bg-emerald-600 hover:bg-emerald-500 rounded-2xl text-white font-black uppercase tracking-widest text-xs transition-all shadow-[0_0_30px_rgba(16,185,129,0.2)]"
+              >
+                Giriş Yap
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -81,11 +124,11 @@ export default function UserScriptsPage() {
     <div className="flex min-h-screen flex-col bg-[var(--color-bg-primary)] text-white">
       <Navbar />
       
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-16 relative">
           <div className="absolute -top-24 -left-24 w-64 h-64 bg-emerald-500/10 blur-[120px] pointer-events-none"></div>
           
-          <div className="relative z-10">
+          <div className="relative z-10 animate-slide-up">
             <div className="flex items-center gap-2 text-emerald-400 font-bold tracking-widest text-xs uppercase mb-4">
                <Database size={14} />
                <span>Senin Bulut Alanın</span>
@@ -98,7 +141,7 @@ export default function UserScriptsPage() {
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-4 animate-slide-up" style={{ animationDelay: '0.1s' }}>
              <div className="relative group">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600 group-focus-within:text-emerald-500 transition-colors" size={18} />
                 <input 
@@ -112,13 +155,18 @@ export default function UserScriptsPage() {
           </div>
         </div>
 
-        {isLoading ? (
+        {error ? (
+          <div className="text-center py-20 bg-red-500/5 border border-red-500/10 rounded-[3rem]">
+            <h3 className="text-xl font-bold text-red-500 mb-2">Hata Oluştu</h3>
+            <p className="text-red-400/60 ">{error.message}</p>
+          </div>
+        ) : isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="h-64 bg-white/[0.02] border border-white/[0.06] rounded-[2.5rem] animate-pulse"></div>
             ))}
           </div>
-        ) : filteredScripts?.length === 0 ? (
+        ) : filteredScripts.length === 0 ? (
           <div className="text-center py-32 bg-white/[0.01] border border-white/[0.03] rounded-[3rem] relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.02] to-transparent"></div>
             <div className="relative z-10 scale-110 mb-8 inline-block opacity-20 group-hover:scale-125 transition-transform duration-700">
@@ -131,8 +179,8 @@ export default function UserScriptsPage() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredScripts?.map((script) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
+            {filteredScripts.map((script) => (
               <div key={script.id} className="group relative flex flex-col bg-[#0f0f12] border border-white/[0.06] rounded-[2.5rem] p-8 hover:border-emerald-500/40 hover:bg-[#121216] transition-all duration-500 hover:shadow-2xl overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-[80px] -mr-16 -mt-16 group-hover:bg-emerald-500/10 transition-colors"></div>
                 
@@ -156,7 +204,7 @@ export default function UserScriptsPage() {
                 
                 <div className="flex items-center gap-2 text-zinc-600 text-xs mb-8">
                    <Clock size={12} />
-                   <span>Son güncelleme: {new Date(script.updated_at).toLocaleDateString('tr-TR')}</span>
+                   <span>Son güncelleme: {script.updated_at ? new Date(script.updated_at).toLocaleDateString('tr-TR') : 'Bilinmiyor'}</span>
                 </div>
 
                 <div className="flex flex-col gap-3 mt-auto">

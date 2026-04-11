@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
       .from('gallery_posts')
       .insert({
         user_id: userId,
-        author_name: user.username || user.firstName || 'Anonymous',
+        author_name: user.username || user.firstName || user.emailAddresses[0]?.emailAddress?.split('@')[0] || 'Anonymous',
         title,
         description: description || null,
         code_snippet: codeSnippet,
