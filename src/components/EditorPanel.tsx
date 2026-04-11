@@ -9,7 +9,7 @@ import { SKRIPT_LANGUAGE_ID, skriptTokensProvider, skriptTheme } from '@/lib/skr
 import type { editor } from 'monaco-editor';
 import { useAuth } from '@clerk/nextjs';
 import { toast } from 'sonner';
-import { Cloud, Save, Share2, Copy, FileCode, Loader2, Sparkles, AlertCircle, ChevronRight } from 'lucide-react';
+import { Cloud, Save, Share2, Copy, FileCode, Loader2, Sparkles, AlertCircle, ChevronRight, Code } from 'lucide-react';
 
 const Editor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
