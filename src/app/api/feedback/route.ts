@@ -8,6 +8,7 @@ import { auth } from '@clerk/nextjs/server';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
 import type { FeedbackPayload } from '@/types';
 import { FeedbackPayloadSchema } from '@/types/schemas';
+import { JudgeService } from '@/lib/services/judge-service';
 
 export async function POST(request: NextRequest): Promise<Response> {
   try {
@@ -39,7 +40,7 @@ export async function POST(request: NextRequest): Promise<Response> {
 
     const supabase = getSupabaseAdmin();
 
-    const { error } = await supabase
+    const { data: insertedData, error } = await supabase
       .from('feedback_logs')
       .insert({
         session_id: sessionId,
@@ -50,16 +51,36 @@ export async function POST(request: NextRequest): Promise<Response> {
         error_log: errorLog ?? null,
         console_output: consoleOutput ?? null,
         pinecone_ids: pineconeIds ?? [],
-      });
+      })
+      .select('id')
+      .single();
 
     if (error) {
       console.error('[Feedback API] Supabase error:', error);
-      // Don't fail the request if feedback storage fails
-      // — the user experience should not depend on telemetry
       return Response.json({ stored: false, reason: 'storage_error' });
     }
 
-    return Response.json({ stored: true, success });
+    // AI JUDGE INTEGRATION
+    // We run this in the background to avoid blocking the user response, 
+    // though in a serverless environment like Vercel, we must be careful.
+    // For now, we update it synchronously to ensure the judge runs.
+    try {
+      const verdict = await JudgeService.analyzeFeedback(prompt, generatedCode, success, errorLog);
+      await supabase
+        .from('feedback_logs')
+        .update({
+          ai_trust_score: verdict.trustScore,
+          ai_analysis: verdict.analysis,
+          is_verified: verdict.isVerified
+        })
+        .eq('id', insertedData.id);
+        
+      console.log(`[Judge] Feedback ${insertedData.id} verified with score: ${verdict.trustScore}`);
+    } catch (judgeError) {
+      console.error('[Feedback API] Judge failed:', judgeError);
+    }
+
+    return Response.json({ stored: true, success, verified: true });
   } catch (error) {
     console.error('[Feedback API] Error:', error);
     return Response.json(
