@@ -1,11 +1,9 @@
 import HeroSection from '@/components/HeroSection';
 import GalleryHighlights from '@/components/GalleryHighlights';
-import Navbar from '@/components/Navbar';
 
 export default function Page() {
   return (
     <main className="min-h-screen bg-[var(--color-bg-primary)]">
-      <Navbar />
       <HeroSection />
       <GalleryHighlights />
       

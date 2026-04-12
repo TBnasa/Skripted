@@ -2,9 +2,9 @@
    Skripted — Application Constants
    ═══════════════════════════════════════════ */
 
-export const APP_NAME = 'Skripted' as const;
-export const APP_DESCRIPTION = 'Skripted Engine — Minecraft Skript Mimarı' as const;
-export const APP_URL = 'https://skripted.dev' as const;
+export const APP_NAME = 'Skripted Engine' as const;
+export const APP_DESCRIPTION = 'AI Destekli Minecraft Skript Oluşturucu ve Galeri' as const;
+export const APP_URL = 'https://skripted.vercel.app' as const;
 
 // OpenRouter
 export const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1/chat/completions' as const;

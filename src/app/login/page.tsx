@@ -1,5 +1,11 @@
+import { Metadata } from 'next';
 import { APP_NAME } from '@/lib/constants';
 import AuthForm from '@/components/AuthForm';
+
+export const metadata: Metadata = {
+  title: 'Giriş Yap | Skripted Engine',
+  description: 'Skripted Engine hesabınıza giriş yapın ve skriptlerinizi kaydetmeye başlayın.',
+};
 
 export default function LoginPage() {
   return (

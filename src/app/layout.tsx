@@ -5,16 +5,32 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: {
-    default: `${APP_NAME} — ${APP_DESCRIPTION}`,
-    template: `%s | ${APP_NAME}`,
+    default: 'Skripted Engine | AI Destekli Minecraft Skript Oluşturucu ve Galeri',
+    template: `%s | Skripted Engine`,
   },
-  description: 'Generate flawless Minecraft Skript code using AI backed by a curated knowledge base of proven examples. RAG-powered, syntax-aware, production-ready.',
-  keywords: ['Minecraft', 'Skript', 'AI', 'code generator', 'Minecraft plugin', 'Paper', 'Spigot', 'Bukkit'],
-  authors: [{ name: 'TBnasa' }],
+  description: 'Yapay zeka ile saniyeler içinde Minecraft Skript kodları oluşturun, topluluk galerisinde paylaşın ve diğer yazarlarla etkileşime girin.',
+  keywords: ['minecraft', 'skript', 'ai code generator', 'minecraft plugin', 'skripted engine', 'minecraft script'],
+  authors: [{ name: 'Skripted Team' }],
   openGraph: {
-    title: `${APP_NAME} — ${APP_DESCRIPTION}`,
-    description: 'AI-powered Minecraft Skript generation backed by a curated knowledge base.',
+    title: 'Skripted Engine | AI Destekli Minecraft Skript Oluşturucu ve Galeri',
+    description: 'Yapay zeka ile saniyeler içinde Minecraft Skript kodları oluşturun, topluluk galerisinde paylaşın ve diğer yazarlarla etkileşime girin.',
+    url: 'https://skripted.vercel.app',
+    siteName: 'Skripted Engine',
     type: 'website',
+    images: [
+      {
+        url: '/icon.png',
+        width: 1200,
+        height: 630,
+        alt: 'Skripted Engine Preview',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Skripted Engine | AI Destekli Minecraft Skript Oluşturucu ve Galeri',
+    description: 'Yapay zeka ile saniyeler içinde Minecraft Skript kodları oluşturun, topluluk galerisinde paylaşın ve diğer yazarlarla etkileşime girin.',
+    images: ['/icon.png'],
   },
   verification: {
     google: 't73YW-32WK8B5fYAJjfUxTb1dSQ9M8TGnGLZgacmqYY',
