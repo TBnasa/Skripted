@@ -12,10 +12,12 @@ import Link from 'next/link';
 import ProfileEditModal from '@/components/ProfileEditModal';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from '@/lib/useTranslation';
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 export default function ProfilePage() {
+  const { t, mounted } = useTranslation();
   const { username } = useParams();
   const { userId, isLoaded: isAuthLoaded } = useAuth();
   const router = useRouter();
@@ -29,14 +31,16 @@ export default function ProfilePage() {
   const { data: profile, error: profileError, isLoading: isProfileLoading } = useSWR(fetchUrl, fetcher);
   const { data: scripts, error: scriptsError } = useSWR(profile ? `/api/gallery?userId=${profile.id}` : null, fetcher);
 
-  if (!profile && !profileError) return <div className="min-h-screen bg-[#0a0a0b] flex items-center justify-center text-zinc-500 font-mono text-xs tracking-widest uppercase">Profil Yükleniyor...</div>;
+  if (!mounted) return <div className="min-h-screen bg-[#0a0a0b]" />;
+
+  if (!profile && !profileError) return <div className="min-h-screen bg-[#0a0a0b] flex items-center justify-center text-zinc-500 font-mono text-xs tracking-widest uppercase">{t('profile.loading')}</div>;
 
   if (profileError || !profile) {
     return (
       <div className="min-h-screen bg-[#0a0a0b] flex flex-col items-center justify-center text-center p-6">
         <h1 className="text-4xl font-black text-white mb-4">404</h1>
-        <p className="text-zinc-500 mb-8">Kullanıcı bulunamadı.</p>
-        <Link href="/" className="px-6 py-3 bg-emerald-600 text-white rounded-xl font-bold">Ana Sayfaya Dön</Link>
+        <p className="text-zinc-500 mb-8">{t('profile.not_found')}</p>
+        <Link href="/" className="px-6 py-3 bg-emerald-600 text-white rounded-xl font-bold">{t('profile.back_home')}</Link>
       </div>
     );
   }
@@ -91,7 +95,7 @@ export default function ProfilePage() {
                 <span className="opacity-20">•</span>
                 <div className="flex items-center gap-1">
                    <Calendar size={14} />
-                   <span className="text-xs uppercase tracking-widest">{new Date(profile.created_at).getFullYear()} Katıldı</span>
+                   <span className="text-xs uppercase tracking-widest">{new Date(profile.created_at).getFullYear()} {t('general.joined')}</span>
                 </div>
               </div>
             </div>
@@ -100,11 +104,11 @@ export default function ProfilePage() {
                <div className="flex items-center gap-6 mr-6">
                   <div className="text-center">
                      <span className="block text-xl font-black text-white">{profile.followers_count || 0}</span>
-                     <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">Takipçi</span>
+                     <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">{t('profile.followers')}</span>
                   </div>
                   <div className="text-center">
                      <span className="block text-xl font-black text-white">{profile.following_count || 0}</span>
-                     <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">Takip</span>
+                     <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">{t('profile.following')}</span>
                   </div>
                </div>
                
@@ -133,7 +137,7 @@ export default function ProfilePage() {
                    }}
                  >
                    <UserPlus size={18} />
-                   Takip Et
+                   {t('general.follow')}
                  </button>
                )}
             </div>
@@ -145,26 +149,26 @@ export default function ProfilePage() {
           {/* Sidebar Info */}
           <div className="lg:col-span-4 space-y-8">
              <div className="p-8 bg-white/[0.02] border border-white/[0.05] rounded-[2.5rem]">
-                <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-6">Hakkında</h3>
+                <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-6">{t('profile.about')}</h3>
                 <p className="text-zinc-400 leading-relaxed italic">
-                  {profile.bio || "Bu kullanıcı henüz bir hakkında yazısı eklememiş."}
+                  {profile.bio || t('profile.no_bio')}
                 </p>
                 
                 <div className="mt-8 pt-8 border-t border-white/5 space-y-4">
                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-zinc-600 uppercase tracking-widest">Toplam Script</span>
+                      <span className="text-xs font-bold text-zinc-600 uppercase tracking-widest">{t('profile.total_scripts')}</span>
                       <span className="text-white font-mono">{scripts?.length || 0}</span>
                    </div>
                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-zinc-600 uppercase tracking-widest">Üyelik</span>
-                      <span className="text-white font-mono text-xs">Premium Member</span>
+                      <span className="text-xs font-bold text-zinc-600 uppercase tracking-widest">{t('profile.membership')}</span>
+                      <span className="text-white font-mono text-xs">{t('profile.premium_member')}</span>
                    </div>
                 </div>
              </div>
              
              <button className="w-full py-4 bg-white/[0.03] border border-white/[0.08] rounded-2xl text-zinc-400 font-bold text-xs uppercase tracking-widest hover:bg-white/[0.06] transition-all flex items-center justify-center gap-2">
                 <Share2 size={16} />
-                Profili Paylaş
+                {t('general.share_profile')}
              </button>
           </div>
 
@@ -176,13 +180,13 @@ export default function ProfilePage() {
                      onClick={() => setActiveTab('scripts')}
                      className={`text-sm font-black uppercase tracking-widest transition-all pb-2 border-b-2 ${activeTab === 'scripts' ? 'text-emerald-400 border-emerald-400' : 'text-zinc-600 border-transparent hover:text-zinc-400'}`}
                    >
-                     Paylaşımlar
+                     {t('gallery.post_content.share')}
                    </button>
                    <button 
                      onClick={() => setActiveTab('about')}
                      className={`text-sm font-black uppercase tracking-widest transition-all pb-2 border-b-2 ${activeTab === 'about' ? 'text-emerald-400 border-emerald-400' : 'text-zinc-600 border-transparent hover:text-zinc-400'}`}
                    >
-                     Hikaye
+                     {t('dashboard.history')}
                    </button>
                 </div>
                 
@@ -222,7 +226,7 @@ export default function ProfilePage() {
                 {(!scripts || scripts.length === 0) && (
                   <div className="col-span-full py-20 text-center opacity-30">
                      <Code size={48} className="mx-auto mb-4" />
-                     <p>Henüz bir script paylaşılmamış.</p>
+                     <p>{t('profile.no_scripts')}</p>
                   </div>
                 )}
              </div>

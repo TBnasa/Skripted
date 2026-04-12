@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Camera, X, Loader2, User, FileText, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
+import { useTranslation } from '@/lib/useTranslation';
 
 interface ProfileEditModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ interface ProfileEditModalProps {
 }
 
 export default function ProfileEditModal({ isOpen, onClose, initialData, onUpdate }: ProfileEditModalProps) {
+  const { t, mounted } = useTranslation();
   const [formData, setFormData] = useState(initialData);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -34,7 +36,7 @@ export default function ProfileEditModal({ isOpen, onClose, initialData, onUpdat
       if (!res.ok) throw new Error(data.error);
 
       onUpdate(data);
-      toast.success('Profil güncellendi!');
+      toast.success(t('profile.updated'));
       onClose();
     } catch (err: any) {
       toast.error(err.message);
@@ -42,6 +44,8 @@ export default function ProfileEditModal({ isOpen, onClose, initialData, onUpdat
       setIsSubmitting(false);
     }
   };
+
+  if (!mounted) return null;
 
   return (
     <AnimatePresence>
@@ -65,10 +69,10 @@ export default function ProfileEditModal({ isOpen, onClose, initialData, onUpdat
             <div className="px-8 py-6 border-b border-white/5 flex items-center justify-between bg-white/[0.01]">
                <h2 className="text-xl font-bold text-white flex items-center gap-3">
                   <User size={20} className="text-emerald-500" />
-                  Profili Düzenle
+                  {t('profile.edit_profile')}
                </h2>
                <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors">
-                  <X size={20} className="text-zinc-500" />
+                  <X size={20} />
                </button>
             </div>
 
@@ -89,7 +93,7 @@ export default function ProfileEditModal({ isOpen, onClose, initialData, onUpdat
                   </div>
                   <input 
                     type="text" 
-                    placeholder="Avatar URL (Gelecekte yükleme eklenecek)" 
+                    placeholder={t('profile.avatar_url_placeholder')} 
                     value={formData.avatar_url || ''}
                     onChange={(e) => setFormData({...formData, avatar_url: e.target.value})}
                     className="text-[10px] w-full bg-white/[0.02] border border-white/5 rounded-lg px-3 py-1.5 focus:outline-none text-zinc-500 font-mono text-center"
@@ -98,7 +102,7 @@ export default function ProfileEditModal({ isOpen, onClose, initialData, onUpdat
 
                <div className="space-y-4">
                   <div className="space-y-2">
-                     <label className="text-[10px] font-black text-zinc-600 uppercase tracking-widest ml-1">Kullanıcı Adı</label>
+                     <label className="text-[10px] font-black text-zinc-600 uppercase tracking-widest ml-1">{t('profile.username_label')}</label>
                      <div className="relative">
                         <input 
                            type="text"
@@ -111,23 +115,23 @@ export default function ProfileEditModal({ isOpen, onClose, initialData, onUpdat
                   </div>
 
                   <div className="space-y-2">
-                     <label className="text-[10px] font-black text-zinc-600 uppercase tracking-widest ml-1">Ad Soyad</label>
+                     <label className="text-[10px] font-black text-zinc-600 uppercase tracking-widest ml-1">{t('profile.fullname_label')}</label>
                      <input 
                         type="text"
                         value={formData.full_name || ''}
                         onChange={(e) => setFormData({...formData, full_name: e.target.value})}
                         className="w-full bg-white/[0.02] border border-white/10 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-emerald-500/50 transition-all font-semibold"
-                        placeholder="Adınız ve Soyadınız"
+                        placeholder={t('profile.fullname_placeholder')}
                      />
                   </div>
 
                   <div className="space-y-2">
-                     <label className="text-[10px] font-black text-zinc-600 uppercase tracking-widest ml-1">Hakkında (Bio)</label>
+                     <label className="text-[10px] font-black text-zinc-600 uppercase tracking-widest ml-1">{t('profile.bio_label')}</label>
                      <textarea 
                         value={formData.bio || ''}
                         onChange={(e) => setFormData({...formData, bio: e.target.value})}
                         className="w-full bg-white/[0.02] border border-white/10 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-emerald-500/50 transition-all min-h-[100px] resize-none font-medium italic"
-                        placeholder="Kendinizden bahsedin..."
+                        placeholder={t('profile.bio_placeholder')}
                      />
                   </div>
                </div>
@@ -137,7 +141,7 @@ export default function ProfileEditModal({ isOpen, onClose, initialData, onUpdat
                   className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-black text-sm shadow-xl shadow-emerald-900/10 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                >
                   {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Check size={18} />}
-                  GÜNCELLEMELERİ KAYDET
+                  {t('general.save_changes').toUpperCase()}
                </button>
             </form>
           </motion.div>

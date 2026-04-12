@@ -6,6 +6,7 @@ import { X, Save, Loader2, CheckCircle2, AlertCircle, FileCode, Clock, RotateCcw
 import { toast } from 'sonner';
 import { SKRIPT_LANGUAGE_ID, registerSkriptLanguage } from '@/lib/skript-language';
 import { setupSkriptLinter } from '@/lib/skript-linter';
+import { useTranslation } from '@/lib/useTranslation';
 
 interface QuickEditModalProps {
   readonly script: { id?: string; title: string; content: string; version?: string } | null;
@@ -16,6 +17,7 @@ interface QuickEditModalProps {
 }
 
 export default function QuickEditModal({ script, isOpen, onClose, onSave, isSaving }: QuickEditModalProps) {
+  const { t, mounted } = useTranslation();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [version, setVersion] = useState('1.0.0');
@@ -47,7 +49,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
         setVersions(data);
       }
     } catch (err) {
-      toast.error('Versiyon geçmişi yüklenemedi');
+      toast.error(t('editor.versions_load_error'));
     } finally {
       setIsLoadingVersions(false);
     }
@@ -60,10 +62,10 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
   }, [isHistoryOpen]);
 
   const handleRestore = (oldContent: string) => {
-    if (confirm('Bu versiyonu geri yüklemek istediğinize emin misiniz? Mevcut düzenlemeleriniz silinecek.')) {
+    if (confirm(t('editor.confirm_restore'))) {
       setContent(oldContent);
       setIsHistoryOpen(false);
-      toast.success('Versiyon başarıyla yüklendi!');
+      toast.success(t('editor.version_loaded'));
     }
   };
 
@@ -76,7 +78,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
     setupSkriptLinter(editor, monaco);
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   const isNew = !script?.id;
 
@@ -92,9 +94,9 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
               <FileCode size={24} />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white tracking-tight">{isNew ? 'Yeni Script Oluştur' : 'Scripti Düzenle'}</h2>
+              <h2 className="text-xl font-bold text-white tracking-tight">{isNew ? t('editor.create_new') : t('editor.edit_script')}</h2>
               <p className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest mt-1">
-                {isNew ? 'Sıfırdan başla ve hayal gücünü konuştur' : `Düzenlenen: ${script?.title}`}
+                {isNew ? t('editor.start_fresh') : `${t('editor.editing')}: ${script?.title}`}
               </p>
             </div>
           </div>
@@ -103,10 +105,10 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
               <button 
                 onClick={() => setIsHistoryOpen(!isHistoryOpen)} 
                 className={`p-2 rounded-xl border transition-all flex items-center gap-2 text-xs font-bold ${isHistoryOpen ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'text-zinc-500 hover:text-white hover:bg-white/5 border-transparent hover:border-white/10'}`}
-                title="Versiyon Geçmişi"
+                title={t('editor.version_history')}
               >
                 <Clock size={20} />
-                <span className="hidden sm:inline">Geçmiş</span>
+                <span className="hidden sm:inline">{t('dashboard.history')}</span>
               </button>
             )}
             <button onClick={onClose} className="text-zinc-500 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-xl border border-transparent hover:border-white/10">
@@ -120,7 +122,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
           {/* Settings Bar */}
           <div className="px-8 py-4 bg-white/[0.02] border-b border-white/[0.06] flex flex-wrap items-center gap-4">
              <div className="flex-1 min-w-[200px]">
-                <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5 block ml-1">Script Başlığı</label>
+                <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5 block ml-1">{t('gallery.modal.title_label')}</label>
                 <input 
                   type="text" 
                   value={title}
@@ -130,7 +132,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
                 />
              </div>
              <div className="w-32">
-                <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5 block ml-1">Versiyon</label>
+                <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5 block ml-1">{t('editor.version_label')}</label>
                 <input 
                   type="text" 
                   value={version}
@@ -151,7 +153,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
                 onChange={(v) => setContent(v || '')}
                 beforeMount={handleEditorWillMount}
                 onMount={handleEditorMount}
-                loading={<div className="flex items-center justify-center h-full bg-[#0a0a0b] text-zinc-500 animate-pulse font-mono text-xs uppercase tracking-widest">Editor Hazırlanıyor...</div>}
+                loading={<div className="flex items-center justify-center h-full bg-[#0a0a0b] text-zinc-500 animate-pulse font-mono text-xs uppercase tracking-widest">{t('editor.preparing')}</div>}
                 options={{
                   fontSize: 14,
                   fontFamily: '"JetBrains Mono", "Cascadia Code", monospace',
@@ -174,7 +176,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
                <div className="p-6 border-b border-white/[0.08] flex items-center justify-between">
                   <h3 className="text-sm font-black uppercase tracking-widest text-emerald-500 flex items-center gap-2">
                      <History size={16} />
-                     Versiyon Geçmişi
+                     {t('editor.version_history')}
                   </h3>
                   <button onClick={() => setIsHistoryOpen(false)} className="text-zinc-600 hover:text-white transition-colors">
                      <X size={18} />
@@ -185,34 +187,34 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
                   {isLoadingVersions ? (
                      <div className="flex flex-col items-center justify-center h-40 text-zinc-600 italic gap-3">
                         <Loader2 size={32} className="animate-spin text-emerald-500" />
-                        <span className="text-xs uppercase tracking-[0.2em]">Yükleniyor...</span>
+                        <span className="text-xs uppercase tracking-[0.2em]">{t('general.loading')}</span>
                      </div>
                   ) : versions.length === 0 ? (
                      <div className="flex flex-col items-center justify-center h-40 text-zinc-600 italic gap-3 text-center px-4">
                         <Clock size={32} className="opacity-20" />
-                        <span className="text-xs">Henüz kayıtlı bir versiyon bulunmuyor. Her kaydettiğinizde bir snapshot alınır.</span>
+                        <span className="text-xs">{t('editor.no_history')}</span>
                      </div>
                   ) : (
                      versions.map((v, i) => (
                         <div key={v.id} className="group p-4 bg-white/[0.02] border border-white/[0.05] rounded-2xl hover:border-emerald-500/30 transition-all">
                            <div className="flex items-center justify-between mb-2">
                               <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
-                                 {i === 0 ? 'Son Kayıt' : `Versiyon #${versions.length - i}`}
+                                 {i === 0 ? t('editor.last_saved') : `${t('editor.version_label')} #${versions.length - i}`}
                               </span>
                               <div className="flex items-center gap-1 text-[10px] text-zinc-600">
                                  <Calendar size={10} />
-                                 {new Date(v.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+                                 {new Date(v.created_at).toLocaleTimeString(t('general.locale'), { hour: '2-digit', minute: '2-digit' })}
                               </div>
                            </div>
                            <p className="text-[9px] text-zinc-600 mb-3 truncate font-mono">
-                              {new Date(v.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' })}
+                              {new Date(v.created_at).toLocaleDateString(t('general.locale'), { day: 'numeric', month: 'short', year: 'numeric' })}
                            </p>
                            <button 
                               onClick={() => handleRestore(v.content)}
                               className="w-full flex items-center justify-center gap-2 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-500 text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all"
                            >
                               <RotateCcw size={12} />
-                              Geri Yükle
+                              {t('editor.restore')}
                            </button>
                         </div>
                      ))
@@ -220,7 +222,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
                </div>
                
                <div className="p-4 border-t border-white/[0.08] bg-black/20 italic text-[10px] text-zinc-600 text-center">
-                  Snapshotlar otomatik olarak oluşturulur.
+                  {t('editor.snapshots_info')}
                </div>
             </div>
           )}
@@ -230,7 +232,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
         <div className="px-8 py-6 border-t border-white/[0.08] flex items-center justify-between bg-white/[0.01] relative z-10 shrink-0">
           <div className="flex items-center gap-2 text-zinc-500 text-xs">
              <AlertCircle size={14} className="text-amber-500/70" />
-             <span>Değişiklikleri kaydetmeyi unutmayın!</span>
+             <span>{t('editor.dont_forget_save')}</span>
           </div>
           <div className="flex items-center gap-3">
              <button 
@@ -238,7 +240,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
                 className="px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-zinc-500 hover:text-white transition-colors"
                 disabled={isSaving}
              >
-                Vazgeç
+                {t('general.cancel')}
              </button>
              <button 
                 onClick={() => onSave(title, content, version)}
@@ -246,7 +248,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
                 className="flex items-center gap-2 px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-black uppercase tracking-widest rounded-2xl transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-30 active:scale-95"
              >
                 {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
-                {isSaving ? 'Kaydediliyor...' : (isNew ? 'Scripti Oluştur' : 'Değişiklikleri Kaydet')}
+                {isSaving ? t('editor.saving') : (isNew ? t('editor.create_now') : t('general.save_changes'))}
              </button>
           </div>
         </div>

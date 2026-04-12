@@ -5,6 +5,7 @@ import { User, MessageSquare, Reply, Trash2, Send, Loader2, Languages } from 'lu
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { useTranslation } from '@/lib/useTranslation';
+import Link from 'next/link';
 
 interface Comment {
   id: string;
@@ -54,7 +55,7 @@ const CommentItem = ({
   const handleReply = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentUserId) {
-      toast.error('You must sign in to reply.');
+      toast.error(t('gallery.must_login_to_reply'));
       return;
     }
     if (!replyContent.trim()) return;
@@ -72,7 +73,7 @@ const CommentItem = ({
       onCommentAdded(data);
       setReplyContent('');
       setIsReplying(false);
-      toast.success('Reply added!');
+      toast.success(t('gallery.reply_added'));
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -96,7 +97,7 @@ const CommentItem = ({
       const data = await res.json();
       if (data.translation) setTranslatedContent(data.translation);
     } catch (err) {
-      toast.error('Translation failed.');
+      toast.error(t('gallery.translation_failed'));
     } finally {
       setIsTranslating(false);
     }
@@ -133,7 +134,7 @@ const CommentItem = ({
               )}
             </div>
             <span className="text-[10px] text-zinc-600 font-mono italic">
-              {new Date(comment.created_at).toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-US')}
+              {new Date(comment.created_at).toLocaleDateString(t('general.locale'))}
             </span>
           </div>
           <div className="p-4 bg-white/[0.03] border border-white/[0.05] rounded-2xl rounded-tl-none text-zinc-300 text-sm leading-relaxed font-medium">
@@ -146,7 +147,7 @@ const CommentItem = ({
                className="text-[10px] font-bold text-zinc-500 hover:text-emerald-400 flex items-center gap-1 transition-colors uppercase tracking-widest"
              >
                <Reply size={12} />
-               {t('gallery.post').toUpperCase()}
+               {t('gallery.reply')}
              </button>
              <button 
                onClick={handleTranslate}
@@ -206,14 +207,16 @@ const CommentItem = ({
 };
 
 export default function CommentThread({ comments, postId, currentUserId, onCommentAdded }: CommentThreadProps) {
-  const { t } = useTranslation();
+  const { t, mounted } = useTranslation();
   const rootComments = comments.filter(c => !c.parent_id);
+
+  if (!mounted) return null;
 
   if (comments.length === 0) {
     return (
       <div className="text-center py-12 opacity-30 border border-dashed border-white/5 rounded-3xl">
         <MessageSquare size={48} className="mx-auto mb-4" />
-        <p className="text-sm">No discussion started yet.</p>
+        <p className="text-sm">{t('chat.no_discussion')}</p>
       </div>
     );
   }

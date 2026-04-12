@@ -6,13 +6,15 @@ interface FeedbackPollProps {
 }
 
 import { useState } from 'react';
+import { useTranslation } from '@/lib/useTranslation';
 
 export default function FeedbackPoll({ onFeedback, visible }: FeedbackPollProps) {
+  const { t, mounted } = useTranslation();
   const [showErrorInput, setShowErrorInput] = useState(false);
   const [errorLog, setErrorLog] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
-  if (!visible || submitted) return null;
+  if (!visible || submitted || !mounted) return null;
 
   const handleSuccess = () => {
     onFeedback(true);
@@ -32,7 +34,7 @@ export default function FeedbackPoll({ onFeedback, visible }: FeedbackPollProps)
     <div className="animate-fade-in-scale mx-auto mt-4 max-w-md">
       <div className="glass-card p-5">
         <p className="mb-4 text-center text-sm font-medium text-[var(--color-text-secondary)]">
-          Did the generated script work?
+          {t('chat.feedback_question')}
         </p>
 
         <div className="flex gap-3">
@@ -40,13 +42,13 @@ export default function FeedbackPoll({ onFeedback, visible }: FeedbackPollProps)
             onClick={handleSuccess}
             className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-500/8 border border-emerald-500/15 px-4 py-2.5 text-sm font-medium text-emerald-400 transition-all duration-300 hover:bg-emerald-500/15 hover:border-emerald-500/25 hover:scale-[1.02]"
           >
-            ✅ It Worked!
+            {t('chat.feedback_worked')}
           </button>
           <button
             onClick={handleError}
             className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-red-500/8 border border-red-500/15 px-4 py-2.5 text-sm font-medium text-red-400 transition-all duration-300 hover:bg-red-500/15 hover:border-red-500/25 hover:scale-[1.02]"
           >
-            ❌ Got an Error
+            {t('chat.feedback_error')}
           </button>
         </div>
 
@@ -55,7 +57,7 @@ export default function FeedbackPoll({ onFeedback, visible }: FeedbackPollProps)
             <textarea
               value={errorLog}
               onChange={(e) => setErrorLog(e.target.value)}
-              placeholder="Paste your console error here (optional)..."
+              placeholder={t('chat.feedback_placeholder')}
               className="w-full resize-none rounded-xl border border-white/[0.06] bg-black/30 p-3 font-mono text-xs text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:border-red-500/30 focus:outline-none transition-colors"
               rows={4}
             />
@@ -63,7 +65,7 @@ export default function FeedbackPoll({ onFeedback, visible }: FeedbackPollProps)
               onClick={handleError}
               className="mt-2 w-full rounded-xl bg-red-500/10 border border-red-500/15 px-4 py-2.5 text-sm font-medium text-red-400 transition-all duration-300 hover:bg-red-500/15"
             >
-              Submit Error Report
+              {t('chat.feedback_submit')}
             </button>
           </div>
         )}

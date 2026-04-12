@@ -24,15 +24,17 @@ interface GalleryPost {
   tags: string[];
 }
 
-const CATEGORIES = [
-  { id: 'All', name: 'Tümü', icon: '✨' },
-  { id: 'Economy', name: 'Ekonomi', icon: '💰' },
-  { id: 'Admin', name: 'Admin', icon: '🛡️' },
-  { id: 'Minigame', name: 'Minigame', icon: '🎮' },
-  { id: 'Chat', name: 'Chat', icon: '💬' },
-  { id: 'Security', name: 'Güvenlik', icon: '🔐' },
-  { id: 'Other', name: 'Diğer', icon: '📁' },
-];
+const CATEGORIES_ICONS: Record<string, string> = {
+  All: '✨',
+  Economy: '💰',
+  Admin: '🛡️',
+  Minigame: '🎮',
+  Chat: '💬',
+  Security: '🔐',
+  Other: '📁',
+};
+
+const CATEGORY_IDS = ['All', 'Economy', 'Admin', 'Minigame', 'Chat', 'Security', 'Other'];
 
 const fetcher = async (url: string) => {
   const res = await fetch(url);
@@ -61,7 +63,7 @@ const itemVariants: Variants = {
 };
 
 export default function GalleryContent() {
-  const { t } = useTranslation();
+  const { t, mounted } = useTranslation();
   const { userId, isLoaded } = useAuth();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -100,6 +102,8 @@ export default function GalleryContent() {
     post.tags?.some(tag => tag.toLowerCase().includes(search.toLowerCase()))
   ) : [];
 
+  if (!mounted) return <div className="min-h-screen bg-[#0a0a0b]" />;
+
   return (
     <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12 relative">
@@ -113,13 +117,13 @@ export default function GalleryContent() {
         >
           <div className="flex items-center gap-2 text-emerald-400 font-bold tracking-widest text-xs uppercase mb-4">
              <Sparkles size={14} className="animate-pulse" />
-             <span>Topluluk Paylaşımları</span>
+             <span>{t('gallery.community_posts')}</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tighter">
-            Skript <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 antialiased">Galerisi</span>
+            {t('gallery.title_main_prefix', { defaultValue: 'Skript' })} <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 antialiased">{t('gallery.title_main_suffix', { defaultValue: 'Galerisi' })}</span>
           </h1>
           <p className="text-zinc-500 text-xl max-w-2xl leading-relaxed mb-8">
-            En iyi Minecraft skriptlerini keşfedin, indirin ve topluluğumuzla kendi kodlarınızı paylaşın.
+            {t('gallery.gallery_desc')}
           </p>
 
           <div className="flex flex-col gap-6">
@@ -133,7 +137,7 @@ export default function GalleryContent() {
                 {filter === 'all' && (
                   <motion.div layoutId="filterTab" className="absolute inset-0 bg-white/[0.08] border border-white/10 rounded-xl -z-10" />
                 )}
-                Tüm Skriptler
+                {t('gallery.all_scripts')}
               </button>
               <button 
                 onClick={() => handleFilterChange('mine')}
@@ -144,23 +148,23 @@ export default function GalleryContent() {
                 {filter === 'mine' && (
                   <motion.div layoutId="filterTab" className="absolute inset-0 bg-white/[0.08] border border-white/10 rounded-xl -z-10" />
                 )}
-                Benim Paylaşımlarım
+                {t('gallery.my_posts')}
               </button>
             </div>
 
             <div className="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar no-scrollbar">
-              {CATEGORIES.map(cat => (
+              {CATEGORY_IDS.map(catId => (
                 <button
-                  key={cat.id}
-                  onClick={() => setActiveCategory(cat.id)}
+                  key={catId}
+                  onClick={() => setActiveCategory(catId)}
                   className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-bold border transition-all whitespace-nowrap active:scale-95 ${
-                    activeCategory === cat.id 
+                    activeCategory === catId 
                       ? 'bg-emerald-500 text-black border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)]' 
                       : 'bg-white/[0.02] border-white/[0.06] text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.05]'
                   }`}
                 >
-                  <span>{cat.icon}</span>
-                  {cat.name}
+                  <span>{CATEGORIES_ICONS[catId]}</span>
+                  {t(`gallery.categories.${catId}`)}
                 </button>
               ))}
             </div>
@@ -180,7 +184,7 @@ export default function GalleryContent() {
                type="text" 
                value={search}
                onChange={(e) => setSearch(e.target.value)}
-               placeholder="Skript, yazar veya etiket..." 
+               placeholder={t('gallery.search_placeholder')} 
                className="w-full bg-transparent py-4 pl-3 pr-4 focus:outline-none text-white placeholder-zinc-700 font-medium"
              />
           </div>
@@ -196,18 +200,18 @@ export default function GalleryContent() {
           <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-4">
              <Code className="text-red-500" />
           </div>
-          <h3 className="text-xl font-bold mb-2">Galeri Yüklenemedi</h3>
+          <h3 className="text-xl font-bold mb-2">{t('gallery.load_error')}</h3>
           <p className="text-red-500/60 max-w-sm">
             {(error as any).status === 401 
-              ? 'Kendi paylaşımlarınızı görmek için giriş yapmalısınız.' 
-              : error.message || 'Sunucuyla bağlantı kurulurken bir hata oluştu.'}
+              ? t('gallery.login_to_see_posts') 
+              : error.message || t('general.error')}
           </p>
           {(error as any).status === 401 && (
             <button 
-              onClick={() => router.push('/sign-in')}
+              onClick={() => router.push('/login')}
               className="mt-6 px-8 py-3 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-xl text-xs font-bold transition-all"
             >
-              GİRİŞ YAP
+              {t('general.sign_in').toUpperCase()}
             </button>
           )}
         </motion.div>
@@ -235,10 +239,10 @@ export default function GalleryContent() {
           >
              <Filter size={120} className="text-emerald-500" />
           </motion.div>
-          <h3 className="text-2xl font-black text-white mb-3">Sonuç Bulunamadı</h3>
-          <p className="text-zinc-500 max-w-sm mx-auto mb-10 text-lg">Aramanıza veya seçili filtreye uygun skript bulunamadı.</p>
+          <h3 className="text-2xl font-black text-white mb-3">{t('gallery.no_results_title')}</h3>
+          <p className="text-zinc-500 max-w-sm mx-auto mb-10 text-lg">{t('gallery.no_results_desc')}</p>
           <button onClick={() => {handleFilterChange('all'); setActiveCategory('All'); setSearch('');}} className="px-10 py-4 bg-white/[0.05] hover:bg-white/[0.1] text-white rounded-2xl transition-all border border-white/10 font-bold">
-             Filtreleri Temizle
+             {t('gallery.clear_filters')}
           </button>
         </motion.div>
       ) : (
@@ -284,7 +288,7 @@ export default function GalleryContent() {
                     {/* Category Badge */}
                     <div className="absolute bottom-4 left-4 z-20 flex items-center gap-2">
                       <span className="px-3 py-1 bg-emerald-500/90 backdrop-blur-md text-black border border-emerald-400 text-[10px] font-black uppercase tracking-widest rounded-[10px] shadow-lg">
-                        {CATEGORIES.find(c => c.id === post.category)?.name || post.category}
+                        {t(`gallery.categories.${post.category}`)}
                       </span>
                     </div>
                     
@@ -320,7 +324,7 @@ export default function GalleryContent() {
                       </div>
                       
                       <div className="text-[9px] font-black text-zinc-700 uppercase tracking-[0.2em]">
-                        {new Date(post.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })}
+                        {new Date(post.created_at).toLocaleDateString(t('general.locale'), { day: 'numeric', month: 'short' })}
                       </div>
                     </div>
                   </div>

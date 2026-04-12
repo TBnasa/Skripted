@@ -28,7 +28,7 @@ export default function ChatPanel({
   onFeedback,
   showFeedback,
 }: ChatPanelProps) {
-  const { t } = useTranslation();
+  const { t, mounted } = useTranslation();
   const [input, setInput] = useState('');
   const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -44,7 +44,7 @@ export default function ChatPanel({
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
     }
-  }, [input, isStreaming, onNewMessage]);
+  }, [input, isStreaming, onNewMessage, selectedAddons]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -72,6 +72,8 @@ export default function ChatPanel({
     }
   }, [messages, streamingContent, streamingReasoning]);
 
+  if (!mounted) return <div className="flex h-full flex-col min-h-0 glass-panel m-2 rounded-2xl bg-[#0a0a0a]" />;
+
   return (
     <div className="flex h-full flex-col min-h-0 glass-panel overflow-hidden m-2 rounded-2xl">
       {/* Header */}
@@ -82,7 +84,7 @@ export default function ChatPanel({
           </svg>
         </div>
         <div>
-          <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t('terminal_header')}</h2>
+          <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t('chat.terminal_header')}</h2>
           <p className="text-[10px] font-mono text-emerald-500/70 mt-0.5">
             {isStreaming ? (
               <span className="flex items-center gap-1.5">
@@ -91,7 +93,7 @@ export default function ChatPanel({
                     <span className="relative flex h-2 w-2">
                       <span className="animate-spin absolute inline-flex h-full w-full rounded-full border-2 border-emerald-400 border-t-transparent" />
                     </span>
-                    <span className="text-emerald-400">⚙️ Kod Analiz Ediliyor...</span>
+                    <span className="text-emerald-400">{t('chat.analyzing_code')}</span>
                   </>
                 ) : (
                   <>
@@ -99,11 +101,11 @@ export default function ChatPanel({
                       <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 animate-ping" />
                       <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
                     </span>
-                    {t('status_compiling')}
+                    {t('chat.status_compiling')}
                   </>
                 )}
               </span>
-            ) : t('system_status_ok')}
+            ) : t('status.system_status_ok')}
           </p>
         </div>
       </div>
@@ -119,16 +121,16 @@ export default function ChatPanel({
                 </svg>
               </div>
               <h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400">
-                {t('input_required')}
+                {t('chat.input_required')}
               </h3>
               <p className="mb-8 mx-auto max-w-sm text-sm leading-relaxed text-[var(--color-text-muted)]">
-                {t('input_desc')}
+                {t('chat.input_desc')}
               </p>
               <div className="flex flex-wrap justify-center gap-2.5 stagger-children">
                 {[
                   'Economy System',
                   'Custom /warp',
-                  t('admin_tools'),
+                  t('status.admin_tools'),
                   'Item Editor',
                 ].map((suggestion) => (
                   <button
@@ -215,7 +217,7 @@ export default function ChatPanel({
             value={input}
             onChange={handleTextareaInput}
             onKeyDown={handleKeyDown}
-            placeholder={t('placeholder')}
+            placeholder={t('chat.placeholder')}
             rows={1}
             className="flex-1 resize-none bg-transparent font-mono text-sm leading-relaxed text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:outline-none py-1"
             disabled={isStreaming}
@@ -231,7 +233,7 @@ export default function ChatPanel({
           </button>
         </div>
         <p className="mt-3 text-center text-[9px] font-medium tracking-[0.15em] text-[var(--color-text-muted)]/50 uppercase">
-          {t('kernel_info')}
+          {t('chat.kernel_info')}
         </p>
       </div>
     </div>

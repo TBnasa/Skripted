@@ -4,12 +4,15 @@ import useSWR from 'swr';
 import Link from 'next/link';
 import { Heart, Download, Code, Sparkles, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslation } from '@/lib/useTranslation';
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 export default function GalleryHighlights() {
+  const { t, mounted } = useTranslation();
   const { data: posts, error } = useSWR('/api/gallery?limit=4', fetcher);
 
+  if (!mounted) return null;
   if (error || !posts || !Array.isArray(posts) || posts.length === 0) return null;
 
   return (
@@ -19,15 +22,15 @@ export default function GalleryHighlights() {
           <div>
             <div className="flex items-center gap-2 text-emerald-400 font-bold tracking-[0.2em] text-xs uppercase mb-4">
                <Sparkles size={14} className="animate-pulse" />
-               <span>Topluluk Vitrini</span>
+               <span>{t('gallery.community_showcase')}</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight">
-              Haftanın Favori <span className="text-emerald-500 italic">Skriptleri</span>
+              {t('gallery.weekly_favorites_prefix', { defaultValue: 'Haftanın Favori' })} <span className="text-emerald-500 italic">{t('gallery.weekly_favorites_suffix', { defaultValue: 'Skriptleri' })}</span>
             </h2>
           </div>
           
           <Link href="/gallery" className="group flex items-center gap-2 text-zinc-400 hover:text-white transition-colors font-bold text-sm">
-             Tümünü Gör 
+             {t('general.view_all', { defaultValue: 'Tümünü Gör' })} 
              <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
           </Link>
         </div>

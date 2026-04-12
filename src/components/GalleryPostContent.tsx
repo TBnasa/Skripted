@@ -41,17 +41,18 @@ interface Comment {
   author_username?: string;
 }
 
-const CATEGORIES: Record<string, { name: string, icon: string }> = {
-  Economy: { name: 'Economy', icon: '💰' },
-  Admin: { name: 'Admin', icon: '🛡️' },
-  Minigame: { name: 'Minigame', icon: '🎮' },
-  Chat: { name: 'Chat', icon: '💬' },
-  Security: { name: 'Security', icon: '🔐' },
-  Other: { name: 'Other', icon: '📁' },
+const CATEGORY_IDS = ['Economy', 'Admin', 'Minigame', 'Chat', 'Security', 'Other'];
+const CATEGORY_ICONS: Record<string, string> = {
+  Economy: '💰',
+  Admin: '🛡️',
+  Minigame: '🎮',
+  Chat: '💬',
+  Security: '🔐',
+  Other: '📁',
 };
 
 export default function GalleryPostContent({ post }: { post: GalleryPost }) {
-  const { t, lang } = useTranslation();
+  const { t, lang, mounted } = useTranslation();
   const { userId, getToken } = useAuth();
   const [copied, setCopied] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
@@ -131,12 +132,12 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
     a.download = `${post.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.sk`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success('Download started!');
+    toast.success(t('gallery.download_started'));
   };
 
   const handleLike = async () => {
     if (!userId) {
-      toast.error('You must sign in to like a post.');
+      toast.error(t('gallery.must_login_to_like'));
       return;
     }
     if (isLoadingLike) return;
@@ -173,7 +174,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
       const data = await res.json();
       if (data.translation) setTranslatedDesc(data.translation);
     } catch (err) {
-      toast.error('Translation failed.');
+      toast.error(t('gallery.translation_failed'));
     } finally {
       setIsTranslating(false);
     }
@@ -182,11 +183,11 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId) {
-      toast.error('You must sign in to comment.');
+      toast.error(t('gallery.post_content.must_login_to_comment'));
       return;
     }
     if (!newComment.trim() || newComment.length < 2) {
-      toast.error('Comment must be at least 2 characters.');
+      toast.error(t('gallery.comment_min_length'));
       return;
     }
 
@@ -203,7 +204,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
 
       setComments(prev => [...prev, data]);
       setNewComment('');
-      toast.success('Comment posted!');
+      toast.success(t('gallery.comment_posted'));
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -213,7 +214,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
-    toast.success('Share link copied!');
+    toast.success(t('gallery.share_link_copied'));
   };
 
   const [isEditingPost, setIsEditingPost] = useState(false);
@@ -239,7 +240,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
       const updated = await res.json();
       setPostData(updated);
       setIsEditingPost(false);
-      toast.success('Post updated!');
+      toast.success(t('gallery.post_updated'));
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -248,11 +249,11 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
   };
 
   const handleDeletePost = async () => {
-    if (!confirm('Are you sure you want to delete this post?')) return;
+    if (!confirm(t('gallery.confirm_delete_post'))) return;
     try {
       const res = await fetch(`/api/gallery/${post.id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Delete failed');
-      toast.success('Post deleted.');
+      toast.success(t('gallery.post_deleted'));
       setTimeout(() => window.location.href = '/gallery', 1500);
     } catch (err: any) {
       toast.error(err.message);
@@ -268,12 +269,14 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
     setupSkriptLinter(editor, monaco);
   };
 
+  if (!mounted) return <div className="flex min-h-screen flex-col bg-[#0a0a0b]" />;
+
   return (
     <div className="flex min-h-screen flex-col bg-[var(--color-bg-primary)] text-white">
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 animate-fade-in">
         <Link href="/gallery" className="inline-flex items-center gap-2 text-zinc-400 hover:text-emerald-400 transition-colors mb-8 group">
           <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-          <span>Back to Gallery</span>
+          <span>{t('gallery.back_to_gallery')}</span>
         </Link>
 
         {/* Top Header */}
@@ -286,14 +289,14 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                    onChange={(e) => setEditedCategory(e.target.value)}
                    className="px-3 py-1 bg-[#121214] border border-emerald-500/30 rounded-lg text-emerald-400 text-xs font-bold focus:outline-none"
                  >
-                   {Object.entries(CATEGORIES).map(([id, cat]) => (
-                     <option key={id} value={id}>{cat.icon} {cat.name}</option>
+                   {CATEGORY_IDS.map(id => (
+                     <option key={id} value={id}>{CATEGORY_ICONS[id]} {t(`gallery.categories.${id}`)}</option>
                    ))}
                  </select>
                ) : (
                  postData.category && (
                    <span className="px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] shadow-lg">
-                     {CATEGORIES[postData.category]?.icon} {CATEGORIES[postData.category]?.name || postData.category}
+                     {CATEGORY_ICONS[postData.category]} {t(`gallery.categories.${postData.category}`)}
                    </span>
                  )
                )}
@@ -305,13 +308,13 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                      onClick={() => setIsEditingPost(true)}
                      className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-[9px] font-bold text-zinc-400 hover:text-white transition-colors uppercase"
                    >
-                     Edit
+                     {t('general.edit')}
                    </button>
                    <button 
                      onClick={handleDeletePost}
                      className="px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-[9px] font-bold text-red-400 hover:bg-red-500 hover:text-white transition-all uppercase"
                    >
-                     Delete
+                     {t('general.delete')}
                    </button>
                  </div>
                )}
@@ -323,13 +326,13 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                      disabled={isUpdatingPost}
                      className="px-3 py-1 bg-emerald-600 text-white rounded-lg text-[9px] font-bold disabled:opacity-50 uppercase"
                    >
-                     {isUpdatingPost ? '...' : 'Save'}
+                     {isUpdatingPost ? '...' : t('general.save')}
                    </button>
                    <button 
                      onClick={() => setIsEditingPost(false)}
                      className="px-3 py-1 bg-white/5 text-zinc-400 rounded-lg text-[9px] font-bold uppercase"
                    >
-                     Cancel
+                     {t('general.cancel')}
                    </button>
                  </div>
                )}
@@ -359,7 +362,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                 <span className="font-semibold text-zinc-300 group-hover/author:text-white transition-colors">{postData.author_name}</span>
               </Link>
               <span className="hidden sm:inline opacity-20">•</span>
-              <span className="font-mono text-xs uppercase tracking-widest">{new Date(postData.created_at).toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+              <span className="font-mono text-xs uppercase tracking-widest">{new Date(postData.created_at).toLocaleDateString(t('general.locale'), { day: 'numeric', month: 'long', year: 'numeric' })}</span>
             </div>
           </div>
           
@@ -375,11 +378,11 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
              </button>
              <button onClick={handleShare} className="flex items-center gap-2 px-5 py-2.5 bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.08] rounded-2xl transition-all active:scale-95 shadow-lg text-zinc-400">
                <Share2 size={18} />
-               <span className="uppercase font-bold text-xs">Share</span>
+               <span className="uppercase font-bold text-xs">{t('general.share')}</span>
              </button>
              <button onClick={handleDownload} className="btn-premium flex items-center gap-2 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl transition-all font-bold active:scale-95 shadow-lg">
                <Download size={18} />
-               <span className="uppercase text-xs font-bold">Download (.sk)</span>
+               <span className="uppercase text-xs font-bold">{t('gallery.post_content.download_sk')}</span>
              </button>
           </div>
         </div>
@@ -416,7 +419,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                 />
               ) : (
                 <div className="prose prose-invert prose-emerald text-zinc-400 whitespace-pre-wrap leading-relaxed max-w-none text-base italic">
-                  {translatedDesc || postData.description || "No description provided for this post."}
+                  {translatedDesc || postData.description || t('gallery.post_content.no_desc')}
                 </div>
               )}
 
@@ -447,7 +450,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                   ) : (
                     <div className="flex flex-col items-center gap-3 text-zinc-600">
                       <ImageOff size={48} />
-                      <span className="text-xs font-bold uppercase tracking-widest">No Image Found</span>
+                      <span className="text-xs font-bold uppercase tracking-widest">{t('gallery.post_content.no_image')}</span>
                     </div>
                   )}
                 </div>
@@ -512,7 +515,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                   <button 
                     onClick={() => setIsFullscreen(!isFullscreen)}
                     className="flex items-center justify-center text-zinc-400 hover:text-white bg-white/5 hover:bg-white/10 w-8 h-8 rounded-xl border border-white/5 hover:border-white/20 transition-all active:scale-95"
-                    title={isFullscreen ? "Shrink" : "Fullscreen"}
+                    title={isFullscreen ? t('general.shrink', { defaultValue: 'Shrink' }) : t('general.fullscreen', { defaultValue: 'Fullscreen' })}
                   >
                     {isFullscreen ? <Shrink size={14} /> : <Maximize2 size={14} />}
                   </button>
@@ -527,7 +530,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                   beforeMount={handleEditorWillMount}
                   onMount={handleEditorMount}
                   value={post.code_snippet}
-                  loading={<div className="flex items-center justify-center h-full bg-[#0a0a0b] text-zinc-500 animate-pulse font-mono text-xs uppercase tracking-widest">Editor Loading...</div>}
+                  loading={<div className="flex items-center justify-center h-full bg-[#0a0a0b] text-zinc-500 animate-pulse font-mono text-xs uppercase tracking-widest">{t('gallery.post_content.editor_loading')}</div>}
                   options={{
                     readOnly: true,
                     minimap: { enabled: false },
@@ -581,7 +584,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                  </form>
                ) : (
                  <div className="p-6 bg-white/[0.02] border border-dashed border-white/[0.1] rounded-2xl text-center mb-10">
-                    <p className="text-zinc-500 text-sm">You must <Link href="/login" className="text-emerald-400 font-bold hover:underline">sign in</Link> to post a comment.</p>
+                    <p className="text-zinc-500 text-sm">{t('gallery.post_content.must_login_to_comment_prefix', { defaultValue: 'You must' })} <Link href="/login" className="text-emerald-400 font-bold hover:underline">{t('general.sign_in')}</Link> {t('gallery.post_content.must_login_to_comment_suffix', { defaultValue: 'to post a comment.' })}</p>
                  </div>
                )}
 

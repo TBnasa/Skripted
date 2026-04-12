@@ -4,6 +4,7 @@ import { uploadGalleryImage } from '@/lib/supabase-browser';
 import { useAuth } from '@clerk/nextjs';
 import { X, UploadCloud, Loader2, Image as ImageIcon, CheckCircle2, AlertCircle, Hash, Tag } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslation } from '@/lib/useTranslation';
 
 interface GalleryPostModalProps {
   readonly code: string;
@@ -12,16 +13,18 @@ interface GalleryPostModalProps {
   readonly onSuccess?: (postId: string) => void;
 }
 
-const CATEGORIES = [
-  { id: 'Economy', name: 'Ekonomi', icon: '💰' },
-  { id: 'Admin', name: 'Admin', icon: '🛡️' },
-  { id: 'Minigame', name: 'Minigame', icon: '🎮' },
-  { id: 'Chat', name: 'Chat', icon: '💬' },
-  { id: 'Security', name: 'Güvenlik', icon: '🔐' },
-  { id: 'Other', name: 'Diğer', icon: '📁' },
-];
+const CATEGORY_IDS = ['Economy', 'Admin', 'Minigame', 'Chat', 'Security', 'Other'];
+const CATEGORY_ICONS: Record<string, string> = {
+  Economy: '💰',
+  Admin: '🛡️',
+  Minigame: '🎮',
+  Chat: '💬',
+  Security: '🔐',
+  Other: '📁',
+};
 
 export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: GalleryPostModalProps) {
+  const { t, mounted } = useTranslation();
   const { userId, getToken } = useAuth();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -38,7 +41,7 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
     if (e.target.files) {
       const newFiles = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
       if (images.length + newFiles.length > 5) {
-        toast.error('En fazla 5 görsel yüklenebilir');
+        toast.error(t('gallery.max_images_error'));
         return;
       }
       setImages(prev => [...prev, ...newFiles]);
@@ -47,7 +50,7 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
 
   const removeImage = (index: number) => {
     setImages(prev => prev.filter((_, i) => i !== index));
-    toast.info('Görsel kaldırıldı');
+    toast.info(t('gallery.image_removed'));
   };
 
   const handleAddTag = (e: React.KeyboardEvent) => {
@@ -58,7 +61,7 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
         setTags(prev => [...prev, val]);
         setTagInput('');
       } else if (tags.length >= 5) {
-        toast.error('En fazla 5 etiket ekleyebilirsiniz');
+        toast.error(t('gallery.max_tags_error'));
       }
     }
   };
@@ -70,17 +73,17 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId) {
-      toast.error('Giriş yapmalısınız!');
+      toast.error(t('dashboard.please_login'));
       return;
     }
     if (title.length < 3) {
-      toast.error('Başlık en az 3 karakter olmalıdır.');
+      toast.error(t('gallery.title_min_length'));
       return;
     }
 
     setIsUploading(true);
     setProgress(5);
-    setUploadStatus('Başlatılıyor...');
+    setUploadStatus(t('gallery.upload_starting'));
 
     try {
       const uploadedUrls: string[] = [];
@@ -89,17 +92,17 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
       // Process and Upload Images
       for (let i = 0; i < images.length; i++) {
         const file = images[i];
-        setUploadStatus(`${i + 1}/${images.length} Görsel sıkıştırılıyor...`);
+        setUploadStatus(`${i + 1}/${images.length} ${t('gallery.image_compressing')}`);
         const compressedFile = await processImageForGallery(file);
         
         setProgress(10 + Math.round((i / images.length) * 70));
-        setUploadStatus(`${i + 1}/${images.length} Sunucuya yükleniyor...`);
+        setUploadStatus(`${i + 1}/${images.length} ${t('gallery.image_uploading')}`);
         const url = await uploadGalleryImage(compressedFile, userId, token || '');
         uploadedUrls.push(url);
       }
 
       setProgress(85);
-      setUploadStatus('Gönderi oluşturuluyor...');
+      setUploadStatus(t('gallery.creating_post'));
 
       // Submit Post
       const res = await fetch('/api/gallery', {
@@ -117,13 +120,13 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
 
       if (!res.ok) {
         const errData = await res.json();
-        throw new Error(errData.error || 'Gönderi oluşturulurken hata oluştu');
+        throw new Error(errData.error || t('general.error'));
       }
 
       const data = await res.json();
       setProgress(100);
-      setUploadStatus('Başarılı!');
-      toast.success('Skript başarıyla galeriye eklendi!');
+      setUploadStatus(t('general.success'));
+      toast.success(t('gallery.post_success'));
       
       setTimeout(() => {
         setIsUploading(false);
@@ -133,14 +136,14 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
 
     } catch (err: any) {
       console.error(err);
-      toast.error(err.message || 'Beklenmedik bir hata oluştu');
+      toast.error(err.message || t('general.error'));
       setIsUploading(false);
       setProgress(0);
       setUploadStatus('');
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
@@ -149,7 +152,7 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
         <div className="px-6 py-4 border-b border-white/[0.08] flex justify-between items-center bg-white/[0.02]">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-            <h2 className="text-lg font-semibold text-white">Galeriye Paylaş</h2>
+            <h2 className="text-lg font-semibold text-white">{t('gallery.modal.share_title')}</h2>
           </div>
           <button onClick={onClose} className="text-zinc-400 hover:text-white transition-colors p-1 hover:bg-white/5 rounded-lg">
             <X size={20} />
@@ -159,7 +162,7 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
         <form onSubmit={handleSubmit} className="p-6 space-y-5 overflow-y-auto max-h-[85vh] custom-scrollbar">
           {/* Title Input */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-400">Başlık <span className="text-red-500/50">*</span></label>
+            <label className="text-sm font-medium text-zinc-400">{t('gallery.modal.title_label')} <span className="text-red-500/50">*</span></label>
             <input 
               type="text" 
               required
@@ -167,28 +170,28 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-emerald-500/50 text-white placeholder-zinc-600 transition-all font-medium"
-              placeholder="Örn: Gelişmiş Ekonomi Sistemi"
+              placeholder={t('gallery.modal.title_label')}
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             {/* Category Select */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-zinc-400">Kategori</label>
+              <label className="text-sm font-medium text-zinc-400">{t('gallery.modal.category_label')}</label>
               <select 
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-emerald-500/50 text-white transition-all appearance-none cursor-pointer"
               >
-                {CATEGORIES.map(cat => (
-                  <option key={cat.id} value={cat.id} className="bg-[#121214]">{cat.icon} {cat.name}</option>
+                {CATEGORY_IDS.map(id => (
+                  <option key={id} value={id} className="bg-[#121214]">{CATEGORY_ICONS[id]} {t(`gallery.categories.${id}`)}</option>
                 ))}
               </select>
             </div>
 
             {/* Tags Input */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-zinc-400">Etiketler</label>
+              <label className="text-sm font-medium text-zinc-400">{t('gallery.modal.tags_label')}</label>
               <div className="relative">
                 <input 
                   type="text" 
@@ -219,20 +222,20 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
 
           {/* Description Input */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-400">Açıklama</label>
+            <label className="text-sm font-medium text-zinc-400">{t('gallery.modal.desc_label')}</label>
             <textarea 
               maxLength={1000}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-emerald-500/50 text-white placeholder-zinc-700 min-h-[100px] resize-none transition-all text-sm leading-relaxed"
-              placeholder="Skriptin özellikleri, gereksinimleri ve kullanımı..."
+              placeholder={t('gallery.modal.desc_label')}
             />
           </div>
 
           {/* Image Upload Area */}
           <div className="space-y-3">
             <label className="text-sm font-medium text-zinc-400 flex justify-between items-center">
-              <span>Sunucu Görselleri</span>
+              <span>{t('gallery.modal.server_images')}</span>
               <span className={`text-[10px] font-bold tracking-widest uppercase ${images.length === 5 ? 'text-amber-400' : 'text-zinc-500'}`}>
                 {images.length} / 5
               </span>
@@ -247,7 +250,7 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
               <div className="w-10 h-10 rounded-xl bg-white/[0.03] flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
                 <UploadCloud className="w-5 h-5 text-zinc-500 group-hover:text-emerald-400" />
               </div>
-              <p className="text-xs text-zinc-400 font-bold">Görselleri Sürükleyin veya Seçin</p>
+              <p className="text-xs text-zinc-400 font-bold">{t('gallery.modal.drop_images')}</p>
               <input 
                 ref={fileInputRef}
                 type="file" 
@@ -307,14 +310,14 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
               disabled={isUploading}
               className="px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-zinc-500 hover:text-white transition-colors disabled:opacity-30"
             >
-              İptal
+              {t('general.cancel')}
             </button>
             <button 
               type="submit"
               disabled={isUploading || !title}
               className="px-8 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all disabled:opacity-50 flex items-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.2)]"
             >
-              {isUploading ? 'Paylaşılıyor...' : 'Galeriye Aktar'}
+              {isUploading ? t('gallery.sharing') : t('gallery.share_now')}
               {!isUploading && <CheckCircle2 size={14} />}
             </button>
           </div>

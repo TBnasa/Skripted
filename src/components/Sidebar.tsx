@@ -17,7 +17,7 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKey, isOpen = true, onToggle }: SidebarProps) {
-  const { t } = useTranslation();
+  const { t, mounted } = useTranslation();
   const { chats, isLoading, mutateChats } = useChats();
   const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
 
@@ -58,6 +58,8 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
     }
   };
 
+  if (!mounted) return null;
+
   const todayDate = new Date().toDateString();
   const yesterdayDate = new Date(Date.now() - 86400000).toDateString();
 
@@ -93,6 +95,7 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
               onRename={handleRename}
               onDelete={handleDelete}
               isCollapsed={isDesktopCollapsed}
+              t={t}
             />
           ))}
         </ul>
@@ -137,13 +140,13 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
             className={`flex items-center justify-center gap-2.5 py-3 text-[11px] font-bold bg-gradient-to-b from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-black rounded-xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.15)] active:scale-[0.98] ${isDesktopCollapsed ? 'w-12 h-12 rounded-full p-0' : 'w-full'}`}
           >
             <Plus size={isDesktopCollapsed ? 20 : 16} strokeWidth={3} />
-            {!isDesktopCollapsed && 'Yeni Sohbet'}
+            {!isDesktopCollapsed && t('sidebar.new_chat')}
           </button>
           
           <div className="pt-4 flex flex-col gap-2 w-full">
-            <NavButton href="/gallery" icon={<ImageIcon size={16} />} text="Galeri" isCollapsed={isDesktopCollapsed} />
-            <NavButton href="/dashboard/scripts" icon={<Code2 size={16} />} text="Scriptlerim" isCollapsed={isDesktopCollapsed} />
-            <NavButton href="/gallery?filter=mine" icon={<FolderGit2 size={16} />} text="Paylaşımlarım" isCollapsed={isDesktopCollapsed} />
+            <NavButton href="/gallery" icon={<ImageIcon size={16} />} text={t('gallery.title_main')} isCollapsed={isDesktopCollapsed} />
+            <NavButton href="/dashboard/scripts" icon={<Code2 size={16} />} text={t('dashboard.cloud_scripts')} isCollapsed={isDesktopCollapsed} />
+            <NavButton href="/gallery?filter=mine" icon={<FolderGit2 size={16} />} text={t('gallery.my_posts')} isCollapsed={isDesktopCollapsed} />
           </div>
         </div>
 
@@ -160,13 +163,13 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
           ) : chats.length === 0 ? (
             <div className="text-center py-12 opacity-50">
               <MessageSquare size={24} className="mx-auto mb-2 text-zinc-500" />
-              {!isDesktopCollapsed && <p className="text-[10px] font-bold tracking-widest uppercase">Boş</p>}
+              {!isDesktopCollapsed && <p className="text-[10px] font-bold tracking-widest uppercase">{t('sidebar.empty')}</p>}
             </div>
           ) : (
             <div className="mt-2">
-              {renderGroup('Bugün', today, 0)}
-              {renderGroup('Dün', yesterday, 1)}
-              {renderGroup('Geçmiş', older, 2)}
+              {renderGroup(t('sidebar.today'), today, 0)}
+              {renderGroup(t('sidebar.yesterday'), yesterday, 1)}
+              {renderGroup(t('sidebar.older'), older, 2)}
             </div>
           )}
         </div>
@@ -199,9 +202,10 @@ interface ChatListItemProps {
   readonly onRename: (id: string, title: string) => void;
   readonly onDelete: (id: string) => void;
   readonly isCollapsed: boolean;
+  readonly t: any;
 }
 
-function ChatListItem({ session, isActive, onClick, onRename, onDelete, isCollapsed }: ChatListItemProps) {
+function ChatListItem({ session, isActive, onClick, onRename, onDelete, isCollapsed, t }: ChatListItemProps) {
   const [showMenu, setShowMenu] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(session.title || '');
@@ -256,7 +260,7 @@ function ChatListItem({ session, isActive, onClick, onRename, onDelete, isCollap
       <button
         onClick={onClick}
         onContextMenu={(e) => { e.preventDefault(); setShowMenu(true); }}
-        title={isCollapsed ? session.title || 'İsimsiz Sohbet' : undefined}
+        title={isCollapsed ? session.title || t('sidebar.untitled_chat') : undefined}
         className={`group w-full text-left py-2.5 text-[11px] font-medium border transition-all duration-300 truncate flex items-center ${
           isCollapsed ? 'justify-center px-0 rounded-2xl w-12 h-12 mx-auto' : 'justify-between px-3 rounded-xl'
         } ${
@@ -270,7 +274,7 @@ function ChatListItem({ session, isActive, onClick, onRename, onDelete, isCollap
         ) : (
           <>
             <span className="truncate group-hover:text-white transition-colors pr-2">
-              {session.title || 'İsimsiz Sohbet'}
+              {session.title || t('sidebar.untitled_chat')}
             </span>
             <div
               onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
@@ -295,13 +299,13 @@ function ChatListItem({ session, isActive, onClick, onRename, onDelete, isCollap
               onClick={(e) => { e.stopPropagation(); setIsEditing(true); setEditTitle(session.title || ''); setShowMenu(false); }}
               className="w-full text-left px-4 py-3 text-[11px] font-bold text-zinc-300 hover:bg-white/[0.04] hover:text-white transition-colors flex items-center gap-3"
             >
-              <Pencil size={14} /> Yeniden Adlandır
+              <Pencil size={14} /> {t('sidebar.rename')}
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); onDelete(session.id); setShowMenu(false); }}
               className="w-full text-left px-4 py-3 text-[11px] font-bold text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors flex items-center gap-3"
             >
-              <Trash2 size={14} /> Sil
+              <Trash2 size={14} /> {t('sidebar.delete')}
             </button>
           </motion.div>
         )}

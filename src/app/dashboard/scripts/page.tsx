@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslation } from '@/lib/useTranslation';
-import useSWR from 'swr';
+import useSWR from 'useSWR';
 import { useAuth } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
@@ -43,6 +43,7 @@ const fetcher = async (url: string) => {
 };
 
 export default function UserScriptsPage() {
+  const { t, mounted } = useTranslation();
   const { userId, isLoaded } = useAuth();
   const router = useRouter();
   const [search, setSearch] = useState('');
@@ -64,11 +65,11 @@ export default function UserScriptsPage() {
   const handleSendToEditor = (content: string) => {
     localStorage.setItem('skripted_active_code', content);
     router.push('/chat');
-    toast.success('Script editöre gönderildi!');
+    toast.success(t('chat.sent_to_editor', { defaultValue: 'Script editöre gönderildi!' }));
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Bu scripti silmek istediğinize emin misiniz?')) return;
+    if (!confirm(t('general.confirm_delete', { defaultValue: 'Bu scripti silmek istediğinize emin misiniz?' }))) return;
     
     // Optimistic UI
     if (Array.isArray(scripts)) {
@@ -78,12 +79,12 @@ export default function UserScriptsPage() {
     try {
       const res = await fetch(`/api/user-scripts/${id}`, { method: 'DELETE' });
       if (res.ok) {
-        toast.success('Script silindi');
+        toast.success(t('general.deleted', { defaultValue: 'Script silindi' }));
       } else {
         throw new Error();
       }
     } catch (err) {
-      toast.error('İşlem başarısız');
+      toast.error(t('general.error', { defaultValue: 'İşlem başarısız' }));
       mutate();
     }
   };
@@ -104,17 +105,17 @@ export default function UserScriptsPage() {
       if (!res.ok) throw new Error('İşlem başarısız');
       
       await mutate();
-      toast.success(isNew ? 'Yeni script oluşturuldu!' : 'Script güncellendi!');
+      toast.success(isNew ? t('general.created', { defaultValue: 'Yeni script oluşturuldu!' }) : t('general.updated', { defaultValue: 'Script güncellendi!' }));
       setIsNewModalOpen(false);
       setEditingScript(null);
     } catch (err) {
-      toast.error('Bir hata oluştu');
+      toast.error(t('general.error', { defaultValue: 'Bir hata oluştu' }));
     } finally {
       setIsSaving(false);
     }
   };
 
-  if (!isLoaded) {
+  if (!mounted || !isLoaded) {
     return (
       <div className="flex min-h-screen flex-col bg-[var(--color-bg-primary)]">
         <Navbar />
@@ -136,15 +137,15 @@ export default function UserScriptsPage() {
               <div className="w-20 h-20 bg-emerald-500/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-emerald-500/20">
                  <Cloud className="text-emerald-500" size={40} />
               </div>
-              <h2 className="text-3xl font-black text-white mb-4 tracking-tighter">Lütfen Giriş Yapın</h2>
+              <h2 className="text-3xl font-black text-white mb-4 tracking-tighter">{t('dashboard.please_login')}</h2>
               <p className="text-zinc-500 max-w-sm mx-auto mb-10 text-lg leading-relaxed">
-                Kendi scriptlerinizi yönetmek ve bulutta saklamak için bir oturum açmanız gerekiyor.
+                {t('dashboard.login_desc', { defaultValue: 'Kendi scriptlerinizi yönetmek ve bulutta saklamak için bir oturum açmanız gerekiyor.' })}
               </p>
               <button 
-                onClick={() => router.push('/sign-in')} 
+                onClick={() => router.push('/login')} 
                 className="btn-premium px-12 py-4 bg-emerald-600 hover:bg-emerald-500 rounded-2xl text-white font-black uppercase tracking-widest text-xs transition-all shadow-[0_0_30px_rgba(16,185,129,0.2)]"
               >
-                Giriş Yap
+                {t('general.sign_in')}
               </button>
             </div>
           </div>
@@ -164,13 +165,13 @@ export default function UserScriptsPage() {
           <div className="relative z-10 animate-slide-up">
             <div className="flex items-center gap-2 text-emerald-400 font-bold tracking-widest text-xs uppercase mb-4">
                <Database size={14} />
-               <span>Senin Bulut Alanın</span>
+               <span>{t('dashboard.cloud_area')}</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tighter">
-              Bulut <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 antialiased">Scriptlerim</span>
+              {t('dashboard.cloud_scripts_prefix', { defaultValue: 'Bulut' })} <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 antialiased">{t('dashboard.cloud_scripts_suffix', { defaultValue: 'Scriptlerim' })}</span>
             </h1>
             <p className="text-zinc-500 text-xl max-w-2xl leading-relaxed">
-              Tüm projelerini güvenle bulutta sakla, düzenle ve dilediğin zaman galeriye yükle.
+              {t('dashboard.cloud_desc', { defaultValue: 'Tüm projelerini güvenle bulutta sakla, düzenle ve dilediğin zaman galeriye yükle.' })}
             </p>
           </div>
 
@@ -180,7 +181,7 @@ export default function UserScriptsPage() {
                 className="flex items-center gap-2 px-6 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl transition-all font-black text-[10px] uppercase tracking-widest shadow-[0_0_20px_rgba(16,185,129,0.2)] active:scale-95 whitespace-nowrap"
              >
                 <Plus size={18} />
-                Yeni Script
+                {t('general.new_script', { defaultValue: 'Yeni Script' })}
              </button>
              <div className="relative group w-full sm:w-auto">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600 group-focus-within:text-emerald-500 transition-colors" size={18} />
@@ -188,7 +189,7 @@ export default function UserScriptsPage() {
                   type="text" 
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Script ara..."
+                  placeholder={t('general.search_placeholder', { defaultValue: 'Script ara...' })}
                   className="pl-12 pr-6 py-4 bg-white/[0.03] border border-white/[0.08] rounded-2xl w-full sm:w-80 focus:outline-none focus:border-emerald-500/50 transition-all font-medium text-white placeholder-zinc-700"
                 />
              </div>
@@ -197,7 +198,7 @@ export default function UserScriptsPage() {
 
         {error ? (
           <div className="text-center py-20 bg-red-500/5 border border-red-500/10 rounded-[3rem]">
-            <h3 className="text-xl font-bold text-red-500 mb-2">Hata Oluştu</h3>
+            <h3 className="text-xl font-bold text-red-500 mb-2">{t('dashboard.error_occurred')}</h3>
             <p className="text-red-400/60 ">{error.message}</p>
           </div>
         ) : isLoading ? (
@@ -212,10 +213,10 @@ export default function UserScriptsPage() {
             <div className="relative z-10 scale-110 mb-8 inline-block opacity-20 group-hover:scale-125 transition-transform duration-700">
                <Cloud size={120} className="text-emerald-500" />
             </div>
-            <h3 className="text-2xl font-black text-white mb-3">Bulutun Henüz Boş</h3>
-            <p className="text-zinc-500 max-w-sm mx-auto mb-10 text-lg">Hemen editöre gidip ilk scriptini oluştur ve buluta kaydet!</p>
+            <h3 className="text-2xl font-black text-white mb-3">{t('dashboard.empty_cloud_title')}</h3>
+            <p className="text-zinc-500 max-w-sm mx-auto mb-10 text-lg">{t('dashboard.empty_cloud_desc')}</p>
             <button onClick={() => router.push('/chat')} className="btn-premium px-10 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl transition-all font-bold">
-               Editörü Aç
+               {t('general.open_editor', { defaultValue: 'Editörü Aç' })}
             </button>
           </div>
         ) : (
@@ -244,7 +245,7 @@ export default function UserScriptsPage() {
                 
                 <div className="flex items-center gap-2 text-zinc-600 text-xs mb-8">
                    <Clock size={12} />
-                   <span>Son güncelleme: {script.updated_at ? new Date(script.updated_at).toLocaleDateString('tr-TR') : 'Bilinmiyor'}</span>
+                   <span>{t('general.last_update', { defaultValue: 'Son güncelleme' })}: {script.updated_at ? new Date(script.updated_at).toLocaleDateString(t('general.locale', { defaultValue: 'tr-TR' })) : t('general.unknown', { defaultValue: 'Bilinmiyor' })}</span>
                 </div>
 
                 <div className="flex flex-col gap-3 mt-auto">
@@ -252,7 +253,7 @@ export default function UserScriptsPage() {
                       onClick={() => setEditingScript(script)}
                       className="flex items-center justify-between px-6 py-3 bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.08] rounded-xl text-sm font-bold text-zinc-400 hover:text-white transition-all group/btn"
                    >
-                      <span>Hızlı Düzenle</span>
+                      <span>{t('dashboard.quick_edit')}</span>
                       <ChevronRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
                    </button>
                    
@@ -260,7 +261,7 @@ export default function UserScriptsPage() {
                       onClick={() => handleSendToEditor(script.content)}
                       className="flex items-center justify-center gap-2 px-6 py-3 bg-white/[0.01] border border-white/[0.04] hover:bg-white/[0.06] rounded-xl text-[10px] uppercase tracking-widest font-black text-zinc-500 hover:text-zinc-300 transition-all"
                    >
-                      Editöre Gönder
+                      {t('general.send_to_editor', { defaultValue: 'Editöre Gönder' })}
                    </button>
                    
                    <button 
@@ -268,7 +269,7 @@ export default function UserScriptsPage() {
                       className="flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600/10 border border-emerald-500/20 hover:bg-emerald-600 hover:text-white rounded-xl text-sm font-bold text-emerald-400 transition-all shadow-lg shadow-emerald-500/5"
                    >
                       <Share2 size={16} />
-                      <span>Galeride Paylaş</span>
+                      <span>{t('dashboard.share_gallery')}</span>
                    </button>
                 </div>
               </div>

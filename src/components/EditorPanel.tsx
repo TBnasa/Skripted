@@ -21,7 +21,7 @@ interface EditorPanelProps {
 }
 
 export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorPanelProps) {
-  const { t } = useTranslation();
+  const { t, mounted } = useTranslation();
   const { userId } = useAuth();
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const [copied, setCopied] = useState(false);
@@ -49,8 +49,6 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
       if (model) {
         monaco.editor.setModelLanguage(model, SKRIPT_LANGUAGE_ID);
         
-        monaco.editor.setModelLanguage(model, SKRIPT_LANGUAGE_ID);
-        
         // Setup the Skript Linter
         setupSkriptLinter(editorInstance, monaco);
       }
@@ -64,9 +62,9 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
     if (pendingCode) {
       onCodeChange(pendingCode);
       localStorage.removeItem('skripted_active_code');
-      toast.success('Script buluttan yüklendi!');
+      toast.success(t('editor.loaded_from_cloud'));
     }
-  }, [onCodeChange]);
+  }, [onCodeChange, t]);
 
   useEffect(() => {
     if (editorRef.current) {
@@ -81,13 +79,13 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
     if (!code.trim()) return;
     await navigator.clipboard.writeText(code);
     setCopied(true);
-    toast.success('Panoya kopyalandı!');
+    toast.success(t('general.copied'));
     setTimeout(() => setCopied(false), 2000);
-  }, [code]);
+  }, [code, t]);
 
   const handleCloudSave = async () => {
     if (!userId) {
-      toast.error('Giriş yapmalısınız!');
+      toast.error(t('dashboard.please_login'));
       return;
     }
     if (!code.trim()) return;
@@ -98,7 +96,7 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title: `Script ${new Date().toLocaleDateString('tr-TR')}`,
+          title: `Script ${new Date().toLocaleDateString(t('general.locale'))}`,
           content: code,
           version: '1.0.0'
         })
@@ -106,13 +104,15 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
 
       if (!res.ok) throw new Error('Yükleme başarısız');
       
-      toast.success('Script bulut hesabınıza kaydedildi!');
+      toast.success(t('editor.saved_to_cloud'));
     } catch (err) {
-      toast.error('Kaydedilirken bir hata oluştu');
+      toast.error(t('general.error'));
     } finally {
       setIsSaving(false);
     }
   };
+
+  if (!mounted) return <div className="flex flex-1 flex-col min-h-0 glass-panel m-2 rounded-2xl bg-[#0a0a0a]" />;
 
   return (
     <div className="flex flex-1 flex-col min-h-0 glass-panel overflow-hidden m-2 rounded-2xl">
@@ -123,9 +123,9 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
              <Code size={18} />
           </div>
           <div>
-            <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t('script_editor')}</h2>
+            <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t('chat.script_editor')}</h2>
             <p className="text-[10px] font-mono text-emerald-500/50 mt-0.5 uppercase tracking-widest italic">
-              {code.trim() ? `${code.split('\n').length} Satır` : 'Sistem Hazır'}
+              {code.trim() ? `${code.split('\n').length} ${t('editor.lines')}` : t('chat.status_ready')}
             </p>
           </div>
         </div>
@@ -138,7 +138,7 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
             className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.06] px-3 py-2 text-[10px] font-black uppercase tracking-widest text-zinc-400 rounded-xl transition-all hover:bg-white/[0.06] hover:text-white disabled:opacity-30 active:scale-95"
           >
             {copied ? <CheckCircle2 size={12} className="text-emerald-500" /> : <Copy size={12} />}
-            {copied ? 'Kopyalandı' : 'Kopyala'}
+            {copied ? t('general.copied') : t('general.copy')}
           </button>
 
           {/* Cloud Save Button */}
@@ -148,7 +148,7 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
             className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.06] px-3 py-2 text-[10px] font-black uppercase tracking-widest text-cyan-400 rounded-xl transition-all hover:bg-cyan-500/10 hover:border-cyan-500/30 disabled:opacity-30 active:scale-95"
           >
             {isSaving ? <Loader2 size={12} className="animate-spin" /> : <Cloud size={12} />}
-            {isSaving ? 'Kaydediliyor' : 'Buluta Kaydet'}
+            {isSaving ? t('editor.saving') : t('editor.save_to_cloud')}
           </button>
           
           <DownloadButton code={code} />
@@ -160,7 +160,7 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
             className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white rounded-xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.15)] active:scale-95 disabled:opacity-30"
           >
             <Share2 size={14} />
-            YAYINLA
+            {t('gallery.post').toUpperCase()}
           </button>
         </div>
       </div>
@@ -232,9 +232,9 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
                 <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-[2rem] bg-white/[0.03] text-emerald-500/30 animate-float border border-white/[0.04] shadow-2xl">
                   <FileCode size={32} />
                 </div>
-                <h3 className="text-sm font-black text-zinc-500 uppercase tracking-[0.3em] mb-2">{t('status_ready')}</h3>
+                <h3 className="text-sm font-black text-zinc-500 uppercase tracking-[0.3em] mb-2">{t('chat.status_ready')}</h3>
                 <p className="text-xs font-medium text-zinc-700 max-w-[200px] mx-auto leading-relaxed italic">
-                  Sol taraftaki terminali kullanarak kod üretmeye başlayabilirsin.
+                  {t('editor.start_generating')}
                 </p>
               </div>
             </div>
@@ -253,4 +253,3 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
     </div>
   );
 }
-

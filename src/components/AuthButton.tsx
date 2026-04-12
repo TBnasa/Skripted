@@ -25,7 +25,7 @@ export default function AuthButton() {
           >
             <UserButton.MenuItems>
               <UserButton.Link
-                label="Profilim"
+                label={t('user_profile')}
                 labelIcon={<User size={14} />}
                 href={`/u/me`}
               />
