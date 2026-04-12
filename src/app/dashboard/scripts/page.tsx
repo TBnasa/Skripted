@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslation } from '@/lib/useTranslation';
-import useSWR from 'useSWR';
+import useSWR from 'swr';
 import { useAuth } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
