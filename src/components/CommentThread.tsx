@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { User, MessageSquare, Reply, Trash2, Send, Loader2 } from 'lucide-react';
+import { User, MessageSquare, Reply, Trash2, Send, Loader2, Languages } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
+import { useTranslation } from '@/lib/useTranslation';
 
 interface Comment {
   id: string;
@@ -39,16 +40,21 @@ const CommentItem = ({
   onCommentAdded: (comment: Comment) => void,
   level?: number 
 }) => {
+  const { t, lang } = useTranslation();
   const [isReplying, setIsReplying] = useState(false);
   const [replyContent, setReplyContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Translation
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [translatedContent, setTranslatedContent] = useState<string | null>(null);
 
   const replies = allComments.filter(c => c.parent_id === comment.id);
 
   const handleReply = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentUserId) {
-      toast.error('Cevap vermek için giriş yapmalısınız.');
+      toast.error('You must sign in to reply.');
       return;
     }
     if (!replyContent.trim()) return;
@@ -66,7 +72,7 @@ const CommentItem = ({
       onCommentAdded(data);
       setReplyContent('');
       setIsReplying(false);
-      toast.success('Cevabınız eklendi!');
+      toast.success('Reply added!');
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -74,7 +80,28 @@ const CommentItem = ({
     }
   };
 
-  // Mention parsing helper (basic)
+  const handleTranslate = async () => {
+    if (translatedContent) {
+      setTranslatedContent(null);
+      return;
+    }
+    
+    setIsTranslating(true);
+    try {
+      const res = await fetch('/api/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: comment.content, targetLang: lang }),
+      });
+      const data = await res.json();
+      if (data.translation) setTranslatedContent(data.translation);
+    } catch (err) {
+      toast.error('Translation failed.');
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
   const renderContent = (content: string) => {
     const parts = content.split(/(@\w+)/g);
     return parts.map((part, i) => {
@@ -106,11 +133,11 @@ const CommentItem = ({
               )}
             </div>
             <span className="text-[10px] text-zinc-600 font-mono italic">
-              {new Date(comment.created_at).toLocaleDateString('tr-TR')}
+              {new Date(comment.created_at).toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-US')}
             </span>
           </div>
           <div className="p-4 bg-white/[0.03] border border-white/[0.05] rounded-2xl rounded-tl-none text-zinc-300 text-sm leading-relaxed font-medium">
-            {renderContent(comment.content)}
+            {renderContent(translatedContent || comment.content)}
           </div>
           
           <div className="flex items-center gap-4 mt-2 ml-2">
@@ -119,7 +146,15 @@ const CommentItem = ({
                className="text-[10px] font-bold text-zinc-500 hover:text-emerald-400 flex items-center gap-1 transition-colors uppercase tracking-widest"
              >
                <Reply size={12} />
-               CEVAPLA
+               {t('post').toUpperCase()}
+             </button>
+             <button 
+               onClick={handleTranslate}
+               disabled={isTranslating}
+               className="text-[10px] font-bold text-zinc-500 hover:text-emerald-400 flex items-center gap-1 transition-colors uppercase tracking-widest"
+             >
+               {isTranslating ? <Loader2 size={12} className="animate-spin" /> : <Languages size={12} />}
+               {translatedContent ? t('original').toUpperCase() : t('translate').toUpperCase()}
              </button>
           </div>
 
@@ -136,7 +171,7 @@ const CommentItem = ({
                   autoFocus
                   value={replyContent}
                   onChange={(e) => setReplyContent(e.target.value)}
-                  placeholder={`@${comment.author_name} kullanıcısına yanıt ver...`}
+                  placeholder={`@${comment.author_name}...`}
                   className="flex-1 bg-white/[0.02] border border-white/[0.1] rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-emerald-500/50"
                 />
                 <button 
@@ -171,13 +206,14 @@ const CommentItem = ({
 };
 
 export default function CommentThread({ comments, postId, currentUserId, onCommentAdded }: CommentThreadProps) {
+  const { t } = useTranslation();
   const rootComments = comments.filter(c => !c.parent_id);
 
   if (comments.length === 0) {
     return (
       <div className="text-center py-12 opacity-30 border border-dashed border-white/5 rounded-3xl">
         <MessageSquare size={48} className="mx-auto mb-4" />
-        <p className="text-sm">Henüz bir tartışma başlatılmamış.</p>
+        <p className="text-sm">No discussion started yet.</p>
       </div>
     );
   }

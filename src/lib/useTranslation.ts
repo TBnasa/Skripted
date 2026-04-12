@@ -1,16 +1,22 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getTranslation } from './i18n';
 
 export function useTranslation() {
   const [lang, setLang] = useState('en');
 
   useEffect(() => {
-    setLang('tr');
+    const savedLang = localStorage.getItem('lang') || 'en';
+    setLang(savedLang);
   }, []);
 
-  const t = (key: string) => getTranslation(key, lang);
+  const t = useCallback((key: string) => getTranslation(key, lang), [lang]);
 
-  return { t, lang };
+  const switchLanguage = useCallback((newLang: string) => {
+    setLang(newLang);
+    localStorage.setItem('lang', newLang);
+  }, []);
+
+  return { t, lang, switchLanguage };
 }

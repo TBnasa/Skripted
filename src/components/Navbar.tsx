@@ -4,9 +4,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslation } from '@/lib/useTranslation';
 import AuthButton from './AuthButton';
+import { Globe } from 'lucide-react';
 
 export default function Navbar() {
-  const { t } = useTranslation();
+  const { t, lang, switchLanguage } = useTranslation();
   const pathname = usePathname();
   const isChatPage = pathname === '/chat' || pathname.startsWith('/chat/');
 
@@ -27,6 +28,26 @@ export default function Navbar() {
 
         {/* Actions */}
         <div className="flex items-center gap-2 sm:gap-4">
+          {/* Language Switcher */}
+          <div className="flex items-center gap-1 bg-white/5 p-1 rounded-lg border border-white/10 mr-2">
+            <button
+              onClick={() => switchLanguage('en')}
+              className={`px-2 py-1 text-[10px] font-bold rounded-md transition-all ${
+                lang === 'en' ? 'bg-emerald-500 text-black' : 'text-zinc-500 hover:text-white'
+              }`}
+            >
+              EN
+            </button>
+            <button
+              onClick={() => switchLanguage('tr')}
+              className={`px-2 py-1 text-[10px] font-bold rounded-md transition-all ${
+                lang === 'tr' ? 'bg-emerald-500 text-black' : 'text-zinc-500 hover:text-white'
+              }`}
+            >
+              TR
+            </button>
+          </div>
+
           <a
             href="https://github.com/TBnasa/Skripted"
             target="_blank"

@@ -3,8 +3,8 @@
 import { useTranslation } from '@/lib/useTranslation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, Code, Download, User, ArrowLeft, Share2, Copy, CheckCircle2, AlertCircle, Loader2, MessageSquare, Send, Trash2, Hash, Tag, Sparkles, ImageOff, Maximize2, Shrink } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+import { Heart, Code, Download, User, ArrowLeft, Share2, Copy, CheckCircle2, AlertCircle, Loader2, MessageSquare, Send, Trash2, Hash, Tag, Sparkles, ImageOff, Maximize2, Shrink, Languages } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Editor from '@monaco-editor/react';
 import { toast } from 'sonner';
@@ -42,20 +42,25 @@ interface Comment {
 }
 
 const CATEGORIES: Record<string, { name: string, icon: string }> = {
-  Economy: { name: 'Ekonomi', icon: '💰' },
+  Economy: { name: 'Economy', icon: '💰' },
   Admin: { name: 'Admin', icon: '🛡️' },
   Minigame: { name: 'Minigame', icon: '🎮' },
   Chat: { name: 'Chat', icon: '💬' },
-  Security: { name: 'Güvenlik', icon: '🔐' },
-  Other: { name: 'Diğer', icon: '📁' },
+  Security: { name: 'Security', icon: '🔐' },
+  Other: { name: 'Other', icon: '📁' },
 };
 
 export default function GalleryPostContent({ post }: { post: GalleryPost }) {
+  const { t, lang } = useTranslation();
   const { userId, getToken } = useAuth();
   const [copied, setCopied] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   
+  // Translation states
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [translatedDesc, setTranslatedDesc] = useState<string | null>(null);
+
   // States for dynamic updates
   const [likes, setLikes] = useState(post.likes_count);
   const [downloads, setDownloads] = useState(post.downloads_count);
@@ -68,10 +73,8 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   const [isLoadingComments, setIsLoadingComments] = useState(true);
 
-  // Check if user has liked the post on mount and fetch comments
   useEffect(() => {
     const initPage = async () => {
-      // Fetch Like Status
       if (userId) {
         try {
           const token = await getToken({ template: 'supabase' });
@@ -92,7 +95,6 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
         setIsLoadingLike(false);
       }
 
-      // Fetch Comments
       try {
         const res = await fetch(`/api/gallery/${post.id}/comments`);
         const data = await res.json();
@@ -110,7 +112,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
   const handleCopy = () => {
     navigator.clipboard.writeText(post.code_snippet);
     setCopied(true);
-    toast.success('Kod panoya kopyalandı!');
+    toast.success(t('copied'));
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -129,12 +131,12 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
     a.download = `${post.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.sk`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success('İndirme başlatıldı!');
+    toast.success('Download started!');
   };
 
   const handleLike = async () => {
     if (!userId) {
-      toast.error('Beğeni yapmak için giriş yapmalısınız.');
+      toast.error('You must sign in to like a post.');
       return;
     }
     if (isLoadingLike) return;
@@ -155,14 +157,36 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
     }
   };
 
+  const handleTranslateDesc = async () => {
+    if (translatedDesc) {
+      setTranslatedDesc(null);
+      return;
+    }
+    
+    setIsTranslating(true);
+    try {
+      const res = await fetch('/api/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: postData.description, targetLang: lang }),
+      });
+      const data = await res.json();
+      if (data.translation) setTranslatedDesc(data.translation);
+    } catch (err) {
+      toast.error('Translation failed.');
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId) {
-      toast.error('Yorum yapmak için giriş yapmalısınız.');
+      toast.error('You must sign in to comment.');
       return;
     }
     if (!newComment.trim() || newComment.length < 2) {
-      toast.error('Yorum en az 2 karakter olmalıdır.');
+      toast.error('Comment must be at least 2 characters.');
       return;
     }
 
@@ -179,7 +203,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
 
       setComments(prev => [...prev, data]);
       setNewComment('');
-      toast.success('Yorumunuz gönderildi!');
+      toast.success('Comment posted!');
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -189,7 +213,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
-    toast.success('Paylaşım linki kopyalandı!');
+    toast.success('Share link copied!');
   };
 
   const [isEditingPost, setIsEditingPost] = useState(false);
@@ -211,11 +235,11 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
           category: editedCategory,
         }),
       });
-      if (!res.ok) throw new Error('Güncelleme başarısız');
+      if (!res.ok) throw new Error('Update failed');
       const updated = await res.json();
       setPostData(updated);
       setIsEditingPost(false);
-      toast.success('Gönderi güncellendi!');
+      toast.success('Post updated!');
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -224,11 +248,11 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
   };
 
   const handleDeletePost = async () => {
-    if (!confirm('Bu gönderiyi kalıcı olarak silmek istediğinize emin misiniz?')) return;
+    if (!confirm('Are you sure you want to delete this post?')) return;
     try {
       const res = await fetch(`/api/gallery/${post.id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error('Silme işlemi başarısız');
-      toast.success('Gönderi silindi. Galeriye yönlendiriliyorsunuz...');
+      if (!res.ok) throw new Error('Delete failed');
+      toast.success('Post deleted.');
       setTimeout(() => window.location.href = '/gallery', 1500);
     } catch (err: any) {
       toast.error(err.message);
@@ -249,7 +273,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 animate-fade-in">
         <Link href="/gallery" className="inline-flex items-center gap-2 text-zinc-400 hover:text-emerald-400 transition-colors mb-8 group">
           <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-          <span>Galeriye Dön</span>
+          <span>Back to Gallery</span>
         </Link>
 
         {/* Top Header */}
@@ -279,15 +303,15 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                  <div className="flex items-center gap-2 ml-auto lg:ml-0">
                    <button 
                      onClick={() => setIsEditingPost(true)}
-                     className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-[9px] font-bold text-zinc-400 hover:text-white transition-colors"
+                     className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-[9px] font-bold text-zinc-400 hover:text-white transition-colors uppercase"
                    >
-                     DÜZENLE
+                     Edit
                    </button>
                    <button 
                      onClick={handleDeletePost}
-                     className="px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-[9px] font-bold text-red-400 hover:bg-red-500 hover:text-white transition-all"
+                     className="px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-[9px] font-bold text-red-400 hover:bg-red-500 hover:text-white transition-all uppercase"
                    >
-                     SİL
+                     Delete
                    </button>
                  </div>
                )}
@@ -297,15 +321,15 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                    <button 
                      onClick={handleUpdatePost}
                      disabled={isUpdatingPost}
-                     className="px-3 py-1 bg-emerald-600 text-white rounded-lg text-[9px] font-bold disabled:opacity-50"
+                     className="px-3 py-1 bg-emerald-600 text-white rounded-lg text-[9px] font-bold disabled:opacity-50 uppercase"
                    >
-                     {isUpdatingPost ? '...' : 'KAYDET'}
+                     {isUpdatingPost ? '...' : 'Save'}
                    </button>
                    <button 
                      onClick={() => setIsEditingPost(false)}
-                     className="px-3 py-1 bg-white/5 text-zinc-400 rounded-lg text-[9px] font-bold"
+                     className="px-3 py-1 bg-white/5 text-zinc-400 rounded-lg text-[9px] font-bold uppercase"
                    >
-                     İPTAL
+                     Cancel
                    </button>
                  </div>
                )}
@@ -335,7 +359,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                 <span className="font-semibold text-zinc-300 group-hover/author:text-white transition-colors">{postData.author_name}</span>
               </Link>
               <span className="hidden sm:inline opacity-20">•</span>
-              <span className="font-mono text-xs uppercase tracking-widest">{new Date(postData.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+              <span className="font-mono text-xs uppercase tracking-widest">{new Date(postData.created_at).toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
             </div>
           </div>
           
@@ -351,11 +375,11 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
              </button>
              <button onClick={handleShare} className="flex items-center gap-2 px-5 py-2.5 bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.08] rounded-2xl transition-all active:scale-95 shadow-lg text-zinc-400">
                <Share2 size={18} />
-               <span>Paylaş</span>
+               <span className="uppercase font-bold text-xs">Share</span>
              </button>
              <button onClick={handleDownload} className="btn-premium flex items-center gap-2 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl transition-all font-bold active:scale-95 shadow-lg">
                <Download size={18} />
-               <span>İndir (.sk)</span>
+               <span className="uppercase text-xs font-bold">Download (.sk)</span>
              </button>
           </div>
         </div>
@@ -366,12 +390,24 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
           <div className="lg:col-span-5 space-y-10 animate-slide-up" style={{ animationDelay: '0.2s' }}>
             <div className="bg-white/[0.01] border border-white/[0.04] rounded-[2rem] p-8 md:p-10 shadow-2xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-[80px] -mr-16 -mt-16 group-hover:bg-emerald-500/10 transition-colors"></div>
-              <h3 className="text-xl font-bold mb-6 flex items-center gap-3 text-emerald-400">
-                 <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
-                   <AlertCircle size={16} />
-                 </div>
-                 Açıklama
-              </h3>
+              
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold flex items-center gap-3 text-emerald-400">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+                    <AlertCircle size={16} />
+                  </div>
+                  {t('author')}
+                </h3>
+                <button 
+                  onClick={handleTranslateDesc}
+                  disabled={isTranslating}
+                  className="flex items-center gap-2 px-3 py-1 bg-white/5 hover:bg-white/10 rounded-lg text-[10px] font-bold text-zinc-500 hover:text-emerald-400 transition-all border border-white/5"
+                >
+                  {isTranslating ? <Loader2 size={12} className="animate-spin" /> : <Languages size={12} />}
+                  {translatedDesc ? t('original').toUpperCase() : t('translate').toUpperCase()}
+                </button>
+              </div>
+
               {isEditingPost ? (
                 <textarea 
                   value={editedDesc}
@@ -380,7 +416,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                 />
               ) : (
                 <div className="prose prose-invert prose-emerald text-zinc-400 whitespace-pre-wrap leading-relaxed max-w-none text-base italic">
-                  {postData.description || "Bu paylaşım için bir açıklama girilmemiş."}
+                  {translatedDesc || postData.description || "No description provided for this post."}
                 </div>
               )}
 
@@ -411,7 +447,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                   ) : (
                     <div className="flex flex-col items-center gap-3 text-zinc-600">
                       <ImageOff size={48} />
-                      <span className="text-xs font-bold uppercase tracking-widest">Görsel Bulunamadı</span>
+                      <span className="text-xs font-bold uppercase tracking-widest">No Image Found</span>
                     </div>
                   )}
                 </div>
@@ -435,11 +471,11 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
             
             <div className="grid grid-cols-2 gap-4">
                <div className="p-6 rounded-[1.5rem] bg-white/[0.02] border border-white/[0.04] flex flex-col items-center">
-                  <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest mb-1">BEĞENİ</span>
+                  <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest mb-1">{t('likes').toUpperCase()}</span>
                   <span className="text-2xl font-black text-white">{likes}</span>
                </div>
                <div className="p-6 rounded-[1.5rem] bg-white/[0.02] border border-white/[0.04] flex flex-col items-center">
-                  <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest mb-1">İNDİRME</span>
+                  <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest mb-1">{t('downloads').toUpperCase()}</span>
                   <span className="text-2xl font-black text-white">{downloads}</span>
                </div>
             </div>
@@ -471,12 +507,12 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                     className="flex items-center gap-2 text-[11px] font-bold text-zinc-300 hover:text-emerald-400 transition-all bg-white/5 hover:bg-emerald-500/10 px-4 py-2 rounded-xl border border-white/5 hover:border-emerald-500/30 group active:scale-95"
                   >
                     {copied ? <CheckCircle2 size={14} className="text-emerald-500" /> : <Copy size={14} className="group-hover:scale-110 transition-transform" />}
-                    {copied ? 'Kopyalandı' : 'Kopyala'}
+                    {copied ? t('copied') : t('copy')}
                   </button>
                   <button 
                     onClick={() => setIsFullscreen(!isFullscreen)}
                     className="flex items-center justify-center text-zinc-400 hover:text-white bg-white/5 hover:bg-white/10 w-8 h-8 rounded-xl border border-white/5 hover:border-white/20 transition-all active:scale-95"
-                    title={isFullscreen ? "Küçült" : "Tam Ekran"}
+                    title={isFullscreen ? "Shrink" : "Fullscreen"}
                   >
                     {isFullscreen ? <Shrink size={14} /> : <Maximize2 size={14} />}
                   </button>
@@ -491,7 +527,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                   beforeMount={handleEditorWillMount}
                   onMount={handleEditorMount}
                   value={post.code_snippet}
-                  loading={<div className="flex items-center justify-center h-full bg-[#0a0a0b] text-zinc-500 animate-pulse font-mono text-xs uppercase tracking-widest">Editor Hazırlanıyor...</div>}
+                  loading={<div className="flex items-center justify-center h-full bg-[#0a0a0b] text-zinc-500 animate-pulse font-mono text-xs uppercase tracking-widest">Editor Loading...</div>}
                   options={{
                     readOnly: true,
                     minimap: { enabled: false },
@@ -519,10 +555,10 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
             </motion.div>
 
             {/* Comments Section */}
-            <div className="bg-[#0c0c0e] border border-white/[0.06] rounded-[2.5rem] p-8 md:p-10 shadow-2xl uppercase">
+            <div className="bg-[#0c0c0e] border border-white/[0.06] rounded-[2.5rem] p-8 md:p-10 shadow-2xl">
                <h3 className="text-2xl font-black text-white mb-8 flex items-center gap-3">
                   <MessageSquare size={24} className="text-emerald-400" />
-                  Yorumlar <span className="text-zinc-600 font-mono text-lg">({comments.length})</span>
+                  <span className="uppercase">{t('comments')}</span> <span className="text-zinc-600 font-mono text-lg">({comments.length})</span>
                </h3>
 
                {/* Comment Form */}
@@ -532,7 +568,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                        <textarea 
                           value={newComment}
                           onChange={(e) => setNewComment(e.target.value)}
-                          placeholder="Fikrinizi paylaşın..."
+                          placeholder={t('write_comment')}
                           className="w-full bg-white/[0.02] border border-white/[0.08] rounded-2xl p-4 min-h-[120px] text-white placeholder-zinc-700 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.04] transition-all resize-none font-medium"
                        />
                        <button 
@@ -545,7 +581,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                  </form>
                ) : (
                  <div className="p-6 bg-white/[0.02] border border-dashed border-white/[0.1] rounded-2xl text-center mb-10">
-                    <p className="text-zinc-500 text-sm">Yorum yazmak için <Link href="/login" className="text-emerald-400 font-bold hover:underline">giriş yapmalısınız</Link>.</p>
+                    <p className="text-zinc-500 text-sm">You must <Link href="/login" className="text-emerald-400 font-bold hover:underline">sign in</Link> to post a comment.</p>
                  </div>
                )}
 

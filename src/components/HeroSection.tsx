@@ -29,9 +29,9 @@ export default function HeroSection() {
 
         {/* Main Title */}
         <h1 className="animate-slide-up mb-8 text-5xl font-black text-white sm:text-7xl md:text-8xl tracking-tight leading-[0.95]">
-          Hayal Edin, <br />
+          {t('hero_title_1')} <br />
           <span className="bg-gradient-to-r from-emerald-400 via-cyan-300 to-blue-500 bg-clip-text text-transparent animate-gradient drop-shadow-[0_0_25px_rgba(16,185,129,0.3)]">
-            AI Yazsın.
+            {t('hero_title_2')}
           </span>
         </h1>
 
@@ -59,7 +59,7 @@ export default function HeroSection() {
             href="/gallery"
             className="group px-10 py-5 text-sm font-bold text-white transition-all border border-white/10 rounded-2xl bg-white/[0.03] backdrop-blur-xl hover:bg-white/[0.08] hover:border-white/20"
           >
-            Galeriyi Keşfet
+            {t('explore_gallery')}
           </Link>
         </div>
 
