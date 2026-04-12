@@ -2,25 +2,30 @@
 
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import HttpBackend from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
+// JSON dosyalarını doğrudan import ediyoruz (Build sırasında hata almamak için)
+import enCommon from '../../public/locales/en/common.json';
+import trCommon from '../../public/locales/tr/common.json';
+
+const resources = {
+  en: { common: enCommon },
+  tr: { common: trCommon },
+};
+
 i18n
-  .use(HttpBackend)
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
+    resources,
     fallbackLng: 'en',
     ns: ['common'],
     defaultNS: 'common',
     interpolation: {
       escapeValue: false,
     },
-    backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json',
-    },
     detection: {
-      order: ['localStorage', 'cookie', 'htmlTag', 'path', 'subdomain'],
+      order: ['localStorage', 'cookie', 'htmlTag'],
       caches: ['localStorage', 'cookie'],
     },
   });
