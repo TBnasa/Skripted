@@ -146,7 +146,7 @@ const CommentItem = ({
                className="text-[10px] font-bold text-zinc-500 hover:text-emerald-400 flex items-center gap-1 transition-colors uppercase tracking-widest"
              >
                <Reply size={12} />
-               {t('post').toUpperCase()}
+               {t('gallery.post').toUpperCase()}
              </button>
              <button 
                onClick={handleTranslate}
@@ -154,7 +154,7 @@ const CommentItem = ({
                className="text-[10px] font-bold text-zinc-500 hover:text-emerald-400 flex items-center gap-1 transition-colors uppercase tracking-widest"
              >
                {isTranslating ? <Loader2 size={12} className="animate-spin" /> : <Languages size={12} />}
-               {translatedContent ? t('original').toUpperCase() : t('translate').toUpperCase()}
+               {translatedContent ? t('gallery.original').toUpperCase() : t('gallery.translate').toUpperCase()}
              </button>
           </div>
 

@@ -33,7 +33,7 @@ export default function Navbar() {
             <button
               onClick={() => switchLanguage('en')}
               className={`px-2 py-1 text-[10px] font-bold rounded-md transition-all ${
-                lang === 'en' ? 'bg-emerald-500 text-black' : 'text-zinc-500 hover:text-white'
+                lang === 'en' || lang.startsWith('en') ? 'bg-emerald-500 text-black' : 'text-zinc-500 hover:text-white'
               }`}
             >
               EN
@@ -41,7 +41,7 @@ export default function Navbar() {
             <button
               onClick={() => switchLanguage('tr')}
               className={`px-2 py-1 text-[10px] font-bold rounded-md transition-all ${
-                lang === 'tr' ? 'bg-emerald-500 text-black' : 'text-zinc-500 hover:text-white'
+                lang === 'tr' || lang.startsWith('tr') ? 'bg-emerald-500 text-black' : 'text-zinc-500 hover:text-white'
               }`}
             >
               TR
@@ -75,7 +75,7 @@ export default function Navbar() {
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="4 17 10 11 4 5" /><line x1="12" y1="19" x2="20" y2="19" />
                 </svg>
-                {t('launch_engine')}
+                {t('general.launch_engine')}
               </Link>
             </div>
           )}

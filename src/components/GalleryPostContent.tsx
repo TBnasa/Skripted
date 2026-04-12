@@ -112,7 +112,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
   const handleCopy = () => {
     navigator.clipboard.writeText(post.code_snippet);
     setCopied(true);
-    toast.success(t('copied'));
+    toast.success(t('general.copied'));
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -396,7 +396,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                   <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
                     <AlertCircle size={16} />
                   </div>
-                  {t('author')}
+                  {t('gallery.author')}
                 </h3>
                 <button 
                   onClick={handleTranslateDesc}
@@ -404,7 +404,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                   className="flex items-center gap-2 px-3 py-1 bg-white/5 hover:bg-white/10 rounded-lg text-[10px] font-bold text-zinc-500 hover:text-emerald-400 transition-all border border-white/5"
                 >
                   {isTranslating ? <Loader2 size={12} className="animate-spin" /> : <Languages size={12} />}
-                  {translatedDesc ? t('original').toUpperCase() : t('translate').toUpperCase()}
+                  {translatedDesc ? t('gallery.original').toUpperCase() : t('gallery.translate').toUpperCase()}
                 </button>
               </div>
 
@@ -471,11 +471,11 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
             
             <div className="grid grid-cols-2 gap-4">
                <div className="p-6 rounded-[1.5rem] bg-white/[0.02] border border-white/[0.04] flex flex-col items-center">
-                  <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest mb-1">{t('likes').toUpperCase()}</span>
+                  <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest mb-1">{t('gallery.likes').toUpperCase()}</span>
                   <span className="text-2xl font-black text-white">{likes}</span>
                </div>
                <div className="p-6 rounded-[1.5rem] bg-white/[0.02] border border-white/[0.04] flex flex-col items-center">
-                  <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest mb-1">{t('downloads').toUpperCase()}</span>
+                  <span className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest mb-1">{t('gallery.downloads').toUpperCase()}</span>
                   <span className="text-2xl font-black text-white">{downloads}</span>
                </div>
             </div>
@@ -507,7 +507,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                     className="flex items-center gap-2 text-[11px] font-bold text-zinc-300 hover:text-emerald-400 transition-all bg-white/5 hover:bg-emerald-500/10 px-4 py-2 rounded-xl border border-white/5 hover:border-emerald-500/30 group active:scale-95"
                   >
                     {copied ? <CheckCircle2 size={14} className="text-emerald-500" /> : <Copy size={14} className="group-hover:scale-110 transition-transform" />}
-                    {copied ? t('copied') : t('copy')}
+                    {copied ? t('general.copied') : t('general.copy')}
                   </button>
                   <button 
                     onClick={() => setIsFullscreen(!isFullscreen)}
@@ -558,7 +558,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
             <div className="bg-[#0c0c0e] border border-white/[0.06] rounded-[2.5rem] p-8 md:p-10 shadow-2xl">
                <h3 className="text-2xl font-black text-white mb-8 flex items-center gap-3">
                   <MessageSquare size={24} className="text-emerald-400" />
-                  <span className="uppercase">{t('comments')}</span> <span className="text-zinc-600 font-mono text-lg">({comments.length})</span>
+                  <span className="uppercase">{t('gallery.comments')}</span> <span className="text-zinc-600 font-mono text-lg">({comments.length})</span>
                </h3>
 
                {/* Comment Form */}
@@ -568,7 +568,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
                        <textarea 
                           value={newComment}
                           onChange={(e) => setNewComment(e.target.value)}
-                          placeholder={t('write_comment')}
+                          placeholder={t('gallery.write_comment')}
                           className="w-full bg-white/[0.02] border border-white/[0.08] rounded-2xl p-4 min-h-[120px] text-white placeholder-zinc-700 focus:outline-none focus:border-emerald-500/50 focus:bg-white/[0.04] transition-all resize-none font-medium"
                        />
                        <button 

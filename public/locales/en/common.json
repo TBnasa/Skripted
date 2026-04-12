@@ -1,0 +1,60 @@
+{
+  "general": {
+    "launch_engine": "Launch Engine",
+    "access_engine": "Access Engine",
+    "view_architecture": "View Architecture",
+    "ai_asistan": "Assistant",
+    "user_profile": "Profile",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "verify": "Verify Syntax",
+    "verifying": "Verifying...",
+    "sign_in": "Sign In",
+    "sign_out": "Sign Out"
+  },
+  "chat": {
+    "terminal_header": "Terminal / Chat",
+    "status_ready": "Status: Ready",
+    "status_compiling": "Status: Compiling Response...",
+    "input_required": "Input Required",
+    "input_desc": "Explain your requirements to start generating the script.",
+    "placeholder": "Describe the logic you want to create...",
+    "kernel_info": "Kernel: Paper 1.21.1 · Version: Skript 2.14.3",
+    "script_editor": "Script Editor",
+    "waiting_generation": "Generating code...",
+    "appear_here": "Generated code will appear here",
+    "thinking_process": "Thinking Process"
+  },
+  "hero": {
+    "title_1": "Imagine,",
+    "title_2": "AI Builds.",
+    "desc": "The world's most advanced AI-powered Minecraft Skript IDE. Write, audit, and publish your code in seconds with 120B parameter models.",
+    "explore_gallery": "Explore Gallery"
+  },
+  "features": {
+    "feature1_title": "AI AUDITOR",
+    "feature1_desc": "Your code isn't just written; it's audited for logic errors by 120B parameter models via AI Judge.",
+    "feature2_title": "HYBRID CLOUD STORAGE",
+    "feature2_desc": "Unlimited script capacity. Your code is stored encrypted in our secure hybrid cloud system (Postgres + Storage).",
+    "feature3_title": "UNIVERSAL ADDON SUPPORT",
+    "feature3_desc": "Automatic syntax and optimization support for all popular addons from TuSKe to SkQuantum."
+  },
+  "gallery": {
+    "translate": "Translate",
+    "original": "Original",
+    "comments": "Comments",
+    "write_comment": "Write a comment...",
+    "post": "Post",
+    "likes": "Likes",
+    "downloads": "Downloads",
+    "author": "Author",
+    "category": "Category",
+    "tags": "Tags"
+  },
+  "status": {
+    "admin_tools": "Admin Tools",
+    "system_status_ok": "Supabase MCP: Database Deployed | Sidebar: Connected | Security: RLS Active",
+    "code_verified": "✅ Verified by Skripted Engine",
+    "legal_disclaimer": "© 2026 Skripted IDE. All rights reserved. Not affiliated with Mojang AB or Microsoft."
+  }
+}

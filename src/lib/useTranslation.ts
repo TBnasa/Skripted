@@ -1,22 +1,16 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { getTranslation } from './i18n';
+import { useTranslation as useI18nextTranslation } from 'react-i18next';
+import './i18n-config'; // Ensure i18n is initialized
 
 export function useTranslation() {
-  const [lang, setLang] = useState('en');
+  const { t, i18n } = useI18nextTranslation('common');
 
-  useEffect(() => {
-    const savedLang = localStorage.getItem('lang') || 'en';
-    setLang(savedLang);
-  }, []);
+  const lang = i18n.language;
 
-  const t = useCallback((key: string) => getTranslation(key, lang), [lang]);
-
-  const switchLanguage = useCallback((newLang: string) => {
-    setLang(newLang);
-    localStorage.setItem('lang', newLang);
-  }, []);
+  const switchLanguage = (newLang: string) => {
+    i18n.changeLanguage(newLang);
+  };
 
   return { t, lang, switchLanguage };
 }
