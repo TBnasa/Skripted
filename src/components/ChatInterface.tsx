@@ -8,7 +8,9 @@ import { useTranslation } from '@/lib/useTranslation';
 import type { ChatMessage, FeedbackPayload } from '@/types';
 
 export default function ChatInterface() {
-  const { t, i18n } = useTranslation() as any; // i18n access
+  const translation = useTranslation();
+  const t = translation?.t || ((key: string) => key);
+  const lang = translation?.lang || 'en';
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [editorCode, setEditorCode] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
@@ -193,7 +195,7 @@ export default function ChatInterface() {
         setStreamingReasoning('');
       }
     },
-    [generateId, extractCode, editorCode],
+    [generateId, extractCode, editorCode, lang],
   );
 
   const handleFeedback = useCallback(
@@ -211,13 +213,13 @@ export default function ChatInterface() {
         await fetch('/api/feedback', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
+          body: JSON.stringify({ ...payload, lang }),
         });
       } catch (error) {}
 
       setShowFeedback(false);
     },
-    [editorCode],
+    [editorCode, lang],
   );
 
   const handleCodeExtracted = useCallback((code: string) => {
