@@ -99,6 +99,13 @@ export default function ChatInterface() {
           return prev;
         });
 
+        // Dynamic Language Detection: Override UI toggle if user writes in Turkish
+        const trChars = /[ışğüöçİŞĞÜÖÇ]/;
+        const commonTrWords = /\b(merhaba|selam|nasılsın|yap|et|olsun|nasıl|nedir)\b/i;
+        const detectedLang = (trChars.test(content) || commonTrWords.test(content)) ? 'tr' : 'en';
+        
+        // Final language to send: If UI is 'tr' or input is detected as 'tr', then 'tr'.
+        const activeLang = detectedLang === 'tr' ? 'tr' : (lang || 'en');
 
         const response = await fetch('/api/chat', {
           method: 'POST',
@@ -108,7 +115,7 @@ export default function ChatInterface() {
             history: currentHistory.slice(0, -1),
             addons,
             currentCode: editorCode,
-            lang: lang || 'en'
+            lang: activeLang
           }),
         });
 
