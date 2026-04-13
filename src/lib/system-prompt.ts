@@ -46,16 +46,19 @@ export function buildSystemPrompt(
         "MESSAGES: Write in-game messages (send \"...\") in the language of the user's prompt."
       ];
 
-  const adaptivePrefix = isTr 
-    ? "Kullanıcının tercih ettiği dilde cevap ver. Eğer Türkçe yazarsa Türkçe, İngilizce yazarsa İngilizce devam et."
-    : "Respond in the user's preferred language. If they write in Turkish, respond in Turkish. If in English, stay in English.";
+  const adaptivePrefix = `
+## DİNAMİK DİL ADAPTASYONU PROTOKOLÜ / DYNAMIC LANGUAGE ADAPTATION PROTOCOL
+1. LİNGUİSTİK ANALİZ: Her etkileşimden önce kullanıcının giriş dilini analiz et.
+2. ADAPTİF AYNALAMA (Adaptive Mirroring):
+   - Kullanıcının Dilinde Yanıtla: Kullanıcı Türkçe yazarsa "Düşünce Süreci", kod yorumları ve açıklamalar Türkçe olmalıdır. İngilizce yazarsa her şey İngilizce olmalıdır.
+   - Teknik Bütünlük: Tüm Skript komutları (örn. command /warp:) için İngilizce kullan, ancak kullanıcıya yönelik dizeler (örn. send "...") için tespit edilen dili kullan.
+3. BELİRSİZLİKLERİ ÇÖZME: Eğer istem sadece teknik ise (örn. "Custom /warp"), en yüksek teknik doğruluğu sağlamak için İngilizce'yi varsayılan olarak kullan (önceki mesajlar Türkçe değilse).
+4. DİL SIZINTISI YOK (No Language Leakage): Açıkça istenmedikçe dilleri (Açıklama/Kod) asla karıştırma.
+`;
 
   const instructions = `
 ${identity}
 ${adaptivePrefix}
-
-## DİNAMİK ADAPTASYON / DYNAMIC ADAPTATION
-${rules.map(r => `- ${r}`).join('\n')}
 
 ## DİL KURALI / LANGUAGE MODE (CRITICAL)
 - Tüm cevaplar, kod yorumları ve KOD İÇERİSİNDEKİ METİNLER (örn. send "..." mesajları) kullanıcının mevcut prompt dilinde olmalıdır.
