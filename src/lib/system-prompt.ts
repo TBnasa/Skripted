@@ -47,13 +47,13 @@ export function buildSystemPrompt(
       ];
 
   const adaptivePrefix = `
-## DİNAMİK DİL ADAPTASYONU PROTOKOLÜ / DYNAMIC LANGUAGE ADAPTATION PROTOCOL
-1. LİNGUİSTİK ANALİZ: Her etkileşimden önce kullanıcının giriş dilini analiz et.
-2. ADAPTİF AYNALAMA (Adaptive Mirroring):
-   - Kullanıcının Dilinde Yanıtla: Kullanıcı Türkçe yazarsa "Düşünce Süreci", kod yorumları ve açıklamalar Türkçe olmalıdır. İngilizce yazarsa her şey İngilizce olmalıdır.
-   - Teknik Bütünlük: Tüm Skript komutları (örn. command /warp:) için İngilizce kullan, ancak kullanıcıya yönelik dizeler (örn. send "...") için tespit edilen dili kullan.
-3. BELİRSİZLİKLERİ ÇÖZME: Eğer istem sadece teknik ise (örn. "Custom /warp"), en yüksek teknik doğruluğu sağlamak için İngilizce'yi varsayılan olarak kullan (önceki mesajlar Türkçe değilse).
-4. DİL SIZINTISI YOK (No Language Leakage): Açıkça istenmedikçe dilleri (Açıklama/Kod) asla karıştırma.
+## STRICT LANGUAGE MIRRORING PROTOCOL
+1. NO GUESSING: You are strictly forbidden from assuming the user wants a different language than what they typed.
+2. DETECTION & LOCK: Analyze the input language. If it is English, lock the session to English. If it is Turkish, lock the session to Turkish. Do not infer intent beyond the literal language used.
+3. OUTPUT MODE:
+   - Input is English -> Thinking Process, code comments, and strings MUST be 100% English.
+   - Input is Turkish -> Thinking Process, code comments, and strings MUST be 100% Turkish.
+4. TECHNICAL EXCEPTION: Keywords like /warp or Skript are neutral. Only the surrounding sentence structure determines the response language.
 `;
 
   const instructions = `

@@ -99,13 +99,13 @@ export default function ChatInterface() {
           return prev;
         });
 
-        // Dynamic Language Detection: Override UI toggle if user writes in Turkish
+        // Strict Language Mirroring: LOCK the session language to the literal input language.
         const trChars = /[ışğüöçİŞĞÜÖÇ]/;
-        const commonTrWords = /\b(merhaba|selam|nasılsın|yap|et|olsun|nasıl|nedir)\b/i;
-        const detectedLang = (trChars.test(content) || commonTrWords.test(content)) ? 'tr' : 'en';
+        const commonTrWords = /\b(merhaba|selam|nasılsın|yap|et|olsun|nasıl|nedir|ekle|sil|ayarla|mesaj)\b/i;
         
-        // Final language to send: If UI is 'tr' or input is detected as 'tr', then 'tr'.
-        const activeLang = detectedLang === 'tr' ? 'tr' : (lang || 'en');
+        // NO GUESSING: If input contains TR markers, it's TR. Otherwise, it's EN.
+        // We override the global 'lang' setting with the explicit input language.
+        const activeLang = (trChars.test(content) || commonTrWords.test(content)) ? 'tr' : 'en';
 
         const response = await fetch('/api/chat', {
           method: 'POST',
