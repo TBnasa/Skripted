@@ -52,7 +52,10 @@ const CATEGORY_ICONS: Record<string, string> = {
 };
 
 export default function GalleryPostContent({ post }: { post: GalleryPost }) {
-  const { t, lang, mounted } = useTranslation();
+  const translation = useTranslation();
+  const t = translation?.t || ((key: string) => key);
+  const lang = translation?.lang || 'en';
+  const mounted = translation?.mounted || false;
   const { userId, getToken } = useAuth();
   const [copied, setCopied] = useState(false);
   const [activeImage, setActiveImage] = useState(0);

@@ -41,7 +41,9 @@ const CommentItem = ({
   onCommentAdded: (comment: Comment) => void,
   level?: number 
 }) => {
-  const { t, lang } = useTranslation();
+  const translation = useTranslation();
+  const t = translation?.t || ((key: string) => key);
+  const lang = translation?.lang || 'en';
   const [isReplying, setIsReplying] = useState(false);
   const [replyContent, setReplyContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -207,7 +209,9 @@ const CommentItem = ({
 };
 
 export default function CommentThread({ comments, postId, currentUserId, onCommentAdded }: CommentThreadProps) {
-  const { t, mounted } = useTranslation();
+  const translation = useTranslation();
+  const t = translation?.t || ((key: string) => key);
+  const mounted = translation?.mounted || false;
   const rootComments = comments.filter(c => !c.parent_id);
 
   if (!mounted) return null;

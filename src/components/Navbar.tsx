@@ -7,7 +7,10 @@ import AuthButton from './AuthButton';
 import { Globe } from 'lucide-react';
 
 export default function Navbar() {
-  const { t, lang, switchLanguage } = useTranslation();
+  const translation = useTranslation();
+  const t = translation?.t || ((key: string) => key);
+  const lang = translation?.lang || 'en';
+  const switchLanguage = translation?.switchLanguage || (() => {});
   const pathname = usePathname();
   const isChatPage = pathname === '/chat' || pathname.startsWith('/chat/');
 

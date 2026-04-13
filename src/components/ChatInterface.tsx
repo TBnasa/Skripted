@@ -97,7 +97,6 @@ export default function ChatInterface() {
           return prev;
         });
 
-        const { lang } = i18n;
 
         const response = await fetch('/api/chat', {
           method: 'POST',
