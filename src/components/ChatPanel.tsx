@@ -128,10 +128,10 @@ export default function ChatPanel({
               </p>
               <div className="flex flex-wrap justify-center gap-2.5 stagger-children">
                 {[
-                  'Economy System',
-                  'Custom /warp',
+                  t('chat.suggestion_economy'),
+                  t('chat.suggestion_warp'),
                   t('status.admin_tools'),
-                  'Item Editor',
+                  t('chat.suggestion_item'),
                 ].map((suggestion) => (
                   <button
                     key={suggestion}

@@ -63,7 +63,10 @@
     "feedback_worked": "✅ Çalıştı!",
     "feedback_error": "❌ Hata Aldım",
     "feedback_placeholder": "Konsol hatasını buraya yapıştırın (isteğe bağlı)...",
-    "feedback_submit": "Hata Raporunu Gönder"
+    "feedback_submit": "Hata Raporunu Gönder",
+    "suggestion_economy": "Ekonomi Sistemi",
+    "suggestion_warp": "Özel /warp",
+    "suggestion_item": "Eşya Düzenleyici"
   },
   "hero": {
     "title_1": "Hayal Edin,",

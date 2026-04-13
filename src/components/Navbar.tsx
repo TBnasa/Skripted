@@ -66,7 +66,7 @@ export default function Navbar() {
                 href="/dashboard"
                 className="hidden md:flex items-center gap-2 px-3 py-2 text-xs font-bold text-zinc-400 hover:text-white transition-all bg-white/5 rounded-xl border border-white/5 hover:border-white/10"
               >
-                Dashboard
+                {t('general.dashboard')}
               </Link>
               <Link
                 href="/chat"

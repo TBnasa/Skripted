@@ -25,13 +25,14 @@ export async function POST(request: NextRequest): Promise<Response> {
       return Response.json({ error: 'Invalid data', details: result.error.format() }, { status: 400 });
     }
 
-    const { prompt, history, serverVersion, serverType, skriptVersion, addons, currentCode } = result.data;
+    const { prompt, history, serverVersion, serverType, skriptVersion, addons, currentCode, lang } = result.data;
 
     const { systemPrompt, pineconeIds } = await ChatService.prepareChatContext(prompt, {
       serverVersion,
       serverType,
       skriptVersion,
-      addons
+      addons,
+      lang,
     });
 
     const truncatedHistory = ChatService.truncateHistory(history);

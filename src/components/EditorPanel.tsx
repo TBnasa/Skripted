@@ -102,7 +102,7 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
         })
       });
 
-      if (!res.ok) throw new Error('Yükleme başarısız');
+      if (!res.ok) throw new Error(t('general.error'));
       
       toast.success(t('editor.saved_to_cloud'));
     } catch (err) {

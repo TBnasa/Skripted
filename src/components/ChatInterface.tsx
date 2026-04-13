@@ -8,7 +8,7 @@ import { useTranslation } from '@/lib/useTranslation';
 import type { ChatMessage, FeedbackPayload } from '@/types';
 
 export default function ChatInterface() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation() as any; // i18n access
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [editorCode, setEditorCode] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
@@ -97,10 +97,18 @@ export default function ChatInterface() {
           return prev;
         });
 
+        const { lang } = i18n;
+
         const response = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt: content, history: currentHistory.slice(0, -1), addons, currentCode: editorCode }),
+          body: JSON.stringify({
+            prompt: content,
+            history: currentHistory.slice(0, -1),
+            addons,
+            currentCode: editorCode,
+            lang: lang || 'en'
+          }),
         });
 
         if (!response.ok) {

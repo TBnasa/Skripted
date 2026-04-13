@@ -63,7 +63,10 @@
     "feedback_worked": "✅ It Worked!",
     "feedback_error": "❌ Got an Error",
     "feedback_placeholder": "Paste your console error here (optional)...",
-    "feedback_submit": "Submit Error Report"
+    "feedback_submit": "Submit Error Report",
+    "suggestion_economy": "Economy System",
+    "suggestion_warp": "Custom /warp",
+    "suggestion_item": "Item Editor"
   },
   "hero": {
     "title_1": "Imagine,",

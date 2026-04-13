@@ -16,6 +16,7 @@ export const ChatRequestSchema = z.object({
   serverType: z.string().optional(),
   skriptVersion: z.string().optional(),
   addons: z.array(z.string()).optional().default([]), // For Addon Selector
+  lang: z.string().optional().default('en'),
 });
 
 export const SessionRequestSchema = z.object({

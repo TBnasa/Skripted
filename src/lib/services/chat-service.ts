@@ -7,6 +7,7 @@ export class ChatService {
     serverType?: string;
     skriptVersion?: string;
     addons?: string[];
+    lang?: string;
   }) {
     let pineconeIds: string[] = [];
     let ragContext = '';
@@ -27,7 +28,8 @@ export class ChatService {
       config.serverType,
       config.skriptVersion,
       ragContext,
-      config.addons
+      config.addons,
+      config.lang
     );
 
     return { systemPrompt, pineconeIds };
