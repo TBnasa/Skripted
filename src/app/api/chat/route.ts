@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import { streamChatCompletion } from '@/lib/openrouter';
 import { ChatService } from '@/lib/services/chat-service';
 import { checkUsageLimit, incrementUsage } from '@/lib/utils/usage-limit';
+import { checkRateLimit } from '@/lib/utils/rate-limit';
 import { ChatRequestSchema } from '@/types/schemas';
 
 const CHAT_RATE_LIMIT = { windowMs: 60_000, max: 30 };
