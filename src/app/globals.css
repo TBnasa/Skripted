@@ -67,6 +67,14 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: rgba(16, 185, 129, 0.3); }
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
 
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* ══════ ANIMATIONS ══════ */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
