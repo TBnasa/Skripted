@@ -28,7 +28,7 @@ export default function HeroSection() {
         </div>
 
         {/* Main Title */}
-        <h1 className="animate-slide-up mb-8 text-5xl font-black text-white sm:text-7xl md:text-8xl tracking-tight leading-[0.95]">
+        <h1 className="animate-slide-up mb-8 text-4xl font-black text-white sm:text-7xl md:text-8xl tracking-tight leading-[0.95]">
           {t('hero.title_1')} <br />
           <span className="bg-gradient-to-r from-emerald-400 via-cyan-300 to-blue-500 bg-clip-text text-transparent animate-gradient drop-shadow-[0_0_25px_rgba(16,185,129,0.3)]">
             {t('hero.title_2')}
@@ -41,10 +41,10 @@ export default function HeroSection() {
         </p>
 
         {/* Actions */}
-        <div className="animate-fade-in flex flex-col items-center justify-center gap-6 sm:flex-row" style={{ animationDelay: '0.3s' }}>
+        <div className="animate-fade-in flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-6" style={{ animationDelay: '0.3s' }}>
           <Link
             href="/chat"
-            className="group relative inline-flex items-center justify-center px-12 py-5 font-black text-black transition-all duration-300 bg-emerald-500 rounded-2xl hover:bg-emerald-400 hover:scale-105 hover:shadow-[0_0_40px_rgba(16,185,129,0.4)] active:scale-95"
+            className="group relative w-full sm:w-auto inline-flex items-center justify-center px-12 py-5 font-black text-black transition-all duration-300 bg-emerald-500 rounded-2xl hover:bg-emerald-400 hover:scale-105 hover:shadow-[0_0_40px_rgba(16,185,129,0.4)] active:scale-95"
           >
             <span className="flex items-center gap-3">
               {t('general.access_engine')}
@@ -57,7 +57,7 @@ export default function HeroSection() {
 
           <Link
             href="/gallery"
-            className="group px-10 py-5 text-sm font-bold text-white transition-all border border-white/10 rounded-2xl bg-white/[0.03] backdrop-blur-xl hover:bg-white/[0.08] hover:border-white/20"
+            className="group w-full sm:w-auto px-10 py-5 text-sm font-bold text-white transition-all border border-white/10 rounded-2xl bg-white/[0.03] backdrop-blur-xl hover:bg-white/[0.08] hover:border-white/20 text-center"
           >
             {t('hero.explore_gallery')}
           </Link>
