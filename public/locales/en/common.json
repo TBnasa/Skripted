@@ -242,5 +242,20 @@
     "system_status_ok": "Supabase MCP: Database Deployed | Sidebar: Connected | Security: RLS Active",
     "code_verified": "✅ Verified by Skripted Engine",
     "legal_disclaimer": "© 2026 Skripted IDE. All rights reserved. Not affiliated with Mojang AB or Microsoft."
+  },
+  "pricing": {
+    "title": "Pricing & Plans",
+    "subtitle": "Choose the perfect plan for your Skript development needs.",
+    "free_starter": "Free / Starter",
+    "free_price": "$0",
+    "free_period": "/ month",
+    "current_plan": "Current Plan",
+    "upgrade": "Upgrade to Pro",
+    "coming_soon": "Coming Soon",
+    "usage_limit": "50 AI Generations / Day",
+    "feature_gallery": "Access to Global Gallery",
+    "feature_support": "Community Support",
+    "feature_model": "Standard 120B Models",
+    "feature_cloud": "Basic Cloud Storage"
   }
 }

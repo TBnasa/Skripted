@@ -16,6 +16,7 @@ interface ChatPanelProps {
   readonly streamingReasoning?: string;
   readonly onFeedback: (success: boolean, errorLog?: string) => void;
   readonly showFeedback: boolean;
+  readonly usage?: { current: number; limit: number };
 }
 
 export default function ChatPanel({
@@ -27,6 +28,7 @@ export default function ChatPanel({
   streamingReasoning,
   onFeedback,
   showFeedback,
+  usage,
 }: ChatPanelProps) {
   const { t, mounted } = useTranslation();
   const [input, setInput] = useState('');
@@ -108,6 +110,16 @@ export default function ChatPanel({
             ) : t('status.system_status_ok')}
           </p>
         </div>
+
+        {/* Usage Indicator */}
+        {usage && (
+          <div className="ml-auto flex items-center gap-2 px-3 py-1.5 bg-white/[0.03] border border-white/[0.06] rounded-xl">
+            <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+              Usage: <span className="text-emerald-400">{usage.current}</span> / {usage.limit}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Messages */}

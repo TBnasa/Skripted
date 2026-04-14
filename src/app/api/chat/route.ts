@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { streamChatCompletion } from '@/lib/openrouter';
 import { ChatService } from '@/lib/services/chat-service';
-import { checkRateLimit } from '@/lib/utils/rate-limit';
+import { checkUsageLimit, incrementUsage } from '@/lib/utils/usage-limit';
 import { ChatRequestSchema } from '@/types/schemas';
 
 const CHAT_RATE_LIMIT = { windowMs: 60_000, max: 30 };
@@ -17,6 +17,16 @@ export async function POST(request: NextRequest): Promise<Response> {
     if (!checkRateLimit(`chat:${userId}`, CHAT_RATE_LIMIT).success) {
       return Response.json({ error: 'Rate limit exceeded' }, { status: 429 });
     }
+
+    // --- Usage Limit Enforcement ---
+    const usage = await checkUsageLimit(userId);
+    if (!usage.allowed) {
+      return Response.json({ 
+        error: 'Daily limit reached. Upgrade to Pro (Coming Soon) for unlimited access.',
+        code: 'LIMIT_REACHED'
+      }, { status: 429 });
+    }
+    // -------------------------------
 
     const rawBody = await request.json();
     const result = ChatRequestSchema.safeParse(rawBody);
@@ -101,6 +111,9 @@ export async function POST(request: NextRequest): Promise<Response> {
         }
       },
     });
+
+    // Increment usage count before returning the stream
+    await incrementUsage(userId);
 
     return new Response(transformedStream, {
       headers: {

@@ -4,7 +4,9 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import ChatPanel from '@/components/ChatPanel';
 import EditorPanel from '@/components/EditorPanel';
 import Sidebar from '@/components/Sidebar';
+import LimitModal from '@/components/LimitModal';
 import { useTranslation } from '@/lib/useTranslation';
+import useSWR from 'swr';
 import type { ChatMessage, FeedbackPayload } from '@/types';
 
 export default function ChatInterface() {
@@ -21,6 +23,10 @@ export default function ChatInterface() {
   const [showFeedback, setShowFeedback] = useState(false);
   const [sidebarRefreshKey, setSidebarRefreshKey] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
+  
+  const fetcher = (url: string) => fetch(url).then(res => res.json());
+  const { data: usage, mutate: mutateUsage } = useSWR('/api/session/usage', fetcher);
   const pineconeIdsRef = useRef<string[]>([]);
   const sessionIdRef = useRef(crypto.randomUUID());
   const lastPromptRef = useRef('');
@@ -121,6 +127,12 @@ export default function ChatInterface() {
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
+          
+          if (errorData.code === 'LIMIT_REACHED') {
+            setIsLimitModalOpen(true);
+            throw new Error(errorData.error);
+          }
+          
           throw new Error(errorData.details || errorData.error || `Status: ${response.status}`);
         }
 
@@ -200,6 +212,7 @@ export default function ChatInterface() {
         setIsStreaming(false);
         setStreamingContent('');
         setStreamingReasoning('');
+        mutateUsage(); // Refresh usage after generation
       }
     },
     [generateId, extractCode, editorCode, lang],
@@ -301,8 +314,14 @@ export default function ChatInterface() {
               streamingReasoning={streamingReasoning}
               onFeedback={handleFeedback}
               showFeedback={showFeedback}
+              usage={usage}
             />
           </div>
+
+          <LimitModal 
+            isOpen={isLimitModalOpen} 
+            onClose={() => setIsLimitModalOpen(false)} 
+          />
 
           <div className="hidden flex-1 flex-col md:flex md:w-[45%] lg:w-[45%] min-w-0">
             <EditorPanel

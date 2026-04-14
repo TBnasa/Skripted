@@ -242,5 +242,20 @@
     "system_status_ok": "Supabase MCP: Database Deployed | Sidebar: Connected | Security: RLS Active",
     "code_verified": "✅ Skripted Engine Tarafından Doğrulandı",
     "legal_disclaimer": "© 2026 Skripted IDE. Tüm hakları saklıdır. Bu platform Mojang AB veya Microsoft ile bağlantılı değildir."
+  },
+  "pricing": {
+    "title": "Ücretlendirme ve Planlar",
+    "subtitle": "Skript geliştirme ihtiyaçlarınız için mükemmel planı seçin.",
+    "free_starter": "Ücretsiz / Başlangıç",
+    "free_price": "$0",
+    "free_period": "/ ay",
+    "current_plan": "Mevcut Plan",
+    "upgrade": "Pro'ya Yükselt",
+    "coming_soon": "Yakında",
+    "usage_limit": "Günlük 50 AI Üretimi",
+    "feature_gallery": "Küresel Galeri Erişimi",
+    "feature_support": "Topluluk Desteği",
+    "feature_model": "Standart 120B Modeller",
+    "feature_cloud": "Temel Bulut Depolama"
   }
 }
