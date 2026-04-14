@@ -1,0 +1,12 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /api/*
+Disallow: /dashboard/*
+Disallow: /auth/*
+
+# Host
+Host: https://skripted.vercel.app
+
+# Sitemaps
+Sitemap: https://skripted.vercel.app/sitemap.xml
