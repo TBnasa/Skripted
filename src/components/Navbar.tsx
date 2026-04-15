@@ -77,6 +77,13 @@ export default function Navbar() {
               </span>
             </Link>
 
+            <Link
+              href="/support"
+              className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-[var(--color-text-muted)] transition-all duration-300 hover:text-emerald-400 rounded-lg whitespace-nowrap"
+            >
+              {t('general.support')}
+            </Link>
+
             {pathname !== '/chat' && (
               <>
                 <Link
@@ -150,6 +157,12 @@ export default function Navbar() {
                   onClick={() => setIsMenuOpen(false)}
                   icon={<Code2 className="w-4 h-4" />}
                   label={t('dashboard.cloud_scripts')}
+                />
+                <MobileNavLink
+                  href="/support"
+                  onClick={() => setIsMenuOpen(false)}
+                  icon={<Sparkles className="w-4 h-4" />}
+                  label={t('general.support')}
                 />
               </div>
 
