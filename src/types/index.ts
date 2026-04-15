@@ -43,15 +43,22 @@ export interface ChatRequest {
   readonly skriptVersion?: string;
 }
 
-export interface FeedbackPayload {
-  readonly sessionId: string;
-  readonly prompt: string;
-  readonly generatedCode: string;
-  readonly success: boolean;
-  readonly errorLog?: string;
-  readonly consoleOutput?: string;
-  readonly pineconeIds?: readonly string[];
+export interface SupportFeedback {
+  readonly email: string;
+  readonly message: string;
 }
+
+export type FeedbackPayload = 
+  | {
+      readonly sessionId: string;
+      readonly prompt: string;
+      readonly generatedCode: string;
+      readonly success: boolean;
+      readonly errorLog?: string;
+      readonly consoleOutput?: string;
+      readonly pineconeIds?: readonly string[];
+    }
+  | SupportFeedback;
 
 export interface UserProfile {
   readonly id: string;
