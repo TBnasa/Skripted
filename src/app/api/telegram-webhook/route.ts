@@ -1,7 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Resend } from 'resend';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 /** Extract the first email address from a Telegram message text */
 function extractEmail(text: string): string | null {
@@ -87,16 +84,32 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
-    const { error } = await resend.emails.send({
-      from: 'Skripted Support <support@resend.dev>',
-      to: [userEmail],
-      subject: 'Reply from Skripted Support Team',
-      html: buildReplyEmail(adminReplyText),
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+      console.error('[Webhook] Missing RESEND_API_KEY');
+      return NextResponse.json({ ok: false, error: 'Resend API key missing' }, { status: 500 });
+    }
+
+    // Use standard fetch to avoid 'resend' library dependency
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${resendApiKey}`,
+      },
+      body: JSON.stringify({
+        from: 'Skripted Support <support@resend.dev>',
+        to: [userEmail],
+        subject: 'Reply from Skripted Support Team',
+        html: buildReplyEmail(adminReplyText),
+      }),
     });
 
-    if (error) {
-      console.error('[Webhook] Resend error:', JSON.stringify(error));
-      return NextResponse.json({ ok: false, error }, { status: 500 });
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('[Webhook] Resend error:', JSON.stringify(data));
+      return NextResponse.json({ ok: false, error: data }, { status: 500 });
     }
 
     console.log(`[Webhook] Reply sent to ${userEmail}`);
