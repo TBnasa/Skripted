@@ -1,4 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
+import nodemailer from 'nodemailer';
+
+// Configure the Gmail transporter
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD,
+  },
+});
 
 /** Extract the first email address from a Telegram message text */
 function extractEmail(text: string): string | null {
@@ -84,36 +94,27 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-      console.error('[Webhook] Missing RESEND_API_KEY');
-      return NextResponse.json({ ok: false, error: 'Resend API key missing' }, { status: 500 });
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+      console.error('[Webhook] SMTP configuration missing: GMAIL_USER or GMAIL_APP_PASSWORD');
+      return NextResponse.json({ ok: false, error: 'SMTP configuration error' }, { status: 500 });
     }
 
-    // Use standard fetch to avoid 'resend' library dependency
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${resendApiKey}`,
-      },
-      body: JSON.stringify({
-        from: 'Skripted Support <support@resend.dev>',
-        to: [userEmail],
+    // Send email via Nodemailer (Gmail SMTP)
+    try {
+      await transporter.sendMail({
+        from: '"Skripted Support" <tahirdipi80@gmail.com>',
+        to: userEmail,
         subject: 'Reply from Skripted Support Team',
         html: buildReplyEmail(adminReplyText),
-      }),
-    });
+      });
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error('[Webhook] Resend error:', JSON.stringify(data));
-      return NextResponse.json({ ok: false, error: data }, { status: 500 });
+      console.log(`[Webhook] SMTP Reply sent to ${userEmail}`);
+      return NextResponse.json({ ok: true });
+    } catch (smtpError) {
+      console.error('[Webhook] SMTP error:', smtpError);
+      return NextResponse.json({ ok: false, error: 'Failed to send email' }, { status: 500 });
     }
 
-    console.log(`[Webhook] Reply sent to ${userEmail}`);
-    return NextResponse.json({ ok: true });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Unknown error';
     console.error('[Webhook] Unexpected error:', msg);
