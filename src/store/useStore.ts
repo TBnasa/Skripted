@@ -81,16 +81,64 @@ export const useStore = create<AppState>()(
       resetChat: () => set({
         messages: [],
         editorCode: '',
-        sessionId: crypto.randomUUID(),
+        sessionId: typeof crypto !== 'undefined' ? crypto.randomUUID() : Math.random().toString(36).substring(7),
         globalError: null
       }),
     }),
     {
       name: 'skripted-storage',
+      storage: {
+        getItem: (name) => {
+          const local = localStorage.getItem(name);
+          const session = sessionStorage.getItem(name);
+          
+          let localState = {};
+          let sessionState = {};
+          
+          try {
+            if (local) localState = JSON.parse(local).state || {};
+            if (session) sessionState = JSON.parse(session).state || {};
+          } catch (e) {}
+          
+          return {
+            state: { ...localState, ...sessionState } as AppState,
+            version: 0
+          };
+        },
+        setItem: (name, value) => {
+          const { state } = value;
+          
+          // Persistent in LocalStorage
+          localStorage.setItem(name, JSON.stringify({
+            state: { 
+              stats: state.stats, 
+              history: state.history 
+            },
+            version: 0
+          }));
+          
+          // Volatile in SessionStorage (survives refresh, clears on tab close)
+          sessionStorage.setItem(name, JSON.stringify({
+            state: {
+              editorCode: state.editorCode,
+              messages: state.messages,
+              sessionId: state.sessionId
+            },
+            version: 0
+          }));
+        },
+        removeItem: (name) => {
+          localStorage.removeItem(name);
+          sessionStorage.removeItem(name);
+        }
+      },
       partialize: (state) => ({
         stats: state.stats,
-        history: state.history
-      }),
+        history: state.history,
+        editorCode: state.editorCode,
+        messages: state.messages,
+        sessionId: state.sessionId
+      } as any),
     }
   )
 );
