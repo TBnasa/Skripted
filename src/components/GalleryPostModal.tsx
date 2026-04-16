@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { GalleryClientService } from '@/services/client/gallery.client';
-import { GalleryPostSchema } from '@/types/schemas/gallery';
+import { GalleryPostSchema } from '@/types/schemas';
 import { useAuth } from '@clerk/nextjs';
 import { X, UploadCloud, Loader2, Image as ImageIcon, CheckCircle2, AlertCircle, Hash, Tag } from 'lucide-react';
 import { toast } from 'sonner';

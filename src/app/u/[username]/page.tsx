@@ -6,8 +6,8 @@ import { User, Code, Heart, Calendar, MapPin, Share2, Edit3, Settings, Grid, Lis
 import Navbar from '@/components/Navbar';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@clerk/nextjs';
-import { Profile } from '@/lib/services/profile-service';
-import useSWR, { mutate } from 'swr';
+import { Profile } from '@/services/server/profile-service';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import ProfileEditModal from '@/components/ProfileEditModal';
 import { toast } from 'sonner';
@@ -27,9 +27,18 @@ export default function ProfilePage() {
 
   const isMe = username === 'me';
   const fetchUrl = isMe ? `/api/profiles/me` : `/api/profiles/${username}`;
+  const queryClient = useQueryClient();
   
-  const { data: profile, error: profileError, isLoading: isProfileLoading } = useSWR(fetchUrl, fetcher);
-  const { data: scripts, error: scriptsError } = useSWR(profile ? `/api/gallery?userId=${profile.id}` : null, fetcher);
+  const { data: profile, error: profileError, isLoading: isProfileLoading } = useQuery({
+    queryKey: ['profile', username],
+    queryFn: () => fetcher(fetchUrl),
+  });
+
+  const { data: scripts, error: scriptsError } = useQuery({
+    queryKey: ['profile-scripts', profile?.id],
+    queryFn: () => fetcher(`/api/gallery?userId=${profile?.id}`),
+    enabled: !!profile?.id,
+  });
 
   if (!mounted) return <div className="min-h-screen bg-[#0a0a0b]" />;
 
@@ -127,7 +136,7 @@ export default function ProfilePage() {
                          body: JSON.stringify({ followingId: profile.id, action: 'follow' }),
                        });
                        if (!res.ok) throw new Error('Takip edilemedi');
-                       mutate(`/api/profiles/${username}`);
+                       queryClient.invalidateQueries({ queryKey: ['profile', username] });
                        toast.success('Takip edildi!');
                      } catch (err: any) {
                        toast.error(err.message);
@@ -238,7 +247,7 @@ export default function ProfilePage() {
             isOpen={isEditModalOpen}
             onClose={() => setIsEditModalOpen(false)}
             initialData={profile}
-            onUpdate={(newData) => mutate(`/api/profiles/${username}`, newData)}
+            onUpdate={(newData) => queryClient.setQueryData(['profile', username], newData)}
           />
         )}
       </main>

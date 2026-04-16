@@ -3,13 +3,13 @@
 import { useTranslation } from '@/lib/useTranslation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, Code, Download, User, ArrowLeft, Share2, Copy, CheckCircle2, AlertCircle, Loader2, MessageSquare, Send, Trash2, Hash, Tag, Sparkles, ImageOff, Maximize2, Shrink, Languages } from 'lucide-react';
-import React, { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Heart, Download, User, ArrowLeft, Share2, Copy, CheckCircle2, AlertCircle, Loader2, MessageSquare, Send, Hash, ImageOff, Maximize2, Shrink, Languages } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import Editor from '@monaco-editor/react';
 import { toast } from 'sonner';
 import { GalleryClientService } from '@/services/client/gallery.client';
-import { GalleryPostSchema, GalleryCommentSchema } from '@/types/schemas/gallery';
+import { GalleryPostSchema, GalleryCommentSchema } from '@/types/schemas';
 import { useAuth } from '@clerk/nextjs';
 import { SKRIPT_LANGUAGE_ID, registerSkriptLanguage } from '@/lib/skript-language';
 import { setupSkriptLinter } from '@/lib/skript-linter';
@@ -166,7 +166,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
     try {
       const translation = await GalleryClientService.translateDescription(postData.description, lang);
       if (translation) setTranslatedDesc(translation);
-    } catch (err) {
+    } catch {
       toast.error(t('gallery.translation_failed'));
     } finally {
       setIsTranslating(false);

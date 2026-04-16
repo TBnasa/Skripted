@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ProfileService } from '@/lib/services/profile-service';
+import { ProfileService } from '@/services/server/profile-service';
 
 export async function GET(
   _request: NextRequest,

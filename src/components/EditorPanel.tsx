@@ -10,7 +10,7 @@ import { SKRIPT_LANGUAGE_ID, registerSkriptLanguage } from '@/lib/skript-languag
 import type { editor } from 'monaco-editor';
 import { useAuth } from '@clerk/nextjs';
 import { toast } from 'sonner';
-import { Cloud, Save, Share2, Copy, FileCode, Loader2, Sparkles, AlertCircle, ChevronRight, Code, Undo2, Redo2, ClipboardPaste, ArrowRightToLine, CheckCircle2 } from 'lucide-react';
+import { Cloud, Share2, Copy, Loader2, Sparkles, Code, Undo2, Redo2, ClipboardPaste, ArrowRightToLine, CheckCircle2 } from 'lucide-react';
 import { setupSkriptLinter } from '@/lib/skript-linter';
 
 const Editor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
@@ -32,9 +32,6 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
   const { userId } = useAuth();
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const [copied, setCopied] = useState(false);
-  const [verifying, setVerifying] = useState(false);
-  const [aiReport, setAiReport] = useState<any>(null);
-  const [showInsight, setShowInsight] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [isGitHubOpen, setIsGitHubOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -113,7 +110,7 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
       if (!res.ok) throw new Error(t('general.error'));
       
       toast.success(t('editor.saved_to_cloud'));
-    } catch (err) {
+    } catch {
       toast.error(t('general.error'));
     } finally {
       setIsSaving(false);

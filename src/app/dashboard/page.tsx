@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, History, Settings, User } from 'lucide-react';
+import { LayoutDashboard, History, Settings } from 'lucide-react';
 
 export default function DashboardPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);

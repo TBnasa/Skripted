@@ -19,40 +19,37 @@ export async function GET(
     const { id } = await params;
     const supabase = getSupabaseAdmin();
 
-    const { data, error } = await supabase
-      .from('chats')
-      .select('id, title, content, created_at')
-      .eq('id', id)
-      .eq('user_id', userId)
-      .single();
-
-    if (error || !data) {
-      return NextResponse.json({ error: 'Chat not found' }, { status: 404 });
-    }
-
-    // HYDRATE CONTENT FROM STORAGE (Restore large blobs)
-    const hydratedData = await StorageArchiver.hydrateObject(data);
-
     // FETCH GRANULAR HISTORY FROM chat_history (Max last 50)
     const { data: messages, error: msgError } = await supabase
       .from('chat_history')
-      .select('id, role, content, created_at')
+      .select('id, role, content, title, created_at')
       .eq('session_id', id)
       .eq('user_id', userId)
       .order('created_at', { ascending: true })
       .limit(50);
 
-    if (!msgError && messages && messages.length > 0) {
-      // OVERWRITE with granular history if found
-      hydratedData.content = messages.map((m) => ({
-        id: m.id,
-        role: m.role as 'user' | 'assistant',
-        content: m.content,
-        timestamp: new Date(m.created_at).getTime()
-      }));
+    if (msgError || !messages || messages.length === 0) {
+      return NextResponse.json({ error: 'Chat not found' }, { status: 404 });
     }
 
-    return NextResponse.json(hydratedData);
+    // Resolve the title from the first message that has it
+    const title = messages.find(m => m.title)?.title || 'Untitled Chat';
+
+    // HYDRATE CONTENT FROM STORAGE (Restore large blobs)
+    // We scan all messages and replace __BLOB__ REFs with actual content
+    const hydratedMessages = await Promise.all(messages.map(async (m) => ({
+      id: m.id,
+      role: m.role as 'user' | 'assistant',
+      content: await StorageArchiver.resolveText(m.content),
+      timestamp: new Date(m.created_at).getTime()
+    })));
+
+    return NextResponse.json({
+      id,
+      title,
+      content: hydratedMessages,
+      created_at: messages[0].created_at
+    });
   } catch (error) {
     console.error('[Chat GET] Error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

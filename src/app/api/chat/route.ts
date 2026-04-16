@@ -1,11 +1,12 @@
 import { NextRequest } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { streamChatCompletion } from '@/lib/openrouter';
-import { ChatService } from '@/lib/services/chat-service';
+import { ChatService } from '@/services/server/chat-service';
 import { checkUsageLimit, incrementUsage } from '@/lib/utils/usage-limit';
 import { checkRateLimit } from '@/lib/utils/rate-limit';
 import { ChatRequestSchema } from '@/types/schemas';
 import { getSupabaseAdmin } from '@/lib/supabase-server';
+import { StorageArchiver } from '@/lib/storage-archiver';
 
 const CHAT_RATE_LIMIT = { windowMs: 60_000, max: 30 };
 
@@ -113,9 +114,20 @@ export async function POST(request: NextRequest): Promise<Response> {
           if (sessionId) {
             try {
               const supabase = getSupabaseAdmin();
+              
+              // ARCHIVE LARGE CONTENT TO STORAGE (Save DB space)
+              const archivedUserMsg = await StorageArchiver.archiveIfLarge(prompt, `chat/${sessionId}/user`);
+              const archivedAiMsg = await StorageArchiver.archiveIfLarge(fullAiResponse, `chat/${sessionId}/ai`);
+
+              const chatTitle = history.length === 0 
+                ? prompt.substring(0, 40) + (prompt.length > 40 ? '...' : '')
+                : null;
+
+              // 2. Save individual messages to 'chat_history'
+              // Every message in chat_history now potentially holds the title for that session
               await supabase.from('chat_history').insert([
-                { user_id: userId, session_id: sessionId, role: 'user', content: prompt },
-                { user_id: userId, session_id: sessionId, role: 'assistant', content: fullAiResponse }
+                { user_id: userId, session_id: sessionId, role: 'user', content: archivedUserMsg, title: chatTitle },
+                { user_id: userId, session_id: sessionId, role: 'assistant', content: archivedAiMsg }
               ]);
             } catch (dbError) {
               console.error('[Chat API] Failed to save to history:', dbError);

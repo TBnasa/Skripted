@@ -1,6 +1,6 @@
 import { createClerkClient, uploadGalleryImage } from '@/lib/supabase-browser';
 import { processImageForGallery } from '@/lib/image-processor';
-import { GalleryPostInput, GalleryCommentInput } from '@/types/schemas/gallery';
+import { GalleryPostInput, GalleryCommentInput } from '@/types/schemas';
 
 export class GalleryClientService {
   /**

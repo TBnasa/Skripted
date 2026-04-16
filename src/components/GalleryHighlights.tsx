@@ -1,6 +1,6 @@
 'use client';
 
-import useSWR from 'swr';
+import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { Heart, Download, Code, Sparkles, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -10,7 +10,10 @@ const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 export default function GalleryHighlights() {
   const { t, mounted } = useTranslation();
-  const { data: posts, error } = useSWR('/api/gallery?limit=4', fetcher);
+  const { data: posts, error } = useQuery({
+    queryKey: ['gallery-highlights'],
+    queryFn: () => fetcher('/api/gallery?limit=4'),
+  });
 
   if (!mounted) return null;
   if (error || !posts || !Array.isArray(posts) || posts.length === 0) return null;

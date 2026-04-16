@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { GalleryClientService } from '@/services/client/gallery.client';
-import { GalleryCommentSchema } from '@/types/schemas/gallery';
+import { GalleryCommentSchema } from '@/types/schemas';
 import { User, MessageSquare, Reply, Trash2, Send, Loader2, Languages } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';

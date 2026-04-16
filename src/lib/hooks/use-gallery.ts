@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { GalleryClientService } from '@/services/client/gallery.client';
-import { GalleryPostInput, GalleryCommentInput } from '@/types/schemas/gallery';
+import { GalleryPostInput, GalleryCommentInput } from '@/types/schemas';
 import { toast } from 'sonner';
 
 export function useGalleryPosts(params: { limit?: number; filter?: string; category?: string } = {}) {

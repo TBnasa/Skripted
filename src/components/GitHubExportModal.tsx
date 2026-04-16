@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Loader2, CheckCircle2, AlertCircle, ChevronRight, Search } from 'lucide-react';
+import { X, Loader2, CheckCircle2, AlertCircle, Search } from 'lucide-react';
 import { useTranslation } from '@/lib/useTranslation';
 import { toast } from 'sonner';
 import { Button } from './ui/Button';
@@ -26,7 +26,6 @@ interface Repo {
 }
 
 export default function GitHubExportModal({ code, isOpen, onClose }: GitHubExportModalProps) {
-  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [repos, setRepos] = useState<Repo[]>([]);
   const [search, setSearch] = useState('');
@@ -122,7 +121,7 @@ export default function GitHubExportModal({ code, isOpen, onClose }: GitHubExpor
                   <Github size={24} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-white">GitHub'a Aktar</h2>
+                  <h2 className="text-xl font-bold text-white">GitHub&apos;a Aktar</h2>
                   <p className="text-xs text-zinc-500">Skript dosyanızı doğrudan bir depoya gönderin.</p>
                 </div>
               </div>

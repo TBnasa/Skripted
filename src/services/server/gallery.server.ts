@@ -5,7 +5,7 @@ import {
   GalleryCommentSchema, 
   GalleryCommentInput,
   GalleryFilterOptions 
-} from '@/types/schemas/gallery';
+} from '@/types/schemas';
 import { sanitizeHtml } from '@/lib/utils/sanitize';
 
 export class GalleryService {

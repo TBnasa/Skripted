@@ -16,9 +16,11 @@ export async function GET() {
 
     const supabase = getSupabaseAdmin();
 
+    // Fetch sessions from chat_history by grouping session_ids
+    // We get the max created_at and any non-null title
     const { data, error } = await supabase
-      .from('chats')
-      .select('id, title, created_at')
+      .from('chat_history')
+      .select('session_id, title, created_at')
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
 
@@ -27,7 +29,22 @@ export async function GET() {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json(data);
+    // Collapse into unique sessions for the Sidebar
+    const sessions = data.reduce((acc: any[], current) => {
+      const existing = acc.find(s => s.id === current.session_id);
+      if (!existing) {
+        acc.push({
+          id: current.session_id,
+          title: current.title || 'Untitled Chat',
+          created_at: current.created_at
+        });
+      } else if (current.title && !existing.title) {
+        existing.title = current.title;
+      }
+      return acc;
+    }, []);
+
+    return NextResponse.json(sessions);
   } catch (error) {
     console.error('[Chats API] Error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

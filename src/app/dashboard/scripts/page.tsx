@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslation } from '@/lib/useTranslation';
-import useSWR from 'swr';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
@@ -48,11 +48,13 @@ export default function UserScriptsPage() {
   const router = useRouter();
   const [search, setSearch] = useState('');
   const [publishCode, setPublishCode] = useState<string | null>(null);
+  const queryClient = useQueryClient();
   
-  const { data: scripts, error, isLoading, mutate } = useSWR<UserScript[]>(
-    isLoaded && userId ? '/api/user-scripts' : null, 
-    fetcher
-  );
+  const { data: scripts, error, isLoading, refetch: mutate } = useQuery<UserScript[]>({
+    queryKey: ['user-scripts'],
+    queryFn: () => fetcher('/api/user-scripts'),
+    enabled: isLoaded && !!userId,
+  });
 
   const [editingScript, setEditingScript] = useState<UserScript | null>(null);
   const [isNewModalOpen, setIsNewModalOpen] = useState(false);
@@ -73,19 +75,20 @@ export default function UserScriptsPage() {
     
     // Optimistic UI
     if (Array.isArray(scripts)) {
-      mutate(scripts.filter(s => s.id !== id), false);
+      queryClient.setQueryData(['user-scripts'], scripts.filter((s: UserScript) => s.id !== id));
     }
 
     try {
       const res = await fetch(`/api/user-scripts/${id}`, { method: 'DELETE' });
       if (res.ok) {
         toast.success(t('general.deleted', { defaultValue: 'Script silindi' }));
+        queryClient.invalidateQueries({ queryKey: ['user-scripts'] });
       } else {
         throw new Error();
       }
     } catch (err) {
       toast.error(t('general.error', { defaultValue: 'İşlem başarısız' }));
-      mutate();
+      queryClient.invalidateQueries({ queryKey: ['user-scripts'] });
     }
   };
 
@@ -104,7 +107,7 @@ export default function UserScriptsPage() {
 
       if (!res.ok) throw new Error('İşlem başarısız');
       
-      await mutate();
+      await queryClient.invalidateQueries({ queryKey: ['user-scripts'] });
       toast.success(isNew ? t('general.created', { defaultValue: 'Yeni script oluşturuldu!' }) : t('general.updated', { defaultValue: 'Script güncellendi!' }));
       setIsNewModalOpen(false);
       setEditingScript(null);

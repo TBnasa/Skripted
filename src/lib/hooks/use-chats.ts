@@ -1,4 +1,4 @@
-import useSWR from 'swr';
+import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@clerk/nextjs';
 
 export interface ChatSession {
@@ -7,7 +7,7 @@ export interface ChatSession {
   created_at: string;
 }
 
-const fetcher = async ([url, token]: [string, string]) => {
+const fetcher = async (url: string, token: string) => {
   if (!token) return [];
   const res = await fetch(url, {
     headers: {
@@ -26,24 +26,20 @@ const fetcher = async ([url, token]: [string, string]) => {
 export function useChats() {
   const { getToken, isLoaded, userId } = useAuth();
   
-  // We use SWR's fallback data and revalidation logic.
-  // The cache key is an array so we can pass the token to the fetcher.
-  const { data, error, isLoading, mutate } = useSWR<ChatSession[]>(
-    isLoaded && userId ? ['/api/chats', getToken] as const : null,
-    async ([url, getTokenFunc]: [string, typeof getToken]) => {
-      const token = await getTokenFunc();
-      return fetcher([url, token || '']);
+  const { data, error, isLoading, refetch } = useQuery<ChatSession[]>({
+    queryKey: ['chats', userId],
+    queryFn: async () => {
+      const token = await getToken();
+      return fetcher('/api/chats', token || '');
     },
-    {
-      revalidateOnFocus: true,
-      fallbackData: [],
-    }
-  );
+    enabled: isLoaded && !!userId,
+    initialData: [],
+  });
 
   return {
     chats: data || [],
     isLoading: isLoading || !isLoaded,
     error,
-    mutateChats: mutate,
+    mutateChats: refetch,
   };
 }

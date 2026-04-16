@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import { UserScriptService } from '@/lib/services/user-script-service';
+import { UserScriptService } from '@/services/server/user-script-service';
 
 export const runtime = 'nodejs';
 

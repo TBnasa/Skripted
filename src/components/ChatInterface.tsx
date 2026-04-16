@@ -9,7 +9,7 @@ import Overview from '@/components/Dashboard/Overview';
 import { useTranslation } from '@/lib/useTranslation';
 import { useStore } from '@/store/useStore';
 import { useSkriptAnalysis } from '@/lib/hooks/use-skript-analysis';
-import useSWR from 'swr';
+import { useQuery } from '@tanstack/react-query';
 
 export default function ChatInterface() {
   const { t } = useTranslation();
@@ -34,7 +34,10 @@ export default function ChatInterface() {
   const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
   
   const fetcher = (url: string) => fetch(url).then(res => res.json());
-  const { data: usage, mutate: mutateUsage } = useSWR('/api/session/usage', fetcher);
+  const { data: usage, refetch: mutateUsage } = useQuery({
+    queryKey: ['session-usage'],
+    queryFn: () => fetcher('/api/session/usage'),
+  });
 
   const handleLoadChat = useCallback(async (chatId: string) => {
     try {

@@ -6,9 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { Heart, Search, Code, Download, User, Sparkles, Filter, Hash, Loader2 } from 'lucide-react';
-import Link from 'next/link';
-import Image from 'next/image';
+import { Search, Code, Sparkles, Filter } from 'lucide-react';
 import GalleryCard from './GalleryCard';
 
 interface GalleryPost {
@@ -37,17 +35,6 @@ const CATEGORIES_ICONS: Record<string, string> = {
 
 const CATEGORY_IDS = ['All', 'Economy', 'Admin', 'Minigame', 'Chat', 'Security', 'Other'];
 
-const fetcher = async (url: string) => {
-  const res = await fetch(url);
-  if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    const err = new Error(errorData.error || 'Galeri yüklenemedi');
-    (err as any).status = res.status;
-    throw err;
-  }
-  return res.json();
-};
-
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   show: {
@@ -58,14 +45,9 @@ const containerVariants: Variants = {
   }
 };
 
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
-};
-
 export default function GalleryContent() {
   const { t, mounted } = useTranslation();
-  const { userId, isLoaded } = useAuth();
+  const { isLoaded } = useAuth();
   const searchParams = useSearchParams();
   const router = useRouter();
   

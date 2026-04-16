@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslation } from '@/lib/useTranslation';
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useChats, type ChatSession } from '@/lib/hooks/use-chats';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -26,10 +26,6 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
   }, [refreshKey, mutateChats]);
 
   const handleRename = async (chatId: string, newTitle: string) => {
-    mutateChats(
-      chats.map((s) => (s.id === chatId ? { ...s, title: newTitle } : s)),
-      false
-    );
     try {
       await fetch(`/api/chats/${chatId}`, {
         method: 'PATCH',
@@ -43,10 +39,6 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
   };
 
   const handleDelete = async (chatId: string) => {
-    mutateChats(
-      chats.filter((s) => s.id !== chatId),
-      false
-    );
     try {
       const res = await fetch(`/api/chats/${chatId}`, { method: 'DELETE' });
       if (res.ok) {

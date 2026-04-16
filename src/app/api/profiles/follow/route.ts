@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import { ProfileService } from '@/lib/services/profile-service';
+import { ProfileService } from '@/services/server/profile-service';
 
 export async function POST(request: NextRequest) {
   try {
