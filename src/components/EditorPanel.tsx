@@ -259,21 +259,4 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
     </div>
   );
 }
-             </p>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
 
-      <GalleryPostModal
-        code={code}
-        isOpen={isGalleryOpen}
-        onClose={() => setIsGalleryOpen(false)}
-        onSuccess={(id) => {
-          window.open(`/gallery/${id}`, '_blank');
-        }}
-      />
-    </div>
-  );
-}
