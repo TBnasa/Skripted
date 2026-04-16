@@ -14,7 +14,8 @@ export function useSkriptAnalysis() {
     setGlobalError,
     sessionId,
     updateStats,
-    addHistoryItem
+    addHistoryItem,
+    updateMessage
   } = useStore();
 
   const pineconeIdsRef = useRef<string[]>([]);
@@ -110,6 +111,18 @@ export function useSkriptAnalysis() {
       let fullReasoning = '';
       let buffer = '';
 
+      const assistantId = generateId();
+      const assistantMessage: ChatMessage = {
+        id: assistantId,
+        role: 'assistant',
+        content: '',
+        reasoning: '',
+        timestamp: Date.now(),
+        pineconeIds: [],
+      };
+
+      addMessage(assistantMessage);
+
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -128,26 +141,24 @@ export function useSkriptAnalysis() {
             const parsed = JSON.parse(dataStr);
             if (parsed.type === 'meta' && parsed.pineconeIds) {
               pineconeIdsRef.current = parsed.pineconeIds;
+              updateMessage(assistantId, { pineconeIds: [...parsed.pineconeIds] });
             } else if (parsed.type === 'reasoning') {
               fullReasoning += parsed.content;
+              updateMessage(assistantId, { reasoning: fullReasoning });
             } else if (parsed.type === 'content') {
               fullContent += parsed.content;
+              updateMessage(assistantId, { content: fullContent });
             }
           } catch (e) {}
         }
       }
 
-      const assistantMessage: ChatMessage = {
-        id: generateId(),
-        role: 'assistant',
+      // Final update with code blocks and other meta-data
+      updateMessage(assistantId, {
         content: fullContent,
         reasoning: fullReasoning,
-        timestamp: Date.now(),
         codeBlock: extractCode(fullContent),
-        pineconeIds: [...pineconeIdsRef.current],
-      };
-
-      addMessage(assistantMessage);
+      });
 
       const { score, category } = parsePerformanceScore(fullContent);
       if (score !== null) {
@@ -170,7 +181,7 @@ export function useSkriptAnalysis() {
       setIsStreaming(false);
       setIsAnalyzing(false);
     }
-  }, [messages, editorCode, addMessage, setIsStreaming, setIsAnalyzing, setGlobalError, generateId, extractCode, updateStats, addHistoryItem, setEditorCode]);
+  }, [messages, editorCode, addMessage, updateMessage, setIsStreaming, setIsAnalyzing, setGlobalError, generateId, extractCode, updateStats, addHistoryItem, setEditorCode]);
 
   return { handleNewMessage };
 }

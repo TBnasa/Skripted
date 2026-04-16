@@ -21,6 +21,7 @@ interface AppState {
   // Actions
   setMessages: (messages: ChatMessage[]) => void;
   addMessage: (message: ChatMessage) => void;
+  updateMessage: (id: string, updates: Partial<ChatMessage>) => void;
   setEditorCode: (code: string) => void;
   setIsStreaming: (isStreaming: boolean) => void;
   setIsAnalyzing: (isAnalyzing: boolean) => void;
@@ -48,6 +49,9 @@ export const useStore = create<AppState>()(
 
       setMessages: (messages) => set({ messages }),
       addMessage: (message) => set((state) => ({ messages: [...state.messages, message] })),
+      updateMessage: (id, updates) => set((state) => ({
+        messages: state.messages.map((m) => m.id === id ? { ...m, ...updates } : m)
+      })),
       setEditorCode: (code) => set({ editorCode: code }),
       setIsStreaming: (isStreaming) => set({ isStreaming }),
       setIsAnalyzing: (isAnalyzing) => set({ isAnalyzing }),
