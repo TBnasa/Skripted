@@ -98,10 +98,10 @@ export default function GalleryContent() {
     category: activeCategory !== 'All' ? activeCategory : undefined,
   });
 
-  const filteredPosts = Array.isArray(posts) ? posts.filter(post => 
+  const filteredPosts = Array.isArray(posts) ? (posts as GalleryPost[]).filter((post: GalleryPost) => 
     post.title.toLowerCase().includes(search.toLowerCase()) ||
     post.author_name.toLowerCase().includes(search.toLowerCase()) ||
-    post.tags?.some(tag => tag.toLowerCase().includes(search.toLowerCase()))
+    post.tags?.some((tag: string) => tag.toLowerCase().includes(search.toLowerCase()))
   ) : [];
 
   if (!mounted) return <div className="min-h-screen bg-[#0a0a0b]" />;
