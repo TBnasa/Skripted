@@ -297,6 +297,7 @@ export default function ChatInterface() {
   };
 
   const updateDashboardStats = (newScore: number, content: string) => {
+    // 1. Update Legacy Stats (for immediate UI)
     const saved = localStorage.getItem('skripted_dashboard_stats');
     let stats = saved ? JSON.parse(saved) : { totalAnalyzed: 0, averageScore: 0, commonError: 'None', totalScore: 0 };
     
@@ -304,17 +305,37 @@ export default function ChatInterface() {
     stats.totalScore = (stats.totalScore || 0) + newScore;
     stats.averageScore = Math.round(stats.totalScore / stats.totalAnalyzed);
     
-    // Simple logic for common error detection
     const hasSyntax = content.includes('🔴');
     const hasLogic = content.includes('🟡');
     const hasOpt = content.includes('🔵');
     
-    if (hasSyntax) stats.commonError = 'Syntax';
-    else if (hasLogic) stats.commonError = 'Logic';
-    else if (hasOpt) stats.commonError = 'Optimization';
-
+    let currentCategory = 'None';
+    if (hasSyntax) currentCategory = 'Syntax';
+    else if (hasLogic) currentCategory = 'Logic';
+    else if (hasOpt) currentCategory = 'Optimization';
+    
+    stats.commonError = currentCategory;
     localStorage.setItem('skripted_dashboard_stats', JSON.stringify(stats));
-    window.dispatchEvent(new Event('dashboard_update')); // Trigger update in Overview component
+
+    // 2. Update Detailed History
+    const historySaved = localStorage.getItem('skripted_history');
+    let history = historySaved ? JSON.parse(historySaved) : [];
+    
+    const newAnalysis = {
+      id: crypto.randomUUID(),
+      title: lastPromptRef.current.substring(0, 40) + (lastPromptRef.current.length > 40 ? '...' : ''),
+      score: newScore,
+      category: currentCategory,
+      timestamp: Date.now()
+    };
+
+    history.unshift(newAnalysis); // Add to beginning
+    if (history.length > 50) history.pop(); // Keep last 50
+    
+    localStorage.setItem('skripted_history', JSON.stringify(history));
+    
+    // Trigger updates
+    window.dispatchEvent(new Event('dashboard_update'));
   };
 
   return (

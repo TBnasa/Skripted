@@ -9,6 +9,37 @@ import { LayoutDashboard, History, Settings, User } from 'lucide-react';
 
 export default function DashboardPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [history, setHistory] = useState<any[]>([]);
+  const [settings, setSettings] = useState({
+    autoOptimize: true,
+    verboseError: false
+  });
+
+  useEffect(() => {
+    const savedHistory = localStorage.getItem('skripted_history');
+    if (savedHistory) setHistory(JSON.parse(savedHistory));
+
+    const savedSettings = localStorage.getItem('skripted_settings');
+    if (savedSettings) setSettings(JSON.parse(savedSettings));
+  }, []);
+
+  const updateSetting = (key: keyof typeof settings) => {
+    const newSettings = { ...settings, [key]: !settings[key] };
+    setSettings(newSettings);
+    localStorage.setItem('skripted_settings', JSON.stringify(newSettings));
+  };
+
+  const getScoreColor = (score: number) => {
+    if (score > 80) return 'text-emerald-400';
+    if (score > 50) return 'text-amber-400';
+    return 'text-red-400';
+  };
+
+  const getDotColor = (score: number) => {
+    if (score > 80) return 'bg-emerald-500';
+    if (score > 50) return 'bg-amber-500';
+    return 'bg-red-500';
+  };
 
   return (
     <div className="min-h-screen bg-[#050505] text-white">
@@ -52,18 +83,30 @@ export default function DashboardPage() {
               <DashboardCard 
                 title="Recent History" 
                 icon={<History size={18} />}
-                description="Your last 10 code optimizations and their scores."
+                description="Your last code optimizations and their scores."
               >
                 <div className="flex flex-col gap-3">
-                  {[1, 2, 3].map(i => (
-                    <div key={i} className="flex items-center justify-between p-4 bg-zinc-900/30 border border-zinc-800/50 rounded-2xl">
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                        <span className="text-sm font-medium text-zinc-300">Economy System v{i}.0</span>
+                  {history.length > 0 ? (
+                    history.slice(0, 10).map((item) => (
+                      <div key={item.id} className="flex items-center justify-between p-4 bg-zinc-900/30 border border-zinc-800/50 rounded-2xl hover:border-zinc-700 transition-colors group">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-2 h-2 rounded-full ${getDotColor(item.score)} shadow-[0_0_8px_rgba(0,0,0,0.5)]`} />
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">{item.title}</span>
+                            <span className="text-[10px] text-zinc-500 font-mono italic">{item.category}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <span className="text-[10px] text-zinc-600 font-mono hidden sm:block">{new Date(item.timestamp).toLocaleDateString()}</span>
+                          <span className={`text-xs font-mono font-bold ${getScoreColor(item.score)}`}>{item.score}%</span>
+                        </div>
                       </div>
-                      <span className="text-xs font-mono text-emerald-400 font-bold">9{i}%</span>
+                    ))
+                  ) : (
+                    <div className="text-center py-10 text-zinc-600 text-sm italic">
+                      No analysis history found. Start a new chat to begin.
                     </div>
-                  ))}
+                  )}
                 </div>
               </DashboardCard>
 
@@ -72,17 +115,30 @@ export default function DashboardPage() {
                 icon={<Settings size={18} />}
                 description="Manage your engine preferences and default versions."
               >
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-zinc-400">Auto-Optimization</span>
-                    <div className="w-10 h-5 bg-emerald-500 rounded-full relative">
-                      <div className="absolute right-1 top-1 w-3 h-3 bg-white rounded-full" />
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between cursor-pointer group" onClick={() => updateSetting('autoOptimize')}>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-bold text-zinc-300 group-hover:text-white">Auto-Optimization</span>
+                      <span className="text-[10px] text-zinc-500">Automatically fix detected bottleneck patterns.</span>
+                    </div>
+                    <div className={`w-10 h-5 rounded-full relative transition-colors duration-300 ${settings.autoOptimize ? 'bg-emerald-500' : 'bg-zinc-800'}`}>
+                      <motion.div 
+                        animate={{ x: settings.autoOptimize ? 20 : 0 }}
+                        className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full shadow-sm" 
+                      />
                     </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-zinc-400">Verbose Error Logic</span>
-                    <div className="w-10 h-5 bg-zinc-800 rounded-full relative">
-                      <div className="absolute left-1 top-1 w-3 h-3 bg-zinc-600 rounded-full" />
+
+                  <div className="flex items-center justify-between cursor-pointer group" onClick={() => updateSetting('verboseError')}>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-bold text-zinc-300 group-hover:text-white">Verbose Error Logic</span>
+                      <span className="text-[10px] text-zinc-500">Enable deep breakdown of syntax issues.</span>
+                    </div>
+                    <div className={`w-10 h-5 rounded-full relative transition-colors duration-300 ${settings.verboseError ? 'bg-emerald-500' : 'bg-zinc-800'}`}>
+                      <motion.div 
+                        animate={{ x: settings.verboseError ? 20 : 0 }}
+                        className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full shadow-sm" 
+                      />
                     </div>
                   </div>
                 </div>

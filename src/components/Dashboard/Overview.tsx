@@ -19,9 +19,23 @@ export default function Overview({ isCompact = false }: { isCompact?: boolean })
 
   useEffect(() => {
     const loadStats = () => {
-      const savedStats = localStorage.getItem('skripted_dashboard_stats');
-      if (savedStats) {
-        setStats(JSON.parse(savedStats));
+      const historySaved = localStorage.getItem('skripted_history');
+      if (historySaved) {
+        const history = JSON.parse(historySaved);
+        if (history.length > 0) {
+          const totalAnalyzed = history.length;
+          const totalScore = history.reduce((acc: number, item: any) => acc + item.score, 0);
+          const averageScore = Math.round(totalScore / totalAnalyzed);
+          
+          // Find most frequent category
+          const categories = history.map((item: any) => item.category);
+          const commonError = categories.sort((a: string, b: string) =>
+            categories.filter((v: string) => v === a).length -
+            categories.filter((v: string) => v === b).length
+          ).pop() || 'None';
+
+          setStats({ totalAnalyzed, averageScore, commonError });
+        }
       }
     };
 
