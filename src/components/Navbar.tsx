@@ -173,8 +173,8 @@ export default function Navbar() {
                   >
                     <Code2 className="w-4 h-4" />
                     {t('general.academy')} 🎓
-                    <span className="px-2 py-0.5 text-[10px] bg-purple-500/20 text-purple-400 rounded font-black uppercase tracking-widest">
-                      Soon
+                    <span className="px-2 py-0.5 text-[10px] bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded font-black uppercase tracking-widest shadow-lg shadow-purple-500/20">
+                      {t('general.soon')}
                     </span>
                   </div>
                   <Link
