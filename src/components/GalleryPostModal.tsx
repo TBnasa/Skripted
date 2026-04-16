@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef } from 'react';
-import { processImageForGallery } from '@/lib/image-processor';
-import { uploadGalleryImage } from '@/lib/supabase-browser';
+import { GalleryClientService } from '@/services/client/gallery.client';
+import { GalleryPostSchema } from '@/types/schemas/gallery';
 import { useAuth } from '@clerk/nextjs';
 import { X, UploadCloud, Loader2, Image as ImageIcon, CheckCircle2, AlertCircle, Hash, Tag } from 'lucide-react';
 import { toast } from 'sonner';
@@ -76,8 +76,18 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
       toast.error(t('dashboard.please_login'));
       return;
     }
-    if (title.length < 3) {
-      toast.error(t('gallery.title_min_length'));
+
+    // Client-side validation using Zod
+    const validation = GalleryPostSchema.omit({ imageUrls: true }).safeParse({
+      title,
+      description: description || null,
+      category,
+      tags,
+      codeSnippet: code,
+    });
+
+    if (!validation.success) {
+      toast.error(validation.error.issues[0].message);
       return;
     }
 
@@ -86,44 +96,24 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
     setUploadStatus(t('gallery.upload_starting'));
 
     try {
-      const uploadedUrls: string[] = [];
       const token = await getToken({ template: 'supabase' });
 
-      // Process and Upload Images
-      for (let i = 0; i < images.length; i++) {
-        const file = images[i];
-        setUploadStatus(`${i + 1}/${images.length} ${t('gallery.image_compressing')}`);
-        const compressedFile = await processImageForGallery(file);
-        
-        setProgress(10 + Math.round((i / images.length) * 70));
-        setUploadStatus(`${i + 1}/${images.length} ${t('gallery.image_uploading')}`);
-        const url = await uploadGalleryImage(compressedFile, userId, token || '');
-        uploadedUrls.push(url);
-      }
-
-      setProgress(85);
-      setUploadStatus(t('gallery.creating_post'));
-
-      // Submit Post
-      const res = await fetch('/api/gallery', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title,
-          description,
-          category,
-          tags,
-          codeSnippet: code,
-          imageUrls: uploadedUrls,
-        }),
-      });
-
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.error || t('general.error'));
-      }
-
-      const data = await res.json();
+      const data = await GalleryClientService.createPostWithImages(
+        validation.data,
+        images,
+        userId,
+        token || '',
+        (newProgress: number, newStatus: string) => {
+          setProgress(newProgress);
+          // Use translation keys if matched
+          if (newStatus === 'Starting upload...') setUploadStatus(t('gallery.upload_starting'));
+          else if (newStatus.includes('Compressing')) setUploadStatus(newStatus.replace('Compressing image...', t('gallery.image_compressing')));
+          else if (newStatus.includes('Uploading')) setUploadStatus(newStatus.replace('Uploading image...', t('gallery.image_uploading')));
+          else if (newStatus === 'Creating post...') setUploadStatus(t('gallery.creating_post'));
+          else if (newStatus === 'Success') setUploadStatus(t('general.success'));
+          else setUploadStatus(newStatus);
+        }
+      );
       setProgress(100);
       setUploadStatus(t('general.success'));
       toast.success(t('gallery.post_success'));

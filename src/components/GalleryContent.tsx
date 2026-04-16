@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslation } from '@/lib/useTranslation';
-import useSWR from 'swr';
+import { useGalleryPosts } from '@/lib/hooks/use-gallery';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/nextjs';
@@ -9,6 +9,7 @@ import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { Heart, Search, Code, Download, User, Sparkles, Filter, Hash, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import GalleryCard from './GalleryCard';
 
 interface GalleryPost {
   id: string;
@@ -91,10 +92,11 @@ export default function GalleryContent() {
     router.replace(`/gallery?${params.toString()}`);
   };
 
-  const { data: posts, error, isLoading } = useSWR<GalleryPost[]>(
-    isLoaded ? `/api/gallery?limit=50${filter === 'mine' ? '&filter=mine' : ''}${activeCategory !== 'All' ? `&category=${activeCategory}` : ''}` : null, 
-    fetcher
-  );
+  const { data: posts, error, isLoading } = useGalleryPosts({
+    limit: 50,
+    filter: filter === 'mine' ? 'mine' : undefined,
+    category: activeCategory !== 'All' ? activeCategory : undefined,
+  });
 
   const filteredPosts = Array.isArray(posts) ? posts.filter(post => 
     post.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -252,84 +254,9 @@ export default function GalleryContent() {
           animate="show"
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
         >
-          <AnimatePresence>
+          <AnimatePresence mode="popLayout">
             {filteredPosts.map((post) => (
-              <motion.div key={post.id} variants={itemVariants} layoutId={`post-${post.id}`}>
-                <Link href={`/gallery/${post.id}`} className="group flex flex-col bg-[#0a0a0c]/80 backdrop-blur-md border border-white/[0.06] rounded-[2.5rem] overflow-hidden hover:border-emerald-500/30 transition-all duration-500 hover:shadow-[0_20px_60px_-15px_rgba(16,185,129,0.15)] hover:-translate-y-2 relative h-full">
-                  
-                  {/* Image Container */}
-                  <div className="relative aspect-[4/3] bg-[#050505] overflow-hidden border-b border-white/[0.03]">
-                    {post.image_urls?.[0] ? (
-                      <Image 
-                        src={post.image_urls[0]} 
-                        alt={post.title} 
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-700 opacity-70 group-hover:opacity-100"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-zinc-800">
-                        <Code size={64} className="opacity-10 group-hover:opacity-20 transition-opacity" />
-                      </div>
-                    )}
-                    
-                    {/* Glass Stats Overlay */}
-                    <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 bg-black/50 backdrop-blur-xl border border-white/10 rounded-full text-[10px] font-black text-white shadow-2xl transition-transform group-hover:scale-110">
-                        <Heart size={14} className="text-rose-500 fill-rose-500" />
-                        {post.likes_count}
-                      </div>
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 bg-black/50 backdrop-blur-xl border border-white/10 rounded-full text-[10px] font-black text-white shadow-2xl transition-transform group-hover:scale-110">
-                        <Download size={14} className="text-emerald-400" />
-                        {post.downloads_count}
-                      </div>
-                    </div>
-
-                    {/* Category Badge */}
-                    <div className="absolute bottom-4 left-4 z-20 flex items-center gap-2">
-                      <span className="px-3 py-1 bg-emerald-500/90 backdrop-blur-md text-black border border-emerald-400 text-[10px] font-black uppercase tracking-widest rounded-[10px] shadow-lg">
-                        {t(`gallery.categories.${post.category}`)}
-                      </span>
-                    </div>
-                    
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0c] via-transparent to-transparent opacity-100 transition-opacity"></div>
-                  </div>
-
-                  {/* Content Area */}
-                  <div className="p-7 flex flex-col flex-1 relative bg-gradient-to-b from-transparent to-white/[0.01]">
-                    <h3 className="text-xl font-bold text-white line-clamp-1 group-hover:text-emerald-400 transition-colors mb-3 tracking-tight">
-                      {post.title}
-                    </h3>
-                    
-                    {/* Tags */}
-                    {post.tags && post.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mb-6">
-                        {post.tags.slice(0, 3).map(tag => (
-                          <span key={tag} className="px-2 py-0.5 rounded-md bg-white/[0.03] border border-white/[0.05] text-[9px] font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-1">
-                            <Hash size={8} className="text-emerald-500" />
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                    
-                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/[0.04]">
-                      <div className="flex items-center gap-3">
-                        <div className="w-7 h-7 rounded-[10px] bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 group-hover:bg-emerald-500 group-hover:text-black transition-all duration-500 text-zinc-400">
-                          <User size={12} />
-                        </div>
-                        <span className="text-xs font-bold text-zinc-500 group-hover:text-zinc-300 transition-colors truncate max-w-[120px]">
-                          {post.author_name}
-                        </span>
-                      </div>
-                      
-                      <div className="text-[9px] font-black text-zinc-700 uppercase tracking-[0.2em]">
-                        {new Date(post.created_at).toLocaleDateString(t('general.locale'), { day: 'numeric', month: 'short' })}
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
+              <GalleryCard key={post.id} post={post} />
             ))}
           </AnimatePresence>
         </motion.div>

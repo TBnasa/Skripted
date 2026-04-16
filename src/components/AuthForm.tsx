@@ -1,18 +1,10 @@
 'use client';
 
-import { createClient } from '@/lib/supabase-browser';
-import { APP_URL } from '@/lib/constants';
+import { AuthClientService } from '@/services/client/auth.client';
 
 export default function AuthForm() {
-  const supabase = createClient();
-
   const handleGitHubLogin = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'github',
-      options: {
-        redirectTo: `${APP_URL}/auth/callback`,
-      },
-    });
+    await AuthClientService.signInWithGitHub();
   };
 
   return (

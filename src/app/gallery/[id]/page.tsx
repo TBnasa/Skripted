@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getSupabaseAdmin } from '@/lib/supabase-server';
+import { GalleryService } from '@/services/server/gallery.server';
 import GalleryPostContent from '@/components/GalleryPostContent';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
@@ -9,15 +9,11 @@ import { notFound } from 'next/navigation';
 export const runtime = 'nodejs';
 
 async function getPost(id: string) {
-  const supabase = getSupabaseAdmin();
-  const { data, error } = await supabase
-    .from('gallery_posts')
-    .select('*')
-    .eq('id', id)
-    .single();
-
-  if (error || !data) return null;
-  return data;
+  try {
+    return await GalleryService.getPostById(id);
+  } catch (error) {
+    return null;
+  }
 }
 
 export async function generateMetadata(

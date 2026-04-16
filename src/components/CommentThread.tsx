@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import { GalleryClientService } from '@/services/client/gallery.client';
+import { GalleryCommentSchema } from '@/types/schemas/gallery';
 import { User, MessageSquare, Reply, Trash2, Send, Loader2, Languages } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
@@ -60,17 +62,20 @@ const CommentItem = ({
       toast.error(t('gallery.must_login_to_reply'));
       return;
     }
-    if (!replyContent.trim()) return;
+    
+    const validation = GalleryCommentSchema.safeParse({ 
+      content: replyContent, 
+      parentId: comment.id 
+    });
+
+    if (!validation.success) {
+      toast.error(validation.error.issues[0].message);
+      return;
+    }
 
     setIsSubmitting(true);
     try {
-      const res = await fetch(`/api/gallery/${postId}/comments`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: replyContent, parentId: comment.id }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      const data = await GalleryClientService.submitComment(postId, validation.data);
 
       onCommentAdded(data);
       setReplyContent('');
@@ -91,13 +96,8 @@ const CommentItem = ({
     
     setIsTranslating(true);
     try {
-      const res = await fetch('/api/translate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: comment.content, targetLang: lang }),
-      });
-      const data = await res.json();
-      if (data.translation) setTranslatedContent(data.translation);
+      const translation = await GalleryClientService.translateDescription(comment.content, lang);
+      if (translation) setTranslatedContent(translation);
     } catch (err) {
       toast.error(t('gallery.translation_failed'));
     } finally {

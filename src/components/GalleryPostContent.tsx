@@ -8,7 +8,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Editor from '@monaco-editor/react';
 import { toast } from 'sonner';
-import { createClerkClient } from '@/lib/supabase-browser';
+import { GalleryClientService } from '@/services/client/gallery.client';
+import { GalleryPostSchema, GalleryCommentSchema } from '@/types/schemas/gallery';
 import { useAuth } from '@clerk/nextjs';
 import { SKRIPT_LANGUAGE_ID, registerSkriptLanguage } from '@/lib/skript-language';
 import { setupSkriptLinter } from '@/lib/skript-linter';
@@ -82,14 +83,8 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
       if (userId) {
         try {
           const token = await getToken({ template: 'supabase' });
-          const supabase = createClerkClient(token || '');
-          const { data } = await supabase
-            .from('post_likes')
-            .select('post_id')
-            .eq('post_id', post.id)
-            .eq('user_id', userId)
-            .maybeSingle();
-          if (data) setIsLiked(true);
+          const liked = await GalleryClientService.checkLikeStatus(post.id, userId, token || '');
+          if (liked) setIsLiked(true);
         } catch (err) {
           console.error('Error checking like status:', err);
         } finally {
@@ -169,13 +164,8 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
     
     setIsTranslating(true);
     try {
-      const res = await fetch('/api/translate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: postData.description, targetLang: lang }),
-      });
-      const data = await res.json();
-      if (data.translation) setTranslatedDesc(data.translation);
+      const translation = await GalleryClientService.translateDescription(postData.description, lang);
+      if (translation) setTranslatedDesc(translation);
     } catch (err) {
       toast.error(t('gallery.translation_failed'));
     } finally {
@@ -189,21 +179,16 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
       toast.error(t('gallery.post_content.must_login_to_comment'));
       return;
     }
-    if (!newComment.trim() || newComment.length < 2) {
-      toast.error(t('gallery.comment_min_length'));
+
+    const validation = GalleryCommentSchema.safeParse({ content: newComment });
+    if (!validation.success) {
+      toast.error(validation.error.issues[0].message);
       return;
     }
 
     setIsSubmittingComment(true);
     try {
-      const res = await fetch(`/api/gallery/${post.id}/comments`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: newComment }),
-      });
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error);
+      const data = await GalleryClientService.submitComment(post.id, validation.data);
 
       setComments(prev => [...prev, data]);
       setNewComment('');
@@ -228,19 +213,20 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
   const [postData, setPostData] = useState(post);
 
   const handleUpdatePost = async () => {
+    const validation = GalleryPostSchema.partial().safeParse({
+      title: editedTitle,
+      description: editedDesc || null,
+      category: editedCategory,
+    });
+
+    if (!validation.success) {
+      toast.error(validation.error.issues[0].message);
+      return;
+    }
+
     setIsUpdatingPost(true);
     try {
-      const res = await fetch(`/api/gallery/${post.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: editedTitle,
-          description: editedDesc,
-          category: editedCategory,
-        }),
-      });
-      if (!res.ok) throw new Error('Update failed');
-      const updated = await res.json();
+      const updated = await GalleryClientService.updatePost(post.id, validation.data);
       setPostData(updated);
       setIsEditingPost(false);
       toast.success(t('gallery.post_updated'));

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth, currentUser } from '@clerk/nextjs/server';
-import { GalleryService } from '@/lib/services/gallery-service';
+import { GalleryService } from '@/services/server/gallery.server';
 
 export async function GET(request: NextRequest) {
   try {

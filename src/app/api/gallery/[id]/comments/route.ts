@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GalleryService } from '@/lib/services/gallery-service';
+import { GalleryService } from '@/services/server/gallery.server';
 import { auth, currentUser } from '@clerk/nextjs/server';
 
 export const runtime = 'nodejs';
@@ -37,7 +37,7 @@ export async function POST(
     }
 
     const authorName = user.fullName || user.username || 'Anonim';
-    const data = await GalleryService.addComment(postId, userId, authorName, content);
+    const data = await GalleryService.addComment(postId, userId, authorName, { content });
 
     return NextResponse.json(data);
   } catch (err: any) {

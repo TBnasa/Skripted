@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GalleryService } from '@/lib/services/gallery-service';
+import { GalleryService } from '@/services/server/gallery.server';
 
 export const runtime = 'nodejs';
 

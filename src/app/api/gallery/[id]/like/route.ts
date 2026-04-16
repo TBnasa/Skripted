@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import { GalleryService } from '@/lib/services/gallery-service';
+import { GalleryService } from '@/services/server/gallery.server';
 import { checkRateLimit } from '@/lib/utils/rate-limit';
 
 export const runtime = 'nodejs';

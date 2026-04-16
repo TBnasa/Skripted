@@ -1,13 +1,12 @@
 import { getSupabaseAdmin } from '@/lib/supabase-server';
-import { GalleryPostSchema } from '@/types/schemas';
+import { 
+  GalleryPostSchema, 
+  GalleryPostInput, 
+  GalleryCommentSchema, 
+  GalleryCommentInput,
+  GalleryFilterOptions 
+} from '@/types/schemas/gallery';
 import { sanitizeHtml } from '@/lib/utils/sanitize';
-
-export interface GalleryFilterOptions {
-  limit?: number;
-  filter?: string;
-  category?: string;
-  userId?: string | null;
-}
 
 export class GalleryService {
   private static supabase = getSupabaseAdmin();
@@ -51,10 +50,10 @@ export class GalleryService {
     return data;
   }
 
-  static async createPost(userId: string, authorName: string, postData: any) {
+  static async createPost(userId: string, authorName: string, postData: GalleryPostInput) {
     const result = GalleryPostSchema.safeParse(postData);
     if (!result.success) {
-      throw new Error('Invalid post data');
+      throw new Error(`Invalid post data: ${result.error.message}`);
     }
 
     const { title, description, codeSnippet, imageUrls, category, tags } = result.data;
@@ -83,10 +82,10 @@ export class GalleryService {
     return data;
   }
 
-  static async updatePost(id: string, userId: string, updateData: any) {
+  static async updatePost(id: string, userId: string, updateData: Partial<GalleryPostInput>) {
     const validation = GalleryPostSchema.partial().safeParse(updateData);
     if (!validation.success) {
-      throw new Error('Invalid update data');
+      throw new Error(`Invalid update data: ${validation.error.message}`);
     }
 
     // Check ownership
@@ -180,7 +179,13 @@ export class GalleryService {
     return data;
   }
 
-  static async addComment(postId: string, userId: string, authorName: string, content: string, parentId?: string) {
+  static async addComment(postId: string, userId: string, authorName: string, commentData: GalleryCommentInput) {
+    const result = GalleryCommentSchema.safeParse(commentData);
+    if (!result.success) {
+      throw new Error(`Invalid comment data: ${result.error.message}`);
+    }
+
+    const { content, parentId } = result.data;
     const sanitizedContent = stripHtmlTags(content);
 
     const { data, error } = await this.supabase
