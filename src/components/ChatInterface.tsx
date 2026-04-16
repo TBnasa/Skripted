@@ -291,9 +291,20 @@ export default function ChatInterface() {
     sessionIdRef.current = generateId();
   }, [generateId]);
 
-  const parsePerformanceScore = (text: string): number | null => {
-    const match = text.match(/\[Performance Score\]:\s*(\d+)/i);
-    return match ? parseInt(match[1], 10) : null;
+  const parsePerformanceScore = (content: string): number | null => {
+    try {
+      const match = content.match(/\[FINAL_ANALYSIS\]:\s*(\{[\s\S]*?\})(?=\n\n|$)/i);
+      if (match) {
+        const jsonStr = match[1].replace(/```json\n?|```/g, '').trim();
+        const data = JSON.parse(jsonStr);
+        return typeof data.score === 'number' ? data.score : null;
+      }
+      // Fallback to simpler regex if JSON not found yet (streaming)
+      const fallbackMatch = content.match(/"score":\s*(\d+)/);
+      return fallbackMatch ? parseInt(fallbackMatch[1]) : null;
+    } catch {
+      return null;
+    }
   };
 
   const updateDashboardStats = (newScore: number, content: string) => {
@@ -305,14 +316,21 @@ export default function ChatInterface() {
     stats.totalScore = (stats.totalScore || 0) + newScore;
     stats.averageScore = Math.round(stats.totalScore / stats.totalAnalyzed);
     
-    const hasSyntax = content.includes('🔴');
-    const hasLogic = content.includes('🟡');
-    const hasOpt = content.includes('🔵');
-    
     let currentCategory = 'None';
-    if (hasSyntax) currentCategory = 'Syntax';
-    else if (hasLogic) currentCategory = 'Logic';
-    else if (hasOpt) currentCategory = 'Optimization';
+    try {
+      const match = content.match(/\[FINAL_ANALYSIS\]:\s*(\{[\s\S]*?\})/i);
+      if (match) {
+        const data = JSON.parse(match[1].replace(/```json\n?|```/g, '').trim());
+        if (data.syntax?.length > 0) currentCategory = 'Syntax';
+        else if (data.logic?.length > 0) currentCategory = 'Logic';
+        else if (data.performance?.length > 0) currentCategory = 'Optimization';
+      }
+    } catch {
+      // Fallback to emoji check
+      if (content.includes('🔴')) currentCategory = 'Syntax';
+      else if (content.includes('🟡')) currentCategory = 'Logic';
+      else if (content.includes('🔵')) currentCategory = 'Optimization';
+    }
     
     stats.commonError = currentCategory;
     localStorage.setItem('skripted_dashboard_stats', JSON.stringify(stats));

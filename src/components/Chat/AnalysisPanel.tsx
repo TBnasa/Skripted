@@ -8,7 +8,33 @@ interface AnalysisProps {
 }
 
 export default function AnalysisPanel({ content }: AnalysisProps) {
-  const sections = parseAnalysis(content);
+  const analysis = parseAnalysisJSON(content);
+
+  if (!analysis) return null;
+
+  const sections = [
+    {
+      title: 'Syntax Errors',
+      items: analysis.syntax,
+      icon: <ShieldAlert size={20} />,
+      iconColor: 'text-red-400',
+      borderColor: 'border-red-500/10'
+    },
+    {
+      title: 'Logic & Modernization',
+      items: analysis.logic,
+      icon: <AlertCircle size={20} />,
+      iconColor: 'text-amber-400',
+      borderColor: 'border-amber-500/10'
+    },
+    {
+      title: 'Performance Optimization',
+      items: analysis.performance,
+      icon: <Zap size={20} />,
+      iconColor: 'text-cyan-400',
+      borderColor: 'border-cyan-500/10'
+    }
+  ].filter(s => s.items && s.items.length > 0);
 
   if (sections.length === 0) return null;
 
@@ -25,13 +51,18 @@ export default function AnalysisPanel({ content }: AnalysisProps) {
           <div className={`shrink-0 mt-0.5 p-2 rounded-xl bg-zinc-900/50 border border-zinc-800 ${section.iconColor}`}>
             {section.icon}
           </div>
-          <div>
-            <h5 className={`text-[10px] font-black uppercase tracking-[0.2em] mb-1.5 ${section.iconColor}`}>
+          <div className="flex-1">
+            <h5 className={`text-[10px] font-black uppercase tracking-[0.2em] mb-2 ${section.iconColor}`}>
               {section.title}
             </h5>
-            <p className="text-[14px] leading-relaxed text-zinc-400 font-medium">
-              {section.text}
-            </p>
+            <div className="space-y-1.5">
+              {section.items.map((item: string, i: number) => (
+                <p key={i} className="text-[13px] leading-relaxed text-zinc-400 font-medium flex items-start gap-2">
+                  <span className="mt-1.5 w-1 h-1 rounded-full bg-zinc-700 shrink-0" />
+                  {item}
+                </p>
+              ))}
+            </div>
           </div>
         </motion.div>
       ))}
@@ -39,42 +70,16 @@ export default function AnalysisPanel({ content }: AnalysisProps) {
   );
 }
 
-function parseAnalysis(content: string) {
-  const sections: { title: string; text: string; icon: any; iconColor: string; borderColor: string }[] = [];
-  
-  const syntaxMatch = content.match(/🔴 \*\*Syntax Errors\*\*:\s*([\s\S]*?)(?=\n[🟡🔵]|$)/i);
-  const logicMatch = content.match(/🟡 \*\*Logic & Modernization\*\*:\s*([\s\S]*?)(?=\n[🔴🔵]|$)/i);
-  const optimizationMatch = content.match(/🔵 \*\*Optimization \(Performance\)\*\*:\s*([\s\S]*?)(?=\n[🔴🟡]|$)/i);
-
-  if (syntaxMatch) {
-    sections.push({
-      title: 'Syntax Errors',
-      text: syntaxMatch[1].trim(),
-      icon: <ShieldAlert size={20} />,
-      iconColor: 'text-red-400',
-      borderColor: 'border-red-500/10'
-    });
+function parseAnalysisJSON(content: string) {
+  try {
+    const match = content.match(/\[FINAL_ANALYSIS\]:\s*(\{[\s\S]*?\})(?=\n\n|$)/i) || content.match(/(\{[\s\S]*\})/);
+    if (match) {
+      // Clean up common AI markdown issues in JSON
+      const jsonStr = match[1].replace(/```json\n?|```/g, '').trim();
+      return JSON.parse(jsonStr);
+    }
+  } catch (e) {
+    console.warn('[AnalysisPanel] Failed to parse analysis JSON');
   }
-
-  if (logicMatch) {
-    sections.push({
-      title: 'Logic & Modernization',
-      text: logicMatch[1].trim(),
-      icon: <AlertCircle size={20} />,
-      iconColor: 'text-amber-400',
-      borderColor: 'border-amber-500/10'
-    });
-  }
-
-  if (optimizationMatch) {
-    sections.push({
-      title: 'Performance Optimization',
-      text: optimizationMatch[1].trim(),
-      icon: <Zap size={20} />,
-      iconColor: 'text-cyan-400',
-      borderColor: 'border-cyan-500/10'
-    });
-  }
-
-  return sections;
+  return null;
 }
