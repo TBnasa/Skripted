@@ -1,7 +1,7 @@
 {
   "general": {
     "launch_engine": "Motoru Başlat",
-    "access_engine": "Motora Eriş",
+    "access_engine": "Engine'e Eriş",
     "view_architecture": "Mimariyi Görüntüle",
     "ai_asistan": "Asistan",
     "user_profile": "Profil",
@@ -43,7 +43,11 @@
     "shrink": "Küçült",
     "fullscreen": "Tam Ekran",
     "success": "Başarılı!",
-    "save_changes": "Değişiklikleri Kaydet"
+    "save_changes": "Değişiklikleri Kaydet",
+    "connecting_db": "Veritabanına bağlanılıyor...",
+    "generating_code": "Kod oluşturuluyor...",
+    "analyzing_logic": "Mantık analiz ediliyor...",
+    "academy": "Akademi"
   },
   "chat": {
     "terminal_header": "Skript Uzmanı & Performans Analizi",
@@ -67,21 +71,32 @@
     "feedback_submit": "Hata Raporunu Gönder",
     "suggestion_economy": "Ekonomi Sistemi",
     "suggestion_warp": "Özel /warp",
-    "suggestion_item": "Eşya Düzenleyici"
+    "suggestion_item": "Eşya Düzenleyici",
+    "analyze_skript": "Skript'i Analiz Et"
   },
   "hero": {
     "title_1": "Hayal Edin,",
     "title_2": "AI Yazsın.",
     "desc": "Dünyanın en gelişmiş AI destekli Minecraft Skript IDE'si. 120 Milyar parametreli modellerle kodunuzu saniyeler içinde yazın, denetleyin ve yayınlayın.",
-    "explore_gallery": "Galeriyi Keşfet"
+    "explore_gallery": "Galeriyi Keşfet",
+    "start_learning": "Öğrenmeye Başla",
+    "academy_tooltip": "AI destekli adaptif öğrenme yolumuz yakında burada! 🚀"
   },
   "features": {
-    "feature1_title": "YAPAY ZEKA DENETLEYİCİSİ",
+    "feature1_title": "Anlık Yapay Zeka Denetçisi",
     "feature1_desc": "Kodunuz sadece yazılmaz; AI Judge tarafından mantık hatalarına karşı 120B parametereli modellerle denetlenir.",
     "feature2_title": "HİBRİT BULUT DEPOLAMA",
     "feature2_desc": "Sınırsız script kapasitesi. Kodlarınız en güvenli hibrit bulut sisteminde (Postgres + Storage) şifrelenmiş olarak saklanır.",
-    "feature3_title": "EVRENSEL ADDON DESTEĞİ",
-    "feature3_desc": "TuSKe'den SkQuantum'a kadar tüm popüler addonlar için otomatik sentaks ve optimizasyon desteği."
+    "feature3_title": "Evrensel Eklenti (Addon) Desteği",
+    "feature3_desc": "TuSKe'den SkQuantum'a kadar tüm popüler addonlar için otomatik sentaks ve optimizasyon desteği.",
+    "feature4_title": "Adaptif Öğrenme",
+    "feature4_desc": "Sadece kopyala-yapıştır yapmayın. Skript mantığını Duolingo tarzı adaptif AI mentörümüzle öğrenin."
+  },
+  "stats": {
+    "total_snippets": "Toplam Kod Parçacığı",
+    "avg_score": "Ortalama Performans",
+    "primary_issue": "Temel Sorun Odağı",
+    "verbose_logic": "Detaylı Eğitim Modu"
   },
   "gallery": {
     "translate": "Çevir",

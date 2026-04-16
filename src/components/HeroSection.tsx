@@ -62,14 +62,14 @@ export default function HeroSection() {
             <span className="w-5 h-5 flex items-center justify-center bg-purple-500/20 rounded-md text-purple-400">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
             </span>
-            Start Learning
+            {t('hero.start_learning')}
           </Link>
 
           <Link
             href="/gallery"
             className="group w-full sm:w-auto px-8 py-5 text-sm font-bold text-zinc-400 transition-all border border-white/5 rounded-2xl hover:text-white hover:bg-white/[0.03] text-center"
           >
-            Explore Gallery
+            {t('hero.explore_gallery')}
           </Link>
         </div>
 
@@ -92,8 +92,8 @@ export default function HeroSection() {
               icon: <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(6,182,212,0.1)]">⚡</div> 
             },
             { 
-              title: "Adaptive Learning", 
-              desc: "Don't just copy-paste. Learn Skript logic with our Duolingo-style adaptive AI mentor.", 
+              title: t('features.feature4_title'), 
+              desc: t('features.feature4_desc'), 
               icon: <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(168,85,247,0.1)]">🎓</div> 
             },
           ].map((feature, i) => (

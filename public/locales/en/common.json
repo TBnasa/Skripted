@@ -43,7 +43,11 @@
     "shrink": "Shrink",
     "fullscreen": "Fullscreen",
     "success": "Success!",
-    "save_changes": "Save Changes"
+    "save_changes": "Save Changes",
+    "connecting_db": "Connecting to database...",
+    "generating_code": "Generating code...",
+    "analyzing_logic": "Analyzing logic...",
+    "academy": "Academy"
   },
   "chat": {
     "terminal_header": "Skript Expert & Performance Analyzer",
@@ -67,21 +71,32 @@
     "feedback_submit": "Submit Error Report",
     "suggestion_economy": "Economy System",
     "suggestion_warp": "Custom /warp",
-    "suggestion_item": "Item Editor"
+    "suggestion_item": "Item Editor",
+    "analyze_skript": "Analyze Skript"
   },
   "hero": {
     "title_1": "Imagine,",
     "title_2": "AI Builds.",
     "desc": "The world's most advanced AI-powered Minecraft Skript IDE. Write, audit, and publish your code in seconds with 120B parameter models.",
-    "explore_gallery": "Explore Gallery"
+    "explore_gallery": "Explore Gallery",
+    "start_learning": "Start Learning",
+    "academy_tooltip": "Our AI-powered adaptive learning path is coming soon! 🚀"
   },
   "features": {
-    "feature1_title": "AI AUDITOR",
+    "feature1_title": "Real-time AI Auditor",
     "feature1_desc": "Your code isn't just written; it's audited for logic errors by 120B parameter models via AI Judge.",
     "feature2_title": "HYBRID CLOUD STORAGE",
     "feature2_desc": "Unlimited script capacity. Your code is stored encrypted in our secure hybrid cloud system (Postgres + Storage).",
-    "feature3_title": "UNIVERSAL ADDON SUPPORT",
-    "feature3_desc": "Automatic syntax and optimization support for all popular addons from TuSKe to SkQuantum."
+    "feature3_title": "Universal Addon Support",
+    "feature3_desc": "Automatic syntax and optimization support for all popular addons from TuSKe to SkQuantum.",
+    "feature4_title": "Adaptive Learning",
+    "feature4_desc": "Don't just copy-paste. Learn Skript logic with our Duolingo-style adaptive AI mentor."
+  },
+  "stats": {
+    "total_snippets": "Total Code Snippets",
+    "avg_score": "Average Performance",
+    "primary_issue": "Frequent Bottleneck",
+    "verbose_logic": "Detailed Educational Mode"
   },
   "gallery": {
     "translate": "Translate",

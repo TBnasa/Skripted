@@ -166,16 +166,17 @@ export default function Navbar() {
                 />
               </div>
 
-              {pathname !== '/chat' && pathname !== '/academy' && (
+              {pathname !== '/chat' && (
                 <div className="flex flex-col gap-2">
-                  <Link
-                    href="/academy"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center justify-center gap-3 p-4 rounded-2xl bg-purple-600 text-white text-sm font-black transition-transform active:scale-95 shadow-[0_0_20px_rgba(147,51,234,0.3)]"
+                  <div
+                    className="flex items-center justify-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/5 text-sm font-bold text-zinc-500 cursor-not-allowed opacity-60"
                   >
                     <Code2 className="w-4 h-4" />
-                    Join Skript Academy
-                  </Link>
+                    {t('general.academy')} 🎓
+                    <span className="px-2 py-0.5 text-[10px] bg-purple-500/20 text-purple-400 rounded font-black uppercase tracking-widest">
+                      Soon
+                    </span>
+                  </div>
                   <Link
                     href="/dashboard"
                     onClick={() => setIsMenuOpen(false)}
