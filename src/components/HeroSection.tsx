@@ -56,15 +56,25 @@ export default function HeroSection() {
           </Link>
 
           <Link
-            href="/gallery"
-            className="group w-full sm:w-auto px-10 py-5 text-sm font-bold text-white transition-all border border-white/10 rounded-2xl bg-white/[0.03] backdrop-blur-xl hover:bg-white/[0.08] hover:border-white/20 text-center"
+            href="/academy"
+            className="group w-full sm:w-auto px-10 py-5 text-sm font-bold text-white transition-all border border-purple-500/30 rounded-2xl bg-purple-500/5 backdrop-blur-xl hover:bg-purple-500/10 hover:border-purple-500/50 text-center flex items-center justify-center gap-3"
           >
-            {t('hero.explore_gallery')}
+            <span className="w-5 h-5 flex items-center justify-center bg-purple-500/20 rounded-md text-purple-400">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            </span>
+            Start Learning
+          </Link>
+
+          <Link
+            href="/gallery"
+            className="group w-full sm:w-auto px-8 py-5 text-sm font-bold text-zinc-400 transition-all border border-white/5 rounded-2xl hover:text-white hover:bg-white/[0.03] text-center"
+          >
+            Explore Gallery
           </Link>
         </div>
 
         {/* Feature Grid */}
-        <div className="mt-40 grid grid-cols-1 gap-8 text-left sm:grid-cols-3">
+        <div className="mt-40 grid grid-cols-1 gap-6 text-left sm:grid-cols-2 lg:grid-cols-4">
           {[
             { 
               title: t('features.feature1_title'), 
@@ -80,6 +90,11 @@ export default function HeroSection() {
               title: t('features.feature3_title'), 
               desc: t('features.feature3_desc'), 
               icon: <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(6,182,212,0.1)]">⚡</div> 
+            },
+            { 
+              title: "Adaptive Learning", 
+              desc: "Don't just copy-paste. Learn Skript logic with our Duolingo-style adaptive AI mentor.", 
+              icon: <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(168,85,247,0.1)]">🎓</div> 
             },
           ].map((feature, i) => (
             <div key={i} className="animate-fade-in-scale p-8 rounded-[2rem] bg-white/[0.02] border border-white/[0.04] backdrop-blur-md group hover:bg-white/[0.05] hover:border-white/[0.1] transition-all duration-500 hover:-translate-y-2">

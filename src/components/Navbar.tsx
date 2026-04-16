@@ -166,8 +166,16 @@ export default function Navbar() {
                 />
               </div>
 
-              {pathname !== '/chat' && (
+              {pathname !== '/chat' && pathname !== '/academy' && (
                 <div className="flex flex-col gap-2">
+                  <Link
+                    href="/academy"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center justify-center gap-3 p-4 rounded-2xl bg-purple-600 text-white text-sm font-black transition-transform active:scale-95 shadow-[0_0_20px_rgba(147,51,234,0.3)]"
+                  >
+                    <Code2 className="w-4 h-4" />
+                    Join Skript Academy
+                  </Link>
                   <Link
                     href="/dashboard"
                     onClick={() => setIsMenuOpen(false)}
@@ -216,6 +224,13 @@ function MobileNavLink({ href, onClick, icon, label }: { href: string, onClick: 
       className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-white/5 border border-white/5 text-[11px] font-bold text-zinc-400 active:bg-emerald-500/10 active:border-emerald-500/30 active:text-emerald-400 transition-all"
     >
       <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-active:bg-emerald-500/20">
+        {icon}
+      </div>
+      {label}
+    </Link>
+  );
+}
+ounded-full bg-white/5 flex items-center justify-center group-active:bg-emerald-500/20">
         {icon}
       </div>
       {label}
