@@ -230,10 +230,3 @@ function MobileNavLink({ href, onClick, icon, label }: { href: string, onClick: 
     </Link>
   );
 }
-ounded-full bg-white/5 flex items-center justify-center group-active:bg-emerald-500/20">
-        {icon}
-      </div>
-      {label}
-    </Link>
-  );
-}
