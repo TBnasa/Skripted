@@ -9,10 +9,12 @@ import Overview from '@/components/Dashboard/Overview';
 import { useTranslation } from '@/lib/useTranslation';
 import { useStore } from '@/store/useStore';
 import { useSkriptAnalysis } from '@/lib/hooks/use-skript-analysis';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { extractCode } from '@/lib/utils/code-extractor';
 
 export default function ChatInterface() {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const { 
     messages, 
     setMessages, 
@@ -27,7 +29,14 @@ export default function ChatInterface() {
     resetChat
   } = useStore();
 
-  const { handleNewMessage } = useSkriptAnalysis();
+  const { handleNewMessage } = useSkriptAnalysis({
+    onComplete: () => {
+      // Refresh sidebar when a message session is potentially new
+      setSidebarRefreshKey(k => k + 1);
+      // Also invalidate React Query cache for chats
+      queryClient.invalidateQueries({ queryKey: ['session-usage'] });
+    }
+  });
   
   const [sidebarRefreshKey, setSidebarRefreshKey] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -46,11 +55,16 @@ export default function ChatInterface() {
 
       const chat = await res.json();
       setSessionId(chat.id);
-      setMessages(Array.isArray(chat.content) ? chat.content : []);
+      const loadedMessages = Array.isArray(chat.content) ? chat.content : [];
+      setMessages(loadedMessages);
       
-      const lastAssistant = [...chat.content].reverse().find(m => m.role === 'assistant');
+      // Extract code from the last assistant message in the history
+      const lastAssistant = [...loadedMessages].reverse().find(m => m.role === 'assistant');
       if (lastAssistant) {
-        // We'll trust the store for the editorCode if needed, or extract it here
+        const code = extractCode(lastAssistant.content);
+        if (code) {
+          setEditorCode(code);
+        }
       }
     } catch (err) {
       console.error('[LoadChat] Error:', err);

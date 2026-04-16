@@ -1,8 +1,13 @@
 import { useCallback, useRef } from 'react';
 import { useStore } from '@/store/useStore';
 import type { ChatMessage } from '@/types';
+import { extractCode as sharedExtractCode } from '@/lib/utils/code-extractor';
 
-export function useSkriptAnalysis() {
+export interface UseSkriptAnalysisOptions {
+  onComplete?: () => void;
+}
+
+export function useSkriptAnalysis(options?: UseSkriptAnalysisOptions) {
   const { 
     messages, 
     addMessage, 
@@ -29,19 +34,9 @@ export function useSkriptAnalysis() {
     }
   }, []);
 
+  // We use the shared extractor instead of a local one to ensure consistency
   const extractCode = useCallback((text: string): string => {
-    const codeBlockRegex = /```(\w+)?\n?([\s\S]*?)```/g;
-    const blocks: string[] = [];
-    let match: RegExpExecArray | null;
-
-    while ((match = codeBlockRegex.exec(text)) !== null) {
-      const langTag = match[1]?.toLowerCase() || '';
-      const content = match[2].trim();
-      if (['sk', 'skript', 'skript-sk', 'vb'].includes(langTag) || (langTag === '' && content.includes('on '))) {
-        blocks.push(content);
-      }
-    }
-    return blocks.join('\n\n');
+    return sharedExtractCode(text);
   }, []);
 
   const parsePerformanceScore = (content: string): { score: number | null, category: string } => {
@@ -176,13 +171,18 @@ export function useSkriptAnalysis() {
       const code = extractCode(fullContent);
       if (code) setEditorCode(code);
 
+      // Trigger sidebar refresh
+      if (options?.onComplete) {
+        options.onComplete();
+      }
+
     } catch (error) {
       setGlobalError(error instanceof Error ? error.message : 'Error occurred');
     } finally {
       setIsStreaming(false);
       setIsAnalyzing(false);
     }
-  }, [messages, editorCode, addMessage, updateMessage, setIsStreaming, setIsAnalyzing, setGlobalError, generateId, extractCode, updateStats, addHistoryItem, setEditorCode]);
+  }, [messages, editorCode, addMessage, updateMessage, setIsStreaming, setIsAnalyzing, setGlobalError, generateId, extractCode, updateStats, addHistoryItem, setEditorCode, options]);
 
   return { handleNewMessage };
 }

@@ -22,7 +22,7 @@ export async function GET(
     // FETCH GRANULAR HISTORY FROM chat_history (Max last 50)
     const { data: messages, error: msgError } = await supabase
       .from('chat_history')
-      .select('id, role, content, title, created_at')
+      .select('id, role, content, title, reasoning, created_at')
       .eq('session_id', id)
       .eq('user_id', userId)
       .order('created_at', { ascending: true })
@@ -41,6 +41,7 @@ export async function GET(
       id: m.id,
       role: m.role as 'user' | 'assistant',
       content: await StorageArchiver.resolveText(m.content),
+      reasoning: m.reasoning,
       timestamp: new Date(m.created_at).getTime()
     })));
 
@@ -78,10 +79,12 @@ export async function PATCH(
 
     const supabase = getSupabaseAdmin();
 
+    // Since we only store titie on the first message (usually), 
+    // we update all rows for this session to keep it consistent
     const { error } = await supabase
-      .from('chats')
+      .from('chat_history')
       .update({ title: title.trim() })
-      .eq('id', id)
+      .eq('session_id', id)
       .eq('user_id', userId);
 
     if (error) {
@@ -112,10 +115,11 @@ export async function DELETE(
     const { id } = await params;
     const supabase = getSupabaseAdmin();
 
+    // Delete all messages associated with this session
     const { error } = await supabase
-      .from('chats')
+      .from('chat_history')
       .delete()
-      .eq('id', id)
+      .eq('session_id', id)
       .eq('user_id', userId);
 
     if (error) {
