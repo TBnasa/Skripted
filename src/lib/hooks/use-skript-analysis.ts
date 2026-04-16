@@ -91,6 +91,7 @@ export function useSkriptAnalysis() {
         body: JSON.stringify({
           prompt: content,
           history: messages.slice(-10),
+          sessionId,
           addons,
           currentCode: editorCode,
           lang: activeLang,

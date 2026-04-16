@@ -5,6 +5,7 @@ import { ChatService } from '@/lib/services/chat-service';
 import { checkUsageLimit, incrementUsage } from '@/lib/utils/usage-limit';
 import { checkRateLimit } from '@/lib/utils/rate-limit';
 import { ChatRequestSchema } from '@/types/schemas';
+import { getSupabaseAdmin } from '@/lib/supabase-server';
 
 const CHAT_RATE_LIMIT = { windowMs: 60_000, max: 30 };
 
@@ -36,7 +37,7 @@ export async function POST(request: NextRequest): Promise<Response> {
       return Response.json({ error: 'Invalid data', details: result.error.format() }, { status: 400 });
     }
 
-    const { prompt, history, serverVersion, serverType, skriptVersion, addons, currentCode, lang } = result.data;
+    const { prompt, history, sessionId, serverVersion, serverType, skriptVersion, addons, currentCode, lang } = result.data;
 
     const { systemPrompt, pineconeIds } = await ChatService.prepareChatContext(prompt, {
       serverVersion,
@@ -70,6 +71,7 @@ export async function POST(request: NextRequest): Promise<Response> {
     const transformedStream = new ReadableStream({
       async start(controller) {
         const send = (data: any) => controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
+        let fullAiResponse = '';
         try {
           send({ type: 'meta', pineconeIds });
           const reader = upstreamBody.getReader();
@@ -99,10 +101,24 @@ export async function POST(request: NextRequest): Promise<Response> {
                     send({ type: 'reasoning', content: delta.reasoning_content || delta.reasoning });
                   }
                   if (delta.content) {
+                    fullAiResponse += delta.content;
                     send({ type: 'content', content: delta.content });
                   }
                 }
               } catch (e) {}
+            }
+          }
+
+          // Persistence Logic
+          if (sessionId) {
+            try {
+              const supabase = getSupabaseAdmin();
+              await supabase.from('chat_history').insert([
+                { user_id: userId, session_id: sessionId, role: 'user', content: prompt },
+                { user_id: userId, session_id: sessionId, role: 'assistant', content: fullAiResponse }
+              ]);
+            } catch (dbError) {
+              console.error('[Chat API] Failed to save to history:', dbError);
             }
           }
         } catch (error) {

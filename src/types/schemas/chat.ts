@@ -12,7 +12,8 @@ export type MessageInput = z.infer<typeof MessageSchema>;
 
 export const ChatRequestSchema = z.object({
   prompt: z.string().min(1, 'Prompt is required'),
-  history: z.array(z.any()), // Keeping z.any() for compatibility with existing history structure if it's complex, or we can use MessageSchema
+  history: z.array(z.any()),
+  sessionId: z.string().uuid().optional(),
   currentCode: z.string().optional(),
   serverVersion: z.string().optional(),
   serverType: z.string().optional(),

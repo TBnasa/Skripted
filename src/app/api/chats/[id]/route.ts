@@ -33,6 +33,25 @@ export async function GET(
     // HYDRATE CONTENT FROM STORAGE (Restore large blobs)
     const hydratedData = await StorageArchiver.hydrateObject(data);
 
+    // FETCH GRANULAR HISTORY FROM chat_history (Max last 50)
+    const { data: messages, error: msgError } = await supabase
+      .from('chat_history')
+      .select('id, role, content, created_at')
+      .eq('session_id', id)
+      .eq('user_id', userId)
+      .order('created_at', { ascending: true })
+      .limit(50);
+
+    if (!msgError && messages && messages.length > 0) {
+      // OVERWRITE with granular history if found
+      hydratedData.content = messages.map((m) => ({
+        id: m.id,
+        role: m.role as 'user' | 'assistant',
+        content: m.content,
+        timestamp: new Date(m.created_at).getTime()
+      }));
+    }
+
     return NextResponse.json(hydratedData);
   } catch (error) {
     console.error('[Chat GET] Error:', error);
