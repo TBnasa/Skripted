@@ -2,33 +2,33 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { createClient } from '@/utils/supabase/middleware';
 import { type NextRequest } from 'next/server';
 
-// Public rotaları belirleyelim (Giriş yapmadan erişilebilecek yerler)
+// Public rotalar (Auth gerektirmeyenler)
 const isPublicRoute = createRouteMatcher([
   '/',
-  '/api/chat(.*)', // Chat API'si Clerk ile korunuyorsa burayı kaldırabiliriz
+  '/api/chat(.*)',
   '/api/feedback(.*)',
   '/pricing(.*)',
   '/support(.*)',
-  '/(.*)' // Şu an için hepsine izin verelim, Supabase kendi güvenliğini sağlar
+  '/gallery(.*)',
+  '/academy(.*)'
 ]);
 
-export default clerkMiddleware(async (auth, request) => {
-  // 1. Supabase Client oluştur (Auth token yenileme vb. işlemler için)
-  const response = await createClient(request);
+export default clerkMiddleware((auth, request) => {
+  // Supabase çerezlerini güncelle (Auth yenileme için gerekli)
+  // Not: createClient asenkron değil, await kaldırıldı.
+  const supabaseResponse = createClient(request);
 
-  // 2. Eğer public bir rota değilse Clerk koruması uygula
-  // if (!isPublicRoute(request)) {
-  //   await auth.protect();
-  // }
+  // Korunması gereken rotalar için (şu an kapalı tutuyoruz)
+  // if (!isPublicRoute(request)) auth().protect();
 
-  return response;
+  return supabaseResponse;
 });
 
 export const config = {
   matcher: [
-    // Next.js dahili dosyalarını ve statik dosyaları atla
+    // Next.js dahili dosyaları ve statik dosyalar hariç her şeyi tara
     '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // API rotaları için her zaman çalıştır
+    // Her zaman API rotaları için çalıştır
     '/(api|trpc)(.*)',
   ],
 };
