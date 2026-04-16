@@ -5,6 +5,7 @@ import ChatPanel from '@/components/ChatPanel';
 import EditorPanel from '@/components/EditorPanel';
 import Sidebar from '@/components/Sidebar';
 import LimitModal from '@/components/LimitModal';
+import Overview from '@/components/Dashboard/Overview';
 import { useTranslation } from '@/lib/useTranslation';
 import useSWR from 'swr';
 import type { ChatMessage, FeedbackPayload } from '@/types';
@@ -199,6 +200,13 @@ export default function ChatInterface() {
             }),
           })
           .then(() => setSidebarRefreshKey(k => k + 1));
+          
+          // Update Dashboard Stats
+          const score = parsePerformanceScore(finalAssistantContent);
+          if (score !== null) {
+            updateDashboardStats(score, finalAssistantContent);
+          }
+          
           return newMessages;
         });
 
@@ -283,6 +291,32 @@ export default function ChatInterface() {
     sessionIdRef.current = generateId();
   }, [generateId]);
 
+  const parsePerformanceScore = (text: string): number | null => {
+    const match = text.match(/\[Performance Score\]:\s*(\d+)/i);
+    return match ? parseInt(match[1], 10) : null;
+  };
+
+  const updateDashboardStats = (newScore: number, content: string) => {
+    const saved = localStorage.getItem('skripted_dashboard_stats');
+    let stats = saved ? JSON.parse(saved) : { totalAnalyzed: 0, averageScore: 0, commonError: 'None', totalScore: 0 };
+    
+    stats.totalAnalyzed += 1;
+    stats.totalScore = (stats.totalScore || 0) + newScore;
+    stats.averageScore = Math.round(stats.totalScore / stats.totalAnalyzed);
+    
+    // Simple logic for common error detection
+    const hasSyntax = content.includes('🔴');
+    const hasLogic = content.includes('🟡');
+    const hasOpt = content.includes('🔵');
+    
+    if (hasSyntax) stats.commonError = 'Syntax';
+    else if (hasLogic) stats.commonError = 'Logic';
+    else if (hasOpt) stats.commonError = 'Optimization';
+
+    localStorage.setItem('skripted_dashboard_stats', JSON.stringify(stats));
+    window.dispatchEvent(new Event('dashboard_update')); // Trigger update in Overview component
+  };
+
   return (
     <div className="flex h-screen max-h-screen flex-col pt-16 overflow-hidden bg-[var(--color-bg-primary)]">
       {globalError && (
@@ -304,7 +338,13 @@ export default function ChatInterface() {
           onToggle={() => setSidebarOpen(o => !o)}
         />
 
-        <div className="flex flex-1 overflow-hidden min-h-0">
+        <div className="flex flex-1 flex-col overflow-hidden min-h-0">
+          {/* Dashboard Header */}
+          <div className="px-4 py-2 bg-white/[0.01] border-b border-white/[0.04]">
+            <Overview />
+          </div>
+
+          <div className="flex flex-1 overflow-hidden min-h-0">
           <div className="flex w-full flex-col border-r border-white/[0.04] md:w-[55%] lg:w-[55%] flex-shrink-0">
             <ChatPanel
               messages={messages}

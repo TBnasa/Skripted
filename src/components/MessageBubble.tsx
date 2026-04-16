@@ -4,6 +4,7 @@ import { useRef, useEffect } from 'react';
 import { useTranslation } from '@/lib/useTranslation';
 import type { ChatMessage } from '@/types';
 import { motion } from 'framer-motion';
+import AnalysisPanel from './Chat/AnalysisPanel';
 
 interface MessageBubbleProps {
   readonly message: ChatMessage;
@@ -93,6 +94,9 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
           </div>
         )}
 
+        {/* Categorized Analysis (for Assistant only) */}
+        {!isUser && <AnalysisPanel content={message.content} />}
+
         {/* Reasoning/Thinking block */}
         {message.reasoning && (
           <details className="mb-3 overflow-hidden rounded-xl border border-white/[0.04] bg-black/20 group" open={!message.content}>
@@ -116,10 +120,17 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
 
         {/* Content */}
         {(() => {
-          const content = message.content;
-          if (!content && message.reasoning) return null;
+          // Strip analysis blocks from display content to avoid duplication (as they are shown in AnalysisPanel)
+          const displayContent = message.content
+            .replace(/-? ?🔴 \*\*Syntax Errors\*\*:[\s\S]*?(?=\n-? ?[🟡🔵]|$)/gi, '')
+            .replace(/-? ?🟡 \*\*Logic & Modernization\*\*:[\s\S]*?(?=\n-? ?[🔴🔵]|$)/gi, '')
+            .replace(/-? ?🔵 \*\*Optimization \(Performance\)\*\*:[\s\S]*?(?=\n-? ?[🔴🟡]|$)/gi, '')
+            .replace(/\[Performance Score\]: \d+\/100/gi, '') // Also strip score as it's in the gauge
+            .trim();
+
+          if (!displayContent && message.reasoning) return null;
           
-          const segments = content.split(/(```[\s\S]*?```|```[\s\S]*$)/g);
+          const segments = displayContent.split(/(```[\s\S]*?```|```[\s\S]*$)/g);
           
           return segments.map((segment, i) => {
             if (segment.startsWith('```')) {
