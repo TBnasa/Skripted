@@ -3,7 +3,7 @@
 import Overview from '@/components/Dashboard/Overview';
 import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { LayoutDashboard, History, Settings, User } from 'lucide-react';
 
