@@ -1,7 +1,7 @@
 'use client';
 
 import React, { memo } from 'react';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { Heart, Code, Download, User, Hash } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -21,16 +21,15 @@ interface GalleryPost {
   tags: string[];
 }
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   show: { 
     opacity: 1, 
     y: 0, 
     transition: { 
       type: "spring", 
-      stiffness: 300, 
-      damping: 24,
-      useVisualElement: true // Optimization for framer-motion
+      stiffness: 100, 
+      damping: 15 
     } 
   }
 };
