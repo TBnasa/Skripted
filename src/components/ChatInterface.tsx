@@ -339,9 +339,12 @@ export default function ChatInterface() {
         />
 
         <div className="flex flex-1 flex-col overflow-hidden min-h-0">
-          {/* Dashboard Header */}
-          <div className="px-4 py-2 bg-white/[0.01] border-b border-white/[0.04]">
-            <Overview />
+          {/* Dashboard Mini-Summary */}
+          <div className="px-6 py-2 bg-[#0a0a0a] border-b border-white/[0.04] flex items-center justify-between">
+            <Overview isCompact={true} />
+            <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest hidden md:block">
+              Engine Protocol: <span className="text-emerald-500">Active</span>
+            </div>
           </div>
 
           <div className="flex flex-1 overflow-hidden min-h-0">

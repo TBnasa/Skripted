@@ -10,7 +10,7 @@ interface DashboardStats {
   commonError: string;
 }
 
-export default function Overview() {
+export default function Overview({ isCompact = false }: { isCompact?: boolean }) {
   const [stats, setStats] = useState<DashboardStats>({
     totalAnalyzed: 0,
     averageScore: 0,
@@ -27,7 +27,6 @@ export default function Overview() {
 
     loadStats();
     window.addEventListener('storage', loadStats);
-    // Also listen for custom dashboard updates from the same window
     window.addEventListener('dashboard_update', loadStats);
     
     return () => {
@@ -36,21 +35,33 @@ export default function Overview() {
     };
   }, []);
 
+  if (isCompact) {
+    return (
+      <div className="flex items-center gap-6 py-2 px-4 bg-[#0a0a0a]/40 backdrop-blur-md rounded-2xl border border-zinc-800/50">
+        <CompactStat icon={<Code size={14} />} label="Analyzed" value={stats.totalAnalyzed} color="text-cyan-400" />
+        <div className="h-4 w-px bg-zinc-800" />
+        <CompactStat icon={<Activity size={14} />} label="Avg Score" value={`${stats.averageScore}%`} color="text-emerald-400" />
+        <div className="h-4 w-px bg-zinc-800" />
+        <CompactStat icon={<AlertTriangle size={14} />} label="Main Issue" value={stats.commonError} color="text-amber-400" />
+      </div>
+    );
+  }
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"
+      className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
     >
       <StatCard 
-        icon={<Code size={20} className="text-blue-400" />}
+        icon={<Code size={22} className="text-cyan-400" />}
         label="Total Snippets"
         value={stats.totalAnalyzed}
         description="Analyzed this session"
       />
       
       <StatCard 
-        icon={<Activity size={20} className="text-emerald-400" />}
+        icon={<Activity size={22} className="text-emerald-400" />}
         label="Avg. Performance"
         value={`${stats.averageScore}%`}
         gaugeValue={stats.averageScore}
@@ -58,12 +69,22 @@ export default function Overview() {
       />
 
       <StatCard 
-        icon={<AlertTriangle size={20} className="text-amber-400" />}
+        icon={<AlertTriangle size={22} className="text-amber-400" />}
         label="Primary Issue"
         value={stats.commonError}
         description="Frequent bottleneck"
       />
     </motion.div>
+  );
+}
+
+function CompactStat({ icon, label, value, color }: { icon: any, label: string, value: string | number, color: string }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className={color}>{icon}</span>
+      <span className="text-[10px] uppercase tracking-wider font-bold text-zinc-500">{label}:</span>
+      <span className="text-[11px] font-mono font-bold text-zinc-200">{value}</span>
+    </div>
   );
 }
 
@@ -81,17 +102,17 @@ function StatCard({
   gaugeValue?: number;
 }) {
   return (
-    <div className="relative group overflow-hidden bg-[#fdfdfd] border border-[#e5e5e5] rounded-2xl p-5 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all duration-500">
-      <div className="flex items-center justify-between mb-3">
-        <div className="p-2 bg-white rounded-xl border border-[#eeeeee] shadow-sm">
+    <div className="relative group overflow-hidden bg-[#0a0a0a] border border-zinc-800 rounded-3xl p-6 shadow-2xl hover:shadow-[0_0_20px_rgba(16,185,129,0.05)] hover:border-emerald-500/20 transition-all duration-500">
+      <div className="flex items-center justify-between mb-4">
+        <div className="p-2.5 bg-zinc-900 rounded-2xl border border-zinc-800 group-hover:border-zinc-700 transition-colors">
           {icon}
         </div>
         {gaugeValue !== undefined && (
-          <div className="relative h-12 w-12">
+          <div className="relative h-14 w-14">
             <svg className="h-full w-full" viewBox="0 0 36 36">
               <path
-                className="text-[#f0f0f0]"
-                strokeWidth="3.5"
+                className="text-zinc-900"
+                strokeWidth="3"
                 stroke="currentColor"
                 fill="transparent"
                 d="M18 2.0845
@@ -102,8 +123,8 @@ function StatCard({
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: gaugeValue / 100 }}
                 transition={{ duration: 1.5, ease: "easeOut" }}
-                className={gaugeValue > 75 ? "text-emerald-500" : gaugeValue > 40 ? "text-amber-500" : "text-red-500"}
-                strokeWidth="3.5"
+                className={gaugeValue > 75 ? "text-emerald-400" : gaugeValue > 40 ? "text-amber-400" : "text-red-400"}
+                strokeWidth="3"
                 strokeDasharray="100, 100"
                 strokeLinecap="round"
                 stroke="currentColor"
@@ -113,7 +134,7 @@ function StatCard({
                   a 15.9155 15.9155 0 0 1 0 -31.831"
               />
             </svg>
-            <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-zinc-600">
+            <div className="absolute inset-0 flex items-center justify-center text-[11px] font-mono font-bold text-zinc-100">
               {Math.round(gaugeValue)}
             </div>
           </div>
@@ -121,12 +142,12 @@ function StatCard({
       </div>
       
       <div>
-        <h4 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 mb-1">{label}</h4>
-        <div className="text-2xl font-black text-zinc-800 tracking-tight">{value}</div>
-        <p className="text-[10px] text-zinc-400 font-medium mt-1">{description}</p>
+        <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-1">{label}</h4>
+        <div className="text-3xl font-black text-white tracking-tighter">{value}</div>
+        <p className="text-[11px] text-zinc-500 font-medium mt-1.5">{description}</p>
       </div>
 
-      <div className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-transparent via-zinc-200 to-transparent w-full opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-[60px] rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity" />
     </div>
   );
 }
