@@ -13,7 +13,6 @@ export function useSkriptAnalysis() {
     setIsAnalyzing, 
     setGlobalError,
     sessionId,
-    skriptVersion,
     updateStats,
     addHistoryItem
   } = useStore();
@@ -94,7 +93,7 @@ export function useSkriptAnalysis() {
           addons,
           currentCode: editorCode,
           lang: activeLang,
-          skriptVersion
+          skriptVersion: 'Latest (2.9)'
         }),
       });
 
@@ -171,7 +170,7 @@ export function useSkriptAnalysis() {
       setIsStreaming(false);
       setIsAnalyzing(false);
     }
-  }, [messages, editorCode, skriptVersion, addMessage, setIsStreaming, setIsAnalyzing, setGlobalError, generateId, extractCode, updateStats, addHistoryItem, setEditorCode]);
+  }, [messages, editorCode, addMessage, setIsStreaming, setIsAnalyzing, setGlobalError, generateId, extractCode, updateStats, addHistoryItem, setEditorCode]);
 
   return { handleNewMessage };
 }

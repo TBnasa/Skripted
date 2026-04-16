@@ -24,8 +24,6 @@ export default function ChatInterface() {
     setGlobalError,
     sessionId,
     setSessionId,
-    skriptVersion,
-    setSkriptVersion,
     resetChat
   } = useStore();
 
@@ -138,8 +136,6 @@ export default function ChatInterface() {
                 onFeedback={handleFeedback}
                 showFeedback={messages.length > 0 && !isStreaming}
                 usage={usage}
-                skriptVersion={skriptVersion}
-                onVersionChange={setSkriptVersion}
               />
             </div>
 

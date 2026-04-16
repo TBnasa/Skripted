@@ -8,7 +8,6 @@ interface AppState {
   editorCode: string;
   isStreaming: boolean;
   isAnalyzing: boolean;
-  skriptVersion: string;
   globalError: string | null;
   sessionId: string;
   
@@ -25,7 +24,6 @@ interface AppState {
   setEditorCode: (code: string) => void;
   setIsStreaming: (isStreaming: boolean) => void;
   setIsAnalyzing: (isAnalyzing: boolean) => void;
-  setSkriptVersion: (version: string) => void;
   setGlobalError: (error: string | null) => void;
   setSessionId: (id: string) => void;
   setUsage: (usage: { current: number; limit: number } | null) => void;
@@ -42,7 +40,6 @@ export const useStore = create<AppState>()(
       editorCode: '',
       isStreaming: false,
       isAnalyzing: false,
-      skriptVersion: 'Skript 2.7 (Latest)',
       globalError: null,
       sessionId: typeof crypto !== 'undefined' ? crypto.randomUUID() : Math.random().toString(36).substring(7),
       usage: null,
@@ -54,7 +51,6 @@ export const useStore = create<AppState>()(
       setEditorCode: (code) => set({ editorCode: code }),
       setIsStreaming: (isStreaming) => set({ isStreaming }),
       setIsAnalyzing: (isAnalyzing) => set({ isAnalyzing }),
-      setSkriptVersion: (version) => set({ skriptVersion: version }),
       setGlobalError: (error) => set({ globalError: error }),
       setSessionId: (id) => set({ sessionId: id }),
       setUsage: (usage) => set({ usage }),
@@ -90,8 +86,7 @@ export const useStore = create<AppState>()(
       partialize: (state) => ({
         stats: state.stats,
         history: state.history,
-        editorCode: state.editorCode,
-        skriptVersion: state.skriptVersion
+        editorCode: state.editorCode
       }),
     }
   )

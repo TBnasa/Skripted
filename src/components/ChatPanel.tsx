@@ -6,7 +6,7 @@ import MessageBubble from './MessageBubble';
 import FeedbackPoll from './FeedbackPoll';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { Terminal, Cpu, Zap, ChevronDown, SendHorizonal, AlertCircle } from 'lucide-react';
+import { Terminal, Cpu, Zap, SendHorizonal, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { ChatMessage } from '@/types';
 
@@ -19,8 +19,6 @@ interface ChatPanelProps {
   readonly onFeedback: (success: boolean, errorLog?: string) => void;
   readonly showFeedback: boolean;
   readonly usage?: { current: number; limit: number } | null;
-  readonly skriptVersion: string;
-  readonly onVersionChange: (version: string) => void;
 }
 
 export default function ChatPanel({
@@ -31,8 +29,6 @@ export default function ChatPanel({
   onFeedback,
   showFeedback,
   usage,
-  skriptVersion,
-  onVersionChange,
 }: ChatPanelProps) {
   const { t, mounted } = useTranslation();
   const [input, setInput] = useState('');
@@ -113,18 +109,6 @@ export default function ChatPanel({
             </Badge>
           )}
 
-          <div className="relative group/version">
-            <select
-              value={skriptVersion}
-              onChange={(e) => onVersionChange(e.target.value)}
-              className="appearance-none bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] hover:border-emerald-500/30 text-[10px] sm:text-[11px] font-bold text-[var(--color-text-secondary)] py-1.5 sm:py-2 pl-3 pr-8 rounded-lg sm:rounded-xl cursor-pointer transition-all outline-none"
-            >
-              {["Skript 2.2", "Skript 2.5", "Skript 2.6", "Skript 2.7 (Latest)", "Skript 2.8-beta"].map(v => (
-                <option key={v} value={v} className="bg-[#141414] text-white">{v}</option>
-              ))}
-            </select>
-            <ChevronDown size={10} className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-500" />
-          </div>
         </div>
       </div>
 
