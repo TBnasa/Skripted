@@ -33,7 +33,8 @@ export function useChats() {
       return fetcher('/api/chats', token || '');
     },
     enabled: isLoaded && !!userId,
-    initialData: [],
+    refetchOnWindowFocus: true,
+    staleTime: 0, // Her zaman en güncel veriyi çek
   });
 
   return {

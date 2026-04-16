@@ -38,9 +38,15 @@ export default function ChatInterface() {
     }
   });
   
+  const [mounted, setMounted] = useState(false);
   const [sidebarRefreshKey, setSidebarRefreshKey] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
+
+  // Set mounted to true after hydration
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   
   const fetcher = (url: string) => fetch(url).then(res => res.json());
   const { data: usage, refetch: mutateUsage } = useQuery({
@@ -115,10 +121,15 @@ export default function ChatInterface() {
 
   // Sayfa yenilendiğinde verileri veritabanından tazelemek için (Re-hydration sync)
   useEffect(() => {
-    if (sessionId && messages.length === 0) {
+    // SessionId varsa ve uygulama mount olmuşsa verileri çek
+    if (mounted && sessionId) {
       handleLoadChat(sessionId);
     }
-  }, [sessionId, messages.length, handleLoadChat]);
+  }, [mounted, sessionId, handleLoadChat]);
+
+  if (!mounted) {
+    return <div className="h-screen w-screen bg-[var(--color-bg-primary)] animate-pulse" />;
+  }
 
   return (
     <div className="flex h-screen max-h-screen flex-col pt-16 overflow-hidden bg-[var(--color-bg-primary)]">
