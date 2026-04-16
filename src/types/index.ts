@@ -12,6 +12,30 @@ export interface ChatMessage {
   readonly pineconeIds?: readonly string[];
 }
 
+export interface AnalysisResult {
+  readonly score: number;
+  readonly category: 'Syntax' | 'Logic' | 'Optimization' | 'None';
+  readonly feedback?: string;
+  readonly syntax?: readonly string[];
+  readonly logic?: readonly string[];
+  readonly performance?: readonly string[];
+}
+
+export interface DashboardStats {
+  totalAnalyzed: number;
+  averageScore: number;
+  commonError: string;
+  totalScore: number;
+}
+
+export interface AnalysisHistoryItem {
+  id: string;
+  title: string;
+  score: number;
+  category: string;
+  timestamp: number;
+}
+
 export interface ChatSession {
   readonly id: string;
   readonly title: string;
@@ -38,6 +62,9 @@ export interface RAGContext {
 export interface ChatRequest {
   readonly prompt: string;
   readonly history: readonly ChatMessage[];
+  readonly addons?: readonly string[];
+  readonly currentCode?: string;
+  readonly lang: 'tr' | 'en';
   readonly serverVersion?: string;
   readonly serverType?: string;
   readonly skriptVersion?: string;

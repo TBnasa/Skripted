@@ -1,0 +1,178 @@
+import { useCallback, useRef } from 'react';
+import { useStore } from '@/store/useStore';
+import type { ChatMessage } from '@/types';
+
+export function useSkriptAnalysis() {
+  const { 
+    messages, 
+    addMessage, 
+    setMessages,
+    editorCode, 
+    setEditorCode,
+    setIsStreaming, 
+    setIsAnalyzing, 
+    setGlobalError,
+    sessionId,
+    lang,
+    skriptVersion,
+    updateStats,
+    addHistoryItem
+  } = useStore();
+
+  const pineconeIdsRef = useRef<string[]>([]);
+  const lastPromptRef = useRef('');
+
+  const generateId = useCallback(() => {
+    try {
+      return crypto.randomUUID();
+    } catch {
+      return Math.random().toString(36).substring(2, 15);
+    }
+  }, []);
+
+  const extractCode = useCallback((text: string): string => {
+    const codeBlockRegex = /```(\w+)?\n?([\s\S]*?)```/g;
+    const blocks: string[] = [];
+    let match: RegExpExecArray | null;
+
+    while ((match = codeBlockRegex.exec(text)) !== null) {
+      const langTag = match[1]?.toLowerCase() || '';
+      const content = match[2].trim();
+      if (['sk', 'skript', 'skript-sk', 'vb'].includes(langTag) || (langTag === '' && content.includes('on '))) {
+        blocks.push(content);
+      }
+    }
+    return blocks.join('\n\n');
+  }, []);
+
+  const parsePerformanceScore = (content: string): { score: number | null, category: string } => {
+    try {
+      const match = content.match(/\[FINAL_ANALYSIS\]:\s*(?:```json\n?)?(\{[\s\S]*?\})(?:\n?```)?/i);
+      if (match) {
+        const data = JSON.parse(match[1].replace(/```json\n?|```/g, '').trim());
+        let category = 'None';
+        if (data.syntax?.length > 0) category = 'Syntax';
+        else if (data.logic?.length > 0) category = 'Logic';
+        else if (data.performance?.length > 0) category = 'Optimization';
+        
+        return { 
+          score: typeof data.score === 'number' ? data.score : null,
+          category
+        };
+      }
+      return { score: null, category: 'None' };
+    } catch {
+      return { score: null, category: 'None' };
+    }
+  };
+
+  const handleNewMessage = useCallback(async (content: string, addons: string[] = []) => {
+    lastPromptRef.current = content;
+    setGlobalError(null);
+
+    const userMessage: ChatMessage = {
+      id: generateId(),
+      role: 'user',
+      content,
+      timestamp: Date.now(),
+    };
+
+    addMessage(userMessage);
+    setIsStreaming(true);
+    setIsAnalyzing(true);
+
+    try {
+      const trChars = /[ışğüöçİŞĞÜÖÇ]/;
+      const commonTrWords = /\b(merhaba|selam|nasılsın|yap|et|olsun|nasıl|nedir|ekle|sil|ayarla|mesaj)\b/i;
+      const activeLang = (trChars.test(content) || commonTrWords.test(content)) ? 'tr' : 'en';
+
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: content,
+          history: messages.slice(-10),
+          addons,
+          currentCode: editorCode,
+          lang: activeLang,
+          skriptVersion
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Status: ${response.status}`);
+      }
+
+      setIsAnalyzing(false);
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error('No response stream');
+
+      const decoder = new TextDecoder();
+      let fullContent = '';
+      let fullReasoning = '';
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() ?? '';
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed || !trimmed.startsWith('data: ')) continue;
+          const dataStr = trimmed.slice(6);
+          if (dataStr === '[DONE]') continue;
+
+          try {
+            const parsed = JSON.parse(dataStr);
+            if (parsed.type === 'meta' && parsed.pineconeIds) {
+              pineconeIdsRef.current = parsed.pineconeIds;
+            } else if (parsed.type === 'reasoning') {
+              fullReasoning += parsed.content;
+            } else if (parsed.type === 'content') {
+              fullContent += parsed.content;
+            }
+          } catch (e) {}
+        }
+      }
+
+      const assistantMessage: ChatMessage = {
+        id: generateId(),
+        role: 'assistant',
+        content: fullContent,
+        reasoning: fullReasoning,
+        timestamp: Date.now(),
+        codeBlock: extractCode(fullContent),
+        pineconeIds: [...pineconeIdsRef.current],
+      };
+
+      addMessage(assistantMessage);
+
+      const { score, category } = parsePerformanceScore(fullContent);
+      if (score !== null) {
+        updateStats(score, category);
+        addHistoryItem({
+          id: crypto.randomUUID(),
+          title: content.substring(0, 40),
+          score,
+          category,
+          timestamp: Date.now()
+        });
+      }
+
+      const code = extractCode(fullContent);
+      if (code) setEditorCode(code);
+
+    } catch (error) {
+      setGlobalError(error instanceof Error ? error.message : 'Error occurred');
+    } finally {
+      setIsStreaming(false);
+      setIsAnalyzing(false);
+    }
+  }, [messages, editorCode, skriptVersion, addMessage, setIsStreaming, setIsAnalyzing, setGlobalError, generateId, extractCode, updateStats, addHistoryItem, setEditorCode]);
+
+  return { handleNewMessage };
+}

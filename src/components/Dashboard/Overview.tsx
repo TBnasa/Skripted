@@ -1,62 +1,24 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Activity, Code, AlertTriangle, CheckCircle } from 'lucide-react';
-
-interface DashboardStats {
-  totalAnalyzed: number;
-  averageScore: number;
-  commonError: string;
-}
+import { useStore } from '@/store/useStore';
+import { useTranslation } from '@/lib/useTranslation';
+import { motion } from 'framer-motion';
+import { Activity, Code, AlertTriangle } from 'lucide-react';
+import { Card } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
 
 export default function Overview({ isCompact = false }: { isCompact?: boolean }) {
-  const [stats, setStats] = useState<DashboardStats>({
-    totalAnalyzed: 0,
-    averageScore: 0,
-    commonError: 'None'
-  });
-
-  useEffect(() => {
-    const loadStats = () => {
-      const historySaved = localStorage.getItem('skripted_history');
-      if (historySaved) {
-        const history = JSON.parse(historySaved);
-        if (history.length > 0) {
-          const totalAnalyzed = history.length;
-          const totalScore = history.reduce((acc: number, item: any) => acc + item.score, 0);
-          const averageScore = Math.round(totalScore / totalAnalyzed);
-          
-          // Find most frequent category
-          const categories = history.map((item: any) => item.category);
-          const commonError = categories.sort((a: string, b: string) =>
-            categories.filter((v: string) => v === a).length -
-            categories.filter((v: string) => v === b).length
-          ).pop() || 'None';
-
-          setStats({ totalAnalyzed, averageScore, commonError });
-        }
-      }
-    };
-
-    loadStats();
-    window.addEventListener('storage', loadStats);
-    window.addEventListener('dashboard_update', loadStats);
-    
-    return () => {
-      window.removeEventListener('storage', loadStats);
-      window.removeEventListener('dashboard_update', loadStats);
-    };
-  }, []);
+  const { stats } = useStore();
+  const { t } = useTranslation();
 
   if (isCompact) {
     return (
       <div className="flex items-center gap-6 py-2 px-4 bg-[#0a0a0a]/40 backdrop-blur-md rounded-2xl border border-zinc-800/50">
-        <CompactStat icon={<Code size={14} />} label="Analyzed" value={stats.totalAnalyzed} color="text-cyan-400" />
+        <CompactStat icon={<Code size={14} />} label={t('general.search')} value={stats.totalAnalyzed} color="text-cyan-400" />
         <div className="h-4 w-px bg-zinc-800" />
-        <CompactStat icon={<Activity size={14} />} label="Avg Score" value={`${stats.averageScore}%`} color="text-emerald-400" />
+        <CompactStat icon={<Activity size={14} />} label={t('stats.avg_score')} value={`${stats.averageScore}%`} color="text-emerald-400" />
         <div className="h-4 w-px bg-zinc-800" />
-        <CompactStat icon={<AlertTriangle size={14} />} label="Main Issue" value={stats.commonError} color="text-amber-400" />
+        <CompactStat icon={<AlertTriangle size={14} />} label={t('stats.primary_issue')} value={stats.commonError} color="text-amber-400" />
       </div>
     );
   }
@@ -69,14 +31,14 @@ export default function Overview({ isCompact = false }: { isCompact?: boolean })
     >
       <StatCard 
         icon={<Code size={22} className="text-cyan-400" />}
-        label="Total Snippets"
+        label={t('stats.total_snippets')}
         value={stats.totalAnalyzed}
         description="Analyzed this session"
       />
       
       <StatCard 
         icon={<Activity size={22} className="text-emerald-400" />}
-        label="Avg. Performance"
+        label={t('stats.avg_score')}
         value={`${stats.averageScore}%`}
         gaugeValue={stats.averageScore}
         description="Based on recent runs"
@@ -84,7 +46,7 @@ export default function Overview({ isCompact = false }: { isCompact?: boolean })
 
       <StatCard 
         icon={<AlertTriangle size={22} className="text-amber-400" />}
-        label="Primary Issue"
+        label={t('stats.primary_issue')}
         value={stats.commonError}
         description="Frequent bottleneck"
       />
@@ -92,7 +54,7 @@ export default function Overview({ isCompact = false }: { isCompact?: boolean })
   );
 }
 
-function CompactStat({ icon, label, value, color }: { icon: any, label: string, value: string | number, color: string }) {
+function CompactStat({ icon, label, value, color }: { icon: React.ReactNode, label: string, value: string | number, color: string }) {
   return (
     <div className="flex items-center gap-2">
       <span className={color}>{icon}</span>
@@ -116,7 +78,7 @@ function StatCard({
   gaugeValue?: number;
 }) {
   return (
-    <div className="relative group overflow-hidden bg-[#0a0a0a] border border-zinc-800 rounded-3xl p-6 shadow-2xl hover:shadow-[0_0_20px_rgba(16,185,129,0.05)] hover:border-emerald-500/20 transition-all duration-500">
+    <Card className="relative group overflow-hidden shadow-2xl hover:shadow-[0_0_20px_rgba(16,185,129,0.05)] hover:border-emerald-500/20 transition-all duration-500">
       <div className="flex items-center justify-between mb-4">
         <div className="p-2.5 bg-zinc-900 rounded-2xl border border-zinc-800 group-hover:border-zinc-700 transition-colors">
           {icon}
@@ -162,6 +124,6 @@ function StatCard({
       </div>
 
       <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-[60px] rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity" />
-    </div>
+    </Card>
   );
 }
