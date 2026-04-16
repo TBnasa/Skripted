@@ -13,7 +13,6 @@ export function useSkriptAnalysis() {
     setIsAnalyzing, 
     setGlobalError,
     sessionId,
-    lang,
     skriptVersion,
     updateStats,
     addHistoryItem

@@ -1,40 +1,13 @@
 'use client';
 
-import { useState, useRef, useCallback, useEffect, memo } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from '@/lib/useTranslation';
-import { useStore } from '@/store/useStore';
 import MessageBubble from './MessageBubble';
 import FeedbackPoll from './FeedbackPoll';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { Terminal, Cpu, Zap, ChevronDown, SendHorizonal } from 'lucide-react';
-
-const ChatPanel = memo(() => {
-  const { t, mounted } = useTranslation();
-  const { 
-    messages, 
-    isStreaming, 
-    isAnalyzing, 
-    usage, 
-    skriptVersion, 
-    setSkriptVersion 
-  } = useStore();
-  
-  const [input, setInput] = useState('');
-  const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const { handleNewMessage } = useStore.getState() as any; // We can't use actions from useStore directly if they are complex, but handleNewMessage is from useSkriptAnalysis hook usually. Wait, handleNewMessage is passed as prop usually in my previous refactor. Let's adjust.
-
-  // Actually ChatInterface passes handleNewMessage as prop.
-  // Wait, I refactored ChatInterface to pass handleNewMessage to ChatPanel.
-  // But I can also just use the hook inside ChatPanel if I want.
-  // Let's keep props for now to avoid redundant hook calls if ChatInterface needs it too.
-  return null; // I'll rewrite the whole file below.
-});
-
-// Rewriting properly:
+import { Terminal, Cpu, Zap, ChevronDown, SendHorizonal, AlertCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { ChatMessage } from '@/types';
 
 interface ChatPanelProps {

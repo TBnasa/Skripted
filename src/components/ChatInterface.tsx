@@ -135,7 +135,6 @@ export default function ChatInterface() {
                 onCodeExtracted={setEditorCode}
                 isStreaming={isStreaming}
                 isAnalyzing={isAnalyzing}
-                streamingContent="" // Handled by message state now or we can refine
                 onFeedback={handleFeedback}
                 showFeedback={messages.length > 0 && !isStreaming}
                 usage={usage}
