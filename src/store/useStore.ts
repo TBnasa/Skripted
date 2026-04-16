@@ -89,8 +89,7 @@ export const useStore = create<AppState>()(
       name: 'skripted-storage',
       partialize: (state) => ({
         stats: state.stats,
-        history: state.history,
-        editorCode: state.editorCode
+        history: state.history
       }),
     }
   )

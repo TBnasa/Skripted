@@ -186,77 +186,51 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
       {/* Editor & Panel Region */}
       <div className="relative flex-1 overflow-hidden flex flex-col">
         {/* Monaco Editor */}
-        <div className="flex-1 overflow-hidden [overflow-anchor:none] bg-transparent relative">
-          {code.trim() ? (
-            <>
-              <Editor
-                height="100%"
-                defaultLanguage={SKRIPT_LANGUAGE_ID}
-                value={code}
-                onChange={(value) => onCodeChange(value ?? '')}
-                onMount={handleEditorMount}
-                theme="skripted-dark"
-                options={{
-                  fontSize: 14,
-                  fontFamily: '"JetBrains Mono", "Cascadia Code", monospace',
-                  fontLigatures: true,
-                  lineHeight: 22.4,
-                  lineNumbers: 'on',
-                  minimap: { enabled: false },
-                  scrollBeyondLastLine: false,
-                  wordWrap: 'on',
-                  tabSize: 4,
-                  insertSpaces: false,
-                  renderLineHighlight: 'all',
-                  cursorBlinking: 'smooth',
-                  cursorSmoothCaretAnimation: 'on',
-                  smoothScrolling: true,
-                  padding: { top: 20, bottom: 60 },
-                  roundedSelection: true,
-                  readOnly: false,
-                  automaticLayout: true,
-                  contextmenu: false,
-                }}
-              />
-              
-              {/* Mobile Touch Toolbar */}
-              <div className="md:hidden absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 p-1.5 bg-[#141414]/90 backdrop-blur-xl border border-white/[0.08] rounded-2xl shadow-2xl z-10">
-                <button onClick={() => triggerAction('undo')} className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl active:scale-90 transition-all"><Undo2 size={16} /></button>
-                <button onClick={() => triggerAction('redo')} className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl active:scale-90 transition-all"><Redo2 size={16} /></button>
-                <div className="w-px h-6 bg-white/[0.06] mx-1"></div>
-                <button onClick={() => triggerAction('editor.action.clipboardPasteAction')} className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl active:scale-90 transition-all"><ClipboardPaste size={16} /></button>
-                <button onClick={() => triggerAction('editor.action.formatDocument')} className="p-2 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 rounded-xl active:scale-90 transition-all font-bold text-[10px] uppercase tracking-widest"><Sparkles size={16} /></button>
-                <button onClick={() => {
-                  if (editorRef.current) {
-                    editorRef.current.trigger('keyboard', 'tab', null);
-                    editorRef.current.focus();
-                  }
-                }} className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl active:scale-90 transition-all"><ArrowRightToLine size={16} /></button>
-              </div>
-            </>
-          ) : isStreaming ? (
-            <div className="flex h-full w-full flex-col p-8 bg-[#0a0a0a]">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="flex gap-4 mb-4 animate-pulse" style={{ opacity: 0.6 - i * 0.1, animationDelay: `${i * 0.1}s` }}>
-                  <div className="w-6 h-4 shimmer-bg rounded"></div>
-                  <div className={`h-4 shimmer-bg rounded ${i % 2 === 0 ? 'w-48 ml-8' : 'w-64'}`}></div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="flex h-full items-center justify-center bg-[#0a0a0a] mesh-gradient relative">
-               <div className="absolute inset-0 bg-emerald-500/[0.01] pointer-events-none"></div>
-              <div className="text-center max-w-sm mx-auto animate-fade-in relative z-10">
-                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-[2rem] bg-white/[0.03] text-emerald-500/30 animate-float border border-white/[0.04] shadow-2xl">
-                  <FileCode size={32} />
-                </div>
-                <h3 className="text-sm font-black text-zinc-500 uppercase tracking-[0.3em] mb-2">{t('chat.status_ready')}</h3>
-                <p className="text-xs font-medium text-zinc-700 max-w-[200px] mx-auto leading-relaxed italic">
-                  {t('editor.start_generating')}
-                </p>
-              </div>
-            </div>
-          )}
+        <div className="flex-1 overflow-hidden [overflow-anchor:none] bg-[#0a0a0a] relative">
+          <Editor
+            height="100%"
+            defaultLanguage={SKRIPT_LANGUAGE_ID}
+            value={code}
+            onChange={(value) => onCodeChange(value ?? '')}
+            onMount={handleEditorMount}
+            theme="skripted-dark"
+            options={{
+              fontSize: 14,
+              fontFamily: '"JetBrains Mono", "Cascadia Code", monospace',
+              fontLigatures: true,
+              lineHeight: 22.4,
+              lineNumbers: 'on',
+              minimap: { enabled: false },
+              scrollBeyondLastLine: false,
+              wordWrap: 'on',
+              tabSize: 4,
+              insertSpaces: false,
+              renderLineHighlight: 'all',
+              cursorBlinking: 'smooth',
+              cursorSmoothCaretAnimation: 'on',
+              smoothScrolling: true,
+              padding: { top: 20, bottom: 60 },
+              roundedSelection: true,
+              readOnly: false,
+              automaticLayout: true,
+              contextmenu: false,
+            }}
+          />
+          
+          {/* Mobile Touch Toolbar */}
+          <div className="md:hidden absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 p-1.5 bg-[#141414]/90 backdrop-blur-xl border border-white/[0.08] rounded-2xl shadow-2xl z-10">
+            <button onClick={() => triggerAction('undo')} className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl active:scale-90 transition-all"><Undo2 size={16} /></button>
+            <button onClick={() => triggerAction('redo')} className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl active:scale-90 transition-all"><Redo2 size={16} /></button>
+            <div className="w-px h-6 bg-white/[0.06] mx-1"></div>
+            <button onClick={() => triggerAction('editor.action.clipboardPasteAction')} className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl active:scale-90 transition-all"><ClipboardPaste size={16} /></button>
+            <button onClick={() => triggerAction('editor.action.formatDocument')} className="p-2 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 rounded-xl active:scale-90 transition-all font-bold text-[10px] uppercase tracking-widest"><Sparkles size={16} /></button>
+            <button onClick={() => {
+              if (editorRef.current) {
+                editorRef.current.trigger('keyboard', 'tab', null);
+                editorRef.current.focus();
+              }
+            }} className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl active:scale-90 transition-all"><ArrowRightToLine size={16} /></button>
+          </div>
         </div>
       </div>
 
