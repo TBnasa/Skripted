@@ -20,9 +20,18 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
 
   const isUser = message.role === 'user';
 
-  const parsePerformanceScore = (text: string): number | null => {
-    const match = text.match(/\[Performance Score\]:\s*(\d+)/i);
-    return match ? parseInt(match[1], 10) : null;
+  const parsePerformanceScore = (content: string): number | null => {
+    try {
+      const match = content.match(/\[FINAL_ANALYSIS\]:\s*(?:```json\n?)?(\{[\s\S]*?\})(?:\n?```)?/i);
+      if (match) {
+        const jsonStr = match[1].replace(/```json\n?|```/g, '').trim();
+        const data = JSON.parse(jsonStr);
+        return typeof data.score === 'number' ? data.score : null;
+      }
+      return null;
+    } catch {
+      return null;
+    }
   };
 
   const performanceScore = !isUser ? parsePerformanceScore(message.content) : null;
@@ -122,10 +131,11 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
         {(() => {
           // Strip analysis blocks from display content to avoid duplication (as they are shown in AnalysisPanel)
           const displayContent = message.content
+            .replace(/\[FINAL_ANALYSIS\]:\s*(?:```json\n?)?\{[\s\S]*?\}(?:\n?```)?/gi, '')
             .replace(/-? ?🔴 \*\*Syntax Errors\*\*:[\s\S]*?(?=\n-? ?[🟡🔵]|$)/gi, '')
             .replace(/-? ?🟡 \*\*Logic & Modernization\*\*:[\s\S]*?(?=\n-? ?[🔴🔵]|$)/gi, '')
             .replace(/-? ?🔵 \*\*Optimization \(Performance\)\*\*:[\s\S]*?(?=\n-? ?[🔴🟡]|$)/gi, '')
-            .replace(/\[Performance Score\]: \d+\/100/gi, '') // Also strip score as it's in the gauge
+            .replace(/\[Performance Score\]: \d+\/100/gi, '')
             .trim();
 
           if (!displayContent && message.reasoning) return null;
@@ -134,6 +144,10 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
           
           return segments.map((segment, i) => {
             if (segment.startsWith('```')) {
+              const lang = segment.match(/^```(\w+)?/)?.[1]?.toLowerCase() || '';
+              // Hide JSON blocks from the main chat bubble if they look like analysis
+              if (lang === 'json') return null;
+              
               const codeContent = segment.replace(/^```\w*\n?/g, '').replace(/```$/g, '');
               return (
                 <pre

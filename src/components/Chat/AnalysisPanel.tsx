@@ -72,7 +72,7 @@ export default function AnalysisPanel({ content }: AnalysisProps) {
 
 function parseAnalysisJSON(content: string) {
   try {
-    const match = content.match(/\[FINAL_ANALYSIS\]:\s*(\{[\s\S]*?\})(?=\n\n|$)/i) || content.match(/(\{[\s\S]*\})/);
+    const match = content.match(/\[FINAL_ANALYSIS\]:\s*(?:```json\n?)?(\{[\s\S]*?\})(?:\n?```)?/i) || content.match(/(\{[\s\S]*\})/);
     if (match) {
       // Clean up common AI markdown issues in JSON
       const jsonStr = match[1].replace(/```json\n?|```/g, '').trim();

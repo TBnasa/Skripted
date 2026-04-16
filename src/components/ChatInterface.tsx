@@ -42,12 +42,19 @@ export default function ChatInterface() {
   }, []);
 
   const extractCode = useCallback((text: string): string => {
-    const codeBlockRegex = /```(?:vb|sk|skript)?\n?([\s\S]*?)```/g;
+    // Regex matches code blocks but we will filter them by language tag
+    const codeBlockRegex = /```(\w+)?\n?([\s\S]*?)```/g;
     const blocks: string[] = [];
     let match: RegExpExecArray | null;
 
     while ((match = codeBlockRegex.exec(text)) !== null) {
-      blocks.push(match[1].trim());
+      const lang = match[1]?.toLowerCase() || '';
+      const content = match[2].trim();
+      
+      // Only include Skript-related blocks, exclude JSON and others
+      if (['sk', 'skript', 'skript-sk', 'vb'].includes(lang) || (lang === '' && content.includes('on '))) {
+        blocks.push(content);
+      }
     }
 
     return blocks.join('\n\n');
@@ -293,7 +300,7 @@ export default function ChatInterface() {
 
   const parsePerformanceScore = (content: string): number | null => {
     try {
-      const match = content.match(/\[FINAL_ANALYSIS\]:\s*(\{[\s\S]*?\})(?=\n\n|$)/i);
+      const match = content.match(/\[FINAL_ANALYSIS\]:\s*(?:```json\n?)?(\{[\s\S]*?\})(?:\n?```)?/i);
       if (match) {
         const jsonStr = match[1].replace(/```json\n?|```/g, '').trim();
         const data = JSON.parse(jsonStr);
@@ -318,7 +325,7 @@ export default function ChatInterface() {
     
     let currentCategory = 'None';
     try {
-      const match = content.match(/\[FINAL_ANALYSIS\]:\s*(\{[\s\S]*?\})/i);
+      const match = content.match(/\[FINAL_ANALYSIS\]:\s*(?:```json\n?)?(\{[\s\S]*?\})(?:\n?```)?/i);
       if (match) {
         const data = JSON.parse(match[1].replace(/```json\n?|```/g, '').trim());
         if (data.syntax?.length > 0) currentCategory = 'Syntax';
