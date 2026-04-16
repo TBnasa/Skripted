@@ -3,6 +3,7 @@
 import { useRef, useEffect } from 'react';
 import { useTranslation } from '@/lib/useTranslation';
 import type { ChatMessage } from '@/types';
+import { motion } from 'framer-motion';
 
 interface MessageBubbleProps {
   readonly message: ChatMessage;
@@ -17,6 +18,25 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
   }, [message.content]);
 
   const isUser = message.role === 'user';
+
+  const parsePerformanceScore = (text: string): number | null => {
+    const match = text.match(/\[Performance Score\]:\s*(\d+)/i);
+    return match ? parseInt(match[1], 10) : null;
+  };
+
+  const performanceScore = !isUser ? parsePerformanceScore(message.content) : null;
+
+  const getScoreColor = (score: number) => {
+    if (score <= 40) return 'bg-red-500';
+    if (score <= 75) return 'bg-amber-500';
+    return 'bg-emerald-500';
+  };
+
+  const getScoreLabel = (score: number) => {
+    if (score <= 40) return 'Critical';
+    if (score <= 75) return 'Needs Work';
+    return 'Optimized';
+  };
 
   return (
     <div
@@ -51,6 +71,28 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
             : 'bg-white/[0.02] text-[var(--color-text-primary)] rounded-2xl rounded-tl-sm border border-white/[0.04] border-l-2 border-l-emerald-500/30'
         }`}
       >
+        {/* Performance Score Gauge (for Assistant only) */}
+        {performanceScore !== null && (
+          <div className="mb-4 p-3 bg-black/30 rounded-xl border border-white/[0.04] overflow-hidden">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-muted)]">
+                Optimization Score
+              </span>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${getScoreColor(performanceScore)}/20 text-white/90`}>
+                {performanceScore}/100 • {getScoreLabel(performanceScore)}
+              </span>
+            </div>
+            <div className="h-1.5 w-full bg-white/[0.05] rounded-full overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${performanceScore}%` }}
+                transition={{ duration: 1, ease: 'easeOut' }}
+                className={`h-full ${getScoreColor(performanceScore)} shadow-[0_0_10px_rgba(0,0,0,0.5)]`}
+              />
+            </div>
+          </div>
+        )}
+
         {/* Reasoning/Thinking block */}
         {message.reasoning && (
           <details className="mb-3 overflow-hidden rounded-xl border border-white/[0.04] bg-black/20 group" open={!message.content}>

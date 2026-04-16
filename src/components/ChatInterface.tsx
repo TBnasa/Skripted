@@ -24,6 +24,7 @@ export default function ChatInterface() {
   const [sidebarRefreshKey, setSidebarRefreshKey] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
+  const [skriptVersion, setSkriptVersion] = useState('2.7 (Latest)');
   
   const fetcher = (url: string) => fetch(url).then(res => res.json());
   const { data: usage, mutate: mutateUsage } = useSWR('/api/session/usage', fetcher);
@@ -121,7 +122,8 @@ export default function ChatInterface() {
             history: currentHistory.slice(0, -1),
             addons,
             currentCode: editorCode,
-            lang: activeLang
+            lang: activeLang,
+            skriptVersion: skriptVersion
           }),
         });
 
@@ -315,6 +317,8 @@ export default function ChatInterface() {
               onFeedback={handleFeedback}
               showFeedback={showFeedback}
               usage={usage}
+              skriptVersion={skriptVersion}
+              onVersionChange={setSkriptVersion}
             />
           </div>
 

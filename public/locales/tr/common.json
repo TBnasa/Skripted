@@ -46,7 +46,7 @@
     "save_changes": "Değişiklikleri Kaydet"
   },
   "chat": {
-    "terminal_header": "Terminal / Sohbet",
+    "terminal_header": "Skript Uzmanı & Performans Analizi",
     "status_ready": "Durum: Hazır",
     "status_compiling": "Durum: Cevap Hazırlanıyor...",
     "input_required": "Girdi Gerekli",

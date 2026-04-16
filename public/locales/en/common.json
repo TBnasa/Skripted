@@ -46,7 +46,7 @@
     "save_changes": "Save Changes"
   },
   "chat": {
-    "terminal_header": "Terminal / Chat",
+    "terminal_header": "Skript Expert & Performance Analyzer",
     "status_ready": "Status: Ready",
     "status_compiling": "Status: Compiling Response...",
     "input_required": "Input Required",

@@ -17,6 +17,8 @@ interface ChatPanelProps {
   readonly onFeedback: (success: boolean, errorLog?: string) => void;
   readonly showFeedback: boolean;
   readonly usage?: { current: number; limit: number };
+  readonly skriptVersion: string;
+  readonly onVersionChange: (version: string) => void;
 }
 
 export default function ChatPanel({
@@ -29,6 +31,8 @@ export default function ChatPanel({
   onFeedback,
   showFeedback,
   usage,
+  skriptVersion,
+  onVersionChange,
 }: ChatPanelProps) {
   const { t, mounted } = useTranslation();
   const [input, setInput] = useState('');
@@ -111,15 +115,34 @@ export default function ChatPanel({
           </p>
         </div>
 
-        {/* Usage Indicator */}
-        {usage && (
-          <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-white/[0.03] border border-white/[0.06] rounded-lg sm:rounded-xl shrink-0">
-            <div className="h-1 w-1 sm:h-1.5 sm:w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[9px] sm:text-[10px] font-bold text-zinc-400 uppercase tracking-wider whitespace-nowrap">
-              <span className="hidden sm:inline">Usage: </span><span className="text-emerald-400">{usage.current}</span><span className="opacity-40">/</span>{usage.limit}
-            </span>
+        {/* Usage Indicator & Version Selector */}
+        <div className="flex items-center gap-2">
+          {usage && (
+            <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-white/[0.03] border border-white/[0.06] rounded-lg sm:rounded-xl shrink-0">
+              <div className="h-1 w-1 sm:h-1.5 sm:w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[9px] sm:text-[10px] font-bold text-zinc-400 uppercase tracking-wider whitespace-nowrap">
+                <span className="hidden sm:inline">Usage: </span><span className="text-emerald-400">{usage.current}</span><span className="opacity-40">/</span>{usage.limit}
+              </span>
+            </div>
+          )}
+
+          <div className="relative group/version">
+            <select
+              value={skriptVersion}
+              onChange={(e) => onVersionChange(e.target.value)}
+              className="appearance-none bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] hover:border-emerald-500/30 text-[10px] sm:text-[11px] font-bold text-[var(--color-text-secondary)] py-1.5 sm:py-2 pl-3 pr-8 rounded-lg sm:rounded-xl cursor-pointer transition-all outline-none backdrop-blur-md"
+            >
+              {["Skript 2.2", "Skript 2.5", "Skript 2.6", "Skript 2.7 (Latest)", "Skript 2.8-beta"].map(v => (
+                <option key={v} value={v} className="bg-[#141414] text-white py-2">{v}</option>
+              ))}
+            </select>
+            <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-500">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </div>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Messages */}
