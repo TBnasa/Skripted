@@ -30,7 +30,7 @@ export default function ChatInterface() {
   const fetcher = (url: string) => fetch(url).then(res => res.json());
   const { data: usage, mutate: mutateUsage } = useSWR('/api/session/usage', fetcher);
   const pineconeIdsRef = useRef<string[]>([]);
-  const sessionIdRef = useRef(crypto.randomUUID());
+  const sessionIdRef = useRef<string>(crypto.randomUUID());
   const lastPromptRef = useRef('');
 
   const generateId = useCallback(() => {
@@ -373,6 +373,7 @@ export default function ChatInterface() {
               onCodeChange={setEditorCode}
               isStreaming={isStreaming}
             />
+          </div>
           </div>
         </div>
       </div>
