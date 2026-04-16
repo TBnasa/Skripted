@@ -250,6 +250,30 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
           window.open(`/gallery/${id}`, '_blank');
         }}
       />
+
+      <GitHubExportModal
+        code={code}
+        isOpen={isGitHubOpen}
+        onClose={() => setIsGitHubOpen(false)}
+      />
+    </div>
+  );
+}
+             </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <GalleryPostModal
+        code={code}
+        isOpen={isGalleryOpen}
+        onClose={() => setIsGalleryOpen(false)}
+        onSuccess={(id) => {
+          window.open(`/gallery/${id}`, '_blank');
+        }}
+      />
     </div>
   );
 }
