@@ -6,17 +6,23 @@
 export function extractCode(content: string): string {
   if (!content) return '';
   
-  // Try to find code blocks with sk, vsk, or no language tag
-  const codeBlockRegex = /```(?:sk|vsk|skript)?\n([\s\S]*?)```/i;
-  const match = content.match(codeBlockRegex);
+  // Sadece Skript ile ilgili etiketleri veya 'on ' ile başlayan blokları yakala
+  const codeBlockRegex = /```(?:sk|vsk|skript)\n([\s\S]*?)```/gi;
+  let matches = [...content.matchAll(codeBlockRegex)];
   
-  if (match && match[1]) {
-    return match[1].trim();
+  if (matches.length > 0) {
+    // En son (genellikle güncel olan) skript bloğunu al
+    return matches[matches.length - 1][1].trim();
   }
 
-  // Fallback: If no backticks but looks like skript, return as is (rare)
-  if (content.includes('command /') || content.includes('on ')) {
-    return content.trim();
+  // Eğer dil etiketi yoksa ama kod bloğu varsa ve içinde Skript anahtar kelimeleri geçiyorsa
+  const genericRegex = /```\n?([\s\S]*?)```/gi;
+  let genericMatches = [...content.matchAll(genericRegex)];
+  for (const match of genericMatches) {
+    const code = match[1].trim();
+    if (code.includes('command /') || code.includes('on ') || code.includes('options:')) {
+      return code;
+    }
   }
 
   return '';

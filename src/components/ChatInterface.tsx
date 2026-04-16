@@ -113,6 +113,13 @@ export default function ChatInterface() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [manualSave]);
 
+  // Sayfa yenilendiğinde verileri veritabanından tazelemek için (Re-hydration sync)
+  useEffect(() => {
+    if (sessionId && messages.length === 0) {
+      handleLoadChat(sessionId);
+    }
+  }, [sessionId, messages.length, handleLoadChat]);
+
   return (
     <div className="flex h-screen max-h-screen flex-col pt-16 overflow-hidden bg-[var(--color-bg-primary)]">
       {globalError && (
