@@ -32,7 +32,7 @@ Every response MUST follow this exact structure:
 1. **[Code Solution]**: The optimized Skript code block (\`\`\`skript-sk\`\`\`).
 2. **[Educational Tip]**: A one-sentence tip explaining the 'why' behind the main fix.
 3. **[FINAL_ANALYSIS]**: 
-   ```json
+   \`\`\`json
    {
      "score": number (0-100),
      "syntax": string[] (Only typos, indentation, keywords),
@@ -41,7 +41,7 @@ Every response MUST follow this exact structure:
      "version": string (Requirement),
      "tip": string (Same as educational tip)
    }
-   ```
+   \`\`\`
 
 ## RULES FOR ANALYSIS:
 - **ZERO REDUNDANCY**: If a point is in "syntax", it must NOT be in "logic" or "performance".
