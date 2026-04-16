@@ -3,7 +3,7 @@ import { AcademySidebar } from '@/components/Academy/AcademySidebar';
 import { AcademyChat } from '@/components/Academy/AcademyChat';
 import { AcademyPlayground } from '@/components/Academy/AcademyPlayground';
 import { DailyChallenge } from '@/components/Academy/DailyChallenge';
-import { Navbar } from '@/components/Navbar';
+import Navbar from '@/components/Navbar';
 
 export const metadata = {
   title: 'Skripted Academy | Learn to Build',
