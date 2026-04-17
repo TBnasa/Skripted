@@ -19,7 +19,7 @@ export async function checkUsageLimit(userId: string) {
   // If error is not "No rows found", log it
   if (error && error.code !== 'PGRST116') {
     console.error('[UsageLimit] Error fetching usage info:', error);
-    return { allowed: true, current: 0, limit: DAILY_GENERATION_LIMIT }; 
+    return { allowed: true, current: 0, limit: DAILY_GENERATION_LIMIT, tier: 'Free' }; 
   }
 
   // First time user registration in usage_limits
@@ -34,7 +34,7 @@ export async function checkUsageLimit(userId: string) {
       });
     
     if (insertError) console.error('[UsageLimit] Insert error:', insertError);
-    return { allowed: true, current: 0, limit: DAILY_GENERATION_LIMIT };
+    return { allowed: true, current: 0, limit: DAILY_GENERATION_LIMIT, tier: 'Free' };
   }
 
   // Reset logic if it's a new day
@@ -48,14 +48,14 @@ export async function checkUsageLimit(userId: string) {
       .eq('user_id', userId);
 
     if (resetError) console.error('[UsageLimit] Reset error:', resetError);
-    return { allowed: true, current: 0, limit: DAILY_GENERATION_LIMIT };
+    return { allowed: true, current: 0, limit: DAILY_GENERATION_LIMIT, tier: data.tier || 'Free' };
   }
 
   return {
     allowed: data.generations_today < DAILY_GENERATION_LIMIT,
     current: data.generations_today,
     limit: DAILY_GENERATION_LIMIT,
-    tier: data.tier,
+    tier: data.tier || 'Free',
   };
 }
 

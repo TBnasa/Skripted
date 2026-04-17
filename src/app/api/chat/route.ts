@@ -46,6 +46,7 @@ export async function POST(request: NextRequest): Promise<Response> {
       skriptVersion,
       addons,
       lang,
+      userTier: usage.tier,
     });
 
     const truncatedHistory = ChatService.truncateHistory(history);
