@@ -8,7 +8,7 @@ export const APP_URL = 'https://skripted.vercel.app' as const;
 
 // OpenRouter
 export const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1/chat/completions' as const;
-export const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL ?? 'google/gemini-2.0-flash-exp:free';
+export const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL ?? 'openai/gpt-oss-120b:free';
 
 // Pinecone
 export const PINECONE_INDEX = process.env.PINECONE_INDEX ?? 'skripted';
