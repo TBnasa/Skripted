@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import { streamGoogleCompletion } from '@/lib/google-ai';
+import { streamChatCompletion } from '@/lib/openrouter';
 import { ChatService } from '@/services/server/chat-service';
 import { checkUsageLimit, incrementUsage } from '@/lib/utils/usage-limit';
 import { checkRateLimit } from '@/lib/utils/rate-limit';
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest): Promise<Response> {
 
     messages.push({ role: 'user' as const, content: prompt });
 
-    const upstreamStream = await streamGoogleCompletion(messages);
+    const upstreamBody = await streamChatCompletion(messages);
     const encoder = new TextEncoder();
     const decoder = new TextDecoder();
 
@@ -76,18 +76,39 @@ export async function POST(request: NextRequest): Promise<Response> {
         let fullAiResponse = '';
         try {
           send({ type: 'meta', pineconeIds });
-          const reader = upstreamStream.getReader();
+          const reader = upstreamBody.getReader();
+          let buffer = '';
 
           while (true) {
             const { done, value } = await reader.read();
-            if (done) {
-              send({ type: 'done' });
-              break;
-            }
+            if (done) break;
 
-            const chunkText = decoder.decode(value);
-            fullAiResponse += chunkText;
-            send({ type: 'content', content: chunkText });
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() ?? '';
+
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (!trimmed || !trimmed.startsWith('data: ')) continue;
+              const dataStr = trimmed.slice(6);
+              if (dataStr === '[DONE]') {
+                send({ type: 'done' });
+                continue;
+              }
+              try {
+                const parsed = JSON.parse(dataStr);
+                const delta = parsed.choices?.[0]?.delta;
+                if (delta) {
+                  if (delta.reasoning_content || delta.reasoning) {
+                    send({ type: 'reasoning', content: delta.reasoning_content || delta.reasoning });
+                  }
+                  if (delta.content) {
+                    fullAiResponse += delta.content;
+                    send({ type: 'content', content: delta.content });
+                  }
+                }
+              } catch (e) {}
+            }
           }
 
           // Persistence Logic
