@@ -129,10 +129,9 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
 
         {/* Content */}
         {(() => {
-          // Strip analysis and flow blocks from display content
           const displayContent = message.content
-            .replace(/\[FINAL_ANALYSIS\]:\s*(?:```json\n?)?\{[\s\S]*?\}(?:\n?```)?/gi, '')
-            .replace(/\[VISUAL_FLOW\]:\s*(?:```json\n?)?\{[\s\S]*?\}(?:\n?```)?/gi, '')
+            .replace(/(?:\[|\*\*)FINAL_ANALYSIS(?:\]|\*\*):?\s*(?:```json\n?)?\{[\s\S]*?\}(?:\n?```)?/gi, '')
+            .replace(/(?:\[|\*\*)VISUAL_FLOW(?:\]|\*\*):?\s*(?:```json\n?)?\{[\s\S]*?\}(?:\n?```)?/gi, '')
             .trim();
 
           if (!displayContent && message.reasoning) return null;

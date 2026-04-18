@@ -122,7 +122,8 @@ export function AnalysisPanel({ content }: AnalysisProps) {
 
 function parseAnalysisJSON(content: string) {
   try {
-    const match = content.match(/\[FINAL_ANALYSIS\]:\s*(?:```json\n?)?(\{[\s\S]*?\})(?:\n?```)?/i);
+    // Look for JSON block after [FINAL_ANALYSIS] - handling bold markers and various line breaks
+    const match = content.match(/(?:\[|\*\*)FINAL_ANALYSIS(?:\]|\*\*):?\s*(?:```json\n?)?(\{[\s\S]*?\})(?:\n?```)?/i);
     if (match) {
       const jsonStr = match[1].replace(/```json\n?|```/g, '').trim();
       return JSON.parse(jsonStr);
@@ -135,7 +136,8 @@ function parseAnalysisJSON(content: string) {
 
 function parseVisualFlowJSON(content: string) {
   try {
-    const match = content.match(/\[VISUAL_FLOW\]:\s*(?:```json\n?)?(\{[\s\S]*?\})(?:\n?```)?/i);
+    // Look for JSON block after [VISUAL_FLOW] - handling bold markers and various line breaks
+    const match = content.match(/(?:\[|\*\*)VISUAL_FLOW(?:\]|\*\*):?\s*(?:```json\n?)?(\{[\s\S]*?\})(?:\n?```)?/i);
     if (match) {
       const jsonStr = match[1].replace(/```json\n?|```/g, '').trim();
       return JSON.parse(jsonStr);
