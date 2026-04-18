@@ -14,7 +14,7 @@ export type MessageInput = z.infer<typeof MessageSchema>;
 export const ChatRequestSchema = z.object({
   prompt: z.string().min(1, 'Prompt is required'),
   history: z.array(z.any()),
-  sessionId: z.string().uuid().optional(),
+  sessionId: z.string().optional(), // Relaxed from .uuid() to support older browser fallbacks
   currentCode: z.string().optional(),
   serverVersion: z.string().optional(),
   serverType: z.string().optional(),

@@ -143,7 +143,11 @@ export async function POST(request: NextRequest): Promise<Response> {
     });
 
     // Increment usage count before returning the stream
-    await incrementUsage(userId);
+    try {
+      await incrementUsage(userId);
+    } catch (usageError) {
+      console.error('[Chat API] Usage increment failed (non-fatal):', usageError);
+    }
 
     return new Response(transformedStream, {
       headers: {

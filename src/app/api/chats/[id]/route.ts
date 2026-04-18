@@ -17,6 +17,13 @@ export async function GET(
     }
 
     const { id } = await params;
+    
+    // Quick validation: If it's not a UUID, don't even query the DB to avoid Postgres 500 error
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+    if (!isUuid) {
+      return NextResponse.json({ error: 'Invalid Chat ID format' }, { status: 404 });
+    }
+
     const supabase = getSupabaseAdmin();
 
     // FETCH GRANULAR HISTORY FROM chat_history (Max last 50)
@@ -71,6 +78,11 @@ export async function PATCH(
     }
 
     const { id } = await params;
+    
+    // UUID Validation
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+    if (!isUuid) return NextResponse.json({ error: 'Invalid ID' }, { status: 404 });
+
     const { title } = await request.json();
 
     if (!title || typeof title !== 'string') {
@@ -113,6 +125,11 @@ export async function DELETE(
     }
 
     const { id } = await params;
+    
+    // UUID Validation
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+    if (!isUuid) return NextResponse.json({ error: 'Invalid ID' }, { status: 404 });
+
     const supabase = getSupabaseAdmin();
 
     // Delete all messages associated with this session
