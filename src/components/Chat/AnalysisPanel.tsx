@@ -136,10 +136,17 @@ function parseAnalysisJSON(content: string) {
 
 function parseVisualFlowJSON(content: string) {
   try {
-    // Look for JSON block after [VISUAL_FLOW] - handling bold markers and various line breaks
-    const match = content.match(/(?:\[|\*\*)VISUAL_FLOW(?:\]|\*\*):?\s*(?:```json\n?)?(\{[\s\S]*?\})(?:\n?```)?/i);
-    if (match) {
-      const jsonStr = match[1].replace(/```json\n?|```/g, '').trim();
+    // 1. Try with explicit label
+    const labeledMatch = content.match(/(?:\[|\*\*)VISUAL_FLOW(?:\]|\*\*):?\s*(?:```json\n?)?(\{[\s\S]*?\})(?:\n?```)?/i);
+    if (labeledMatch) {
+      const jsonStr = labeledMatch[1].replace(/```json\n?|```/g, '').trim();
+      return JSON.parse(jsonStr);
+    }
+
+    // 2. Fallback: Look for ANY JSON block that contains visual_flow_data
+    const anyJsonMatch = content.match(/(?:```json\n?)?(\{[\s\S]*?visual_flow_data[\s\S]*?\})(?:\n?```)?/i);
+    if (anyJsonMatch) {
+      const jsonStr = anyJsonMatch[1].replace(/```json\n?|```/g, '').trim();
       return JSON.parse(jsonStr);
     }
   } catch (e) {
