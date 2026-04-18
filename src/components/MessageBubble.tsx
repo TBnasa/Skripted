@@ -129,13 +129,13 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
 
         {/* Content */}
         {(() => {
-          // Strip analysis and flow blocks, or ANY block containing our special JSON keys
+          // Nuclear strip: Any block or code that looks like our data structure
           const displayContent = message.content
             .replace(/(?:\[|\*\*)FINAL_ANALYSIS(?:\]|\*\*):?\s*(?:```json\n?)?\{[\s\S]*?\}(?:\n?```)?/gi, '')
             .replace(/(?:\[|\*\*)VISUAL_FLOW(?:\]|\*\*):?\s*(?:```json\n?)?\{[\s\S]*?\}(?:\n?```)?/gi, '')
-            .replace(/```[\s\S]*?visual_flow_data[\s\S]*?```/gi, '')
-            .replace(/```[\s\S]*?final_analysis[\s\S]*?```/gi, '')
-            .replace(/\{[\s\S]*?"visual_flow_data":[\s\S]*?\}/gi, '')
+            .replace(/```[\s\S]*?"node":[\s\S]*?```/gi, '') // Nuke any code block with "node" key
+            .replace(/\{[\s\S]*?"visual_flow_data"[\s\S]*?\}/gi, '')
+            .replace(/\{[\s\S]*?"branches"[\s\S]*?"node":[\s\S]*?\}/gi, '')
             .trim();
 
           if (!displayContent && message.reasoning) return null;

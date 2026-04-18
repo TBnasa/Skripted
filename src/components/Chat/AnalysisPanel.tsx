@@ -143,11 +143,19 @@ function parseVisualFlowJSON(content: string) {
       return JSON.parse(jsonStr);
     }
 
-    // 2. Fallback: Look for ANY JSON block that contains visual_flow_data
-    const anyJsonMatch = content.match(/(?:```json\n?)?(\{[\s\S]*?visual_flow_data[\s\S]*?\})(?:\n?```)?/i);
-    if (anyJsonMatch) {
-      const jsonStr = anyJsonMatch[1].replace(/```json\n?|```/g, '').trim();
-      return JSON.parse(jsonStr);
+    // 3. Ultra Fallback: Look for any JSON that has "node" and "details" (Headless JSON)
+    const headlessMatch = content.match(/(?:```json\n?)?(\{[\s\S]*?"node"[\s\S]*?"details"[\s\S]*?\})(?:\n?```)?/i);
+    if (headlessMatch) {
+      const jsonStr = headlessMatch[1].replace(/```json\n?|```/g, '').trim();
+      const parsed = JSON.parse(jsonStr);
+      // If it's just the branches array or a single node, wrap it
+      if (Array.isArray(parsed)) {
+        return { visual_flow_data: { root: "Skript Mantık Haritası", branches: parsed } };
+      }
+      if (parsed.node) {
+        return { visual_flow_data: { root: "Skript Mantık Haritası", branches: [parsed] } };
+      }
+      return { visual_flow_data: parsed }; // Might already be valid
     }
   } catch (e) {
     console.warn('[AnalysisPanel] Failed to parse visual flow JSON');
