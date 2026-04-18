@@ -42,8 +42,8 @@ export async function fetchWithKeyRotation(
     try {
       const response = await fetch(url, { ...options, headers });
 
-      // If we get rate limited (429) out of credits (402), or forbidden (403), try the next key
-      if (response.status === 429 || response.status === 402 || response.status === 403) {
+      // If we get rate limited (429), out of credits (402), or server errors (500, 502, 503), try the next key
+      if ([429, 402, 403, 500, 502, 503, 504].includes(response.status)) {
         console.warn(`[OpenRouter] Key index ${i} failed with status ${response.status}. Trying next key...`);
         lastError = response;
         continue;
