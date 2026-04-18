@@ -129,13 +129,10 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
 
         {/* Content */}
         {(() => {
-          // Strip analysis blocks from display content to avoid duplication (as they are shown in AnalysisPanel)
+          // Strip analysis and flow blocks from display content
           const displayContent = message.content
             .replace(/\[FINAL_ANALYSIS\]:\s*(?:```json\n?)?\{[\s\S]*?\}(?:\n?```)?/gi, '')
-            .replace(/-? ?🔴 \*\*Syntax Errors\*\*:[\s\S]*?(?=\n-? ?[🟡🔵]|$)/gi, '')
-            .replace(/-? ?🟡 \*\*Logic & Modernization\*\*:[\s\S]*?(?=\n-? ?[🔴🔵]|$)/gi, '')
-            .replace(/-? ?🔵 \*\*Optimization \(Performance\)\*\*:[\s\S]*?(?=\n-? ?[🔴🟡]|$)/gi, '')
-            .replace(/\[Performance Score\]: \d+\/100/gi, '')
+            .replace(/\[VISUAL_FLOW\]:\s*(?:```json\n?)?\{[\s\S]*?\}(?:\n?```)?/gi, '')
             .trim();
 
           if (!displayContent && message.reasoning) return null;
