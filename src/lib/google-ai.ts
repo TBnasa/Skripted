@@ -49,15 +49,36 @@ export async function streamGoogleCompletion(
 
   const { contents } = convertMessagesToGoogleFormat(messages);
 
-  const result = await model.generateContentStream({
-    contents,
-    generationConfig: {
-      temperature: 0.3,
-      topP: 0.95,
-      topK: 40,
-      maxOutputTokens: 8192,
-    },
-  });
+  let result;
+  let retries = 3;
+  let delay = 1000;
+
+  while (retries > 0) {
+    try {
+      result = await model.generateContentStream({
+        contents,
+        generationConfig: {
+          temperature: 0.3,
+          topP: 0.95,
+          topK: 40,
+          maxOutputTokens: 8192,
+        },
+      });
+      break; // Success!
+    } catch (error: any) {
+      if (error.status === 503 || error.message?.includes('503')) {
+        retries--;
+        console.warn(`[Google AI] 503 error, retries remaining: ${retries}`);
+        await new Promise(r => setTimeout(r, delay));
+        delay *= 2;
+        continue;
+      }
+      throw error;
+    }
+  }
+
+  if (!result) throw new Error("Failed to initialize Google AI stream after retries.");
+
 
   // Convert Google AI async iterator to ReadableStream
   return new ReadableStream({
