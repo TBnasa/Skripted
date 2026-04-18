@@ -25,9 +25,10 @@ interface EditorPanelProps {
   readonly code: string;
   readonly onCodeChange: (code: string) => void;
   readonly isStreaming?: boolean;
+  readonly sessionId?: string | null;
 }
 
-export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorPanelProps) {
+export default function EditorPanel({ code, onCodeChange, isStreaming, sessionId }: EditorPanelProps) {
   const { t, mounted } = useTranslation();
   const { userId } = useAuth();
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
@@ -102,8 +103,9 @@ export default function EditorPanel({ code, onCodeChange, isStreaming }: EditorP
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: `Script ${new Date().toLocaleDateString(t('general.locale'))}`,
-          content: code,
-          version: '1.0.0'
+          content: sessionId ? '' : code,
+          version: '1.0.0',
+          linked_session_id: sessionId || null
         })
       });
 

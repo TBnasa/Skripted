@@ -184,6 +184,7 @@ export default function ChatInterface() {
                 code={editorCode}
                 onCodeChange={setEditorCode}
                 isStreaming={isStreaming}
+                sessionId={sessionId}
               />
             </div>
           </div>

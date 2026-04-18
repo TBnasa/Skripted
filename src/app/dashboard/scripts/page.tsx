@@ -21,7 +21,7 @@ import {
 import { useState } from 'react';
 import { toast } from 'sonner';
 import QuickEditModal from '@/components/QuickEditModal';
-import { FilePlus } from 'lucide-react';
+import { FilePlus, MessageSquare } from 'lucide-react';
 
 interface UserScript {
   id: string;
@@ -29,6 +29,7 @@ interface UserScript {
   content: string;
   version: string;
   updated_at: string;
+  linked_session_id?: string;
 }
 
 const fetcher = async (url: string) => {
@@ -259,6 +260,16 @@ export default function UserScriptsPage() {
                       <span>{t('dashboard.quick_edit')}</span>
                       <ChevronRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
                    </button>
+                   
+                   {script.linked_session_id && (
+                     <button 
+                        onClick={() => router.push(`/chat?session=${script.linked_session_id}`)}
+                        className="flex items-center justify-center gap-2 px-6 py-3 bg-cyan-500/10 border border-cyan-500/20 hover:bg-cyan-600 hover:text-white rounded-xl text-xs font-bold text-cyan-400 transition-all shadow-lg shadow-cyan-500/5 mb-2"
+                     >
+                        <MessageSquare size={16} />
+                        <span>Sohbette Aç</span>
+                     </button>
+                   )}
                    
                    <button 
                       onClick={() => handleSendToEditor(script.content)}

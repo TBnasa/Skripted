@@ -14,7 +14,26 @@ export class UserScriptService {
       .order('updated_at', { ascending: false });
 
     if (error) throw error;
-    return await StorageArchiver.hydrateObject(data);
+    const hydratedList = await StorageArchiver.hydrateObject(data);
+
+    for (const script of hydratedList) {
+      if (script.linked_session_id && !script.content) {
+        const { data: chatData } = await this.supabase
+          .from('chat_history')
+          .select('content')
+          .eq('session_id', script.linked_session_id)
+          .eq('role', 'assistant')
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        if (chatData && chatData.length > 0) {
+          const match = chatData[0].content.match(/```(?:skript)?\n([\s\S]*?)```/);
+          script.content = match ? match[1].trim() : '';
+        }
+      }
+    }
+
+    return hydratedList;
   }
 
   static async getScriptById(id: string, userId: string) {
@@ -26,7 +45,24 @@ export class UserScriptService {
       .single();
 
     if (error) throw error;
-    return await StorageArchiver.hydrateObject(data);
+    const hydrated = await StorageArchiver.hydrateObject(data);
+
+    if (hydrated.linked_session_id) {
+      const { data: chatData } = await this.supabase
+        .from('chat_history')
+        .select('content')
+        .eq('session_id', hydrated.linked_session_id)
+        .eq('role', 'assistant')
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (chatData && chatData.length > 0) {
+        const match = chatData[0].content.match(/```(?:skript)?\n([\s\S]*?)```/);
+        hydrated.content = match ? match[1].trim() : '';
+      }
+    }
+
+    return hydrated;
   }
 
   static async createScript(userId: string, scriptData: any) {
@@ -35,11 +71,11 @@ export class UserScriptService {
       throw new Error(validation.error.issues[0].message);
     }
 
-    const { title, content, version } = validation.data;
+    const { title, content, version, linked_session_id } = validation.data;
     const sanitizedTitle = stripHtmlTags(title);
 
     // Archive large code to storage
-    const archivedContent = await StorageArchiver.archiveIfLarge(content, 'scripts');
+    const archivedContent = content ? await StorageArchiver.archiveIfLarge(content, 'scripts') : null;
 
     const { data, error } = await this.supabase
       .from('user_scripts')
@@ -48,6 +84,7 @@ export class UserScriptService {
         title: sanitizedTitle,
         content: archivedContent,
         version: version || '1.0.0',
+        linked_session_id: linked_session_id || null,
       })
       .select()
       .single();

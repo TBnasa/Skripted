@@ -87,8 +87,9 @@ export type FeedbackPayloadInput = z.infer<typeof FeedbackPayloadSchema>;
 // User Script Schemas
 export const UserScriptSchema = z.object({
   title: z.string().min(1, 'Başlık gereklidir').max(100),
-  content: z.string().min(1, 'İçerik gereklidir'),
+  content: z.string().optional().nullable(),
   version: z.string().optional().default('1.0.0'),
+  linked_session_id: z.string().uuid().optional().nullable(),
 });
 
 export type UserScriptInput = z.infer<typeof UserScriptSchema>;
