@@ -7,9 +7,7 @@ interface AnalysisProps {
   content: string;
 }
 
-    </div>
-  );
-}
+
 
 /**
  * Visual Flow Button Component
