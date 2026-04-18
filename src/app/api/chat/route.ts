@@ -158,6 +158,10 @@ export async function POST(request: NextRequest): Promise<Response> {
     });
   } catch (error: any) {
     console.error('[Chat API] Error:', error);
-    return Response.json({ error: 'Internal server error', details: error.message }, { status: 500 });
+    return Response.json({ 
+      error: 'Generation failed. Please try again.', 
+      details: error.message,
+      code: error.status === 402 ? 'INSUFFICIENT_CREDITS' : 'SERVER_ERROR'
+    }, { status: error.status || 500 });
   }
 }

@@ -42,7 +42,7 @@ export const useStore = create<AppState>()(
       isStreaming: false,
       isAnalyzing: false,
       globalError: null,
-      sessionId: typeof crypto !== 'undefined' ? crypto.randomUUID() : Math.random().toString(36).substring(7),
+      sessionId: (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Math.random().toString(36).substring(2) + Date.now().toString(36),
       usage: null,
       stats: { totalAnalyzed: 0, averageScore: 0, commonError: 'None', totalScore: 0 },
       history: [],
@@ -81,7 +81,7 @@ export const useStore = create<AppState>()(
       resetChat: () => set({
         messages: [],
         editorCode: '',
-        sessionId: typeof crypto !== 'undefined' ? crypto.randomUUID() : Math.random().toString(36).substring(7),
+        sessionId: (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Math.random().toString(36).substring(2) + Date.now().toString(36),
         globalError: null
       }),
     }),

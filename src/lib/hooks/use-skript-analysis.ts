@@ -160,7 +160,7 @@ export function useSkriptAnalysis(options?: UseSkriptAnalysisOptions) {
       if (score !== null) {
         updateStats(score, category);
         addHistoryItem({
-          id: crypto.randomUUID(),
+          id: generateId(),
           title: content.substring(0, 40),
           score,
           category,
