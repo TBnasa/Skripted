@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import { streamChatCompletion } from '@/lib/openrouter';
+import { streamGoogleCompletion } from '@/lib/google-ai';
 import { ChatService } from '@/services/server/chat-service';
 import { checkUsageLimit, incrementUsage } from '@/lib/utils/usage-limit';
 import { checkRateLimit } from '@/lib/utils/rate-limit';
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest): Promise<Response> {
 
     messages.push({ role: 'user' as const, content: prompt });
 
-    const upstreamBody = await streamChatCompletion(messages);
+    const upstreamStream = await streamGoogleCompletion(messages);
     const encoder = new TextEncoder();
     const decoder = new TextDecoder();
 
@@ -76,47 +76,24 @@ export async function POST(request: NextRequest): Promise<Response> {
         let fullAiResponse = '';
         try {
           send({ type: 'meta', pineconeIds });
-          const reader = upstreamBody.getReader();
-          let buffer = '';
+          const reader = upstreamStream.getReader();
 
           while (true) {
             const { done, value } = await reader.read();
-            if (done) break;
-
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split('\n');
-            buffer = lines.pop() ?? '';
-
-            for (const line of lines) {
-              const trimmed = line.trim();
-              if (!trimmed || !trimmed.startsWith('data: ')) continue;
-              const dataStr = trimmed.slice(6);
-              if (dataStr === '[DONE]') {
-                send({ type: 'done' });
-                continue;
-              }
-              try {
-                const parsed = JSON.parse(dataStr);
-                const delta = parsed.choices?.[0]?.delta;
-                if (delta) {
-                  if (delta.reasoning_content || delta.reasoning) {
-                    send({ type: 'reasoning', content: delta.reasoning_content || delta.reasoning });
-                  }
-                  if (delta.content) {
-                    fullAiResponse += delta.content;
-                    send({ type: 'content', content: delta.content });
-                  }
-                }
-              } catch (e) {}
+            if (done) {
+              send({ type: 'done' });
+              break;
             }
+
+            const chunkText = decoder.decode(value);
+            fullAiResponse += chunkText;
+            send({ type: 'content', content: chunkText });
           }
 
           // Persistence Logic
           if (sessionId) {
             try {
               const supabase = getSupabaseAdmin();
-              
-              // ARCHIVE LARGE CONTENT TO STORAGE (Save DB space)
               const archivedUserMsg = await StorageArchiver.archiveIfLarge(prompt, `chat/${sessionId}/user`);
               const archivedAiMsg = await StorageArchiver.archiveIfLarge(fullAiResponse, `chat/${sessionId}/ai`);
 
@@ -124,8 +101,6 @@ export async function POST(request: NextRequest): Promise<Response> {
                 ? prompt.substring(0, 40) + (prompt.length > 40 ? '...' : '')
                 : null;
 
-              // 2. Save individual messages to 'chat_history'
-              // Every message in chat_history now potentially holds the title for that session
               await supabase.from('chat_history').insert([
                 { user_id: userId, session_id: sessionId, role: 'user', content: archivedUserMsg, title: chatTitle },
                 { user_id: userId, session_id: sessionId, role: 'assistant', content: archivedAiMsg }
