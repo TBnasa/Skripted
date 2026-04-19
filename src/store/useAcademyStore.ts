@@ -8,6 +8,8 @@ import {
   getPhaseForLevel,
   getLessonById,
   getAllLessons,
+  ACADEMY_MODULES,
+  getModuleById,
 } from '@/lib/academy-data';
 
 interface AcademyState {
@@ -41,6 +43,8 @@ interface AcademyState {
   getLevel: () => number;
   getPhase: () => 'blocks' | 'bridge' | 'code';
   isModuleUnlocked: (moduleId: string) => boolean;
+  isLessonUnlocked: (lessonId: string) => boolean;
+  getModuleProgress: (moduleId: string) => number;
 }
 
 export const useAcademyStore = create<AcademyState>()(
@@ -105,6 +109,7 @@ export const useAcademyStore = create<AcademyState>()(
         flaggedConcepts: [],
         hintsUsed: {},
         virtualVariables: {},
+        lastErrorCode: null,
       }),
 
       getLevel: () => getLevelFromXp(get().xp),
@@ -114,25 +119,47 @@ export const useAcademyStore = create<AcademyState>()(
         return getPhaseForLevel(level);
       },
 
+      getModuleProgress: (moduleId) => {
+        const module = getModuleById(moduleId);
+        if (!module) return 0;
+        const { completedLessons } = get();
+        const moduleLessons = module.lessons.map(l => l.id);
+        const completedCount = moduleLessons.filter(id => completedLessons.includes(id)).length;
+        return Math.round((completedCount / moduleLessons.length) * 100);
+      },
+
       isModuleUnlocked: (moduleId) => {
-        const { xp, completedLessons } = get();
+        const { completedLessons } = get();
         
-        // Unit Gates: Basics must be completed 100% to unlock variables
+        // Unit Gates: Basics must be completed 100% (at least the boss) to unlock variables
         if (moduleId === 'variables') {
-          // Check if all lessons in 'basics' are in completedLessons
-          const basicsBossId = 'basics-boss';
-          return completedLessons.includes(basicsBossId);
+          return completedLessons.includes('basics-boss');
         }
-        
         if (moduleId === 'conditions') {
           return completedLessons.includes('vars-boss');
         }
-
         if (moduleId === 'gui') {
           return completedLessons.includes('cond-boss');
         }
 
-        return true; // Intro module always unlocked
+        return true; // First module is always unlocked
+      },
+
+      isLessonUnlocked: (lessonId) => {
+        const lesson = getLessonById(lessonId);
+        if (!lesson) return false;
+        
+        // Is module locked?
+        if (!get().isModuleUnlocked(lesson.moduleId)) return false;
+
+        const module = getModuleById(lesson.moduleId);
+        if (!module) return false;
+
+        const idx = module.lessons.findIndex(l => l.id === lessonId);
+        if (idx === 0) return true; // First lesson always unlocked if module is
+
+        const prevLesson = module.lessons[idx - 1];
+        return get().completedLessons.includes(prevLesson.id);
       },
     }),
     {
