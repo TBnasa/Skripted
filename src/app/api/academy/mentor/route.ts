@@ -8,7 +8,16 @@ export const runtime = 'nodejs';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { message, lessonContext, mistakes, userLevel, lang, history } = body;
+    const { 
+      message, 
+      lessonContext, 
+      mistakes, 
+      userLevel, 
+      lang, 
+      history, 
+      editor_content, 
+      system_status 
+    } = body;
 
     if (!message) {
       return new Response(JSON.stringify({ error: 'Message is required' }), {
@@ -17,17 +26,17 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Build mentor system prompt with lesson context
+    // Build mentor system prompt with lesson context and real-time state
     const systemPrompt = buildMentorPrompt({
       lessonId: lessonContext?.lessonId || '',
       lessonTitle: lessonContext?.lessonTitle || '',
       lessonObjective: lessonContext?.lessonObjective || '',
-      currentBlocks: [],
+      editor_content: editor_content || '',
+      lastValidationResult: system_status || null,
       mistakes: mistakes || [],
       userLevel: userLevel || 1,
       phase: lessonContext?.phase || 'blocks',
       lang: lang || 'en',
-      lastErrorCode: body.lastErrorCode,
     });
 
     // Build message array
@@ -47,8 +56,8 @@ export async function POST(request: NextRequest) {
         model: OPENROUTER_MODEL,
         messages,
         stream: true,
-        temperature: 0.7,  // Slightly higher for personality
-        max_tokens: 1024,  // Short responses for teaching
+        temperature: 0.1,  // Lower temperature for strict adherence to persona and 3-sentence rule
+        max_tokens: 512,   // Short responses as per rules
         top_p: 0.9,
       }),
     });

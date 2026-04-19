@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslation } from '@/lib/useTranslation';
+import { useAcademyStore } from '@/store/useAcademyStore';
 import { Play, RotateCcw, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 
 interface CodeChallengeProps {
@@ -20,6 +21,12 @@ export function CodeChallenge({ starterCode, solutionCode, onValidate }: CodeCha
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const lineNumberRef = useRef<HTMLDivElement>(null);
 
+  // Sync current code to global store
+  const store = useAcademyStore();
+  useEffect(() => {
+    store.setCurrentCode(code);
+  }, [code, store]);
+
   // Sync line numbers
   useEffect(() => {
     const lines = code.split('\n').length;
@@ -31,12 +38,13 @@ export function CodeChallenge({ starterCode, solutionCode, onValidate }: CodeCha
     try {
       const res = await onValidate(code);
       setResult(res);
+      store.setLastValidationResult(res);
     } catch (err) {
       setResult({ correct: false, feedback: isTr ? 'Doğrulama hatası!' : 'Validation error!' });
     } finally {
       setIsValidating(false);
     }
-  }, [code, onValidate, isTr]);
+  }, [code, onValidate, isTr, store]);
 
   const handleReset = useCallback(() => {
     setCode(starterCode);

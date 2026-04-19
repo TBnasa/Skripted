@@ -27,6 +27,8 @@ interface AcademyState {
   // Virtual Simulator State
   virtualVariables: Record<string, any>;
   lastErrorCode: string | null;
+  currentCode: string;
+  lastValidationResult: any;
   
   // Actions
   addXp: (amount: number) => void;
@@ -37,6 +39,8 @@ interface AcademyState {
   resetProgress: () => void;
   setVirtualVar: (name: string, value: any) => void;
   setLastErrorCode: (code: string | null) => void;
+  setCurrentCode: (code: string) => void;
+  setLastValidationResult: (result: any) => void;
   flagConcept: (concept: string) => void;
   
   // Getters
@@ -59,6 +63,8 @@ export const useAcademyStore = create<AcademyState>()(
       hintsUsed: {},
       virtualVariables: {},
       lastErrorCode: null,
+      currentCode: '',
+      lastValidationResult: null,
 
       addXp: (amount) => set((state) => ({ xp: state.xp + amount })),
 
@@ -77,6 +83,8 @@ export const useAcademyStore = create<AcademyState>()(
         currentLessonId: lessonId,
         virtualVariables: {}, // Reset virtual state on new lesson
         lastErrorCode: null,
+        currentCode: '',
+        lastValidationResult: null,
       }),
 
       addMistake: (mistake) => set((state) => ({
@@ -100,6 +108,10 @@ export const useAcademyStore = create<AcademyState>()(
 
       setLastErrorCode: (code) => set({ lastErrorCode: code }),
 
+      setCurrentCode: (code) => set({ currentCode: code }),
+
+      setLastValidationResult: (result) => set({ lastValidationResult: result }),
+
       resetProgress: () => set({
         xp: 0,
         completedLessons: [],
@@ -110,6 +122,8 @@ export const useAcademyStore = create<AcademyState>()(
         hintsUsed: {},
         virtualVariables: {},
         lastErrorCode: null,
+        currentCode: '',
+        lastValidationResult: null,
       }),
 
       getLevel: () => getLevelFromXp(get().xp),

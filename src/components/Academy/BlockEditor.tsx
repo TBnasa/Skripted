@@ -9,6 +9,8 @@ import {
 } from '@/lib/academy-data';
 import { GripVertical, X, Sparkles } from 'lucide-react';
 import { useTranslation } from '@/lib/useTranslation';
+import { useAcademyStore } from '@/store/useAcademyStore';
+import { useEffect } from 'react';
 
 interface BlockEditorProps {
   readonly availableBlocks: readonly CodeBlock[];
@@ -127,6 +129,12 @@ export function BlockEditor({
 
   // ── Generate code preview from placed blocks ──
   const generatedCode = placedBlocks.map(b => b.code).join('\n');
+
+  // Sync to global store
+  const store = useAcademyStore();
+  useEffect(() => {
+    store.setCurrentCode(generatedCode);
+  }, [generatedCode, store]);
 
   return (
     <div className={`flex h-full ${showCodePreview ? 'gap-0' : ''}`}>

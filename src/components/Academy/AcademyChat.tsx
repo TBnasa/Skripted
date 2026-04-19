@@ -38,8 +38,8 @@ export function AcademyChat() {
     const greeting: Message = {
       role: 'mentor',
       content: isTr
-        ? `Selam! 👋 Ben senin Skript mentörünüm. Seni kopyala-yapıştır döngüsünden çıkarıp bir sistem mimarına dönüştürmek için buradayım.\n\nŞu an **${currentLesson?.title_tr || 'ilk dersine'}** üzerinde çalışıyorsun. Takıldığın yer olursa sor, birlikte çözelim! 🎯`
-        : `Hey! 👋 I'm your Skript mentor. I'm here to transform you from a copy-paste coder into a system architect.\n\nYou're currently working on **${currentLesson?.title_en || 'your first lesson'}**. If you get stuck, just ask and we'll solve it together! 🎯`,
+        ? `Sistem mimarlığı yolculuğuna hoş geldin. **${currentLesson?.title_tr || 'dersin'}** hazır, kodunu analiz etmemi istediğinde buradayım.`
+        : `Welcome to the system architecture track. Your work on **${currentLesson?.title_en || 'lesson'}** is active; I'm ready to analyze your code when you are.`,
     };
 
     const timer = setTimeout(() => setMessages([greeting]), 800);
@@ -69,6 +69,8 @@ export function AcademyChat() {
             lessonObjective: isTr ? lesson?.objective_tr : lesson?.objective_en,
             phase: lesson?.phase || 'blocks',
           },
+          editor_content: store.currentCode,
+          system_status: store.lastValidationResult,
           mistakes: store.mistakes.slice(-5),
           userLevel: store.getLevel(),
           lang,
