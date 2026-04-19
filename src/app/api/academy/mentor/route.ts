@@ -27,6 +27,7 @@ export async function POST(request: NextRequest) {
       userLevel: userLevel || 1,
       phase: lessonContext?.phase || 'blocks',
       lang: lang || 'en',
+      lastErrorCode: body.lastErrorCode,
     });
 
     // Build message array

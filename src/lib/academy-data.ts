@@ -87,9 +87,9 @@ export function getNextRank(xp: number) {
 
 // ── Phase Transition Thresholds ──
 export const PHASE_THRESHOLDS = {
-  blocks: 0,    // Always available
-  bridge: 5,    // Unlocked at level 5 (after completing ~5 lessons)
-  code: 10,     // Unlocked at level 10
+  blocks: 0,    // Level 1-5
+  bridge: 6,    // Level 6-10
+  code: 11,     // Level 11+
 } as const;
 
 export function getLevelFromXp(xp: number): number {
