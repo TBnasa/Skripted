@@ -2,12 +2,12 @@
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslation } from '@/lib/useTranslation';
-import { Play, RotateCcw, CheckCircle2, XCircle, Lightbulb } from 'lucide-react';
+import { Play, RotateCcw, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 
 interface CodeChallengeProps {
   readonly starterCode: string;
   readonly solutionCode: string;
-  readonly onValidate: (userCode: string) => { correct: boolean; feedback: string };
+  readonly onValidate: (userCode: string) => Promise<{ correct: boolean; feedback: string }> | { correct: boolean; feedback: string };
 }
 
 export function CodeChallenge({ starterCode, solutionCode, onValidate }: CodeChallengeProps) {
@@ -15,6 +15,7 @@ export function CodeChallenge({ starterCode, solutionCode, onValidate }: CodeCha
   const isTr = lang === 'tr';
   const [code, setCode] = useState(starterCode);
   const [result, setResult] = useState<{ correct: boolean; feedback: string } | null>(null);
+  const [isValidating, setIsValidating] = useState(false);
   const [lineNumbers, setLineNumbers] = useState<number[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const lineNumberRef = useRef<HTMLDivElement>(null);
@@ -25,10 +26,17 @@ export function CodeChallenge({ starterCode, solutionCode, onValidate }: CodeCha
     setLineNumbers(Array.from({ length: lines }, (_, i) => i + 1));
   }, [code]);
 
-  const handleCheck = useCallback(() => {
-    const res = onValidate(code);
-    setResult(res);
-  }, [code, onValidate]);
+  const handleCheck = useCallback(async () => {
+    setIsValidating(true);
+    try {
+      const res = await onValidate(code);
+      setResult(res);
+    } catch (err) {
+      setResult({ correct: false, feedback: isTr ? 'Doğrulama hatası!' : 'Validation error!' });
+    } finally {
+      setIsValidating(false);
+    }
+  }, [code, onValidate, isTr]);
 
   const handleReset = useCallback(() => {
     setCode(starterCode);
@@ -83,11 +91,16 @@ export function CodeChallenge({ starterCode, solutionCode, onValidate }: CodeCha
           </button>
           <button
             onClick={handleCheck}
+            disabled={isValidating}
             className="flex items-center gap-1.5 px-4 py-1.5 text-[10px] font-bold text-black 
                        bg-emerald-500 hover:bg-emerald-400 rounded-lg transition-all active:scale-95
-                       shadow-lg shadow-emerald-500/20"
+                       shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Play size={12} fill="currentColor" />
+            {isValidating ? (
+              <Loader2 size={12} className="animate-spin" />
+            ) : (
+              <Play size={12} fill="currentColor" />
+            )}
             {isTr ? 'Kontrol Et' : 'Check'}
           </button>
         </div>
