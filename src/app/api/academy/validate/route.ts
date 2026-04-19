@@ -54,9 +54,20 @@ export async function POST(request: NextRequest) {
 
     // Code-based validation (string comparison)
     if (typeof userSolution === 'string') {
+      // Logic Check: TAB vs space usage
+      const hasSpaces = /^[ ]{1,}/m.test(userSolution);
+      const hasTabs = /\t/.test(userSolution);
+      
+      // Robust normalization: Treat all consecutive whitespace as single space
       const normalize = (code: string) =>
-        code.replace(/\r\n/g, '\n').replace(/[ \t]+/g, ' ').trim().toLowerCase()
-          .split('\n').map((line: string) => line.trim()).filter(Boolean).join('\n');
+        code.replace(/\r\n/g, '\n')
+          .replace(/[ \t]+/g, ' ')
+          .trim()
+          .toLowerCase()
+          .split('\n')
+          .map((line: string) => line.trim())
+          .filter(Boolean)
+          .join('\n');
 
       const normalized = normalize(userSolution);
       const solution = normalize(lesson.solutionCode);
@@ -65,24 +76,36 @@ export async function POST(request: NextRequest) {
       const userLines = normalized.split('\n');
 
       let matchedLines = 0;
-      const errors: string[] = [];
+      const missingLines: string[] = [];
 
       for (let i = 0; i < solutionLines.length; i++) {
         const sLine = solutionLines[i];
         if (userLines.some((uLine: string) => uLine.includes(sLine) || sLine.includes(uLine))) {
           matchedLines++;
         } else {
-          errors.push(`Missing or incorrect: "${sLine}"`);
+          missingLines.push(sLine);
         }
       }
 
       const score = Math.round((matchedLines / solutionLines.length) * 100);
-      const correct = score >= 75;
+      
+      // Logic Check: If the logic is mostly correct but failing
+      // Give feedback about TAB usage if suspicious
+      const suggestions = [];
+      if (score >= 70 && hasSpaces && !hasTabs) {
+        suggestions.push("Hint: Use TAB backslash instead of spaces for indentation!");
+      }
+
+      // 85% match is considered "correct" to account for minor wording differences
+      // while focusing on logical structure.
+      const correct = score >= 85;
 
       return NextResponse.json({
         correct,
-        errors,
+        errors: missingLines.length > 0 ? [`Code is missing logic for: ${missingLines.join(', ')}`] : [],
         score,
+        suggestions,
+        isLogicCorrect: score >= 90, // For mentor to know if it's "Diamond" code but synth-err
         xpEarned: correct ? lesson.xpReward : 0,
       });
     }
