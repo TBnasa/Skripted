@@ -73,7 +73,11 @@
     "suggestion_economy": "Ekonomi Sistemi",
     "suggestion_warp": "Özel /warp",
     "suggestion_item": "Eşya Düzenleyici",
-    "analyze_skript": "Skript'i Analiz Et"
+    "analyze_skript": "Skript'i Analiz Et",
+    "voice_start": "Kaydetmeye Başla",
+    "voice_stop": "Kaydı Durdur",
+    "voice_processing": "Ses İşleniyor...",
+    "voice_error": "Mikrofona erişilemedi veya ses işlenemedi."
   },
   "hero": {
     "title_1": "Hayal Edin,",

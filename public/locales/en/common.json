@@ -73,7 +73,11 @@
     "suggestion_economy": "Economy System",
     "suggestion_warp": "Custom /warp",
     "suggestion_item": "Item Editor",
-    "analyze_skript": "Analyze Skript"
+    "analyze_skript": "Analyze Skript",
+    "voice_start": "Start Recording",
+    "voice_stop": "Stop Recording",
+    "voice_processing": "Processing Audio...",
+    "voice_error": "Microphone access failed or audio could not be processed."
   },
   "hero": {
     "title_1": "Imagine,",

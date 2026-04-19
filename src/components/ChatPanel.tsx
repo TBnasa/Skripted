@@ -6,9 +6,11 @@ import MessageBubble from './MessageBubble';
 import FeedbackPoll from './FeedbackPoll';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { Terminal, Cpu, Zap, SendHorizonal, AlertCircle } from 'lucide-react';
+import { Terminal, Cpu, Zap, SendHorizonal, AlertCircle, Mic, Square, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { ChatMessage } from '@/types';
+import { useVoiceRecording } from '@/hooks/useVoiceRecording';
+import { toast } from 'sonner';
 
 interface ChatPanelProps {
   readonly messages: ChatMessage[];
@@ -62,6 +64,22 @@ export default function ChatPanel({
     textarea.style.height = `${Math.min(textarea.scrollHeight, 160)}px`;
   }, []);
 
+  const { isRecording, isProcessing, toggleRecording } = useVoiceRecording({
+    onTranscript: (text) => {
+      setInput(prev => prev ? `${prev} ${text}` : text);
+      // Auto-resize textarea after voice input
+      setTimeout(() => {
+        if (textareaRef.current) {
+          textareaRef.current.style.height = 'auto';
+          textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 160)}px`;
+        }
+      }, 50);
+    },
+    onError: (errKey) => {
+      toast.error(t(`chat.${errKey}` as any));
+    }
+  });
+
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -74,12 +92,12 @@ export default function ChatPanel({
     <div className="flex h-full flex-col min-h-0 glass-panel overflow-hidden m-2 rounded-2xl relative">
       {/* Header */}
       <div className="flex items-center gap-2 sm:gap-3 border-b border-white/[0.04] px-3 sm:px-5 py-3 sm:py-4 bg-white/[0.01]">
-        <div className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-white/[0.03] border border-white/[0.05] text-zinc-400">
-          <Terminal size={16} />
+        <div className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-lg sm:rounded-xl bg-emerald-500/10 text-emerald-400">
+          <Terminal size={18} />
         </div>
         <div className="flex-1 min-w-0">
-          <h2 className="text-xs sm:text-sm font-bold text-white tracking-tight uppercase">{t('chat.terminal_header')}</h2>
-          <p className="hidden sm:block text-[10px] font-mono text-zinc-500 mt-0.5">
+          <h2 className="text-xs sm:text-sm font-semibold text-[var(--color-text-primary)] truncate">{t('chat.terminal_header')}</h2>
+          <p className="hidden sm:block text-[10px] font-mono text-emerald-500/70 mt-0.5">
             {isStreaming ? (
               <span className="flex items-center gap-1.5">
                 {isAnalyzing ? (
@@ -89,18 +107,26 @@ export default function ChatPanel({
                   </span>
                 ) : (
                   <span className="flex items-center gap-1.5">
-                    <div className="h-1 w-1 rounded-full bg-emerald-500/50" />
+                    <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
                     {t('chat.status_compiling')}
                   </span>
                 )}
               </span>
-            ) : (
-              <span className="flex items-center gap-1.5 ">
-                <div className="h-1 w-1 rounded-full bg-emerald-500" />
-                {t('status.system_status_ok')}
-              </span>
-            )}
+            ) : t('status.system_status_ok')}
           </p>
+        </div>
+
+        {/* Usage & Version */}
+        <div className="flex items-center gap-2">
+          {usage && (
+            <Badge variant="emerald" className="hidden sm:flex gap-1.5">
+              <span className="text-zinc-400">Usage:</span>
+              <span>{usage.current}</span>
+              <span className="opacity-40">/</span>
+              <span>{usage.limit}</span>
+            </Badge>
+          )}
+
         </div>
       </div>
 
@@ -108,25 +134,21 @@ export default function ChatPanel({
       <div className="flex-1 overflow-y-auto px-5 py-5 space-y-5 custom-scrollbar">
         {messages.length === 0 && !isStreaming && (
           <div className="flex h-full flex-col items-center justify-center text-center">
-            <div className="animate-fade-in p-10 max-w-md mx-auto">
-              <div className="mx-auto mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-900 border border-white/[0.05] text-zinc-400">
-                <Zap size={22} />
+            <div className="animate-fade-in-scale glass-card p-10 max-w-md mx-auto">
+              <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-400 animate-float">
+                <Zap size={28} />
               </div>
-              <h3 className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">
+              <h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400">
                 {t('chat.input_required')}
               </h3>
-              <p className="mb-8 mx-auto max-w-sm text-sm leading-relaxed text-zinc-600 font-medium">
+              <p className="mb-8 mx-auto max-w-sm text-sm leading-relaxed text-[var(--color-text-muted)]">
                 {t('chat.input_desc')}
               </p>
-              <div className="flex flex-wrap justify-center gap-2">
+              <div className="flex sm:flex-wrap justify-center gap-2">
                 {[t('chat.suggestion_economy'), t('chat.suggestion_warp'), t('status.admin_tools')].map((s) => (
-                  <button 
-                    key={s} 
-                    onClick={() => setInput(s)}
-                    className="px-4 py-2 text-[11px] font-bold text-zinc-500 bg-white/[0.02] border border-white/[0.04] rounded-xl hover:border-emerald-500/30 hover:text-emerald-500 transition-all"
-                  >
+                  <Button key={s} variant="secondary" size="sm" onClick={() => setInput(s)}>
                     {s}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -170,14 +192,46 @@ export default function ChatPanel({
             className="flex-1 resize-none bg-transparent font-mono text-[13px] sm:text-sm text-white focus:outline-none py-2.5 px-3 min-h-[44px]"
             disabled={isStreaming}
           />
-          <Button
-            size="icon"
-            onClick={handleSubmit}
-            disabled={!input.trim() || isStreaming}
-            aria-label="Send Message"
-          >
-            <SendHorizonal size={20} />
-          </Button>
+          <div className="flex items-center gap-1.5 pb-1 pr-1">
+            <Button
+              size="icon"
+              variant="secondary"
+              type="button"
+              onClick={toggleRecording}
+              disabled={isStreaming || isProcessing}
+              className={`relative transition-all duration-300 ${
+                isRecording 
+                  ? 'bg-red-500/20 text-red-500 border-red-500/50 hover:bg-red-500/30' 
+                  : 'bg-white/[0.02] text-zinc-400 hover:text-emerald-400'
+              }`}
+              aria-label={isRecording ? t('chat.voice_stop') : t('chat.voice_start')}
+              title={isProcessing ? t('chat.voice_processing') : (isRecording ? t('chat.voice_stop') : t('chat.voice_start'))}
+            >
+              {isProcessing ? (
+                <Loader2 size={20} className="animate-spin text-emerald-500" />
+              ) : isRecording ? (
+                <div className="flex items-center justify-center">
+                  <motion.div
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ repeat: Infinity, duration: 1.5 }}
+                    className="absolute inset-0 bg-red-500/20 rounded-full"
+                  />
+                  <Square size={18} fill="currentColor" />
+                </div>
+              ) : (
+                <Mic size={20} />
+              )}
+            </Button>
+
+            <Button
+              size="icon"
+              onClick={handleSubmit}
+              disabled={!input.trim() || isStreaming || isRecording || isProcessing}
+              aria-label="Send Message"
+            >
+              <SendHorizonal size={20} />
+            </Button>
+          </div>
         </div>
       </div>
     </div>

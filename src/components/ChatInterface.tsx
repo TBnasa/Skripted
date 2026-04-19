@@ -153,24 +153,10 @@ export default function ChatInterface() {
         />
 
         <div className="flex flex-1 flex-col overflow-hidden min-h-0">
-          <div className="px-6 py-1.5 bg-[#050505] border-b border-white/[0.04] flex items-center justify-between">
+          <div className="px-6 py-2 bg-[#0a0a0a] border-b border-white/[0.04] flex items-center justify-between">
             <Overview isCompact={true} />
-            
-            <div className="hidden md:flex items-center gap-6">
-              <div className="flex items-center gap-3">
-                <span className="text-[9px] uppercase tracking-widest font-bold text-zinc-600">Resources</span>
-                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-500/5 border border-emerald-500/10">
-                  <div className="h-1 w-1 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-[10px] font-bold text-emerald-500/80 uppercase tracking-tight">Containers: 2/5 (Healthy)</span>
-                </div>
-              </div>
-
-              <div className="h-4 w-px bg-white/[0.05]" />
-
-              <div className="flex items-center gap-2">
-                <span className="text-[9px] uppercase tracking-widest font-bold text-zinc-600">Protocol</span>
-                <span className="text-[10px] font-mono font-bold text-zinc-400">ENGINE_v2.1.0</span>
-              </div>
+            <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest hidden md:block">
+              Engine Protocol: <span className="text-emerald-500">Active</span>
             </div>
           </div>
 
