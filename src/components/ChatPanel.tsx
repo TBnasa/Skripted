@@ -74,12 +74,12 @@ export default function ChatPanel({
     <div className="flex h-full flex-col min-h-0 glass-panel overflow-hidden m-2 rounded-2xl relative">
       {/* Header */}
       <div className="flex items-center gap-2 sm:gap-3 border-b border-white/[0.04] px-3 sm:px-5 py-3 sm:py-4 bg-white/[0.01]">
-        <div className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-lg sm:rounded-xl bg-emerald-500/10 text-emerald-400">
-          <Terminal size={18} />
+        <div className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-white/[0.03] border border-white/[0.05] text-zinc-400">
+          <Terminal size={16} />
         </div>
         <div className="flex-1 min-w-0">
-          <h2 className="text-xs sm:text-sm font-semibold text-[var(--color-text-primary)] truncate">{t('chat.terminal_header')}</h2>
-          <p className="hidden sm:block text-[10px] font-mono text-emerald-500/70 mt-0.5">
+          <h2 className="text-xs sm:text-sm font-bold text-white tracking-tight uppercase">{t('chat.terminal_header')}</h2>
+          <p className="hidden sm:block text-[10px] font-mono text-zinc-500 mt-0.5">
             {isStreaming ? (
               <span className="flex items-center gap-1.5">
                 {isAnalyzing ? (
@@ -89,26 +89,18 @@ export default function ChatPanel({
                   </span>
                 ) : (
                   <span className="flex items-center gap-1.5">
-                    <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
+                    <div className="h-1 w-1 rounded-full bg-emerald-500/50" />
                     {t('chat.status_compiling')}
                   </span>
                 )}
               </span>
-            ) : t('status.system_status_ok')}
+            ) : (
+              <span className="flex items-center gap-1.5 ">
+                <div className="h-1 w-1 rounded-full bg-emerald-500" />
+                {t('status.system_status_ok')}
+              </span>
+            )}
           </p>
-        </div>
-
-        {/* Usage & Version */}
-        <div className="flex items-center gap-2">
-          {usage && (
-            <Badge variant="emerald" className="hidden sm:flex gap-1.5">
-              <span className="text-zinc-400">Usage:</span>
-              <span>{usage.current}</span>
-              <span className="opacity-40">/</span>
-              <span>{usage.limit}</span>
-            </Badge>
-          )}
-
         </div>
       </div>
 
@@ -116,21 +108,25 @@ export default function ChatPanel({
       <div className="flex-1 overflow-y-auto px-5 py-5 space-y-5 custom-scrollbar">
         {messages.length === 0 && !isStreaming && (
           <div className="flex h-full flex-col items-center justify-center text-center">
-            <div className="animate-fade-in-scale glass-card p-10 max-w-md mx-auto">
-              <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-400 animate-float">
-                <Zap size={28} />
+            <div className="animate-fade-in p-10 max-w-md mx-auto">
+              <div className="mx-auto mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-900 border border-white/[0.05] text-zinc-400">
+                <Zap size={22} />
               </div>
-              <h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400">
+              <h3 className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">
                 {t('chat.input_required')}
               </h3>
-              <p className="mb-8 mx-auto max-w-sm text-sm leading-relaxed text-[var(--color-text-muted)]">
+              <p className="mb-8 mx-auto max-w-sm text-sm leading-relaxed text-zinc-600 font-medium">
                 {t('chat.input_desc')}
               </p>
-              <div className="flex sm:flex-wrap justify-center gap-2">
+              <div className="flex flex-wrap justify-center gap-2">
                 {[t('chat.suggestion_economy'), t('chat.suggestion_warp'), t('status.admin_tools')].map((s) => (
-                  <Button key={s} variant="secondary" size="sm" onClick={() => setInput(s)}>
+                  <button 
+                    key={s} 
+                    onClick={() => setInput(s)}
+                    className="px-4 py-2 text-[11px] font-bold text-zinc-500 bg-white/[0.02] border border-white/[0.04] rounded-xl hover:border-emerald-500/30 hover:text-emerald-500 transition-all"
+                  >
                     {s}
-                  </Button>
+                  </button>
                 ))}
               </div>
             </div>
