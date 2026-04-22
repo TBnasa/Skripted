@@ -50,3 +50,6 @@ son.md
 # package-lock.json (if you use yarn or pnpm)
 # yarn.lock (if you use npm or pnpm)
 # pnpm-lock.yaml (if you use npm or yarn)
+
+# clerk configuration (can include secrets)
+/.clerk/
