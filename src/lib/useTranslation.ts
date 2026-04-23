@@ -31,6 +31,6 @@ export function useTranslation() {
   return {
     t,
     lang,
-    isLoaded: mounted
+    mounted
   };
 }
