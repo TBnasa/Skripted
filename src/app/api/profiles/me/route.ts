@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { ProfileService } from '@/services/server/profile-service';
+import { ProfileUpdateSchema } from '@/types/schemas';
 
 export async function GET() {
   try {
@@ -34,8 +35,18 @@ export async function PATCH(request: NextRequest) {
     const { userId } = await auth();
     if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const body = await request.json();
-    const updated = await ProfileService.upsertProfile(userId, body);
+    const rawBody = await request.json();
+
+    // Validate and pick only allowed fields to prevent mass assignment (e.g. followers_count)
+    const result = ProfileUpdateSchema.safeParse(rawBody);
+    if (!result.success) {
+      return NextResponse.json(
+        { error: 'Invalid profile data', details: result.error.format() },
+        { status: 400 }
+      );
+    }
+
+    const updated = await ProfileService.upsertProfile(userId, result.data);
     
     return NextResponse.json(updated);
   } catch (err: any) {

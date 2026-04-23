@@ -100,3 +100,13 @@ export const VerifyRequestSchema = z.object({
 });
 
 export type VerifyRequestInput = z.infer<typeof VerifyRequestSchema>;
+
+// Profile Schemas
+export const ProfileUpdateSchema = z.object({
+  username: z.string().min(3, 'Username must be at least 3 characters').max(30, 'Username is too long').optional(),
+  full_name: z.string().max(100, 'Full name is too long').optional(),
+  avatar_url: z.string().url('Invalid URL').optional(),
+  bio: z.string().max(500, 'Bio is too long').optional(),
+});
+
+export type ProfileUpdateInput = z.infer<typeof ProfileUpdateSchema>;
