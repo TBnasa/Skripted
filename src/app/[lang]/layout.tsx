@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { APP_NAME, APP_DESCRIPTION } from '@/lib/constants';
 import Navbar from '@/components/Navbar';
-import './globals.css';
+import '../globals.css';
 
 export const metadata: Metadata = {
   title: {
