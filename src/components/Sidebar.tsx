@@ -122,6 +122,9 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
         <button
           onClick={() => setIsDesktopCollapsed(!isDesktopCollapsed)}
           className="hidden md:flex absolute -right-4 top-6 w-8 h-8 bg-[#141414] border border-white/[0.06] rounded-full items-center justify-center text-zinc-500 hover:text-white hover:border-emerald-500/50 transition-all z-50 shadow-xl"
+          aria-label={isDesktopCollapsed ? t('sidebar.expand') || "Expand sidebar" : t('sidebar.collapse') || "Collapse sidebar"}
+          aria-expanded={!isDesktopCollapsed}
+          title={isDesktopCollapsed ? t('sidebar.expand') || "Expand sidebar" : t('sidebar.collapse') || "Collapse sidebar"}
         >
           {isDesktopCollapsed ? <PanelLeftOpen size={14} /> : <PanelLeftClose size={14} />}
         </button>
