@@ -35,12 +35,14 @@ export default function Navbar() {
         {/* Actions */}
         <div className="flex items-center gap-2 sm:gap-4">
           {/* Language Switcher */}
-          <div className="flex items-center gap-1 bg-white/5 p-1 rounded-lg border border-white/10 mr-2">
+          <div className="flex items-center gap-1 bg-white/5 p-1 rounded-lg border border-white/10 mr-2" role="group" aria-label={t('general.language_switcher') || "Language switcher"}>
             <button
               onClick={() => switchLanguage('en')}
               className={`px-2 py-1 text-[10px] font-bold rounded-md transition-all ${
                 lang === 'en' || lang.startsWith('en') ? 'bg-emerald-500 text-black' : 'text-zinc-500 hover:text-white'
               }`}
+              aria-label={t('general.switch_to_english') || "Switch to English"}
+              aria-pressed={lang === 'en' || lang.startsWith('en')}
             >
               EN
             </button>
@@ -49,6 +51,8 @@ export default function Navbar() {
               className={`px-2 py-1 text-[10px] font-bold rounded-md transition-all ${
                 lang === 'tr' || lang.startsWith('tr') ? 'bg-emerald-500 text-black' : 'text-zinc-500 hover:text-white'
               }`}
+              aria-label={t('general.switch_to_turkish') || "Switch to Turkish"}
+              aria-pressed={lang === 'tr' || lang.startsWith('tr')}
             >
               TR
             </button>
@@ -113,6 +117,9 @@ export default function Navbar() {
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="p-2 text-[var(--color-text-muted)] hover:text-white transition-colors"
+              aria-label={isMenuOpen ? t('general.close_menu') || "Close menu" : t('general.open_menu') || "Open menu"}
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-menu"
             >
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -124,6 +131,7 @@ export default function Navbar() {
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
+            id="mobile-menu"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}

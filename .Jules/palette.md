@@ -1,0 +1,3 @@
+## 2026-04-22 - Add ARIA Labels to Icon-Only Elements
+**Learning:** In highly interactive apps with many custom UI buttons, icon-only buttons like those for mobile menus, sidebars, or language switchers often lack explicit textual context. `aria-label`, `aria-expanded` and `aria-controls` are essential for improving the keyboard navigation and making sure screen readers correctly parse and represent these interactive components. In addition, providing a `title` provides a helpful visual tooltip.
+**Action:** Always verify if buttons with only SVG or Icon content have corresponding ARIA descriptors and ensure their active states are communicated clearly.
