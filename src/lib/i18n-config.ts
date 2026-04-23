@@ -1,33 +1,13 @@
-'use client';
+export const locales = ['en', 'tr'] as const;
+export type Locale = (typeof locales)[number];
 
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
+export const defaultLocale: Locale = 'en';
 
-// JSON dosyalarını doğrudan import ediyoruz (Build sırasında hata almamak için)
-import enCommon from '../../public/locales/en/common.json';
-import trCommon from '../../public/locales/tr/common.json';
-
-const resources = {
-  en: { common: enCommon },
-  tr: { common: trCommon },
+const dictionaries = {
+  en: () => import('../../public/locales/en/common.json').then((module) => module.default),
+  tr: () => import('../../public/locales/tr/common.json').then((module) => module.default),
 };
 
-i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    resources,
-    fallbackLng: 'en',
-    ns: ['common'],
-    defaultNS: 'common',
-    interpolation: {
-      escapeValue: false,
-    },
-    detection: {
-      order: ['localStorage', 'cookie', 'htmlTag'],
-      caches: ['localStorage', 'cookie'],
-    },
-  });
-
-export default i18n;
+export const getDictionary = async (locale: Locale) => {
+  return dictionaries[locale] ? dictionaries[locale]() : dictionaries[defaultLocale]();
+};

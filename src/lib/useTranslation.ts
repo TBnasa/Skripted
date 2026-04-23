@@ -1,27 +1,36 @@
 'use client';
 
-import { useTranslation as useI18nextTranslation } from 'react-i18next';
+import { useParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import './i18n-config'; // Ensure i18n is initialized
+import en from '../../public/locales/en/common.json';
+import tr from '../../public/locales/tr/common.json';
+
+const dictionaries = { en, tr };
 
 export function useTranslation() {
-  const translation = useI18nextTranslation('common');
-  const t = translation?.t || ((key: string) => key);
-  const i18n = translation?.i18n;
-  
+  const params = useParams();
+  const lang = (params?.lang as 'en' | 'tr') || 'en';
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const lang = i18n?.language || 'en';
+  const t = (key: string) => {
+    // İç içe geçmiş anahtarları destekle (örn: "hero.title")
+    const keys = key.split('.');
+    let result: any = dictionaries[lang];
 
-  const switchLanguage = (newLang: string) => {
-    if (i18n) {
-      i18n.changeLanguage(newLang);
+    for (const k of keys) {
+      result = result?.[k];
     }
+
+    return result || key;
   };
 
-  return { t, lang, switchLanguage, mounted };
+  return {
+    t,
+    lang,
+    isLoaded: mounted
+  };
 }
