@@ -16,13 +16,26 @@ export function useTranslation() {
     setMounted(true);
   }, []);
 
-  const t = (key: string) => {
+  const t = (key: string, options?: { defaultValue?: string; [key: string]: any }) => {
     // İç içe geçmiş anahtarları destekle (örn: "hero.title")
     const keys = key.split('.');
     let result: any = dictionaries[lang];
 
     for (const k of keys) {
       result = result?.[k];
+    }
+
+    if (result === undefined && options?.defaultValue) {
+      return options.defaultValue;
+    }
+
+    // Basit değişken yerleştirme (interpolation) desteği eklenebilir
+    if (typeof result === 'string' && options) {
+      Object.keys(options).forEach(optKey => {
+        if (optKey !== 'defaultValue') {
+          result = result.replace(new RegExp(`{{${optKey}}}`, 'g'), options[optKey]);
+        }
+      });
     }
 
     return result || key;
