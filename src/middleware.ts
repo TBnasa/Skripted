@@ -22,7 +22,7 @@ const isPublicRoute = createRouteMatcher([
   '/auth/(.*)',
 ]);
 
-export default clerkMiddleware((auth, request) => {
+export default clerkMiddleware(async (auth, request) => {
   const { pathname } = request.nextUrl;
 
   // 1. Locale Kontrolü ve Yönlendirme
@@ -38,7 +38,7 @@ export default clerkMiddleware((auth, request) => {
 
   // 2. Clerk Koruması
   if (!isPublicRoute(request)) {
-    auth().protect();
+    (await auth()).protect();
   }
 
   return NextResponse.next();
