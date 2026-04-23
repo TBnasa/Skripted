@@ -8,7 +8,7 @@ export function extractCode(content: string): string {
   
   // Sadece Skript ile ilgili etiketleri veya 'on ' ile başlayan blokları yakala
   const codeBlockRegex = /```(?:sk|vsk|skript)\n([\s\S]*?)```/gi;
-  let matches = [...content.matchAll(codeBlockRegex)];
+  const matches = [...content.matchAll(codeBlockRegex)];
   
   if (matches.length > 0) {
     // En son (genellikle güncel olan) skript bloğunu al
@@ -17,7 +17,7 @@ export function extractCode(content: string): string {
 
   // Eğer dil etiketi yoksa ama kod bloğu varsa ve içinde Skript anahtar kelimeleri geçiyorsa
   const genericRegex = /```\n?([\s\S]*?)```/gi;
-  let genericMatches = [...content.matchAll(genericRegex)];
+  const genericMatches = [...content.matchAll(genericRegex)];
   for (const match of genericMatches) {
     const code = match[1].trim();
     if (code.includes('command /') || code.includes('on ') || code.includes('options:')) {

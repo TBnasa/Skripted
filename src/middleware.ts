@@ -38,7 +38,7 @@ export default clerkMiddleware(async (auth, request) => {
 
   // 2. Clerk Koruması
   if (!isPublicRoute(request)) {
-    (await auth()).protect();
+    await auth.protect();
   }
 
   return NextResponse.next();
