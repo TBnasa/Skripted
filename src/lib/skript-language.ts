@@ -205,6 +205,27 @@ export function registerSkriptLanguage(monaco: any) {
     monaco.languages.setMonarchTokensProvider(SKRIPT_LANGUAGE_ID, skriptTokensProvider);
     monaco.editor.defineTheme('skripted-dark', skriptTheme);
 
+    // Language configuration for auto-indentation
+    monaco.languages.setLanguageConfiguration(SKRIPT_LANGUAGE_ID, {
+      onEnterRules: [
+        {
+          beforeText: /:$/,
+          action: { indentAction: monaco.languages.IndentAction.Indent }
+        }
+      ],
+      autoClosingPairs: [
+        { open: '"', close: '"' },
+        { open: '{', close: '}' },
+        { open: '(', close: ')' },
+        { open: '[', close: ']' },
+      ],
+      brackets: [
+        ['(', ')'],
+        ['[', ']'],
+        ['{', '}'],
+      ],
+    });
+
     monaco.languages.registerCompletionItemProvider(SKRIPT_LANGUAGE_ID, {
       provideCompletionItems: (model: any, position: any) => {
         const word = model.getWordUntilPosition(position);

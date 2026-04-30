@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslation } from '@/lib/useTranslation';
 import AuthButton from './AuthButton';
-import { Globe, Sparkles, Menu, X, LayoutDashboard, Image as ImageIcon, Code2, FolderGit2 } from 'lucide-react';
+import { Sparkles, Menu, X, LayoutDashboard, Image as ImageIcon, Code2 } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -83,6 +83,17 @@ export default function Navbar() {
             >
               {t('general.support')}
             </Link>
+
+            <div
+              className="group relative flex items-center gap-2 px-3 py-2 text-xs font-semibold text-zinc-500 cursor-not-allowed transition-all duration-300 rounded-lg"
+              title={t('general.academy_tooltip')}
+            >
+              <Code2 className="w-3.5 h-3.5" />
+              {t('general.academy')}
+              <span className="px-1.5 py-0.5 text-[8px] font-black bg-gradient-to-r from-purple-500/20 to-indigo-600/20 text-purple-400 border border-purple-500/30 rounded uppercase tracking-tighter">
+                {t('general.soon')}
+              </span>
+            </div>
 
             {pathname !== '/chat' && (
               <>

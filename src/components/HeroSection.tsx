@@ -55,15 +55,18 @@ export default function HeroSection() {
             </span>
           </Link>
 
-          <Link
-            href="/academy"
-            className="group w-full sm:w-auto px-10 py-5 text-sm font-bold text-white transition-all border border-purple-500/30 rounded-2xl bg-purple-500/5 backdrop-blur-xl hover:bg-purple-500/10 hover:border-purple-500/50 text-center flex items-center justify-center gap-3"
+          <div
+            className="group w-full sm:w-auto px-10 py-5 text-sm font-bold text-zinc-500 transition-all border border-white/5 rounded-2xl bg-white/[0.02] backdrop-blur-xl cursor-not-allowed text-center flex items-center justify-center gap-3 relative overflow-hidden"
+            title={t('general.academy_tooltip')}
           >
-            <span className="w-5 h-5 flex items-center justify-center bg-purple-500/20 rounded-md text-purple-400">
+            <span className="w-5 h-5 flex items-center justify-center bg-zinc-500/10 rounded-md text-zinc-500">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
             </span>
             {t('hero.start_learning')}
-          </Link>
+            <span className="absolute top-2 right-2 px-1.5 py-0.5 text-[8px] font-black bg-gradient-to-r from-purple-500/20 to-indigo-600/20 text-purple-400 border border-purple-500/30 rounded uppercase tracking-tighter">
+              {t('general.soon')}
+            </span>
+          </div>
 
           <Link
             href="/gallery"

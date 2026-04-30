@@ -139,6 +139,23 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
             <NavButton href="/gallery" icon={<ImageIcon size={16} />} text={t('gallery.title_main')} isCollapsed={isDesktopCollapsed} />
             <NavButton href="/dashboard/scripts" icon={<Code2 size={16} />} text={t('dashboard.cloud_scripts')} isCollapsed={isDesktopCollapsed} />
             <NavButton href="/gallery?filter=mine" icon={<FolderGit2 size={16} />} text={t('gallery.my_posts')} isCollapsed={isDesktopCollapsed} />
+            
+            <div
+              className={`group flex items-center justify-center gap-3 py-3 font-bold text-zinc-600 bg-white/[0.01] border border-white/[0.03] cursor-not-allowed transition-all ${
+                isDesktopCollapsed ? 'w-12 h-12 rounded-2xl mx-auto' : 'w-full px-4 rounded-xl text-[11px] justify-start'
+              }`}
+              title={t('general.academy_tooltip')}
+            >
+              <Code2 size={16} className="shrink-0" />
+              {!isDesktopCollapsed && (
+                <div className="flex items-center justify-between w-full">
+                  <span>{t('general.academy')}</span>
+                  <span className="px-1.5 py-0.5 text-[8px] font-black bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded uppercase tracking-tighter">
+                    {t('general.soon')}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
