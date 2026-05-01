@@ -94,6 +94,16 @@ export const UserScriptSchema = z.object({
 
 export type UserScriptInput = z.infer<typeof UserScriptSchema>;
 
+// Profile Schemas
+export const ProfileUpdateSchema = z.object({
+  username: z.string().min(3).max(30).optional(),
+  full_name: z.string().max(100).optional().nullable(),
+  bio: z.string().max(500).optional().nullable(),
+  avatar_url: z.string().url().optional().nullable(),
+});
+
+export type ProfileUpdateInput = z.infer<typeof ProfileUpdateSchema>;
+
 // Verify Schemas
 export const VerifyRequestSchema = z.object({
   code: z.string().min(1, 'Code is required').max(10_000, 'Code too long for verification'),
