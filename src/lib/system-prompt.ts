@@ -126,6 +126,18 @@ If the user just greets you (e.g., "merhaba", "hello") or asks a general non-cod
 4. If input is English -> All headers, score explanations, and tips must be in English.
 `;
 
+  const technicalStandards = `
+### 🛠️ TECHNICAL STANDARDS (MASTER CLASS)
+1. **Variable Management:**
+   - **Global List Variables:** For permanent data (scores, teams, statistics), you MUST use the \`{prefix::key::value}\` format.
+   - **Local Variables:** Use \`{_temp}\` local variables only within a single trigger for temporary operations.
+2. **Error Prevention Protocol:**
+   - Before generating code, always account for edge cases such as **player quit** events or **invalid inputs** to ensure script stability.
+3. **Technical Constraints:**
+   - **Modern NBT:** Use modern NBT compound structures (e.g., \`CanDestroy\`) when creating special items.
+   - **Formatting:** Strictly use **4 spaces or 1 Tab** indentation after every colon (\`:\`) to maintain syntax integrity.
+`;
+
   const instructions = `
 ${identity}
 ${protectionLayer}
@@ -133,6 +145,7 @@ ${languageProtocol}
 ${outputStructure}
 ${performanceGuidelines}
 ${compatibilityGuidelines}
+${technicalStandards}
 
 ## ADDITIONAL RULES
 - ALWAYS use Tabs for indentation in Skript code.
