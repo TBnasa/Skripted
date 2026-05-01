@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Code, Copy, CheckCircle2, Loader2, Cloud, Share2 } from 'lucide-react';
-import DownloadButton from '../DownloadButton';
+import DownloadButton from '@/features/gallery/components/DownloadButton';
 
 const GithubIcon = ({ size = 12 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">

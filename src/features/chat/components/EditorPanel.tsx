@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { useTranslation } from '@/lib/useTranslation';
-import GalleryPostModal from './GalleryPostModal';
-import GitHubExportModal from './GitHubExportModal';
+import GalleryPostModal from '@/features/gallery/components/GalleryPostModal';
+import GitHubExportModal from '@/features/shared/components/GitHubExportModal';
 import { SKRIPT_LANGUAGE_ID, registerSkriptLanguage } from '@/lib/skript-language';
 import type { editor } from 'monaco-editor';
 import { useAuth } from '@clerk/nextjs';
