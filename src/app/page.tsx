@@ -1,5 +1,5 @@
-import HeroSection from '@/components/HeroSection';
-import GalleryHighlights from '@/components/GalleryHighlights';
+import HeroSection from '@/features/shared/components/HeroSection';
+import GalleryHighlights from '@/features/gallery/components/GalleryHighlights';
 
 export default function Page() {
   return (

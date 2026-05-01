@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import ChatInterface from '@/components/ChatInterface';
+import ChatInterface from '@/features/chat/components/ChatInterface';
 
 export const metadata: Metadata = {
   title: 'AI Skript Oluşturucu | Skripted Engine',

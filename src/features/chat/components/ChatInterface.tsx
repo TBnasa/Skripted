@@ -1,14 +1,14 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import ChatPanel from '@/components/ChatPanel';
-import EditorPanel from '@/components/EditorPanel';
-import Sidebar from '@/components/Sidebar';
-import LimitModal from '@/components/LimitModal';
-import Overview from '@/components/Dashboard/Overview';
+import ChatPanel from '@/features/chat/components/ChatPanel';
+import EditorPanel from '@/features/chat/components/EditorPanel';
+import Sidebar from '@/features/shared/components/Sidebar';
+import LimitModal from '@/features/shared/components/LimitModal';
+import Overview from '@/features/shared/components/Dashboard/Overview';
 import { useTranslation } from '@/lib/useTranslation';
 import { useStore } from '@/store/useStore';
-import { useSkriptAnalysis } from '@/lib/hooks/use-skript-analysis';
+import { useSkriptAnalysis } from '@/features/shared/hooks/use-skript-analysis';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { extractCode } from '@/lib/utils/code-extractor';
 

@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import GalleryContent from '@/components/GalleryContent';
+import GalleryContent from '@/features/gallery/components/GalleryContent';
 import { Suspense } from 'react';
 import { Loader2 } from 'lucide-react';
 

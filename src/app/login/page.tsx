@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { APP_NAME } from '@/lib/constants';
-import AuthForm from '@/components/AuthForm';
+import AuthForm from '@/features/shared/components/AuthForm';
 
 export const metadata: Metadata = {
   title: 'Giriş Yap | Skripted Engine',

@@ -3,13 +3,13 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from '@/lib/useTranslation';
 import MessageBubble from './MessageBubble';
-import FeedbackPoll from './FeedbackPoll';
-import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
+import FeedbackPoll from '@/features/shared/components/FeedbackPoll';
+import { Button } from '@/features/shared/components/ui/Button';
+import { Badge } from '@/features/shared/components/ui/Badge';
 import { Terminal, Cpu, Zap, SendHorizonal, AlertCircle, Mic, Square, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { ChatMessage } from '@/types';
-import { useVoiceRecording } from '@/hooks/useVoiceRecording';
+import { useVoiceRecording } from '@/features/shared/hooks/useVoiceRecording';
 import { toast } from 'sonner';
 
 interface ChatPanelProps {

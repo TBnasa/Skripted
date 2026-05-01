@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { APP_NAME, APP_DESCRIPTION } from '@/lib/constants';
-import Navbar from '@/components/Navbar';
+import Navbar from '@/features/shared/components/Navbar';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 
 import { ClerkProvider } from '@clerk/nextjs';
 import { Toaster } from 'sonner';
-import Providers from '@/components/Providers';
+import Providers from '@/features/shared/components/Providers';
 
 export default function RootLayout({
   children,

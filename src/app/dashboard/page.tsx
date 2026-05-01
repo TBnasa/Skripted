@@ -1,8 +1,8 @@
 'use client';
 
-import Overview from '@/components/Dashboard/Overview';
-import Navbar from '@/components/Navbar';
-import Sidebar from '@/components/Sidebar';
+import Overview from '@/features/shared/components/Dashboard/Overview';
+import Navbar from '@/features/shared/components/Navbar';
+import Sidebar from '@/features/shared/components/Sidebar';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { LayoutDashboard, History, Settings } from 'lucide-react';

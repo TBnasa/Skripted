@@ -2,7 +2,7 @@
 
 import { useTranslation } from '@/lib/useTranslation';
 import { useEffect, useState, useRef } from 'react';
-import { useChats, type ChatSession } from '@/lib/hooks/use-chats';
+import { useChats, type ChatSession } from '@/features/shared/hooks/use-chats';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PanelLeftClose, PanelLeftOpen, MessageSquare, Image as ImageIcon, Code2, FolderGit2, MoreHorizontal, Pencil, Trash2, Plus } from 'lucide-react';

@@ -5,6 +5,17 @@ import { StorageArchiver } from '@/lib/storage-archiver';
 import { AppError } from '@/lib/errors';
 import { extractCode } from '@/lib/utils/code-extractor';
 
+interface ScriptRow {
+  id: string;
+  user_id: string;
+  title: string;
+  content: string | null;
+  version: string;
+  linked_session_id: string | null;
+  updated_at: string;
+  created_at: string;
+}
+
 export class UserScriptService {
   private static readonly supabase = getSupabaseAdmin();
   private static readonly TABLE_SCRIPTS = 'user_scripts';
@@ -20,12 +31,12 @@ export class UserScriptService {
 
     if (error) throw AppError.internal('Failed to fetch user scripts', error);
     
-    const hydratedList = await StorageArchiver.hydrateObject(data);
+    const hydratedList = (await StorageArchiver.hydrateObject(data)) as ScriptRow[];
     
     // Batch fetch assistant content for linked sessions (Performance: Avoid N+1 queries)
     const sessionIds = hydratedList
-      .filter((s: any) => s.linked_session_id && !s.content)
-      .map((s: any) => s.linked_session_id);
+      .filter((s) => s.linked_session_id && !s.content)
+      .map((s) => s.linked_session_id as string);
 
     if (sessionIds.length > 0) {
       const { data: chatData, error: chatError } = await this.supabase
@@ -38,8 +49,8 @@ export class UserScriptService {
       if (chatError) throw AppError.internal('Failed to fetch linked chat history', chatError);
 
       // Create a map of latest assistant content per session
-      const contentMap = new Map();
-      chatData.forEach((row: any) => {
+      const contentMap = new Map<string, string>();
+      chatData?.forEach((row: { session_id: string; content: string }) => {
         if (!contentMap.has(row.session_id)) {
           contentMap.set(row.session_id, extractCode(row.content));
         }

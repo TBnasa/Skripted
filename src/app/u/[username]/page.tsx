@@ -3,13 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { User, Code, Heart, Calendar, MapPin, Share2, Edit3, Settings, Grid, List as ListIcon, UserPlus, UserCheck } from 'lucide-react';
-import Navbar from '@/components/Navbar';
+import Navbar from '@/features/shared/components/Navbar';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@clerk/nextjs';
 import { Profile } from '@/services/server/profile-service';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import ProfileEditModal from '@/components/ProfileEditModal';
+import ProfileEditModal from '@/features/profile/components/ProfileEditModal';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/lib/useTranslation';

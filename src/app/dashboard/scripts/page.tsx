@@ -4,8 +4,8 @@ import { useTranslation } from '@/lib/useTranslation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
-import Navbar from '@/components/Navbar';
-import GalleryPostModal from '@/components/GalleryPostModal';
+import Navbar from '@/features/shared/components/Navbar';
+import GalleryPostModal from '@/features/gallery/components/GalleryPostModal';
 import { 
   Cloud, 
   Search, 
@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import QuickEditModal from '@/components/QuickEditModal';
+import QuickEditModal from '@/features/shared/components/QuickEditModal';
 import { FilePlus, MessageSquare } from 'lucide-react';
 
 interface UserScript {

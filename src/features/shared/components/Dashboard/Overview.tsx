@@ -4,8 +4,8 @@ import { useStore } from '@/store/useStore';
 import { useTranslation } from '@/lib/useTranslation';
 import { motion } from 'framer-motion';
 import { Activity, Code, AlertTriangle } from 'lucide-react';
-import { Card } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
+import { Card } from '@/features/shared/components/ui/Card';
+import { Badge } from '@/features/shared/components/ui/Badge';
 
 export default function Overview({ isCompact = false }: { isCompact?: boolean }) {
   const { stats } = useStore();

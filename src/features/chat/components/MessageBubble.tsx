@@ -4,7 +4,7 @@ import { useRef, useEffect } from 'react';
 import { useTranslation } from '@/lib/useTranslation';
 import type { ChatMessage } from '@/types';
 import { motion } from 'framer-motion';
-import AnalysisPanel from './Chat/AnalysisPanel';
+import AnalysisPanel from './AnalysisPanel';
 
 interface MessageBubbleProps {
   readonly message: ChatMessage;

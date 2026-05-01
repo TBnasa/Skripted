@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslation } from '@/lib/useTranslation';
-import { useGalleryPosts } from '@/lib/hooks/use-gallery';
+import { useGalleryPosts } from '@/features/shared/hooks/use-gallery';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/nextjs';

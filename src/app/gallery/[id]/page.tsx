@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { GalleryService } from '@/services/server/gallery.server';
-import GalleryPostContent from '@/components/GalleryPostContent';
-import Navbar from '@/components/Navbar';
+import GalleryPostContent from '@/features/gallery/components/GalleryPostContent';
+import Navbar from '@/features/shared/components/Navbar';
 import Link from 'next/link';
 import { Code } from 'lucide-react';
 import { notFound } from 'next/navigation';

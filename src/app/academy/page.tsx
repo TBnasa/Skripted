@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { AcademySidebar } from '@/components/Academy/AcademySidebar';
-import { AcademyChat } from '@/components/Academy/AcademyChat';
-import { DailyChallenge } from '@/components/Academy/DailyChallenge';
-import { LessonRunner } from '@/components/Academy/LessonRunner';
+import { AcademySidebar } from '@/features/academy/components/AcademySidebar';
+import { AcademyChat } from '@/features/academy/components/AcademyChat';
+import { DailyChallenge } from '@/features/academy/components/DailyChallenge';
+import { LessonRunner } from '@/features/academy/components/LessonRunner';
 import { useAcademyStore } from '@/store/useAcademyStore';
 import { getLessonById } from '@/lib/academy-data';
 import { GraduationCap } from 'lucide-react';
