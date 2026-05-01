@@ -9,7 +9,7 @@ interface PostCommentSectionProps {
   comments: any[];
   postId: string;
   userId?: string | null;
-  t: (key: string) => string;
+  t: (key: string, options?: Record<string, unknown>) => string;
   newComment: string;
   setNewComment: (val: string) => void;
   handleSubmitComment: (e: React.FormEvent) => void;

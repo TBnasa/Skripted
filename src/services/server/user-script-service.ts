@@ -98,7 +98,7 @@ export class UserScriptService {
   }
 
   static async createScript(userId: string, scriptData: UserScriptInput) {
-    const validated = this.validateData(UserScriptSchema, scriptData);
+    const validated = this.validateData<UserScriptInput>(UserScriptSchema, scriptData);
     const sanitizedTitle = stripHtmlTags(validated.title);
 
     // Performance: Only archive if content is actually large
@@ -123,7 +123,7 @@ export class UserScriptService {
   }
 
   static async updateScript(id: string, userId: string, updateData: Partial<UserScriptInput>) {
-    const validated = this.validateData(UserScriptSchema.partial(), updateData);
+    const validated = this.validateData<Partial<UserScriptInput>>(UserScriptSchema.partial(), updateData);
 
     // Verify ownership and existence
     await this.getScriptById(id, userId);

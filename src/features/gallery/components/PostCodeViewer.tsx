@@ -8,7 +8,7 @@ import { SKRIPT_LANGUAGE_ID } from '@/lib/skript-language';
 
 interface PostCodeViewerProps {
   code: string;
-  t: (key: string) => string;
+  t: (key: string, options?: Record<string, unknown>) => string;
   isFullscreen: boolean;
   setIsFullscreen: (val: boolean) => void;
   handleCopy: () => void;

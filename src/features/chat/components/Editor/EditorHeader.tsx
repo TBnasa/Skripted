@@ -12,7 +12,7 @@ const GithubIcon = ({ size = 12 }: { size?: number }) => (
 
 interface EditorHeaderProps {
   code: string;
-  t: (key: string) => string;
+  t: (key: string, options?: Record<string, unknown>) => string;
   copied: boolean;
   handleCopy: () => void;
   isSaving: boolean;

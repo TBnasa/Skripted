@@ -7,7 +7,7 @@ import AuthButton from '../AuthButton';
 
 interface NavbarDesktopLinksProps {
   pathname: string;
-  t: (key: string) => string;
+  t: (key: string, options?: Record<string, unknown>) => string;
 }
 
 export function NavbarDesktopLinks({ pathname, t }: NavbarDesktopLinksProps) {

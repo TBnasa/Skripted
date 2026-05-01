@@ -6,7 +6,7 @@ import { ImageOff, AlertCircle, Loader2, Languages, Hash } from 'lucide-react';
 
 interface PostImageGalleryProps {
   post: any;
-  t: (key: string) => string;
+  t: (key: string, options?: Record<string, unknown>) => string;
   isEditingPost: boolean;
   editedDesc: string;
   setEditedDesc: (val: string) => void;

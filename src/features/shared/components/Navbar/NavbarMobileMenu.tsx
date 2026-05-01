@@ -9,7 +9,7 @@ interface NavbarMobileMenuProps {
   isOpen: boolean;
   setIsOpen: (val: boolean) => void;
   pathname: string;
-  t: (key: string) => string;
+  t: (key: string, options?: Record<string, unknown>) => string;
 }
 
 export function NavbarMobileMenu({ isOpen, setIsOpen, pathname, t }: NavbarMobileMenuProps) {

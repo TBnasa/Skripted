@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 
 interface PostDetailHeaderProps {
   post: any;
-  t: (key: string) => string;
+  t: (key: string, options?: Record<string, unknown>) => string;
   isEditingPost: boolean;
   editedTitle: string;
   setEditedTitle: (val: string) => void;

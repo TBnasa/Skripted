@@ -52,7 +52,7 @@ function handleError(error: any) {
 
   if (error instanceof ZodError) {
     return NextResponse.json(
-      { error: 'Validation failed', code: 'VALIDATION_FAILED', details: error.errors },
+      { error: 'Validation failed', code: 'VALIDATION_FAILED', details: error.issues },
       { status: 400 }
     );
   }
