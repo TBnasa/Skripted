@@ -50,3 +50,12 @@ son.md
 # package-lock.json (if you use yarn or pnpm)
 # yarn.lock (if you use npm or pnpm)
 # pnpm-lock.yaml (if you use npm or yarn)
+
+# Vault files (large, local-only)
+/Skripted-Vault/
+
+# Dynamic data files
+/I18N_DYNAMIC_DATA.md
+
+# Lock files
+/skills-lock.json
