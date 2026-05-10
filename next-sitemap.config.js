@@ -2,6 +2,7 @@
 module.exports = {
   siteUrl: 'https://skripted.vercel.app',
   generateRobotsTxt: true,
+  generateIndexSitemap: false,
   sitemapSize: 7000,
   outDir: 'public',
   exclude: ['/api/*', '/dashboard/*', '/auth/*', '/login'],
@@ -13,10 +14,7 @@ module.exports = {
         disallow: ['/api/*', '/dashboard/*', '/auth/*'],
       },
     ],
-    additionalSitemaps: [
-      'https://skripted.vercel.app/sitemap.xml',
-    ],
-  },
+      },
   additionalPaths: async (config) => {
     const result = [];
     
