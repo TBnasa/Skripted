@@ -110,8 +110,8 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setIsGUIBuilderOpen(!isGUIBuilderOpen)}
-              className={`p-2 rounded-xl border transition-all flex items-center gap-2 text-xs font-bold ${isGUIBuilderOpen ? 'bg-purple-500/10 border-purple-500/30 text-purple-400' : 'text-zinc-500 hover:text-white hover:bg-white/5 border-transparent hover:border-white/10'}`}
+              onClick={() => toast.info('GUI Builder Coming Soon!')}
+              className="p-2 rounded-xl border transition-all flex items-center gap-2 text-xs font-bold text-zinc-500 hover:text-white hover:bg-white/5 border-transparent hover:border-white/10"
               title="GUI Builder"
             >
               <Layout size={20} />

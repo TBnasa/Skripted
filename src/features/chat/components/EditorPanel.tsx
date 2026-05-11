@@ -145,7 +145,7 @@ export default function EditorPanel({ code, onCodeChange, isStreaming, sessionId
         handleCloudSave={handleCloudSave}
         setIsGitHubOpen={setIsGitHubOpen}
         setIsGalleryOpen={setIsGalleryOpen}
-        onGUIBuilderToggle={() => setIsGUIBuilderOpen(!isGUIBuilderOpen)}
+        onGUIBuilderToggle={() => toast.info('GUI Builder Coming Soon!')}
         isGUIBuilderOpen={isGUIBuilderOpen}
       />
       
