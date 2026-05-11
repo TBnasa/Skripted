@@ -1,6 +1,10 @@
 ---
 title: "Database Migrations & History"
 created: 2026-05-08
+status: active
+priority: high
+complexity: low
+related_services: [Supabase, API Routes]
 type: area
 tags: [backend, database, sql, supabase]
 ---

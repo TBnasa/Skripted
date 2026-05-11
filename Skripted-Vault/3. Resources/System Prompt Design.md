@@ -1,6 +1,10 @@
 ---
 title: "AI System Prompt Architecture"
 created: 2026-05-08
+status: active
+priority: critical
+complexity: high
+related_services: [OpenRouter, Pinecone Vector Search (RAG)]
 type: resource
 tags: [ai, prompts, llm, system]
 ---

@@ -5,32 +5,24 @@ type: moc
 tags: [index, moc, architecture]
 ---
 
-# 🗺️ Master Map: Skripted Architecture
+# 🗺️ Master Map: Skripted Architecture (Command Center)
 
-This is the central Map of Content (MOC) for the Skripted project. It connects all the granular, atomic notes into a cohesive mental model.
+This is the central Map of Content (MOC) for the Skripted project. It serves as the "Command Center," branching into specialized domain maps.
 
-## 🏗️ Core Infrastructure
+## 🧭 Domain Maps (Sub-MOCs)
 
-*   **[[Skripted Platform]] (Project Brief)**: The high-level goals, tech stack, and pillars of the application.
-*   **[[Database Implementation Details]]**: How data is actually stored in Supabase, including granular chat history and RLS.
-*   **[[Supabase Auth Swap Mechanism]]**: The security bridge connecting Clerk authentication to Supabase RLS.
+*   **[[001 - Backend & Database MOC]]**: Security, API routes, SQL migrations, and Auth Swap.
+*   **[[002 - AI & LLM Engine MOC]]**: System prompts, RAG context, and OpenRouter integration.
+*   **[[003 - Frontend Architecture MOC]]**: State management, IDE components, theming, and linter.
+*   **[[004 - Academy Curriculum MOC]]**: Gamification, curriculum data, and learning logic.
 
-## 🧠 AI & Engine
+## 🛡️ Core "Kernel" Resources
+These notes cover cross-cutting concerns that affect all domains.
 
-*   **[[System Prompt Design]]**: The strict rules and tier-based protections defining the "Skripted Engine" persona.
-*   **[[Pinecone Vector Search (RAG)]]**: How the system pulls relevant Skript examples to feed context to the AI before it answers.
-*   **[[AI Integration]]**: General OpenRouter setup and best practices.
-
-## 💻 Frontend & IDE
-
-*   **[[Chat Interface Architecture]]**: The main workspace connecting the Monaco editor, chat history, and feedback systems.
-*   **[[Frontend State Management]]**: The Zustand stores (`useStore`, `useAcademyStore`) that keep the UI in sync across page reloads.
-*   **[[Skript Linter Architecture]]**: The custom Monaco linter providing real-time feedback for Skript syntax.
-
-## 🎓 The Academy
-
-*   **[[Academy Content Structure]]**: The hardcoded curriculum, block types, and phase progression logic. (Powered by the Academy Store in State Management).
-*   **[[Skript Language]]**: Language specifications and capabilities.
+*   **[[Global Constants & Environment]]**: Centralized config and .env mapping.
+*   **[[Standardized Error Handling]]**: Unified backend-to-frontend error pattern.
+*   **[[API Handler Pattern]]**: The `withAuth` wrapper architecture.
+*   **[[Zod Schema Validation]]**: The global source of truth for data integrity.
 
 ---
-*Tip: When asking me to brainstorm or fix a bug, you can reference these links directly!*
+*Tip: This MOC follows a "Command Center" pattern. Start with the Domain Maps for deep dives into specific subsystems.*

@@ -1,6 +1,10 @@
 ---
 title: "Skript Linter Architecture"
 created: 2026-05-08
+status: active
+priority: medium
+complexity: medium
+related_services: [Chat UI Components, Monaco Editor]
 type: resource
 tags: [skript, parser, monaco, ide]
 ---

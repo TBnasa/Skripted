@@ -6,14 +6,23 @@ import Sidebar from '@/features/shared/components/Sidebar';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { LayoutDashboard, History, Settings } from 'lucide-react';
+import { useAuth } from '@clerk/nextjs';
+import { redirect } from 'next/navigation';
 
 export default function DashboardPage() {
+  const { isLoaded, userId } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [history, setHistory] = useState<any[]>([]);
   const [settings, setSettings] = useState({
     autoOptimize: true,
     verboseError: false
   });
+
+  useEffect(() => {
+    if (isLoaded && !userId) {
+      window.location.href = '/login';
+    }
+  }, [isLoaded, userId]);
 
   useEffect(() => {
     const savedHistory = localStorage.getItem('skripted_history');

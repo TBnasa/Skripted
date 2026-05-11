@@ -1,6 +1,10 @@
 ---
 title: "State Management Architecture (Zustand)"
 created: 2026-05-08
+status: active
+priority: high
+complexity: medium
+related_services: [Chat UI Components, Chat Stream Logic]
 type: area
 tags: [frontend, architecture, zustand, state]
 ---

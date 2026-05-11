@@ -1,6 +1,10 @@
 ---
 title: "Academy Content Structure"
 created: 2026-05-08
+status: active
+priority: low
+complexity: high
+related_services: [Frontend State Management]
 type: resource
 tags: [academy, data, curriculum]
 ---

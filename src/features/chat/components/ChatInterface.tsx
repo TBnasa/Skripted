@@ -11,18 +11,20 @@ import { useStore } from '@/store/useStore';
 import { useSkriptAnalysis } from '@/features/shared/hooks/use-skript-analysis';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { extractCode } from '@/lib/utils/code-extractor';
+import { useAuth } from '@clerk/nextjs';
 
 export default function ChatInterface() {
+  const { isLoaded, userId } = useAuth();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const { 
-    messages, 
-    setMessages, 
-    editorCode, 
+  const {
+    messages,
+    setMessages,
+    editorCode,
     setEditorCode,
-    isStreaming, 
-    isAnalyzing, 
-    globalError, 
+    isStreaming,
+    isAnalyzing,
+    globalError,
     setGlobalError,
     sessionId,
     setSessionId,
@@ -42,6 +44,12 @@ export default function ChatInterface() {
   const [sidebarRefreshKey, setSidebarRefreshKey] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (isLoaded && !userId) {
+      window.location.href = '/login';
+    }
+  }, [isLoaded, userId]);
 
   // Set mounted to true after hydration
   useEffect(() => {

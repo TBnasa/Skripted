@@ -1,6 +1,10 @@
 ---
 title: "Pinecone Vector Search (RAG)"
 created: 2026-05-08
+status: active
+priority: medium
+complexity: medium
+related_services: [System Prompt Design, API Routes Map]
 type: resource
 tags: [ai, rag, pinecone, search]
 ---

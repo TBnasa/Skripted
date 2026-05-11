@@ -53,6 +53,10 @@ son.md
 
 # Vault files (large, local-only)
 /Skripted-Vault/
+Skripted-Vault
+.gemini
+.claude 
+
 
 # Dynamic data files
 /I18N_DYNAMIC_DATA.md
