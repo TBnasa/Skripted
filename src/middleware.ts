@@ -7,23 +7,7 @@ const isProtectedRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
-  // CORS kontrolü - sadece izin verilen origin'leri kabul et
-  const origin = req.headers.get('origin');
-  const allowedOrigins = [
-    'https://skripted.vercel.app',
-    'https://www.skripted.vercel.app',
-    process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : null,
-    process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : null,
-  ].filter(Boolean);
-
   const response = NextResponse.next();
-
-  if (origin && allowedOrigins.includes(origin)) {
-    response.headers.set('Access-Control-Allow-Origin', origin);
-    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    response.headers.set('Access-Control-Allow-Credentials', 'true');
-  }
 
   // Korunan rotalar için auth kontrolü
   if (isProtectedRoute(req)) {
@@ -45,9 +29,7 @@ export default clerkMiddleware(async (auth, req) => {
 
 export const config = {
   matcher: [
-    // Next.js dahili dosyaları ve tüm statik dosyaları atla
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // API ve TRPC rotaları için her zaman çalıştır
-    '/(api|trpc)(.*)',
+    // Tüm rotaları dahil et (daha agresif matcher)
+    '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 };
