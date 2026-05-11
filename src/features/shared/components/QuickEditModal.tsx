@@ -2,11 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
-import { X, Save, Loader2, CheckCircle2, AlertCircle, FileCode, Clock, RotateCcw, History, Calendar } from 'lucide-react';
+import { X, Save, Loader2, CheckCircle2, AlertCircle, FileCode, Clock, RotateCcw, History, Calendar, Layout } from 'lucide-react';
 import { toast } from 'sonner';
 import { SKRIPT_LANGUAGE_ID, registerSkriptLanguage } from '@/lib/skript-language';
 import { setupSkriptLinter } from '@/lib/skript-linter';
 import { useTranslation } from '@/lib/useTranslation';
+import { AnimatePresence } from 'framer-motion';
+import GUIBuilder from '@/features/chat/components/Editor/GUIBuilder';
 
 interface QuickEditModalProps {
   readonly script: { id?: string; title: string; content: string; version?: string } | null;
@@ -21,10 +23,11 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [version, setVersion] = useState('1.0.0');
-  
+
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [versions, setVersions] = useState<any[]>([]);
   const [isLoadingVersions, setIsLoadingVersions] = useState(false);
+  const [isGUIBuilderOpen, setIsGUIBuilderOpen] = useState(false);
 
   useEffect(() => {
     if (script) {
@@ -78,6 +81,11 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
     setupSkriptLinter(editor, monaco);
   };
 
+  const handleGUICodeGenerate = (guiCode: string) => {
+    const newCode = content ? `${content}\n\n${guiCode}` : guiCode;
+    setContent(newCode);
+  };
+
   if (!isOpen || !mounted) return null;
 
   const isNew = !script?.id;
@@ -101,9 +109,17 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsGUIBuilderOpen(!isGUIBuilderOpen)}
+              className={`p-2 rounded-xl border transition-all flex items-center gap-2 text-xs font-bold ${isGUIBuilderOpen ? 'bg-purple-500/10 border-purple-500/30 text-purple-400' : 'text-zinc-500 hover:text-white hover:bg-white/5 border-transparent hover:border-white/10'}`}
+              title="GUI Builder"
+            >
+              <Layout size={20} />
+              <span className="hidden sm:inline">GUI</span>
+            </button>
             {!isNew && (
-              <button 
-                onClick={() => setIsHistoryOpen(!isHistoryOpen)} 
+              <button
+                onClick={() => setIsHistoryOpen(!isHistoryOpen)}
                 className={`p-2 rounded-xl border transition-all flex items-center gap-2 text-xs font-bold ${isHistoryOpen ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'text-zinc-500 hover:text-white hover:bg-white/5 border-transparent hover:border-white/10'}`}
                 title={t('editor.version_history')}
               >
@@ -252,6 +268,15 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
              </button>
           </div>
         </div>
+
+      <AnimatePresence>
+        {isGUIBuilderOpen && (
+          <GUIBuilder
+            onClose={() => setIsGUIBuilderOpen(false)}
+            onCodeGenerate={handleGUICodeGenerate}
+          />
+        )}
+      </AnimatePresence>
       </div>
     </div>
   );

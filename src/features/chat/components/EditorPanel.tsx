@@ -10,10 +10,12 @@ import type { editor } from 'monaco-editor';
 import { useAuth } from '@clerk/nextjs';
 import { toast } from 'sonner';
 import { setupSkriptLinter } from '@/lib/skript-linter';
+import { AnimatePresence } from 'framer-motion';
 
 // Sub-components
 import { EditorHeader } from './Editor/EditorHeader';
 import { EditorToolbar } from './Editor/EditorToolbar';
+import GUIBuilder from './Editor/GUIBuilder';
 
 const Editor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
@@ -37,6 +39,7 @@ export default function EditorPanel({ code, onCodeChange, isStreaming, sessionId
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [isGitHubOpen, setIsGitHubOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isGUIBuilderOpen, setIsGUIBuilderOpen] = useState(false);
 
   const triggerAction = (actionId: string) => {
     if (editorRef.current) {
@@ -123,11 +126,17 @@ export default function EditorPanel({ code, onCodeChange, isStreaming, sessionId
     }
   };
 
+  const handleGUICodeGenerate = (guiCode: string) => {
+    // Append GUI code to editor (not auto-integrate, just append)
+    const newCode = code ? `${code}\n\n${guiCode}` : guiCode;
+    onCodeChange(newCode);
+  };
+
   if (!mounted) return <div className="flex flex-1 flex-col min-h-0 glass-panel m-2 rounded-2xl bg-[#0a0a0b]" />;
 
   return (
     <div className="flex flex-1 flex-col min-h-0 glass-panel overflow-hidden m-2 rounded-2xl">
-      <EditorHeader 
+      <EditorHeader
         code={code}
         t={t}
         copied={copied}
@@ -136,6 +145,8 @@ export default function EditorPanel({ code, onCodeChange, isStreaming, sessionId
         handleCloudSave={handleCloudSave}
         setIsGitHubOpen={setIsGitHubOpen}
         setIsGalleryOpen={setIsGalleryOpen}
+        onGUIBuilderToggle={() => setIsGUIBuilderOpen(!isGUIBuilderOpen)}
+        isGUIBuilderOpen={isGUIBuilderOpen}
       />
       
       <div className="relative flex-1 overflow-hidden flex flex-col">
@@ -191,6 +202,15 @@ export default function EditorPanel({ code, onCodeChange, isStreaming, sessionId
         isOpen={isGitHubOpen}
         onClose={() => setIsGitHubOpen(false)}
       />
+
+      <AnimatePresence>
+        {isGUIBuilderOpen && (
+          <GUIBuilder
+            onClose={() => setIsGUIBuilderOpen(false)}
+            onCodeGenerate={handleGUICodeGenerate}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

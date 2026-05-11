@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Code, Copy, CheckCircle2, Loader2, Cloud, Share2 } from 'lucide-react';
+import { Code, Copy, CheckCircle2, Loader2, Cloud, Share2, Layout } from 'lucide-react';
 import DownloadButton from '@/features/gallery/components/DownloadButton';
 
 const GithubIcon = ({ size = 12 }: { size?: number }) => (
@@ -19,6 +19,8 @@ interface EditorHeaderProps {
   handleCloudSave: () => void;
   setIsGitHubOpen: (val: boolean) => void;
   setIsGalleryOpen: (val: boolean) => void;
+  onGUIBuilderToggle?: () => void;
+  isGUIBuilderOpen?: boolean;
 }
 
 export function EditorHeader({
@@ -30,6 +32,8 @@ export function EditorHeader({
   handleCloudSave,
   setIsGitHubOpen,
   setIsGalleryOpen,
+  onGUIBuilderToggle,
+  isGUIBuilderOpen,
 }: EditorHeaderProps) {
   const lineCount = code.trim() ? code.split('\n').length : 0;
 
@@ -48,6 +52,20 @@ export function EditorHeader({
       </div>
 
       <div className="flex items-center gap-2">
+        {onGUIBuilderToggle && (
+          <button
+            onClick={onGUIBuilderToggle}
+            className={`flex items-center gap-2 px-3 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all active:scale-95 ${
+              isGUIBuilderOpen
+                ? 'bg-purple-600 text-white shadow-[0_0_20px_rgba(147,51,234,0.3)]'
+                : 'bg-white/[0.03] border border-white/[0.06] text-purple-400 hover:bg-purple-500/10 hover:border-purple-500/30'
+            }`}
+          >
+            <Layout size={12} />
+            GUI
+          </button>
+        )}
+
         <button
           onClick={handleCopy}
           disabled={!code.trim()}
