@@ -9,4 +9,4 @@ Disallow: /auth/*
 Host: https://skripted.vercel.app
 
 # Sitemaps
-Sitemap: https://skripted.vercel.app/sitemap.xml
+Sitemap: https://skripted.vercel.app/sitemap2.xml
