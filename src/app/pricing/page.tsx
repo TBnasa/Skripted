@@ -39,7 +39,7 @@ export default function PricingPage() {
           <motion.h1 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-black tracking-tight mb-4 bg-gradient-to-r from-white via-zinc-400 to-zinc-600 bg-clip-text text-transparent"
+            className="text-4xl md:text-6xl font-black tracking-tight mb-4 text-white"
           >
             {t('pricing.title')}
           </motion.h1>
@@ -64,28 +64,27 @@ export default function PricingPage() {
             variants={itemVariants}
             className="relative group w-full max-w-md"
           >
-            {/* Glow Effect */}
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/20 to-emerald-600/20 rounded-3xl blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+
             
-            <div className="relative flex flex-col bg-zinc-900/50 backdrop-blur-xl border border-white/10 rounded-3xl p-8 h-full shadow-2xl">
+            <div className="relative flex flex-col bg-[var(--color-bg-secondary)] border border-white/10 rounded-2xl p-8 h-full shadow-2xl">
               <div className="flex justify-between items-start mb-8">
                 <div>
                   <h3 className="text-2xl font-bold mb-1 text-white">{t('pricing.free_starter')}</h3>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-black text-emerald-400">{t('pricing.free_price')}</span>
+                    <span className="text-4xl font-black text-[var(--color-accent-primary)]">{t('pricing.free_price')}</span>
                     <span className="text-zinc-500 font-medium">{t('pricing.free_period')}</span>
                   </div>
                 </div>
-                <div className="p-3 bg-emerald-500/10 rounded-2xl border border-emerald-500/20">
-                  <Shield className="w-6 h-6 text-emerald-400" />
+                <div className="p-3 bg-[var(--color-accent-primary)]/10 rounded-2xl border border-[var(--color-accent-primary)]/20">
+                  <Shield className="w-6 h-6 text-[var(--color-accent-primary)]" />
                 </div>
               </div>
 
               <div className="space-y-4 mb-10 flex-grow">
                 {features.map((feature, idx) => (
                   <div key={idx} className="flex items-center gap-3 text-zinc-300">
-                    <div className="flex-shrink-0 h-5 w-5 flex items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                      <Check className="w-3 h-3 text-emerald-400" />
+                    <div className="flex-shrink-0 h-5 w-5 flex items-center justify-center rounded-full bg-[var(--color-accent-primary)]/10 border border-[var(--color-accent-primary)]/20">
+                      <Check className="w-3 h-3 text-[var(--color-accent-primary)]" />
                     </div>
                     <span className="text-sm font-medium">{feature.label}</span>
                   </div>
@@ -94,7 +93,7 @@ export default function PricingPage() {
 
               <button 
                 disabled
-                className="w-full py-4 px-6 rounded-2xl bg-zinc-800 text-zinc-400 font-bold border border-white/5 cursor-not-allowed transition-all"
+                className="w-full py-4 px-6 rounded-2xl bg-[var(--color-bg-tertiary)] text-zinc-400 font-bold border border-white/5 cursor-not-allowed transition-all"
               >
                 {t('pricing.current_plan')}
               </button>
@@ -104,11 +103,11 @@ export default function PricingPage() {
           {/* Pro Card (Locked/Transparent) */}
           <motion.div 
             variants={itemVariants}
-            className="relative group w-full max-w-md hidden md:block opacity-50 blur-[1px] grayscale hover:grayscale-0 transition-all duration-500"
+            className="relative group w-full max-w-md hidden md:block opacity-40 hover:opacity-70 transition-all duration-500"
           >
-            <div className="relative flex flex-col bg-zinc-900/30 backdrop-blur-sm border border-white/5 rounded-3xl p-8 h-full">
-              <div className="absolute top-6 right-6 px-3 py-1 bg-emerald-500/20 rounded-full border border-emerald-500/30">
-                <span className="text-[10px] font-black uppercase text-emerald-400 tracking-widest">{t('pricing.coming_soon')}</span>
+            <div className="relative flex flex-col bg-[var(--color-bg-secondary)]/50 border border-white/5 rounded-2xl p-8 h-full">
+              <div className="absolute top-6 right-6 px-3 py-1 bg-[var(--color-accent-primary)]/15 rounded-full border border-[var(--color-accent-primary)]/25">
+                <span className="text-[10px] font-black uppercase text-[var(--color-accent-primary)] tracking-widest">{t('pricing.coming_soon')}</span>
               </div>
 
               <div className="mb-8">
@@ -121,11 +120,11 @@ export default function PricingPage() {
 
               <div className="space-y-4 mb-10 flex-grow">
                 {[1, 2, 3, 4, 5].map((_, idx) => (
-                  <div key={idx} className="h-4 bg-zinc-800/50 rounded-lg w-full animate-pulse"></div>
+                  <div key={idx} className="h-4 shimmer-bg rounded-lg w-full"></div>
                 ))}
               </div>
 
-              <button className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 text-black font-bold shadow-lg shadow-emerald-500/20 transition-all">
+              <button className="w-full py-4 px-6 rounded-2xl bg-[var(--color-accent-primary)] text-black font-bold transition-all">
                 {t('pricing.upgrade')}
               </button>
             </div>

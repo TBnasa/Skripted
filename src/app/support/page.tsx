@@ -38,38 +38,38 @@ export default function SupportPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a] flex items-center justify-center px-4 py-16">
+    <main className="min-h-screen bg-[var(--color-bg-primary)] flex items-center justify-center px-4 py-16">
       <div className="w-full max-w-lg">
         {/* Header */}
         <div className="mb-10 text-center">
-          <div className="inline-flex items-center gap-2 bg-[#111] border border-[#1f1f1f] rounded-full px-4 py-1.5 text-xs text-[#00c896] font-medium mb-6 tracking-wider uppercase">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#00c896] animate-pulse" />
-            Support Bridge
+          <div className="inline-flex items-center gap-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-full px-4 py-1.5 text-xs text-[var(--color-accent-primary)] font-medium mb-6 tracking-wider uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent-primary)]" />
+            Support
           </div>
           <h1 className="text-4xl font-bold text-white tracking-tight mb-3">
             How can we help?
           </h1>
-          <p className="text-[#666] text-base leading-relaxed">
+          <p className="text-[var(--color-text-muted)] text-base leading-relaxed">
             Send us a message and our team will reply directly to your email.
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-[#111] border border-[#1f1f1f] rounded-2xl p-8 shadow-2xl">
+        <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-2xl p-8 shadow-2xl">
           {status === 'success' ? (
             <div className="text-center py-8">
-              <div className="w-16 h-16 rounded-full bg-[#00c896]/10 border border-[#00c896]/30 flex items-center justify-center mx-auto mb-5">
-                <svg className="w-7 h-7 text-[#00c896]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <div className="w-16 h-16 rounded-full bg-[var(--color-accent-primary)]/10 border border-[var(--color-accent-primary)]/30 flex items-center justify-center mx-auto mb-5">
+                <svg className="w-7 h-7 text-[var(--color-accent-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
               <h2 className="text-xl font-semibold text-white mb-2">Message Sent!</h2>
-              <p className="text-[#666] text-sm mb-6">
+              <p className="text-[var(--color-text-muted)] text-sm mb-6">
                 We received your message and will reply to your email shortly.
               </p>
               <button
                 onClick={() => setStatus('idle')}
-                className="px-5 py-2 rounded-lg bg-[#1a1a1a] border border-[#2a2a2a] text-sm text-[#aaa] hover:text-white hover:border-[#444] transition-all"
+                className="px-5 py-2 rounded-lg bg-[var(--color-bg-tertiary)] border border-[var(--color-border-hover)] text-sm text-[var(--color-text-secondary)] hover:text-white hover:border-[var(--color-text-muted)] transition-all"
               >
                 Send another message
               </button>
@@ -78,7 +78,7 @@ export default function SupportPage() {
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Email */}
               <div>
-                <label htmlFor="support-email" className="block text-sm font-medium text-[#aaa] mb-2">
+                <label htmlFor="support-email" className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                   Your Email
                 </label>
                 <input
@@ -88,13 +88,13 @@ export default function SupportPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-xl px-4 py-3 text-sm text-white placeholder-[#444] focus:outline-none focus:border-[#00c896] focus:ring-1 focus:ring-[#00c896]/30 transition-all"
+                  className="w-full bg-[var(--color-bg-primary)] border border-[var(--color-border-hover)] rounded-xl px-4 py-3 text-sm text-white placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent-primary)] focus:ring-1 focus:ring-[var(--color-accent-primary)]/30 transition-all"
                 />
               </div>
 
               {/* Message */}
               <div>
-                <label htmlFor="support-message" className="block text-sm font-medium text-[#aaa] mb-2">
+                <label htmlFor="support-message" className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                   Message
                 </label>
                 <textarea
@@ -104,7 +104,7 @@ export default function SupportPage() {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Describe your issue or question..."
-                  className="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-xl px-4 py-3 text-sm text-white placeholder-[#444] focus:outline-none focus:border-[#00c896] focus:ring-1 focus:ring-[#00c896]/30 transition-all resize-none"
+                  className="w-full bg-[var(--color-bg-primary)] border border-[var(--color-border-hover)] rounded-xl px-4 py-3 text-sm text-white placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent-primary)] focus:ring-1 focus:ring-[var(--color-accent-primary)]/30 transition-all resize-none"
                 />
               </div>
 
@@ -123,7 +123,7 @@ export default function SupportPage() {
               <button
                 type="submit"
                 disabled={status === 'loading'}
-                className="w-full py-3 rounded-xl bg-[#00c896] hover:bg-[#00b085] text-black font-semibold text-sm transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-xl bg-[var(--color-accent-primary)] hover:brightness-110 text-black font-semibold text-sm transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {status === 'loading' ? (
                   <>
@@ -142,7 +142,7 @@ export default function SupportPage() {
         </div>
 
         {/* Footer note */}
-        <p className="text-center text-[#444] text-xs mt-6">
+        <p className="text-center text-[var(--color-text-muted)] text-xs mt-6">
           Replies are sent to your email within 24 hours.
         </p>
       </div>

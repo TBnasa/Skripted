@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import { Heart, Download, Code, Sparkles, ArrowRight } from 'lucide-react';
+import { Heart, Download, Code, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/useTranslation';
 
@@ -19,62 +19,67 @@ export default function GalleryHighlights() {
   if (error || !posts || !Array.isArray(posts) || posts.length === 0) return null;
 
   return (
-    <section className="relative z-10 py-32 px-6 bg-[var(--color-bg-primary)] content-visibility-auto">
+    <section className="relative z-10 py-28 px-6 bg-[var(--color-bg-primary)] content-visibility-auto">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+        {/* Section header — editorial, not flashy */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
-            <div className="flex items-center gap-2 text-emerald-400 font-bold tracking-[0.2em] text-xs uppercase mb-4">
-               <Sparkles size={14} className="animate-pulse" />
+            <div className="flex items-center gap-2 text-[var(--color-accent-primary)] font-bold tracking-wide text-xs uppercase mb-3">
+               <span className="w-6 h-px bg-[var(--color-accent-primary)]" />
                <span>{t('gallery.community_showcase')}</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight">
-              {t('gallery.weekly_favorites_prefix', { defaultValue: 'Haftanın Favori' })} <span className="text-emerald-500 italic">{t('gallery.weekly_favorites_suffix', { defaultValue: 'Skriptleri' })}</span>
+            <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight text-balance">
+              {t('gallery.weekly_favorites_prefix', { defaultValue: 'Haftanın Favori' })} <span className="text-[var(--color-accent-primary)]">{t('gallery.weekly_favorites_suffix', { defaultValue: 'Skriptleri' })}</span>
             </h2>
           </div>
           
-          <Link href="/gallery" className="group flex items-center gap-2 text-zinc-400 hover:text-white transition-colors font-bold text-sm">
+          <Link href="/gallery" className="group flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-white transition-colors font-semibold text-sm">
              {t('general.view_all', { defaultValue: 'Tümünü Gör' })} 
-             <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+             <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {posts.map((post: any) => (
+        {/* Editorial grid — first card featured */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {posts.map((post: any, idx: number) => (
             <motion.div
               key={post.id}
-              whileHover={{ y: -8 }}
-              className="group relative bg-white/[0.02] border border-white/[0.05] rounded-[2rem] p-6 hover:bg-white/[0.04] hover:border-emerald-500/20 transition-all duration-500"
+              whileHover={{ y: -3 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+              className={`group relative bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-2xl p-6 hover:border-[var(--color-border-hover)] transition-colors duration-300 ${
+                idx === 0 ? 'sm:col-span-2 lg:col-span-1' : ''
+              }`}
             >
-              <div className="flex items-center justify-between mb-6">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
-                  <Code size={20} />
+              <div className="flex items-center justify-between mb-5">
+                <div className="w-9 h-9 rounded-xl bg-[var(--color-accent-primary)]/10 border border-[var(--color-accent-primary)]/15 flex items-center justify-center text-[var(--color-accent-primary)]">
+                  <Code size={17} />
                 </div>
                 <div className="flex items-center gap-3">
-                   <div className="flex items-center gap-1 text-[10px] font-bold text-zinc-500">
-                      <Heart size={12} className="text-rose-500" />
+                   <div className="flex items-center gap-1 text-[11px] font-semibold text-[var(--color-text-muted)]">
+                      <Heart size={12} className="text-[var(--color-accent-warm)]" />
                       {post.likes_count}
                    </div>
-                   <div className="flex items-center gap-1 text-[10px] font-bold text-zinc-500">
-                      <Download size={12} className="text-emerald-500" />
+                   <div className="flex items-center gap-1 text-[11px] font-semibold text-[var(--color-text-muted)]">
+                      <Download size={12} className="text-[var(--color-accent-primary)]" />
                       {post.downloads_count}
                    </div>
                 </div>
               </div>
 
-              <h3 className="text-lg font-bold text-white mb-2 line-clamp-1 group-hover:text-emerald-400 transition-colors">
+              <h3 className="text-base font-bold text-white mb-2 line-clamp-1 group-hover:text-[var(--color-accent-primary)] transition-colors duration-250">
                 {post.title}
               </h3>
-              <p className="text-sm text-zinc-500 line-clamp-2 mb-6 h-10">
+              <p className="text-sm text-[var(--color-text-muted)] line-clamp-2 mb-6 h-10">
                 {post.description}
               </p>
 
-              <div className="flex items-center justify-between pt-4 border-t border-white/[0.05]">
-                <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest truncate max-w-[100px]">
+              <div className="flex items-center justify-between pt-4 border-t border-[var(--color-border)]">
+                <span className="text-[10px] font-semibold text-[var(--color-text-muted)] uppercase tracking-wider truncate max-w-[100px]">
                   {post.author_name}
                 </span>
                 <Link 
                   href={`/gallery/${post.id}`}
-                  className="p-2 rounded-lg bg-white/[0.05] hover:bg-emerald-500 hover:text-black transition-all"
+                  className="p-2 rounded-lg bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] hover:bg-[var(--color-accent-primary)] hover:border-[var(--color-accent-primary)] hover:text-[var(--color-bg-primary)] transition-all duration-200"
                 >
                   <ArrowRight size={14} />
                 </Link>
