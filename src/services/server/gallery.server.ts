@@ -66,7 +66,7 @@ export class GalleryService {
   static async getPostById(id: string) {
     const { data, error } = await this.supabase
       .from(this.TABLE_POSTS)
-      .select('id, user_id, author_name, title, description, image_urls, likes_count, downloads_count, created_at, is_public, category, tags')
+      .select('id, user_id, author_name, title, description, code_snippet, image_urls, likes_count, downloads_count, created_at, is_public, category, tags')
       .eq('id', id)
       .single();
 
