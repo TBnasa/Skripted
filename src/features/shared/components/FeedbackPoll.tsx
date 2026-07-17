@@ -7,6 +7,7 @@ interface FeedbackPollProps {
 
 import { useState } from 'react';
 import { useTranslation } from '@/lib/useTranslation';
+import { Check, X } from 'lucide-react';
 
 export default function FeedbackPoll({ onFeedback, visible }: FeedbackPollProps) {
   const { t, mounted } = useTranslation();
@@ -42,12 +43,14 @@ export default function FeedbackPoll({ onFeedback, visible }: FeedbackPollProps)
             onClick={handleSuccess}
             className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-500/8 border border-emerald-500/15 px-4 py-2.5 text-sm font-medium text-emerald-400 transition-all duration-300 hover:bg-emerald-500/15 hover:border-emerald-500/25 hover:scale-[1.02]"
           >
+            <Check className="w-4 h-4" />
             {t('chat.feedback_worked')}
           </button>
           <button
             onClick={handleError}
             className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-red-500/8 border border-red-500/15 px-4 py-2.5 text-sm font-medium text-red-400 transition-all duration-300 hover:bg-red-500/15 hover:border-red-500/25 hover:scale-[1.02]"
           >
+            <X className="w-4 h-4" />
             {t('chat.feedback_error')}
           </button>
         </div>

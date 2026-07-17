@@ -53,7 +53,7 @@ const GalleryCard = memo(({ post }: { post: GalleryPost }) => {
     >
       <Link 
         href={`/gallery/${post.id}`} 
-        className="group flex flex-col bg-[#0a0a0c]/80 backdrop-blur-md border border-white/[0.06] rounded-[2.5rem] overflow-hidden hover:border-emerald-500/30 transition-all duration-500 hover:shadow-[0_20px_60px_-15px_rgba(16,185,129,0.15)] hover:-translate-y-2 relative h-full transform-gpu"
+        className="group flex flex-col bg-[#0a0a0c]/80 backdrop-blur-md border border-white/[0.06] rounded-[2.5rem] overflow-hidden hover:border-emerald-500/30 transition-[border-color,box-shadow,transform] duration-500 hover:shadow-[0_20px_60px_-15px_rgba(16,185,129,0.15)] hover:-translate-y-2 relative h-full transform-gpu"
         style={{ contain: 'content' }} // Isolate layout/paint
       >
         

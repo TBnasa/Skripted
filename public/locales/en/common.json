@@ -66,8 +66,8 @@
     "no_discussion": "No discussion started yet.",
     "sent_to_editor": "Skript sent to editor!",
     "feedback_question": "Did the generated skript work?",
-    "feedback_worked": "✅ It Worked!",
-    "feedback_error": "❌ Got an Error",
+    "feedback_worked": "It Worked!",
+    "feedback_error": "Got an Error",
     "feedback_placeholder": "Paste your console error here (optional)...",
     "feedback_submit": "Submit Error Report",
     "suggestion_economy": "Economy System",
@@ -82,20 +82,20 @@
   "hero": {
     "title_1": "Imagine,",
     "title_2": "AI Builds.",
-    "desc": "The world's most advanced AI-powered Minecraft Skript IDE. Write, audit, and publish your code in seconds with 120B parameter models.",
+    "desc": "AI-powered Minecraft Skript IDE. Write, audit, and publish code in seconds with 120B parameter models.",
     "explore_gallery": "Explore Gallery",
     "start_learning": "Start Learning",
-    "academy_tooltip": "Our AI-powered adaptive learning path is coming soon! 🚀"
+    "academy_tooltip": "AI-powered learning path coming soon"
   },
   "features": {
-    "feature1_title": "Real-time AI Auditor",
-    "feature1_desc": "Your code isn't just written; it's audited for logic errors by 120B parameter models via AI Judge.",
-    "feature2_title": "HYBRID CLOUD STORAGE",
-    "feature2_desc": "Unlimited skript capacity. Your code is stored encrypted in our secure hybrid cloud system (Postgres + Storage).",
-    "feature3_title": "Universal Addon Support",
-    "feature3_desc": "Automatic syntax and optimization support for all popular addons from TuSKe to SkQuantum.",
-    "feature4_title": "Adaptive Learning",
-    "feature4_desc": "Don't just copy-paste. Learn Skript logic with our Duolingo-style adaptive AI mentor."
+    "feature1_title": "AI Code Auditor",
+    "feature1_desc": "Every snippet is checked for logic errors by 120B parameter models via AI Judge.",
+    "feature2_title": "Cloud Storage",
+    "feature2_desc": "Unlimited skript capacity. Code is encrypted and stored in Postgres + object storage.",
+    "feature3_title": "Addon Support",
+    "feature3_desc": "Automatic syntax and optimization for major addons including TuSKe, SkQuery, and SkQuantum.",
+    "feature4_title": "Guided Learning",
+    "feature4_desc": "Learn Skript logic step by step with an AI mentor that adapts to your skill level."
   },
   "stats": {
     "total_snippets": "Total Code Snippets",

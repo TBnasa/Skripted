@@ -8,6 +8,7 @@ import { useAuth } from '@clerk/nextjs';
 import { registerSkriptLanguage } from '@/lib/skript-language';
 import { setupSkriptLinter } from '@/lib/skript-linter';
 import { toast } from 'sonner';
+import { Wallet, Shield, Gamepad2, MessageSquare, Lock, FolderOpen } from 'lucide-react';
 
 // Sub-components
 import { PostDetailHeader } from './PostDetailHeader';
@@ -43,13 +44,13 @@ interface Comment {
 }
 
 const CATEGORY_IDS = ['Economy', 'Admin', 'Minigame', 'Chat', 'Security', 'Other'];
-const CATEGORY_ICONS: Record<string, string> = {
-  Economy: '💰',
-  Admin: '🛡️',
-  Minigame: '🎮',
-  Chat: '💬',
-  Security: '🔐',
-  Other: '📁',
+const CATEGORY_ICONS: Record<string, React.ReactNode> = {
+  Economy: <Wallet className="w-4 h-4" />,
+  Admin: <Shield className="w-4 h-4" />,
+  Minigame: <Gamepad2 className="w-4 h-4" />,
+  Chat: <MessageSquare className="w-4 h-4" />,
+  Security: <Lock className="w-4 h-4" />,
+  Other: <FolderOpen className="w-4 h-4" />,
 };
 
 /**

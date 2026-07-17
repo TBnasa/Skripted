@@ -130,8 +130,8 @@ export function AcademyChat() {
       const fallback: Message = {
         role: 'mentor',
         content: isTr
-          ? '🔧 Şu an mentor servisi meşgul. Ama merak etme, ipuçları her zaman yanında! Sol taraftaki 💡 butonunu kullan.'
-          : '🔧 The mentor service is busy right now. But don\'t worry, hints are always available! Use the 💡 button on the left.',
+          ? 'Mentor servisi şu an meşgul. Ipuçları sol taraftaki butonda seni bekliyor.'
+          : 'The mentor service is busy right now. Hints are available in the sidebar.',
       };
       setMessages(prev => [...prev, fallback]);
     }
@@ -225,7 +225,7 @@ export function AcademyChat() {
         </form>
         <div className="mt-2 flex items-center justify-center gap-1.5 text-[9px] text-zinc-600 uppercase tracking-widest font-bold">
           <Sparkles size={8} className="text-purple-400" />
-          Powered by Skripted Adaptive Mentor
+          Skripted Mentor
         </div>
       </div>
     </div>

@@ -66,8 +66,8 @@
     "no_discussion": "Henüz tartışma başlatılmamış.",
     "sent_to_editor": "Skript editöre gönderildi!",
     "feedback_question": "Oluşturulan skript çalıştı mı?",
-    "feedback_worked": "✅ Çalıştı!",
-    "feedback_error": "❌ Hata Aldım",
+    "feedback_worked": "Çalıştı!",
+    "feedback_error": "Hata Aldım",
     "feedback_placeholder": "Konsol hatasını buraya yapıştırın (isteğe bağlı)...",
     "feedback_submit": "Hata Raporunu Gönder",
     "suggestion_economy": "Ekonomi Sistemi",
@@ -82,20 +82,20 @@
   "hero": {
     "title_1": "Hayal Edin,",
     "title_2": "AI Yazsın.",
-    "desc": "Dünyanın en gelişmiş AI destekli Minecraft Skript IDE'si. 120 Milyar parametreli modellerle kodunuzu saniyeler içinde yazın, denetleyin ve yayınlayın.",
+    "desc": "AI destekli Minecraft Skript IDE'si. 120 Milyar parametreli modellerle kodunuzu saniyeler içinde yazın, denetleyin ve yayınlayın.",
     "explore_gallery": "Galeriyi Keşfet",
     "start_learning": "Öğrenmeye Başla",
-    "academy_tooltip": "AI destekli adaptif öğrenme yolumuz yakında burada! 🚀"
+    "academy_tooltip": "AI destekli öğrenme yolu yakında geliyor"
   },
   "features": {
-    "feature1_title": "Anlık Yapay Zeka Denetçisi",
-    "feature1_desc": "Kodunuz sadece yazılmaz; AI Judge tarafından mantık hatalarına karşı 120B parametereli modellerle denetlenir.",
-    "feature2_title": "HİBRİT BULUT DEPOLAMA",
-    "feature2_desc": "Sınırsız skript kapasitesi. Kodlarınız en güvenli hibrit bulut sisteminde (Postgres + Storage) şifrelenmiş olarak saklanır.",
-    "feature3_title": "Evrensel Eklenti (Addon) Desteği",
-    "feature3_desc": "TuSKe'den SkQuantum'a kadar tüm popüler addonlar için otomatik sentaks ve optimizasyon desteği.",
-    "feature4_title": "Adaptif Öğrenme",
-    "feature4_desc": "Sadece kopyala-yapıştır yapmayın. Skript mantığını Duolingo tarzı adaptif AI mentörümüzle öğrenin."
+    "feature1_title": "AI Kod Denetçisi",
+    "feature1_desc": "Her kod parçacığı, AI Judge tarafindan 120B parametreli modellerle mantık hatalarına karşı denetlenir.",
+    "feature2_title": "Bulut Depolama",
+    "feature2_desc": "Sınırsız skript kapasitesi. Kodlar Postgres ve obje depolamada şifrelenmiş olarak saklanır.",
+    "feature3_title": "Eklenti Desteği",
+    "feature3_desc": "TuSKe, SkQuery ve SkQuantum başta olmak üzere popüler eklentiler için otomatik sentaks ve optimizasyon.",
+    "feature4_title": "Rehberli Öğrenme",
+    "feature4_desc": "Skript mantığını adım adım, seviyene uyum sağlayan bir AI mentör ile öğren."
   },
   "stats": {
     "total_snippets": "Toplam Kod Parçacığı",

@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { Search, Code, Sparkles, Filter } from 'lucide-react';
+import { Search, Code, Sparkles, Filter, Wallet, Shield, Gamepad2, MessageSquare, Lock, FolderOpen } from 'lucide-react';
 import GalleryCard from './GalleryCard';
 
 interface GalleryPost {
@@ -23,14 +23,14 @@ interface GalleryPost {
   tags: string[];
 }
 
-const CATEGORIES_ICONS: Record<string, string> = {
-  All: '✨',
-  Economy: '💰',
-  Admin: '🛡️',
-  Minigame: '🎮',
-  Chat: '💬',
-  Security: '🔐',
-  Other: '📁',
+const CATEGORY_ICONS: Record<string, React.ReactNode> = {
+  All: <Sparkles className="w-4 h-4" />,
+  Economy: <Wallet className="w-4 h-4" />,
+  Admin: <Shield className="w-4 h-4" />,
+  Minigame: <Gamepad2 className="w-4 h-4" />,
+  Chat: <MessageSquare className="w-4 h-4" />,
+  Security: <Lock className="w-4 h-4" />,
+  Other: <FolderOpen className="w-4 h-4" />,
 };
 
 const CATEGORY_IDS = ['All', 'Economy', 'Admin', 'Minigame', 'Chat', 'Security', 'Other'];
@@ -147,7 +147,7 @@ export default function GalleryContent() {
                       : 'bg-white/[0.02] border-white/[0.06] text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.05]'
                   }`}
                 >
-                  <span>{CATEGORIES_ICONS[catId]}</span>
+                  {CATEGORY_ICONS[catId]}
                   {t(`gallery.categories.${catId}`)}
                 </button>
               ))}

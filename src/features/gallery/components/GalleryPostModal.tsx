@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef } from 'react';
 import { GalleryClientService } from '@/services/client/gallery.client';
 import { GalleryPostSchema } from '@/types/schemas';
 import { useAuth } from '@clerk/nextjs';
-import { X, UploadCloud, Loader2, Image as ImageIcon, CheckCircle2, AlertCircle, Hash, Tag } from 'lucide-react';
+import { X, UploadCloud, Loader2, Image as ImageIcon, CheckCircle2, AlertCircle, Hash, Tag, Wallet, Shield, Gamepad2, MessageSquare, Lock, FolderOpen } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from '@/lib/useTranslation';
 
@@ -14,13 +14,13 @@ interface GalleryPostModalProps {
 }
 
 const CATEGORY_IDS = ['Economy', 'Admin', 'Minigame', 'Chat', 'Security', 'Other'];
-const CATEGORY_ICONS: Record<string, string> = {
-  Economy: '💰',
-  Admin: '🛡️',
-  Minigame: '🎮',
-  Chat: '💬',
-  Security: '🔐',
-  Other: '📁',
+const CATEGORY_ICONS: Record<string, React.ReactNode> = {
+  Economy: <Wallet className="w-4 h-4" />,
+  Admin: <Shield className="w-4 h-4" />,
+  Minigame: <Gamepad2 className="w-4 h-4" />,
+  Chat: <MessageSquare className="w-4 h-4" />,
+  Security: <Lock className="w-4 h-4" />,
+  Other: <FolderOpen className="w-4 h-4" />,
 };
 
 export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: GalleryPostModalProps) {

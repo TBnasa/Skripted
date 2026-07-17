@@ -24,7 +24,7 @@ interface PostDetailHeaderProps {
   handleShare: () => void;
   handleDownload: () => void;
   categoryIds: string[];
-  categoryIcons: Record<string, string>;
+  categoryIcons: Record<string, React.ReactNode>;
 }
 
 export function PostDetailHeader({
