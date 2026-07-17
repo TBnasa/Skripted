@@ -1,17 +1,14 @@
 'use client';
 
 import Overview from '@/features/shared/components/Dashboard/Overview';
-import Navbar from '@/features/shared/components/Navbar';
-import Sidebar from '@/features/shared/components/Sidebar';
+import AppSidebar from '@/features/shared/components/AppSidebar';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { LayoutDashboard, History, Settings } from 'lucide-react';
 import { useAuth } from '@clerk/nextjs';
-import { redirect } from 'next/navigation';
 
 export default function DashboardPage() {
   const { isLoaded, userId } = useAuth();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [history, setHistory] = useState<any[]>([]);
   const [settings, setSettings] = useState({
     autoOptimize: true,
@@ -51,111 +48,100 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white">
-      <Navbar />
-      
-      <div className="flex pt-16 h-screen">
-        <Sidebar 
-          onNewChat={() => window.location.href = '/chat'}
-          onLoadChat={(id) => window.location.href = `/chat?id=${id}`}
-          activeChatId=""
-          refreshKey={0}
-          isOpen={sidebarOpen}
-          onToggle={() => setSidebarOpen(!sidebarOpen)}
-        />
+    <div className="min-h-screen bg-[var(--color-bg-primary)] text-white">
+      <AppSidebar />
 
-        <main className="flex-1 overflow-y-auto p-8 custom-scrollbar">
-          <div className="max-w-6xl mx-auto">
-            <header className="mb-10">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="flex items-center gap-3 mb-2"
-              >
-                <div className="p-2 bg-emerald-500/10 rounded-xl text-emerald-400">
-                  <LayoutDashboard size={24} />
-                </div>
-                <h1 className="text-3xl font-black tracking-tight">Project Dashboard</h1>
-              </motion.div>
-              <p className="text-zinc-500 text-sm">Visualize your Skript optimization journey and performance impact.</p>
-            </header>
+      <main className="md:ml-60 min-h-screen overflow-y-auto p-8 custom-scrollbar">
+        <div className="max-w-6xl mx-auto pt-4">
+          <header className="mb-10">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-3 mb-2"
+            >
+              <div className="p-2 bg-emerald-500/10 rounded-xl text-emerald-400">
+                <LayoutDashboard size={24} />
+              </div>
+              <h1 className="text-3xl font-black tracking-tight">Project Dashboard</h1>
+            </motion.div>
+            <p className="text-zinc-500 text-sm">Visualize your Skript optimization journey and performance impact.</p>
+          </header>
 
-            <section className="mb-12">
-              <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-zinc-400 mb-6 flex items-center gap-2">
-                <span className="w-8 h-px bg-zinc-800" />
-                Performance Overview
-              </h2>
-              <Overview isCompact={false} />
-            </section>
+          <section className="mb-12">
+            <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-zinc-400 mb-6 flex items-center gap-2">
+              <span className="w-8 h-px bg-zinc-800" />
+              Performance Overview
+            </h2>
+            <Overview isCompact={false} />
+          </section>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <DashboardCard 
-                title="Recent History" 
-                icon={<History size={18} />}
-                description="Your last code optimizations and their scores."
-              >
-                <div className="flex flex-col gap-3">
-                  {history.length > 0 ? (
-                    history.slice(0, 10).map((item) => (
-                      <div key={item.id} className="flex items-center justify-between p-4 bg-zinc-900/30 border border-zinc-800/50 rounded-2xl hover:border-zinc-700 transition-colors group">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-2 h-2 rounded-full ${getDotColor(item.score)} shadow-[0_0_8px_rgba(0,0,0,0.5)]`} />
-                          <div className="flex flex-col">
-                            <span className="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">{item.title}</span>
-                            <span className="text-[10px] text-zinc-500 font-mono italic">{item.category}</span>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <span className="text-[10px] text-zinc-600 font-mono hidden sm:block">{new Date(item.timestamp).toLocaleDateString()}</span>
-                          <span className={`text-xs font-mono font-bold ${getScoreColor(item.score)}`}>{item.score}%</span>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <DashboardCard
+              title="Recent History"
+              icon={<History size={18} />}
+              description="Your last code optimizations and their scores."
+            >
+              <div className="flex flex-col gap-3">
+                {history.length > 0 ? (
+                  history.slice(0, 10).map((item) => (
+                    <div key={item.id} className="flex items-center justify-between p-4 bg-zinc-900/30 border border-zinc-800/50 rounded-2xl hover:border-zinc-700 transition-colors group">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-2 h-2 rounded-full ${getDotColor(item.score)} shadow-[0_0_8px_rgba(0,0,0,0.5)]`} />
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">{item.title}</span>
+                          <span className="text-[10px] text-zinc-500 font-mono italic">{item.category}</span>
                         </div>
                       </div>
-                    ))
-                  ) : (
-                    <div className="text-center py-10 text-zinc-600 text-sm italic">
-                      No analysis history found. Start a new chat to begin.
+                      <div className="flex items-center gap-4">
+                        <span className="text-[10px] text-zinc-600 font-mono hidden sm:block">{new Date(item.timestamp).toLocaleDateString()}</span>
+                        <span className={`text-xs font-mono font-bold ${getScoreColor(item.score)}`}>{item.score}%</span>
+                      </div>
                     </div>
-                  )}
-                </div>
-              </DashboardCard>
-
-              <DashboardCard 
-                title="Global Settings" 
-                icon={<Settings size={18} />}
-                description="Manage your engine preferences and default versions."
-              >
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between cursor-pointer group" onClick={() => updateSetting('autoOptimize')}>
-                    <div className="flex flex-col">
-                      <span className="text-sm font-bold text-zinc-300 group-hover:text-white">Auto-Optimization</span>
-                      <span className="text-[10px] text-zinc-500">Automatically fix detected bottleneck patterns.</span>
-                    </div>
-                    <div className={`w-10 h-5 rounded-full relative transition-colors duration-300 ${settings.autoOptimize ? 'bg-emerald-500' : 'bg-zinc-800'}`}>
-                      <motion.div 
-                        animate={{ x: settings.autoOptimize ? 20 : 0 }}
-                        className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full shadow-sm" 
-                      />
-                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-10 text-zinc-600 text-sm italic">
+                    No analysis history found. Start a new chat to begin.
                   </div>
+                )}
+              </div>
+            </DashboardCard>
 
-                  <div className="flex items-center justify-between cursor-pointer group" onClick={() => updateSetting('verboseError')}>
-                    <div className="flex flex-col">
-                      <span className="text-sm font-bold text-zinc-300 group-hover:text-white">Verbose Error Logic</span>
-                      <span className="text-[10px] text-zinc-500">Enable deep breakdown of syntax issues.</span>
-                    </div>
-                    <div className={`w-10 h-5 rounded-full relative transition-colors duration-300 ${settings.verboseError ? 'bg-emerald-500' : 'bg-zinc-800'}`}>
-                      <motion.div 
-                        animate={{ x: settings.verboseError ? 20 : 0 }}
-                        className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full shadow-sm" 
-                      />
-                    </div>
+            <DashboardCard
+              title="Global Settings"
+              icon={<Settings size={18} />}
+              description="Manage your engine preferences and default versions."
+            >
+              <div className="space-y-6">
+                <div className="flex items-center justify-between cursor-pointer group" onClick={() => updateSetting('autoOptimize')}>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-bold text-zinc-300 group-hover:text-white">Auto-Optimization</span>
+                    <span className="text-[10px] text-zinc-500">Automatically fix detected bottleneck patterns.</span>
+                  </div>
+                  <div className={`w-10 h-5 rounded-full relative transition-colors duration-300 ${settings.autoOptimize ? 'bg-emerald-500' : 'bg-zinc-800'}`}>
+                    <motion.div
+                      animate={{ x: settings.autoOptimize ? 20 : 0 }}
+                      className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full shadow-sm"
+                    />
                   </div>
                 </div>
-              </DashboardCard>
-            </div>
+
+                <div className="flex items-center justify-between cursor-pointer group" onClick={() => updateSetting('verboseError')}>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-bold text-zinc-300 group-hover:text-white">Verbose Error Logic</span>
+                    <span className="text-[10px] text-zinc-500">Enable deep breakdown of syntax issues.</span>
+                  </div>
+                  <div className={`w-10 h-5 rounded-full relative transition-colors duration-300 ${settings.verboseError ? 'bg-emerald-500' : 'bg-zinc-800'}`}>
+                    <motion.div
+                      animate={{ x: settings.verboseError ? 20 : 0 }}
+                      className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full shadow-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            </DashboardCard>
           </div>
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   );
 }

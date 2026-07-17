@@ -4,7 +4,7 @@ import { useTranslation } from '@/lib/useTranslation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
-import Navbar from '@/features/shared/components/Navbar';
+import AppSidebar from '@/features/shared/components/AppSidebar';
 import GalleryPostModal from '@/features/gallery/components/GalleryPostModal';
 import { 
   Cloud, 
@@ -121,9 +121,9 @@ export default function UserScriptsPage() {
 
   if (!mounted || !isLoaded) {
     return (
-      <div className="flex min-h-screen flex-col bg-[var(--color-bg-primary)]">
-        <Navbar />
-        <div className="flex-1 flex items-center justify-center">
+      <div className="flex min-h-screen bg-[var(--color-bg-primary)]">
+        <AppSidebar />
+        <div className="flex-1 md:ml-60 flex items-center justify-center">
            <Loader2 className="w-12 h-12 text-emerald-500 animate-spin" />
         </div>
       </div>
@@ -132,9 +132,9 @@ export default function UserScriptsPage() {
 
   if (!userId) {
     return (
-      <div className="flex min-h-screen flex-col bg-[var(--color-bg-primary)]">
-        <Navbar />
-        <div className="flex-1 flex items-center justify-center py-20 px-4">
+      <div className="flex min-h-screen bg-[var(--color-bg-primary)]">
+        <AppSidebar />
+        <div className="flex-1 md:ml-60 flex items-center justify-center py-20 px-4">
           <div className="text-center p-12 bg-white/[0.02] border border-white/[0.06] rounded-[3rem] shadow-2xl relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.02] to-transparent"></div>
             <div className="relative z-10">
@@ -159,10 +159,10 @@ export default function UserScriptsPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[var(--color-bg-primary)] text-white">
-      <Navbar />
+    <div className="min-h-screen bg-[var(--color-bg-primary)] text-white">
+      <AppSidebar />
       
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 overflow-hidden">
+      <main className="md:ml-60 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-16 relative">
           <div className="absolute -top-24 -left-24 w-64 h-64 bg-emerald-500/10 blur-[120px] pointer-events-none"></div>
           
