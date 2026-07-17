@@ -4,7 +4,7 @@
 
 export const APP_NAME = 'Skripted Engine' as const;
 export const APP_DESCRIPTION = 'AI Destekli Minecraft Skript Oluşturucu ve Galeri' as const;
-export const APP_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://skripted.vercel.app') as const;
+export const APP_URL: string = process.env.NEXT_PUBLIC_SITE_URL || 'https://skripted.vercel.app';
 
 // OpenRouter
 export const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1/chat/completions' as const;
