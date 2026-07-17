@@ -66,7 +66,7 @@ export class GalleryService {
   static async getPostById(id: string) {
     const { data, error } = await this.supabase
       .from(this.TABLE_POSTS)
-      .select('*')
+      .select('id, user_id, author_name, title, description, image_urls, likes_count, downloads_count, created_at, is_public, category, tags')
       .eq('id', id)
       .single();
 
@@ -184,7 +184,7 @@ export class GalleryService {
   static async getComments(postId: string) {
     const { data, error } = await this.supabase
       .from(this.TABLE_COMMENTS)
-      .select('*')
+      .select('id, post_id, user_id, author_name, content, parent_id, created_at')
       .eq('post_id', postId)
       .order('created_at', { ascending: true });
 
@@ -208,7 +208,7 @@ export class GalleryService {
         content: sanitizedContent,
         parent_id: validated.parentId ?? null,
       })
-      .select()
+      .select('id, post_id, user_id, author_name, content, parent_id, created_at')
       .single();
 
     if (error) throw new GalleryServiceError('Failed to add comment', error);

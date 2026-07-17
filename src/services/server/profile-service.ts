@@ -75,36 +75,29 @@ export class ProfileService {
       throw AppError.validation('Kendinizi takip edemezsiniz');
     }
 
-    const { error } = await this.supabase
-      .from('followers')
-      .insert({ follower_id: followerId, following_id: followingId });
+    // Atomic: single RPC handles insert + count increments
+    const { error } = await this.supabase.rpc('follow_user', {
+      p_follower_id: followerId,
+      p_following_id: followingId,
+    });
 
     if (error) {
-      if (error.code === '23505') return { success: true }; // Already following
       throw AppError.internal('Failed to follow user', error);
     }
-
-    // Increment counts (RPCs should be idempotent or handled by DB triggers in production)
-    await this.supabase.rpc('increment_follower_count', { user_id: followingId });
-    await this.supabase.rpc('increment_following_count', { user_id: followerId });
 
     return { success: true };
   }
 
   static async unfollowUser(followerId: string, followingId: string) {
-    const { error } = await this.supabase
-      .from('followers')
-      .delete()
-      .eq('follower_id', followerId)
-      .eq('following_id', followingId);
+    // Atomic: single RPC handles delete + count decrements
+    const { error } = await this.supabase.rpc('unfollow_user', {
+      p_follower_id: followerId,
+      p_following_id: followingId,
+    });
 
     if (error) {
       throw AppError.internal('Failed to unfollow user', error);
     }
-
-    // Decrement counts
-    await this.supabase.rpc('decrement_follower_count', { user_id: followingId });
-    await this.supabase.rpc('decrement_following_count', { user_id: followerId });
 
     return { success: true };
   }

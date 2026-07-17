@@ -70,12 +70,12 @@ export class UserScriptService {
   static async getScriptById(id: string, userId: string) {
     const { data, error } = await this.supabase
       .from(this.TABLE_SCRIPTS)
-      .select('*')
+      .select('id, user_id, title, content, version, linked_session_id, updated_at, created_at')
       .eq('id', id)
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
 
-    if (error) throw AppError.internal(`Script not found: ${id}`, error);
+    if (error || !data) throw AppError.internal(`Script not found: ${id}`, error);
     
     const hydrated = await StorageArchiver.hydrateObject(data);
 
@@ -87,7 +87,7 @@ export class UserScriptService {
         .eq('role', 'assistant')
         .order('created_at', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
       if (!chatError && chatData) {
         hydrated.content = extractCode(chatData.content);
@@ -181,9 +181,13 @@ export class UserScriptService {
   /**
    * Private helper to handle versioning without blocking the main flow.
    */
-  private static async createVersionSnapshot(scriptId: string, content: string) {
-    await this.supabase
+  private static async createVersionSnapshot(scriptId: string, content: string | null) {
+    if (!content) return;
+    const { error } = await this.supabase
       .from(this.TABLE_VERSIONS)
       .insert({ script_id: scriptId, content });
+    if (error) {
+      console.error('[UserScriptService] Version snapshot failed:', error);
+    }
   }
 }

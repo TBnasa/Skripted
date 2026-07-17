@@ -29,20 +29,21 @@ export async function GET() {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // Collapse into unique sessions for the Sidebar
-    const sessions = data.reduce((acc: any[], current) => {
-      const existing = acc.find(s => s.id === current.session_id);
+    // Collapse into unique sessions using Map (O(n) instead of O(n²))
+    const sessionMap = new Map<string, { id: string; title: string; created_at: string }>();
+    for (const row of data) {
+      const existing = sessionMap.get(row.session_id);
       if (!existing) {
-        acc.push({
-          id: current.session_id,
-          title: current.title || 'Untitled Chat',
-          created_at: current.created_at
+        sessionMap.set(row.session_id, {
+          id: row.session_id,
+          title: row.title || 'Untitled Chat',
+          created_at: row.created_at
         });
-      } else if (current.title && !existing.title) {
-        existing.title = current.title;
+      } else if (row.title && existing.title === 'Untitled Chat') {
+        existing.title = row.title;
       }
-      return acc;
-    }, []);
+    }
+    const sessions = Array.from(sessionMap.values());
 
     return NextResponse.json(sessions);
   } catch (error) {

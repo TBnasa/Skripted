@@ -11,12 +11,16 @@ CREATE TABLE IF NOT EXISTS public.chat_history (
   session_id UUID NOT NULL,
   role TEXT NOT NULL CHECK (role IN ('user', 'assistant')),
   content TEXT NOT NULL,
+  title TEXT,
+  reasoning TEXT,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
 -- 2. Create indexes for performance
 CREATE INDEX IF NOT EXISTS idx_chat_history_session ON public.chat_history(session_id);
 CREATE INDEX IF NOT EXISTS idx_chat_history_user ON public.chat_history(user_id);
+CREATE INDEX IF NOT EXISTS idx_chat_history_user_session ON public.chat_history(user_id, session_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_chat_history_title_not_null ON public.chat_history(session_id, created_at DESC) WHERE title IS NOT NULL;
 
 -- 3. Enable RLS
 ALTER TABLE public.chat_history ENABLE ROW LEVEL SECURITY;
