@@ -3,10 +3,10 @@
 import { useSignIn } from '@clerk/nextjs';
 
 export default function AuthForm() {
-  const { signIn, isLoaded } = useSignIn();
+  const { signIn } = useSignIn();
 
   const handleGitHubLogin = async () => {
-    if (!isLoaded || !signIn) return;
+    if (!signIn) return;
     await signIn.authenticateWithRedirect({
       strategy: 'oauth_github',
       redirectUrl: '/auth/callback',
@@ -18,7 +18,7 @@ export default function AuthForm() {
     <div className="flex flex-col gap-6">
       <button
         onClick={handleGitHubLogin}
-        disabled={!isLoaded}
+        disabled={!signIn}
         className="mc-btn flex w-full items-center justify-center gap-3 bg-[#24292F] px-4 py-3 text-sm font-bold uppercase tracking-widest text-white transition-all hover:bg-[#24292F]/90 disabled:opacity-50"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
