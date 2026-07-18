@@ -53,7 +53,7 @@ const GalleryCard = memo(({ post }: { post: GalleryPost }) => {
     >
       <Link 
         href={`/gallery/${post.id}`} 
-        className="group flex flex-col bg-[#0a0a0c]/80 backdrop-blur-md border border-white/[0.06] rounded-[2.5rem] overflow-hidden hover:border-emerald-500/30 transition-[border-color,box-shadow,transform] duration-500 hover:shadow-[0_20px_60px_-15px_rgba(16,185,129,0.15)] hover:-translate-y-2 relative h-full transform-gpu"
+        className="group flex flex-col bg-[#0a0a0c]/80 backdrop-blur-md border border-white/[0.06] rounded-[2.5rem] overflow-hidden hover:border-white/15 transition-[border-color,box-shadow,transform] duration-500 hover:shadow-[0_20px_60px_-15px_rgba(255,255,255,0.06)] hover:-translate-y-2 relative h-full transform-gpu"
         style={{ contain: 'content' }} // Isolate layout/paint
       >
         
@@ -81,14 +81,14 @@ const GalleryCard = memo(({ post }: { post: GalleryPost }) => {
               {post.likes_count}
             </div>
             <div className="flex items-center gap-1.5 px-3 py-1.5 bg-black/50 backdrop-blur-xl border border-white/10 rounded-full text-[10px] font-black text-white shadow-2xl transition-transform group-hover:scale-110">
-              <Download size={14} className="text-emerald-400" />
+              <Download size={14} className="text-zinc-200" />
               {post.downloads_count}
             </div>
           </div>
 
           {/* Category Badge */}
           <div className="absolute bottom-4 left-4 z-20 translate-z-0">
-            <span className="px-3 py-1 bg-emerald-500/90 backdrop-blur-md text-black border border-emerald-400 text-[10px] font-black uppercase tracking-widest rounded-[10px] shadow-lg">
+            <span className="px-3 py-1 bg-zinc-300/90 backdrop-blur-md text-black border border-zinc-200 text-[10px] font-black uppercase tracking-widest rounded-[10px] shadow-lg">
               {t(`gallery.categories.${post.category}`)}
             </span>
           </div>
@@ -98,7 +98,7 @@ const GalleryCard = memo(({ post }: { post: GalleryPost }) => {
 
         {/* Content Area - Flattened DOM */}
         <div className="p-7 flex flex-col flex-1 relative bg-gradient-to-b from-transparent to-white/[0.01]">
-          <h3 className="text-xl font-bold text-white line-clamp-1 group-hover:text-emerald-400 transition-colors mb-3 tracking-tight">
+          <h3 className="text-xl font-bold text-white line-clamp-1 group-hover:text-zinc-200 transition-colors mb-3 tracking-tight">
             {post.title}
           </h3>
           
@@ -107,7 +107,7 @@ const GalleryCard = memo(({ post }: { post: GalleryPost }) => {
             <div className="flex flex-wrap gap-2 mb-6 h-5 overflow-hidden">
               {post.tags.slice(0, 3).map(tag => (
                 <span key={tag} className="px-2 py-0.5 rounded-md bg-white/[0.03] border border-white/[0.05] text-[9px] font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-1">
-                  <Hash size={8} className="text-emerald-500" />
+                  <Hash size={8} className="text-zinc-300" />
                   {tag}
                 </span>
               ))}
@@ -116,7 +116,7 @@ const GalleryCard = memo(({ post }: { post: GalleryPost }) => {
           
           <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/[0.04]">
             <div className="flex items-center gap-3 overflow-hidden">
-              <div className="shrink-0 w-7 h-7 rounded-[10px] bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 group-hover:bg-emerald-500 group-hover:text-black transition-all duration-500 text-zinc-400">
+              <div className="shrink-0 w-7 h-7 rounded-[10px] bg-zinc-300/10 flex items-center justify-center border border-white/8 group-hover:bg-zinc-300 group-hover:text-black transition-all duration-500 text-zinc-400">
                 <User size={12} />
               </div>
               <span className="text-xs font-bold text-zinc-500 group-hover:text-zinc-300 transition-colors truncate">

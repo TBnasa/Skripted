@@ -91,7 +91,7 @@ export default function GalleryContent() {
   return (
     <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12 relative">
-        <div className="absolute -top-24 -left-24 w-64 h-64 bg-emerald-500/10 blur-[120px] pointer-events-none mesh-gradient"></div>
+        <div className="absolute -top-24 -left-24 w-64 h-64 bg-zinc-300/10 blur-[120px] pointer-events-none mesh-gradient"></div>
         
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
@@ -99,12 +99,12 @@ export default function GalleryContent() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="relative z-10"
         >
-          <div className="flex items-center gap-2 text-emerald-400 font-bold tracking-widest text-xs uppercase mb-4">
+          <div className="flex items-center gap-2 text-zinc-200 font-bold tracking-widest text-xs uppercase mb-4">
              <Sparkles size={14} className="animate-pulse" />
              <span>{t('gallery.community_posts')}</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tighter">
-            {t('gallery.title_main_prefix', { defaultValue: 'Skript' })} <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 antialiased">{t('gallery.title_main_suffix', { defaultValue: 'Galerisi' })}</span>
+            {t('gallery.title_main_prefix', { defaultValue: 'Skript' })} <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-300 via-zinc-400 to-zinc-500 antialiased">{t('gallery.title_main_suffix', { defaultValue: 'Galerisi' })}</span>
           </h1>
           <p className="text-zinc-500 text-xl max-w-2xl leading-relaxed mb-8">
             {t('gallery.gallery_desc')}
@@ -143,7 +143,7 @@ export default function GalleryContent() {
                   onClick={() => setActiveCategory(catId)}
                   className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-bold border transition-all whitespace-nowrap active:scale-95 ${
                     activeCategory === catId 
-                      ? 'bg-emerald-500 text-black border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)]' 
+                      ? 'bg-zinc-300 text-black border-white/30 shadow-[0_0_20px_rgba(255,255,255,0.12)]' 
                       : 'bg-white/[0.02] border-white/[0.06] text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.05]'
                   }`}
                 >
@@ -161,8 +161,8 @@ export default function GalleryContent() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="relative w-full md:w-96 group"
         >
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 rounded-[1.25rem] blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
-          <div className="relative flex items-center bg-[#0a0a0c]/80 backdrop-blur-xl border border-white/[0.08] rounded-[1.25rem] overflow-hidden focus-within:border-emerald-500/50 focus-within:ring-1 focus-within:ring-emerald-500/50 transition-all shadow-xl">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-white/10 to-zinc-400/20 rounded-[1.25rem] blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
+          <div className="relative flex items-center bg-[#0a0a0c]/80 backdrop-blur-xl border border-white/[0.08] rounded-[1.25rem] overflow-hidden focus-within:border-white/25 focus-within:ring-1 focus-within:ring-white/25 transition-all shadow-xl">
              <Search className="ml-4 text-zinc-500" size={20} />
              <input 
                type="text" 
@@ -215,13 +215,13 @@ export default function GalleryContent() {
           animate={{ opacity: 1 }}
           className="text-center py-32 bg-white/[0.01] border border-white/[0.03] rounded-[3rem] relative overflow-hidden group glass-panel"
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.02] to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-400/[0.02] to-transparent"></div>
           <motion.div 
             animate={{ rotate: [0, 5, -5, 0] }}
             transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
             className="relative z-10 scale-110 mb-8 inline-block opacity-20"
           >
-             <Filter size={120} className="text-emerald-500" />
+             <Filter size={120} className="text-zinc-300" />
           </motion.div>
           <h3 className="text-2xl font-black text-white mb-3">{t('gallery.no_results_title')}</h3>
           <p className="text-zinc-500 max-w-sm mx-auto mb-10 text-lg">{t('gallery.no_results_desc')}</p>

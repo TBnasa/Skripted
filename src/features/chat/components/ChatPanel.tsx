@@ -92,12 +92,12 @@ export default function ChatPanel({
     <div className="flex h-full flex-col min-h-0 glass-panel overflow-hidden m-2 rounded-2xl relative">
       {/* Header */}
       <div className="flex items-center gap-2 sm:gap-3 border-b border-white/[0.04] px-3 sm:px-5 py-3 sm:py-4 bg-white/[0.01]">
-        <div className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-lg sm:rounded-xl bg-emerald-500/10 text-emerald-400">
+        <div className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-lg sm:rounded-xl bg-zinc-300/10 text-zinc-200">
           <Terminal size={18} />
         </div>
         <div className="flex-1 min-w-0">
           <h2 className="text-xs sm:text-sm font-semibold text-[var(--color-text-primary)] truncate">{t('chat.terminal_header')}</h2>
-          <p className="hidden sm:block text-[10px] font-mono text-emerald-500/70 mt-0.5">
+          <p className="hidden sm:block text-[10px] font-mono text-zinc-300/70 mt-0.5">
             {isStreaming ? (
               <span className="flex items-center gap-1.5">
                 {isAnalyzing ? (
@@ -107,7 +107,7 @@ export default function ChatPanel({
                   </span>
                 ) : (
                   <span className="flex items-center gap-1.5">
-                    <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
+                    <div className="h-1.5 w-1.5 rounded-full bg-zinc-300 animate-ping" />
                     {t('chat.status_compiling')}
                   </span>
                 )}
@@ -119,7 +119,7 @@ export default function ChatPanel({
         {/* Usage & Version */}
         <div className="flex items-center gap-2">
           {usage && (
-            <Badge variant="emerald" className="hidden sm:flex gap-1.5">
+            <Badge variant="zinc" className="hidden sm:flex gap-1.5">
               <span className="text-zinc-400">Usage:</span>
               <span>{usage.current}</span>
               <span className="opacity-40">/</span>
@@ -135,10 +135,10 @@ export default function ChatPanel({
         {messages.length === 0 && !isStreaming && (
           <div className="flex h-full flex-col items-center justify-center text-center">
             <div className="animate-fade-in-scale glass-card p-10 max-w-md mx-auto">
-              <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-400 animate-float">
+              <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-300/10 text-zinc-200 animate-float">
                 <Zap size={28} />
               </div>
-              <h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400">
+              <h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-200">
                 {t('chat.input_required')}
               </h3>
               <p className="mb-8 mx-auto max-w-sm text-sm leading-relaxed text-[var(--color-text-muted)]">
@@ -172,7 +172,7 @@ export default function ChatPanel({
               onClick={() => setSelectedAddons(prev => prev.includes(addon) ? prev.filter(a => a !== addon) : [...prev, addon])}
               className={`whitespace-nowrap px-2.5 py-1 text-[10px] font-bold rounded-lg border transition-all ${
                 selectedAddons.includes(addon)
-                  ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400'
+                  ? 'bg-zinc-300/20 border-white/25 text-zinc-200'
                   : 'bg-white/[0.02] border-white/[0.06] text-zinc-500'
               }`}
             >
@@ -181,7 +181,7 @@ export default function ChatPanel({
           ))}
         </div>
 
-        <div className="relative flex items-end gap-2 bg-black/50 rounded-2xl border border-white/[0.08] focus-within:border-emerald-500/30 transition-all p-1">
+        <div className="relative flex items-end gap-2 bg-black/50 rounded-2xl border border-white/[0.08] focus-within:border-white/15 transition-all p-1">
           <textarea
             ref={textareaRef}
             value={input}
@@ -202,13 +202,13 @@ export default function ChatPanel({
               className={`relative transition-all duration-300 ${
                 isRecording 
                   ? 'bg-red-500/20 text-red-500 border-red-500/50 hover:bg-red-500/30' 
-                  : 'bg-white/[0.02] text-zinc-400 hover:text-emerald-400'
+                  : 'bg-white/[0.02] text-zinc-400 hover:text-zinc-200'
               }`}
               aria-label={isRecording ? t('chat.voice_stop') : t('chat.voice_start')}
               title={isProcessing ? t('chat.voice_processing') : (isRecording ? t('chat.voice_stop') : t('chat.voice_start'))}
             >
               {isProcessing ? (
-                <Loader2 size={20} className="animate-spin text-emerald-500" />
+                <Loader2 size={20} className="animate-spin text-zinc-300" />
               ) : isRecording ? (
                 <div className="flex items-center justify-center">
                   <motion.div

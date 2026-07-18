@@ -34,7 +34,7 @@ export default function LimitModal({ isOpen, onClose }: LimitModalProps) {
             className="relative w-full max-w-lg bg-zinc-900 border border-white/10 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)]"
           >
             {/* Header Gradient */}
-            <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-600" />
+            <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-zinc-400 via-zinc-300 to-zinc-400" />
 
             <button 
               onClick={onClose}
@@ -44,8 +44,8 @@ export default function LimitModal({ isOpen, onClose }: LimitModalProps) {
             </button>
 
             <div className="p-8 pt-10 text-center">
-              <div className="mx-auto w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-6 border border-emerald-500/20">
-                <AlertCircle className="w-8 h-8 text-emerald-400" />
+              <div className="mx-auto w-16 h-16 bg-zinc-300/10 rounded-2xl flex items-center justify-center mb-6 border border-white/8">
+                <AlertCircle className="w-8 h-8 text-zinc-200" />
               </div>
 
               <h2 className="text-2xl font-bold text-white mb-3">
@@ -59,8 +59,8 @@ export default function LimitModal({ isOpen, onClose }: LimitModalProps) {
 
               <div className="grid grid-cols-1 gap-3 mb-8">
                 <div className="flex items-center gap-3 p-4 bg-white/5 border border-white/10 rounded-2xl text-left">
-                  <div className="p-2 bg-emerald-500/10 rounded-lg">
-                    <Sparkles className="w-4 h-4 text-emerald-400" />
+                  <div className="p-2 bg-zinc-300/10 rounded-lg">
+                    <Sparkles className="w-4 h-4 text-zinc-200" />
                   </div>
                   <div>
                     <p className="text-sm font-bold text-white">Unlimited Generations</p>
@@ -73,7 +73,7 @@ export default function LimitModal({ isOpen, onClose }: LimitModalProps) {
                 <Link
                   href="/pricing"
                   onClick={onClose}
-                  className="flex items-center justify-center gap-2 w-full py-4 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-2xl transition-all shadow-lg shadow-emerald-500/10"
+                  className="flex items-center justify-center gap-2 w-full py-4 bg-zinc-300 hover:bg-zinc-200 text-black font-bold rounded-2xl transition-all shadow-lg shadow-white/5"
                 >
                   View Pricing Plans
                   <ArrowRight className="w-4 h-4" />

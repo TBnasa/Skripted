@@ -164,7 +164,7 @@ export default function ChatInterface() {
           <div className="px-6 py-2 bg-[#0a0a0a] border-b border-white/[0.04] flex items-center justify-between">
             <Overview isCompact={true} />
             <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest hidden md:block">
-              Engine Protocol: <span className="text-emerald-500">Active</span>
+              Engine Protocol: <span className="text-zinc-300">Active</span>
             </div>
           </div>
 

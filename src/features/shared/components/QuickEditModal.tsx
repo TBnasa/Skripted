@@ -93,12 +93,12 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
       <div className="bg-[#0f0f11] border border-white/[0.08] w-full max-w-5xl h-[85vh] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col animate-scale-up relative">
-        <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/[0.02] via-transparent to-cyan-500/[0.02] pointer-events-none"></div>
+        <div className="absolute inset-0 bg-gradient-to-tr from-zinc-400/[0.02] via-transparent to-zinc-400/[0.02] pointer-events-none"></div>
         
         {/* Header */}
         <div className="px-8 py-6 border-b border-white/[0.08] flex justify-between items-center bg-white/[0.01] relative z-10">
           <div className="flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-lg transition-colors ${isNew ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400' : 'bg-blue-500/20 border-blue-500/30 text-blue-400'}`}>
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-lg transition-colors ${isNew ? 'bg-zinc-300/20 border-white/15 text-zinc-200' : 'bg-blue-500/20 border-blue-500/30 text-blue-400'}`}>
               <FileCode size={24} />
             </div>
             <div>
@@ -120,7 +120,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
             {!isNew && (
               <button
                 onClick={() => setIsHistoryOpen(!isHistoryOpen)}
-                className={`p-2 rounded-xl border transition-all flex items-center gap-2 text-xs font-bold ${isHistoryOpen ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'text-zinc-500 hover:text-white hover:bg-white/5 border-transparent hover:border-white/10'}`}
+                className={`p-2 rounded-xl border transition-all flex items-center gap-2 text-xs font-bold ${isHistoryOpen ? 'bg-zinc-300/10 border-white/15 text-zinc-200' : 'text-zinc-500 hover:text-white hover:bg-white/5 border-transparent hover:border-white/10'}`}
                 title={t('editor.version_history')}
               >
                 <Clock size={20} />
@@ -144,7 +144,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Örn: Gelişmiş Market Sistemi"
-                  className="w-full bg-white/[0.03] border border-white/[0.1] rounded-xl px-4 py-2.5 text-zinc-200 focus:outline-none focus:border-emerald-500/50 transition-all font-medium"
+                  className="w-full bg-white/[0.03] border border-white/[0.1] rounded-xl px-4 py-2.5 text-zinc-200 focus:outline-none focus:border-white/25 transition-all font-medium"
                 />
              </div>
              <div className="w-32">
@@ -154,7 +154,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
                   value={version}
                   onChange={(e) => setVersion(e.target.value)}
                   placeholder="1.0.0"
-                  className="w-full bg-white/[0.03] border border-white/[0.1] rounded-xl px-4 py-2.5 text-zinc-200 focus:outline-none focus:border-emerald-500/50 transition-all font-mono"
+                  className="w-full bg-white/[0.03] border border-white/[0.1] rounded-xl px-4 py-2.5 text-zinc-200 focus:outline-none focus:border-white/25 transition-all font-mono"
                 />
              </div>
           </div>
@@ -190,7 +190,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
           {isHistoryOpen && (
             <div className="absolute top-0 right-0 w-80 h-full bg-[#0d0d0f] border-l border-white/[0.08] shadow-2xl z-20 flex flex-col animate-slide-left">
                <div className="p-6 border-b border-white/[0.08] flex items-center justify-between">
-                  <h3 className="text-sm font-black uppercase tracking-widest text-emerald-500 flex items-center gap-2">
+                  <h3 className="text-sm font-black uppercase tracking-widest text-zinc-300 flex items-center gap-2">
                      <History size={16} />
                      {t('editor.version_history')}
                   </h3>
@@ -202,7 +202,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
                <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-3">
                   {isLoadingVersions ? (
                      <div className="flex flex-col items-center justify-center h-40 text-zinc-600 italic gap-3">
-                        <Loader2 size={32} className="animate-spin text-emerald-500" />
+                        <Loader2 size={32} className="animate-spin text-zinc-300" />
                         <span className="text-xs uppercase tracking-[0.2em]">{t('general.loading')}</span>
                      </div>
                   ) : versions.length === 0 ? (
@@ -212,7 +212,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
                      </div>
                   ) : (
                      versions.map((v, i) => (
-                        <div key={v.id} className="group p-4 bg-white/[0.02] border border-white/[0.05] rounded-2xl hover:border-emerald-500/30 transition-all">
+                        <div key={v.id} className="group p-4 bg-white/[0.02] border border-white/[0.05] rounded-2xl hover:border-white/15 transition-all">
                            <div className="flex items-center justify-between mb-2">
                               <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
                                  {i === 0 ? t('editor.last_saved') : `${t('editor.version_label')} #${versions.length - i}`}
@@ -227,7 +227,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
                            </p>
                            <button 
                               onClick={() => handleRestore(v.content)}
-                              className="w-full flex items-center justify-center gap-2 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-500 text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all"
+                              className="w-full flex items-center justify-center gap-2 py-2 bg-zinc-300/10 border border-white/8 rounded-lg text-zinc-300 text-[10px] font-black uppercase tracking-widest hover:bg-zinc-300 hover:text-white transition-all"
                            >
                               <RotateCcw size={12} />
                               {t('editor.restore')}
@@ -261,7 +261,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
              <button 
                 onClick={() => onSave(title, content, version)}
                 disabled={isSaving || !title || !content}
-                className="flex items-center gap-2 px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-black uppercase tracking-widest rounded-2xl transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-30 active:scale-95"
+                className="flex items-center gap-2 px-8 py-3 bg-zinc-200 hover:bg-zinc-300 text-white text-[11px] font-black uppercase tracking-widest rounded-2xl transition-all shadow-lg shadow-white/10 disabled:opacity-30 active:scale-95"
              >
                 {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
                 {isSaving ? t('editor.saving') : (isNew ? t('editor.create_now') : t('general.save_changes'))}

@@ -69,7 +69,7 @@ export default function ProfileEditModal({ isOpen, onClose, initialData, onUpdat
             {/* Header */}
             <div className="px-8 py-6 border-b border-white/5 flex items-center justify-between bg-white/[0.01]">
                <h2 className="text-xl font-bold text-white flex items-center gap-3">
-                  <User size={20} className="text-emerald-500" />
+                  <User size={20} className="text-zinc-300" />
                   {t('profile.edit_profile')}
                </h2>
                <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors">
@@ -109,9 +109,9 @@ export default function ProfileEditModal({ isOpen, onClose, initialData, onUpdat
                            type="text"
                            value={formData.username}
                            onChange={(e) => setFormData({...formData, username: e.target.value})}
-                           className="w-full bg-white/[0.02] border border-white/10 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-emerald-500/50 transition-all font-semibold"
+                           className="w-full bg-white/[0.02] border border-white/10 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-white/25 transition-all font-semibold"
                         />
-                        <Check size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-500" />
+                        <Check size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-300" />
                      </div>
                   </div>
 
@@ -121,7 +121,7 @@ export default function ProfileEditModal({ isOpen, onClose, initialData, onUpdat
                         type="text"
                         value={formData.full_name || ''}
                         onChange={(e) => setFormData({...formData, full_name: e.target.value})}
-                        className="w-full bg-white/[0.02] border border-white/10 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-emerald-500/50 transition-all font-semibold"
+                        className="w-full bg-white/[0.02] border border-white/10 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-white/25 transition-all font-semibold"
                         placeholder={t('profile.fullname_placeholder')}
                      />
                   </div>
@@ -131,7 +131,7 @@ export default function ProfileEditModal({ isOpen, onClose, initialData, onUpdat
                      <textarea 
                         value={formData.bio || ''}
                         onChange={(e) => setFormData({...formData, bio: e.target.value})}
-                        className="w-full bg-white/[0.02] border border-white/10 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-emerald-500/50 transition-all min-h-[100px] resize-none font-medium italic"
+                        className="w-full bg-white/[0.02] border border-white/10 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-white/25 transition-all min-h-[100px] resize-none font-medium italic"
                         placeholder={t('profile.bio_placeholder')}
                      />
                   </div>
@@ -139,7 +139,7 @@ export default function ProfileEditModal({ isOpen, onClose, initialData, onUpdat
 
                <button 
                   disabled={isSubmitting}
-                  className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-black text-sm shadow-xl shadow-emerald-900/10 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full py-4 bg-zinc-200 hover:bg-zinc-300 text-white rounded-2xl font-black text-sm shadow-xl shadow-black/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                >
                   {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Check size={18} />}
                   {t('general.save_changes').toUpperCase()}

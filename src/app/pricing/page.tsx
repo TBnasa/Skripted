@@ -92,7 +92,7 @@ export default function PricingPage() {
               variants={cardVariants}
               className={`relative flex flex-col rounded-2xl p-8 h-full transition-all duration-300 ${
                 tier.recommended
-                  ? 'bg-[var(--color-bg-secondary)] border-2 border-[var(--color-accent-primary)]/40 shadow-[0_0_32px_-8px_rgba(0,224,158,0.15)] md:scale-[1.02]'
+                  ? 'bg-[var(--color-bg-secondary)] border-2 border-[var(--color-accent-primary)]/40 shadow-[0_0_32px_-8px_rgba(255,255,255,0.06)] md:scale-[1.02]'
                   : 'bg-[var(--color-bg-secondary)] border border-white/6'
               }`}
             >
@@ -151,7 +151,7 @@ export default function PricingPage() {
                 <button
                   className={`w-full py-4 px-6 rounded-2xl font-bold transition-all duration-250 active:scale-[0.97] ${
                     tier.recommended
-                      ? 'bg-[var(--color-accent-primary)] text-[var(--color-bg-primary)] shadow-[0_0_20px_rgba(0,224,158,0.15)] hover:brightness-110 hover:shadow-[0_0_28px_rgba(0,224,158,0.25)]'
+                      ? 'bg-[var(--color-accent-primary)] text-[var(--color-bg-primary)] shadow-[0_0_20px_rgba(255,255,255,0.06)] hover:brightness-110 hover:shadow-[0_0_28px_rgba(255,255,255,0.1)]'
                       : 'border border-white/10 text-[var(--color-text-secondary)] hover:text-white hover:border-white/20 hover:bg-white/[0.04]'
                   }`}
                 >

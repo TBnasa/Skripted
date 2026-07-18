@@ -81,7 +81,7 @@ export function CodeChallenge({ starterCode, solutionCode, onValidate }: CodeCha
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-red-500/60" />
             <div className="w-3 h-3 rounded-full bg-amber-500/60" />
-            <div className="w-3 h-3 rounded-full bg-emerald-500/60" />
+            <div className="w-3 h-3 rounded-full bg-zinc-300/60" />
           </div>
           <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500 font-mono">
             challenge.sk
@@ -101,8 +101,8 @@ export function CodeChallenge({ starterCode, solutionCode, onValidate }: CodeCha
             onClick={handleCheck}
             disabled={isValidating}
             className="flex items-center gap-1.5 px-4 py-1.5 text-[10px] font-bold text-black 
-                       bg-emerald-500 hover:bg-emerald-400 rounded-lg transition-all active:scale-95
-                       shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                       bg-zinc-300 hover:bg-zinc-200 rounded-lg transition-all active:scale-95
+                       shadow-lg shadow-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isValidating ? (
               <Loader2 size={12} className="animate-spin" />
@@ -136,9 +136,9 @@ export function CodeChallenge({ starterCode, solutionCode, onValidate }: CodeCha
           onKeyDown={handleKeyDown}
           onScroll={handleScroll}
           spellCheck={false}
-          className="flex-1 bg-transparent text-emerald-400 font-mono text-[13px] leading-[1.7] p-4 
+          className="flex-1 bg-transparent text-zinc-200 font-mono text-[13px] leading-[1.7] p-4 
                      resize-none outline-none overflow-auto custom-scrollbar
-                     caret-emerald-400 selection:bg-emerald-500/30"
+                     caret-zinc-200 selection:bg-zinc-300/30"
           style={{ tabSize: 4 }}
         />
       </div>
@@ -147,15 +147,15 @@ export function CodeChallenge({ starterCode, solutionCode, onValidate }: CodeCha
       {result && (
         <div className={`flex items-center gap-3 px-4 py-3 border-t transition-all ${
           result.correct
-            ? 'bg-emerald-500/10 border-emerald-500/30'
+            ? 'bg-zinc-300/10 border-white/15'
             : 'bg-red-500/10 border-red-500/30'
         }`}>
           {result.correct ? (
-            <CheckCircle2 size={18} className="text-emerald-400 shrink-0" />
+            <CheckCircle2 size={18} className="text-zinc-200 shrink-0" />
           ) : (
             <XCircle size={18} className="text-red-400 shrink-0" />
           )}
-          <p className={`text-xs font-medium ${result.correct ? 'text-emerald-400' : 'text-red-400'}`}>
+          <p className={`text-xs font-medium ${result.correct ? 'text-zinc-200' : 'text-red-400'}`}>
             {result.feedback}
           </p>
         </div>

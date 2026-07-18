@@ -141,7 +141,7 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
         {/* Header */}
         <div className="px-6 py-4 border-b border-white/[0.08] flex justify-between items-center bg-white/[0.02]">
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+            <div className="w-2 h-2 rounded-full bg-zinc-300 animate-pulse"></div>
             <h2 className="text-lg font-semibold text-white">{t('gallery.modal.share_title')}</h2>
           </div>
           <button onClick={onClose} className="text-zinc-400 hover:text-white transition-colors p-1 hover:bg-white/5 rounded-lg">
@@ -159,7 +159,7 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
               maxLength={100}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-emerald-500/50 text-white placeholder-zinc-600 transition-all font-medium"
+              className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-white/25 text-white placeholder-zinc-600 transition-all font-medium"
               placeholder={t('gallery.modal.title_label')}
             />
           </div>
@@ -171,7 +171,7 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
               <select 
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-emerald-500/50 text-white transition-all appearance-none cursor-pointer"
+                className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-white/25 text-white transition-all appearance-none cursor-pointer"
               >
                 {CATEGORY_IDS.map(id => (
                   <option key={id} value={id} className="bg-[#121214]">{CATEGORY_ICONS[id]} {t(`gallery.categories.${id}`)}</option>
@@ -189,7 +189,7 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyDown={handleAddTag}
                   placeholder="admin, chat..."
-                  className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-emerald-500/50 text-white placeholder-zinc-700 transition-all"
+                  className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-white/25 text-white placeholder-zinc-700 transition-all"
                 />
               </div>
             </div>
@@ -199,7 +199,7 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
           {tags.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {tags.map(tag => (
-                <span key={tag} className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-400 text-xs font-bold">
+                <span key={tag} className="flex items-center gap-1.5 px-3 py-1 bg-zinc-300/10 border border-white/8 rounded-lg text-zinc-200 text-xs font-bold">
                   <Hash size={10} />
                   {tag}
                   <button type="button" onClick={() => removeTag(tag)} className="hover:text-white transition-colors">
@@ -217,7 +217,7 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
               maxLength={1000}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-emerald-500/50 text-white placeholder-zinc-700 min-h-[100px] resize-none transition-all text-sm leading-relaxed"
+              className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-white/25 text-white placeholder-zinc-700 min-h-[100px] resize-none transition-all text-sm leading-relaxed"
               placeholder={t('gallery.modal.desc_label')}
             />
           </div>
@@ -234,11 +234,11 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
             <div 
               onClick={() => !isUploading && fileInputRef.current?.click()}
               className={`border-2 border-dashed rounded-2xl p-6 flex flex-col items-center justify-center transition-all group ${
-                isUploading ? 'opacity-50 cursor-not-allowed border-white/[0.05]' : 'border-white/[0.1] hover:border-emerald-500/40 hover:bg-emerald-500/[0.02] cursor-pointer'
+                isUploading ? 'opacity-50 cursor-not-allowed border-white/[0.05]' : 'border-white/[0.1] hover:border-white/20 hover:bg-zinc-300/[0.02] cursor-pointer'
               }`}
             >
               <div className="w-10 h-10 rounded-xl bg-white/[0.03] flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                <UploadCloud className="w-5 h-5 text-zinc-500 group-hover:text-emerald-400" />
+                <UploadCloud className="w-5 h-5 text-zinc-500 group-hover:text-zinc-200" />
               </div>
               <p className="text-xs text-zinc-400 font-bold">{t('gallery.modal.drop_images')}</p>
               <input 
@@ -277,15 +277,15 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
           {isUploading && (
             <div className="space-y-3 pt-2">
               <div className="flex justify-between items-end">
-                <span className="text-[10px] font-bold uppercase text-emerald-400 flex items-center gap-2 tracking-widest">
+                <span className="text-[10px] font-bold uppercase text-zinc-200 flex items-center gap-2 tracking-widest">
                   <Loader2 size={12} className="animate-spin" />
                   {uploadStatus}
                 </span>
-                <span className="text-[10px] font-bold text-emerald-500">{progress}%</span>
+                <span className="text-[10px] font-bold text-zinc-300">{progress}%</span>
               </div>
               <div className="h-1.5 w-full bg-white/[0.03] rounded-full overflow-hidden border border-white/[0.05]">
                 <div 
-                  className="h-full bg-gradient-to-r from-emerald-600 to-cyan-500 transition-all duration-300"
+                  className="h-full bg-gradient-to-r from-zinc-400 to-zinc-400 transition-all duration-300"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -305,7 +305,7 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
             <button 
               type="submit"
               disabled={isUploading || !title}
-              className="px-8 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all disabled:opacity-50 flex items-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.2)]"
+              className="px-8 py-2.5 bg-zinc-200 hover:bg-zinc-300 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all disabled:opacity-50 flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.08)]"
             >
               {isUploading ? t('gallery.sharing') : t('gallery.share_now')}
               {!isUploading && <CheckCircle2 size={14} />}

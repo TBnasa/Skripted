@@ -12,15 +12,14 @@
   --color-bg-elevated: #18181c;
   --color-bg-card: #0c0c0f;
 
-  /* ── Accent System ── */
-  --color-accent-primary: #00e09e;
-  --color-accent-secondary: #00c78a;
-  --color-accent-glow: rgba(0, 224, 158, 0.12);
-  --color-accent-warm: #ff6b35;
-  --color-accent-success: #00e09e;
+  /* ── Accent System (Monochrome) ── */
+  --color-accent-primary: #ffffff;
+  --color-accent-secondary: #b0b0b0;
+  --color-accent-glow: rgba(255, 255, 255, 0.06);
+  --color-accent-warm: #d0d0d0;
+  --color-accent-success: #d0d0d0;
   --color-accent-error: #ff4757;
   --color-accent-warning: #ffb347;
-  --color-accent-cyan: #0af;
 
   /* ── Typography Colors ── */
   --color-text-primary: #f0f0f0;
@@ -29,7 +28,7 @@
 
   /* ── Borders ── */
   --color-border: rgba(255, 255, 255, 0.06);
-  --color-border-active: rgba(0, 224, 158, 0.35);
+  --color-border-active: rgba(255, 255, 255, 0.25);
   --color-border-hover: rgba(255, 255, 255, 0.12);
 
   /* ── Typography ── */
@@ -53,8 +52,8 @@ body {
 }
 
 ::selection {
-  background: rgba(0, 224, 158, 0.25);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+  color: #000;
 }
 
 /* ══════ SCROLLBAR ══════ */
@@ -64,7 +63,7 @@ body {
   background: rgba(255, 255, 255, 0.06);
   border-radius: 99px;
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(0, 224, 158, 0.25); }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.15); }
 .custom-scrollbar::-webkit-scrollbar { width: 3px; }
 
 .scrollbar-hide::-webkit-scrollbar {
@@ -210,11 +209,11 @@ body {
   background: var(--color-accent-primary);
   color: #060608;
   border: none;
-  box-shadow: 0 0 16px rgba(0, 224, 158, 0.15), 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.08), 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 @media (hover: hover) and (pointer: fine) {
   .btn-primary:hover {
-    box-shadow: 0 0 24px rgba(0, 224, 158, 0.25), 0 4px 16px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 24px rgba(255, 255, 255, 0.15), 0 4px 16px rgba(0, 0, 0, 0.4);
     transform: translateY(-1px);
     filter: brightness(1.1);
   }
@@ -271,10 +270,10 @@ body {
 
 /* ══════ GLOW — Subtle ══════ */
 .glow-accent {
-  box-shadow: 0 0 16px rgba(0, 224, 158, 0.1), 0 0 48px rgba(0, 224, 158, 0.03);
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.06), 0 0 48px rgba(255, 255, 255, 0.02);
 }
 .glow-text {
-  text-shadow: 0 0 16px rgba(0, 224, 158, 0.4), 0 0 32px rgba(0, 224, 158, 0.15);
+  text-shadow: 0 0 16px rgba(255, 255, 255, 0.25), 0 0 32px rgba(255, 255, 255, 0.1);
 }
 
 /* ══════ SHIMMER LOADING ══════ */
@@ -328,14 +327,14 @@ pre, code, .code-block {
 
 /* ══════ ACADEMY STYLES ══════ */
 @keyframes blockSnap {
-  0% { transform: scale(1.05); box-shadow: 0 0 20px rgba(0, 224, 158, 0.3); }
+  0% { transform: scale(1.05); box-shadow: 0 0 20px rgba(255, 255, 255, 0.15); }
   50% { transform: scale(0.98); }
   100% { transform: scale(1); box-shadow: none; }
 }
 
 @keyframes dropZonePulse {
-  0%, 100% { border-color: rgba(0, 224, 158, 0.15); }
-  50% { border-color: rgba(0, 224, 158, 0.4); }
+  0%, 100% { border-color: rgba(255, 255, 255, 0.1); }
+  50% { border-color: rgba(255, 255, 255, 0.25); }
 }
 
 @keyframes confettiPop {
@@ -359,5 +358,5 @@ pre, code, .code-block {
   background:
     radial-gradient(ellipse at 20% 50%, rgba(168, 85, 247, 0.04) 0%, transparent 50%),
     radial-gradient(ellipse at 80% 20%, rgba(99, 102, 241, 0.03) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 100%, rgba(0, 224, 158, 0.02) 0%, transparent 40%);
+    radial-gradient(ellipse at 50% 100%, rgba(255, 255, 255, 0.02) 0%, transparent 40%);
 }

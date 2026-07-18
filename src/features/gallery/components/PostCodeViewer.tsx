@@ -40,16 +40,16 @@ export function PostCodeViewer({
           <div className="flex gap-2">
             <div className="w-3 h-3 rounded-full bg-red-500/80 border border-red-500/40 shadow-[0_0_10px_rgba(239,68,68,0.5)]"></div>
             <div className="w-3 h-3 rounded-full bg-amber-500/80 border border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.5)]"></div>
-            <div className="w-3 h-3 rounded-full bg-emerald-500/80 border border-emerald-500/40 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
+            <div className="w-3 h-3 rounded-full bg-zinc-300/80 border border-white/20 shadow-[0_0_10px_rgba(255,255,255,0.2)]"></div>
           </div>
           <span className="ml-3 font-mono text-xs font-bold text-zinc-400 uppercase tracking-widest">script.sk</span>
         </div>
         <div className="flex items-center gap-3">
           <button 
             onClick={handleCopy}
-            className="flex items-center gap-2 text-[11px] font-bold text-zinc-300 hover:text-emerald-400 transition-all bg-white/5 hover:bg-emerald-500/10 px-4 py-2 rounded-xl border border-white/5 hover:border-emerald-500/30 group active:scale-95"
+            className="flex items-center gap-2 text-[11px] font-bold text-zinc-300 hover:text-zinc-200 transition-all bg-white/5 hover:bg-zinc-300/10 px-4 py-2 rounded-xl border border-white/5 hover:border-white/15 group active:scale-95"
           >
-            {copied ? <CheckCircle2 size={14} className="text-emerald-500" /> : <Copy size={14} className="group-hover:scale-110 transition-transform" />}
+            {copied ? <CheckCircle2 size={14} className="text-zinc-300" /> : <Copy size={14} className="group-hover:scale-110 transition-transform" />}
             {copied ? t('general.copied') : t('general.copy')}
           </button>
           <button 

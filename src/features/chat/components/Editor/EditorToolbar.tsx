@@ -34,7 +34,7 @@ export function EditorToolbar({ triggerAction, handleTab }: EditorToolbarProps) 
       </button>
       <button 
         onClick={() => triggerAction('editor.action.formatDocument')} 
-        className="p-2 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 rounded-xl active:scale-90 transition-all font-bold text-[10px] uppercase tracking-widest"
+        className="p-2 text-zinc-200 hover:text-zinc-300 hover:bg-zinc-300/10 rounded-xl active:scale-90 transition-all font-bold text-[10px] uppercase tracking-widest"
         aria-label="Format"
       >
         <Sparkles size={16} />

@@ -23,7 +23,7 @@ export function DailyChallenge() {
 
       <div className="relative flex items-center gap-3">
         <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-          isCompleted ? 'bg-emerald-500/20 text-emerald-400' : 'bg-purple-500/20 text-purple-400'
+          isCompleted ? 'bg-zinc-300/20 text-zinc-200' : 'bg-purple-500/20 text-purple-400'
         }`}>
           {isCompleted ? <Trophy size={20} /> : <Target size={20} />}
         </div>
@@ -49,7 +49,7 @@ export function DailyChallenge() {
 
         <div className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all shrink-0 ${
           isCompleted
-            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+            ? 'bg-zinc-300/10 text-zinc-200 border border-white/8'
             : 'bg-purple-500/10 text-purple-400 border border-purple-500/20 hover:bg-purple-500/20 cursor-pointer'
         }`}>
           {isCompleted ? (isTr ? '✅ Tamamlandı' : '✅ Done') : (isTr ? 'Devam Et' : 'Continue')}

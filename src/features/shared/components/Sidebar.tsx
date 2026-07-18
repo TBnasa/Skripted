@@ -121,7 +121,7 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
       >
         <button
           onClick={() => setIsDesktopCollapsed(!isDesktopCollapsed)}
-          className="hidden md:flex absolute -right-4 top-6 w-8 h-8 bg-[#141414] border border-white/[0.06] rounded-full items-center justify-center text-zinc-500 hover:text-white hover:border-emerald-500/50 transition-all z-50 shadow-xl"
+          className="hidden md:flex absolute -right-4 top-6 w-8 h-8 bg-[#141414] border border-white/[0.06] rounded-full items-center justify-center text-zinc-500 hover:text-white hover:border-white/25 transition-all z-50 shadow-xl"
         >
           {isDesktopCollapsed ? <PanelLeftOpen size={14} /> : <PanelLeftClose size={14} />}
         </button>
@@ -129,7 +129,7 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
         <div className={`px-3 mb-6 space-y-2 ${isDesktopCollapsed ? 'flex flex-col items-center' : ''}`}>
           <button
             onClick={() => { onNewChat(); onToggle?.(); }}
-            className={`flex items-center justify-center gap-2.5 py-3 text-[11px] font-bold bg-gradient-to-b from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-black rounded-xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.15)] active:scale-[0.98] ${isDesktopCollapsed ? 'w-12 h-12 rounded-full p-0' : 'w-full'}`}
+            className={`flex items-center justify-center gap-2.5 py-3 text-[11px] font-bold bg-gradient-to-b from-zinc-400 to-zinc-400 hover:from-zinc-300 hover:to-zinc-400 text-black rounded-xl transition-all shadow-[0_0_20px_rgba(255,255,255,0.06)] active:scale-[0.98] ${isDesktopCollapsed ? 'w-12 h-12 rounded-full p-0' : 'w-full'}`}
           >
             <Plus size={isDesktopCollapsed ? 20 : 16} strokeWidth={3} />
             {!isDesktopCollapsed && t('sidebar.new_chat')}
@@ -193,7 +193,7 @@ function NavButton({ href, icon, text, isCollapsed }: { href: string, icon: Reac
   return (
     <Link
       href={href}
-      className={`group flex items-center justify-center gap-3 py-3 font-bold text-zinc-400 hover:text-emerald-400 bg-white/[0.01] hover:bg-emerald-500/10 border border-white/[0.03] hover:border-emerald-500/30 transition-all ${
+      className={`group flex items-center justify-center gap-3 py-3 font-bold text-zinc-400 hover:text-zinc-200 bg-white/[0.01] hover:bg-zinc-300/10 border border-white/[0.03] hover:border-white/15 transition-all ${
         isCollapsed ? 'w-12 h-12 rounded-2xl mx-auto' : 'w-full px-4 rounded-xl text-[11px] justify-start'
       }`}
       title={isCollapsed ? text : undefined}
@@ -257,7 +257,7 @@ function ChatListItem({ session, isActive, onClick, onRename, onDelete, isCollap
             if (e.key === 'Escape') { setIsEditing(false); setEditTitle(session.title || ''); }
           }}
           onBlur={handleRenameSubmit}
-          className="w-full px-3 py-2.5 text-[11px] font-medium bg-emerald-500/10 border border-emerald-500/50 text-white rounded-xl outline-none"
+          className="w-full px-3 py-2.5 text-[11px] font-medium bg-zinc-300/10 border border-white/25 text-white rounded-xl outline-none"
           maxLength={60}
         />
       </li>
@@ -274,12 +274,12 @@ function ChatListItem({ session, isActive, onClick, onRename, onDelete, isCollap
           isCollapsed ? 'justify-center px-0 rounded-2xl w-12 h-12 mx-auto' : 'justify-between px-3 rounded-xl'
         } ${
           isActive
-            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.1)]'
+            ? 'bg-zinc-300/10 border-white/15 text-zinc-200 shadow-[0_0_15px_rgba(255,255,255,0.04)]'
             : 'text-zinc-400 bg-white/[0.01] border-transparent hover:bg-white/[0.04] hover:border-white/[0.08]'
         }`}
       >
         {isCollapsed ? (
-          <MessageSquare size={16} className={isActive ? 'text-emerald-400' : 'text-zinc-500 group-hover:text-zinc-300'} />
+          <MessageSquare size={16} className={isActive ? 'text-zinc-200' : 'text-zinc-500 group-hover:text-zinc-300'} />
         ) : (
           <>
             <span className="truncate group-hover:text-white transition-colors pr-2">

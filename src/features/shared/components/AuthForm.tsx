@@ -41,7 +41,7 @@ export default function AuthForm() {
             'w-full !py-3.5 !rounded-xl !bg-[var(--color-accent-primary)]',
             'hover:brightness-110 !text-black !font-bold text-sm',
             'transition-all active:scale-[0.98]',
-            '!shadow-[0_0_16px_rgba(0,224,158,0.15)]',
+            '!shadow-[0_0_16px_rgba(255,255,255,0.06)]',
           ].join(' '),
           formButtonReset: '!text-[var(--color-accent-primary)] !font-bold text-sm',
 

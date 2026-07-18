@@ -39,12 +39,12 @@ export function EditorHeader({
   return (
     <div className="flex items-center justify-between border-b border-white/[0.04] bg-white/[0.01] px-5 py-4">
       <div className="flex items-center gap-3">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-zinc-300/10 text-zinc-200">
            <Code size={18} />
         </div>
         <div>
           <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t('chat.script_editor')}</h2>
-          <p className="text-[10px] font-mono text-emerald-500/50 mt-0.5 uppercase tracking-widest italic">
+          <p className="text-[10px] font-mono text-zinc-300/50 mt-0.5 uppercase tracking-widest italic">
             {lineCount > 0 ? `${lineCount} ${t('editor.lines')}` : t('chat.status_ready')}
           </p>
         </div>
@@ -70,7 +70,7 @@ export function EditorHeader({
           disabled={!code.trim()}
           className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.06] px-3 py-2 text-[10px] font-black uppercase tracking-widest text-zinc-400 rounded-xl transition-all hover:bg-white/[0.06] hover:text-white disabled:opacity-30 active:scale-95"
         >
-          {copied ? <CheckCircle2 size={12} className="text-emerald-500" /> : <Copy size={12} />}
+          {copied ? <CheckCircle2 size={12} className="text-zinc-300" /> : <Copy size={12} />}
           {copied ? t('general.copied') : t('general.copy')}
         </button>
 
@@ -97,7 +97,7 @@ export function EditorHeader({
         <button
           onClick={() => setIsGalleryOpen(true)}
           disabled={!code.trim()}
-          className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white rounded-xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.15)] active:scale-95 disabled:opacity-30"
+          className="flex items-center gap-2 bg-zinc-200 hover:bg-zinc-300 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white rounded-xl transition-all shadow-[0_0_20px_rgba(255,255,255,0.06)] active:scale-95 disabled:opacity-30"
         >
           <Share2 size={14} />
           {t('gallery.post').toUpperCase()}

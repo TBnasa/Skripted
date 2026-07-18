@@ -39,7 +39,7 @@ export default function HeroSection() {
         <div className="animate-fade-in flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4" style={{ animationDelay: '0.25s' }}>
           <Link
             href="/chat"
-            className="group relative w-full sm:w-auto inline-flex items-center justify-center px-10 py-4 font-bold text-sm text-[var(--color-bg-primary)] transition-all duration-250 bg-[var(--color-accent-primary)] rounded-xl hover:brightness-110 hover:shadow-[0_0_24px_rgba(0,224,158,0.25)] active:scale-[0.98]"
+            className="group relative w-full sm:w-auto inline-flex items-center justify-center px-10 py-4 font-bold text-sm text-[var(--color-bg-primary)] transition-all duration-250 bg-[var(--color-accent-primary)] rounded-xl hover:brightness-110 hover:shadow-[0_0_24px_rgba(255,255,255,0.1)] active:scale-[0.98]"
           >
             <span className="flex items-center gap-2.5">
               {t('general.access_engine')}

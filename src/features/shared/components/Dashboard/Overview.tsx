@@ -15,7 +15,7 @@ export default function Overview({ isCompact = false }: { isCompact?: boolean })
       <div className="flex items-center gap-6 py-2 px-4 bg-[#0a0a0a]/40 backdrop-blur-md rounded-2xl border border-zinc-800/50">
         <CompactStat icon={<Code size={14} />} label={t('general.search')} value={stats.totalAnalyzed} color="text-cyan-400" />
         <div className="h-4 w-px bg-zinc-800" />
-        <CompactStat icon={<Activity size={14} />} label={t('stats.avg_score')} value={`${stats.averageScore}%`} color="text-emerald-400" />
+        <CompactStat icon={<Activity size={14} />} label={t('stats.avg_score')} value={`${stats.averageScore}%`} color="text-zinc-200" />
         <div className="h-4 w-px bg-zinc-800" />
         <CompactStat icon={<AlertTriangle size={14} />} label={t('stats.primary_issue')} value={stats.commonError} color="text-amber-400" />
       </div>
@@ -36,7 +36,7 @@ export default function Overview({ isCompact = false }: { isCompact?: boolean })
       />
       
       <StatCard 
-        icon={<Activity size={22} className="text-emerald-400" />}
+        icon={<Activity size={22} className="text-zinc-200" />}
         label={t('stats.avg_score')}
         value={`${stats.averageScore}%`}
         gaugeValue={stats.averageScore}
@@ -77,7 +77,7 @@ function StatCard({
   gaugeValue?: number;
 }) {
   return (
-    <Card className="relative group overflow-hidden shadow-2xl hover:shadow-[0_0_20px_rgba(16,185,129,0.05)] hover:border-emerald-500/20 transition-all duration-500">
+    <Card className="relative group overflow-hidden shadow-2xl hover:shadow-[0_0_20px_rgba(255,255,255,0.02)] hover:border-white/8 transition-all duration-500">
       <div className="flex items-center justify-between mb-4">
         <div className="p-2.5 bg-zinc-900 rounded-2xl border border-zinc-800 group-hover:border-zinc-700 transition-colors">
           {icon}
@@ -98,7 +98,7 @@ function StatCard({
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: gaugeValue / 100 }}
                 transition={{ duration: 1.5, ease: "easeOut" }}
-                className={gaugeValue > 75 ? "text-emerald-400" : gaugeValue > 40 ? "text-amber-400" : "text-red-400"}
+                className={gaugeValue > 75 ? "text-zinc-200" : gaugeValue > 40 ? "text-amber-400" : "text-red-400"}
                 strokeWidth="3"
                 strokeDasharray="100, 100"
                 strokeLinecap="round"
@@ -122,7 +122,7 @@ function StatCard({
         <p className="text-[11px] text-zinc-500 font-medium mt-1.5">{description}</p>
       </div>
 
-      <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-[60px] rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="absolute top-0 right-0 w-32 h-32 bg-zinc-300/5 blur-[60px] rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity" />
     </Card>
   );
 }

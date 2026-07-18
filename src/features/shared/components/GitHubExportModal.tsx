@@ -135,28 +135,28 @@ export default function GitHubExportModal({ code, isOpen, onClose }: GitHubExpor
               <div className="space-y-2">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1">Repository Seçin</label>
                 <div className="relative group">
-                  <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-emerald-500 transition-colors" />
+                  <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-zinc-300 transition-colors" />
                   <input
                     type="text"
                     placeholder="Repo ara..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full bg-white/[0.02] border border-white/[0.06] focus:border-emerald-500/50 rounded-2xl py-3.5 pl-11 pr-4 text-sm outline-none transition-all"
+                    className="w-full bg-white/[0.02] border border-white/[0.06] focus:border-white/25 rounded-2xl py-3.5 pl-11 pr-4 text-sm outline-none transition-all"
                   />
                 </div>
                 
                 <div className="max-h-40 overflow-y-auto custom-scrollbar mt-2 border border-white/[0.04] rounded-2xl bg-black/20">
                   {loading ? (
-                    <div className="p-8 text-center"><Loader2 size={24} className="animate-spin mx-auto text-emerald-500" /></div>
+                    <div className="p-8 text-center"><Loader2 size={24} className="animate-spin mx-auto text-zinc-300" /></div>
                   ) : filteredRepos.length > 0 ? (
                     filteredRepos.map(repo => (
                       <button
                         key={repo.id}
                         onClick={() => setSelectedRepo(repo.full_name)}
-                        className={`w-full flex items-center justify-between p-3.5 text-sm transition-all border-b border-white/[0.02] last:border-0 hover:bg-white/[0.04] ${selectedRepo === repo.full_name ? 'bg-emerald-500/10 text-emerald-400' : 'text-zinc-400'}`}
+                        className={`w-full flex items-center justify-between p-3.5 text-sm transition-all border-b border-white/[0.02] last:border-0 hover:bg-white/[0.04] ${selectedRepo === repo.full_name ? 'bg-zinc-300/10 text-zinc-200' : 'text-zinc-400'}`}
                       >
                         <span className="flex items-center gap-3">
-                          <div className={`w-2 h-2 rounded-full ${repo.private ? 'bg-amber-500' : 'bg-emerald-500'}`} />
+                          <div className={`w-2 h-2 rounded-full ${repo.private ? 'bg-amber-500' : 'bg-zinc-300'}`} />
                           {repo.full_name}
                         </span>
                         {selectedRepo === repo.full_name && <CheckCircle2 size={16} />}
@@ -176,7 +176,7 @@ export default function GitHubExportModal({ code, isOpen, onClose }: GitHubExpor
                     type="text"
                     value={filename}
                     onChange={(e) => setFilename(e.target.value)}
-                    className="w-full bg-white/[0.02] border border-white/[0.06] rounded-2xl py-3 px-4 text-sm outline-none focus:border-emerald-500/30 transition-all"
+                    className="w-full bg-white/[0.02] border border-white/[0.06] rounded-2xl py-3 px-4 text-sm outline-none focus:border-white/15 transition-all"
                   />
                 </div>
                 <div className="space-y-2">
@@ -185,7 +185,7 @@ export default function GitHubExportModal({ code, isOpen, onClose }: GitHubExpor
                     type="text"
                     value={commitMessage}
                     onChange={(e) => setCommitMessage(e.target.value)}
-                    className="w-full bg-white/[0.02] border border-white/[0.06] rounded-2xl py-3 px-4 text-sm outline-none focus:border-emerald-500/30 transition-all"
+                    className="w-full bg-white/[0.02] border border-white/[0.06] rounded-2xl py-3 px-4 text-sm outline-none focus:border-white/15 transition-all"
                   />
                 </div>
               </div>

@@ -54,7 +54,7 @@ export interface Module {
 
 // ── Block Color Map ──
 export const BLOCK_COLORS: Record<BlockType, { bg: string; border: string; text: string; glow: string }> = {
-  event:     { bg: 'bg-emerald-500/15', border: 'border-emerald-500/40', text: 'text-emerald-400', glow: 'shadow-emerald-500/20' },
+  event:     { bg: 'bg-zinc-300/15', border: 'border-white/20', text: 'text-zinc-200', glow: 'shadow-white/10' },
   action:    { bg: 'bg-blue-500/15',    border: 'border-blue-500/40',    text: 'text-blue-400',    glow: 'shadow-blue-500/20' },
   condition: { bg: 'bg-amber-500/15',   border: 'border-amber-500/40',   text: 'text-amber-400',   glow: 'shadow-amber-500/20' },
   variable:  { bg: 'bg-purple-500/15',  border: 'border-purple-500/40',  text: 'text-purple-400',  glow: 'shadow-purple-500/20' },

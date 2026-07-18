@@ -79,7 +79,7 @@ export function NavbarMobileMenu({ isOpen, setIsOpen, pathname, t }: NavbarMobil
                 <Link
                   href="/chat"
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-center gap-3 p-4 rounded-xl bg-[var(--color-accent-primary)] text-black text-sm font-black transition-transform active:scale-95 shadow-[0_0_12px_rgba(0,224,158,0.2)]"
+                  className="flex items-center justify-center gap-3 p-4 rounded-xl bg-[var(--color-accent-primary)] text-black text-sm font-black transition-transform active:scale-95 shadow-[0_0_12px_rgba(255,255,255,0.08)]"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="4 17 10 11 4 5" /><line x1="12" y1="19" x2="20" y2="19" />

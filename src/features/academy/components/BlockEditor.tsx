@@ -177,7 +177,7 @@ export function BlockEditor({
       {/* ── Canvas (Center) ── */}
       <div className={`flex-1 flex flex-col ${showCodePreview ? 'border-r border-white/[0.06]' : ''}`}>
         <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/[0.06] bg-white/[0.01]">
-          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <div className="w-2 h-2 rounded-full bg-zinc-300 animate-pulse" />
           <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">
             {isTr ? 'Çalışma Alanı' : 'Workspace'}
           </span>
@@ -193,7 +193,7 @@ export function BlockEditor({
           onDrop={handleDrop}
           className={`
             flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar transition-all duration-300 relative
-            ${isDragOverCanvas ? 'bg-emerald-500/[0.03] ring-2 ring-inset ring-emerald-500/20' : 'bg-transparent'}
+            ${isDragOverCanvas ? 'bg-zinc-300/[0.03] ring-2 ring-inset ring-white/10' : 'bg-transparent'}
           `}
         >
           <AnimatePresence initial={false}>
@@ -205,7 +205,7 @@ export function BlockEditor({
                 className="flex flex-col items-center justify-center h-full text-center"
               >
                 <div className={`p-6 rounded-2xl border-2 border-dashed transition-colors ${
-                  isDragOverCanvas ? 'border-emerald-500/40 bg-emerald-500/[0.05]' : 'border-white/10'
+                  isDragOverCanvas ? 'border-white/20 bg-zinc-300/[0.05]' : 'border-white/10'
                 }`}>
                   <p className="text-zinc-500 text-sm font-medium mb-1">
                     {isTr ? 'Blokları buraya sürükle' : 'Drag blocks here'}
@@ -267,7 +267,7 @@ export function BlockEditor({
             </span>
           </div>
           <div className="flex-1 p-4 overflow-y-auto custom-scrollbar">
-            <pre className="font-mono text-xs text-emerald-400/80 whitespace-pre-wrap leading-relaxed">
+            <pre className="font-mono text-xs text-zinc-200/80 whitespace-pre-wrap leading-relaxed">
               {generatedCode || (
                 <span className="text-zinc-600 italic">
                   {isTr ? 'Blok yerleştirdikçe kod burada görünecek...' : 'Code will appear here as you place blocks...'}

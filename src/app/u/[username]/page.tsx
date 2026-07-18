@@ -48,7 +48,7 @@ export default function ProfilePage() {
       <div className="min-h-screen bg-[#0a0a0b] flex flex-col items-center justify-center text-center p-6">
         <h1 className="text-4xl font-black text-white mb-4">404</h1>
         <p className="text-zinc-500 mb-8">{t('profile.not_found')}</p>
-        <Link href="/" className="px-6 py-3 bg-emerald-600 text-white rounded-xl font-bold">{t('profile.back_home')}</Link>
+        <Link href="/" className="px-6 py-3 bg-zinc-200 text-white rounded-xl font-bold">{t('profile.back_home')}</Link>
       </div>
     );
   }
@@ -63,7 +63,7 @@ export default function ProfilePage() {
         {/* Header Profile Section */}
         <div className="relative mb-20">
           {/* Cover Placeholder */}
-          <div className="h-64 w-full rounded-[3rem] bg-gradient-to-br from-emerald-600/20 via-[#0a0a0b] to-blue-600/10 border border-white/5 overflow-hidden relative">
+          <div className="h-64 w-full rounded-[3rem] bg-gradient-to-br from-zinc-400/20 via-[#0a0a0b] to-blue-600/10 border border-white/5 overflow-hidden relative">
              <div className="absolute inset-0 mesh-gradient opacity-30" />
              <div className="absolute inset-0 dot-grid opacity-20" />
           </div>
@@ -74,7 +74,7 @@ export default function ProfilePage() {
                 {profile.avatar_url ? (
                   <Image src={profile.avatar_url} alt={profile.username} fill className="object-cover" sizes="(max-width: 768px) 128px, 160px" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-4xl font-black text-emerald-500">
+                  <div className="w-full h-full flex items-center justify-center text-4xl font-black text-zinc-300">
                     {profile.username[0].toUpperCase()}
                   </div>
                 )}
@@ -82,7 +82,7 @@ export default function ProfilePage() {
               {isOwner && (
                 <button 
                   onClick={() => setIsEditModalOpen(true)}
-                  className="absolute bottom-2 right-2 p-2.5 bg-emerald-600 text-white rounded-xl shadow-lg hover:scale-110 transition-transform active:scale-95 z-10"
+                  className="absolute bottom-2 right-2 p-2.5 bg-zinc-200 text-white rounded-xl shadow-lg hover:scale-110 transition-transform active:scale-95 z-10"
                 >
                   <Edit3 size={16} />
                 </button>
@@ -99,7 +99,7 @@ export default function ProfilePage() {
                 )}
               </div>
               <div className="flex items-center gap-4 text-zinc-400 font-medium">
-                <span className="text-emerald-400 font-mono tracking-tighter">@{profile.username}</span>
+                <span className="text-zinc-200 font-mono tracking-tighter">@{profile.username}</span>
                 <span className="opacity-20">•</span>
                 <div className="flex items-center gap-1">
                    <Calendar size={14} />
@@ -124,7 +124,7 @@ export default function ProfilePage() {
                  <button 
                    disabled={isFollowingLoading}
                    className={`px-8 py-3 rounded-2xl font-black text-sm flex items-center gap-2 transition-all active:scale-95 shadow-xl ${
-                     false ? 'bg-zinc-800 text-white' : 'bg-white text-black hover:bg-emerald-400'
+                     false ? 'bg-zinc-800 text-white' : 'bg-white text-black hover:bg-zinc-200'
                    }`}
                    onClick={async () => {
                      setIsFollowingLoading(true);
@@ -186,13 +186,13 @@ export default function ProfilePage() {
                 <div className="flex items-center gap-8">
                    <button 
                      onClick={() => setActiveTab('scripts')}
-                     className={`text-sm font-black uppercase tracking-widest transition-all pb-2 border-b-2 ${activeTab === 'scripts' ? 'text-emerald-400 border-emerald-400' : 'text-zinc-600 border-transparent hover:text-zinc-400'}`}
+                     className={`text-sm font-black uppercase tracking-widest transition-all pb-2 border-b-2 ${ activeTab === 'scripts' ? 'text-zinc-200 border-zinc-200' : 'text-zinc-600 border-transparent hover:text-zinc-400'}`}
                    >
                      {t('gallery.post_content.share')}
                    </button>
                    <button 
                      onClick={() => setActiveTab('about')}
-                     className={`text-sm font-black uppercase tracking-widest transition-all pb-2 border-b-2 ${activeTab === 'about' ? 'text-emerald-400 border-emerald-400' : 'text-zinc-600 border-transparent hover:text-zinc-400'}`}
+                     className={`text-sm font-black uppercase tracking-widest transition-all pb-2 border-b-2 ${ activeTab === 'about' ? 'text-zinc-200 border-zinc-200' : 'text-zinc-600 border-transparent hover:text-zinc-400'}`}
                    >
                      {t('dashboard.history')}
                    </button>
@@ -209,10 +209,10 @@ export default function ProfilePage() {
                   <Link 
                     key={script.id} 
                     href={`/gallery/${script.id}`}
-                    className="group p-6 bg-white/[0.02] border border-white/[0.05] rounded-[2.5rem] hover:bg-white/[0.05] hover:border-emerald-500/20 transition-all duration-500"
+                    className="group p-6 bg-white/[0.02] border border-white/[0.05] rounded-[2.5rem] hover:bg-white/[0.05] hover:border-white/8 transition-all duration-500"
                   >
                      <div className="flex items-center justify-between mb-6">
-                        <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                        <div className="w-10 h-10 rounded-xl bg-zinc-300/10 flex items-center justify-center text-zinc-200">
                            <Code size={20} />
                         </div>
                         <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-500">
@@ -220,7 +220,7 @@ export default function ProfilePage() {
                            {script.likes_count}
                         </div>
                      </div>
-                     <h3 className="text-lg font-black text-white mb-2 group-hover:text-emerald-400 transition-colors">{script.title}</h3>
+                     <h3 className="text-lg font-black text-white mb-2 group-hover:text-zinc-200 transition-colors">{script.title}</h3>
                      <p className="text-sm text-zinc-500 line-clamp-2 italic mb-4">{script.description}</p>
                      
                      <div className="flex items-center gap-4 text-[9px] font-bold text-zinc-600 uppercase tracking-widest">

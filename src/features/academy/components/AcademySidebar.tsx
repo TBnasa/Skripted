@@ -21,7 +21,7 @@ const ICON_MAP: Record<string, React.ElementType> = {
 };
 
 const COLOR_MAP: Record<string, { bg: string; text: string; border: string; glow: string }> = {
-  emerald: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/20', glow: 'shadow-emerald-500/20' },
+  emerald: { bg: 'bg-zinc-300/10', text: 'text-zinc-200', border: 'border-white/8', glow: 'shadow-white/10' },
   purple:  { bg: 'bg-purple-500/10',  text: 'text-purple-400',  border: 'border-purple-500/20',  glow: 'shadow-purple-500/20' },
   amber:   { bg: 'bg-amber-500/10',   text: 'text-amber-400',   border: 'border-amber-500/20',   glow: 'shadow-amber-500/20' },
   cyan:    { bg: 'bg-cyan-500/10',     text: 'text-cyan-400',    border: 'border-cyan-500/20',    glow: 'shadow-cyan-500/20' },
@@ -53,7 +53,7 @@ export function AcademySidebar() {
     <div className="w-64 border-r border-white/[0.06] bg-[var(--color-bg-secondary)] h-full flex flex-col">
       {/* Header */}
       <div className="p-4 pb-3 border-b border-white/[0.04]">
-        <h2 className="text-lg font-black bg-gradient-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent">
+        <h2 className="text-lg font-black bg-gradient-to-r from-purple-400 to-zinc-200 bg-clip-text text-transparent">
           Academy
         </h2>
         <p className="text-[10px] text-zinc-600 mt-0.5 font-medium">
@@ -101,7 +101,7 @@ export function AcademySidebar() {
                       {isTr ? mod.title_tr : mod.title_en}
                     </span>
                     {progress === 100 && (
-                      <CheckCircle2 size={12} className="text-emerald-500 shrink-0" />
+                      <CheckCircle2 size={12} className="text-zinc-300 shrink-0" />
                     )}
                   </div>
 
@@ -111,7 +111,7 @@ export function AcademySidebar() {
                       <div
                         className={`h-full rounded-full transition-all duration-500 bg-gradient-to-r ${
                           progress === 100
-                            ? 'from-emerald-500 to-emerald-400'
+                            ? 'from-zinc-400 to-zinc-200'
                             : `from-${mod.color}-500 to-${mod.color}-400`
                         }`}
                         style={{ width: `${progress}%` }}
@@ -168,7 +168,7 @@ export function AcademySidebar() {
                             {/* Status Icon */}
                             <div className="w-4 h-4 shrink-0 flex items-center justify-center">
                               {isLessonCompleted ? (
-                                <CheckCircle2 size={14} className="text-emerald-500" />
+                                <CheckCircle2 size={14} className="text-zinc-300" />
                               ) : !isLessonUnlocked ? (
                                 <Lock size={10} className="text-zinc-600" />
                               ) : isCurrentLesson ? (
@@ -207,7 +207,7 @@ export function AcademySidebar() {
 
       {/* Rank & XP Card */}
       <div className="p-3 border-t border-white/[0.04]">
-        <div className="p-3 rounded-2xl bg-gradient-to-br from-purple-500/[0.05] to-emerald-500/[0.05] border border-white/[0.06]">
+        <div className="p-3 rounded-2xl bg-gradient-to-br from-purple-500/[0.05] to-zinc-400/[0.05] border border-white/[0.06]">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <span className="text-base">{rank.emoji}</span>
@@ -231,7 +231,7 @@ export function AcademySidebar() {
             <Sparkles size={10} className="text-purple-400 shrink-0" />
             <div className="flex-1 bg-white/5 h-1.5 rounded-full overflow-hidden">
               <div
-                className="bg-gradient-to-r from-purple-500 to-emerald-500 h-full rounded-full transition-all duration-700"
+                className="bg-gradient-to-r from-purple-500 to-zinc-400 h-full rounded-full transition-all duration-700"
                 style={{ width: `${Math.min(xpProgressToNext, 100)}%` }}
               />
             </div>

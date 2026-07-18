@@ -403,7 +403,7 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
               exit={{ height: 0, opacity: 0 }}
               className="bg-black/40 border border-white/[0.08] rounded-xl overflow-hidden"
             >
-              <pre className="p-4 text-[10px] font-mono text-emerald-400/80 whitespace-pre-wrap overflow-x-auto">
+              <pre className="p-4 text-[10px] font-mono text-zinc-200/80 whitespace-pre-wrap overflow-x-auto">
                 {generatedCode}
               </pre>
             </motion.div>

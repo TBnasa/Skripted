@@ -41,7 +41,7 @@ export default function FeedbackPoll({ onFeedback, visible }: FeedbackPollProps)
         <div className="flex gap-3">
           <button
             onClick={handleSuccess}
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-500/8 border border-emerald-500/15 px-4 py-2.5 text-sm font-medium text-emerald-400 transition-all duration-300 hover:bg-emerald-500/15 hover:border-emerald-500/25 hover:scale-[1.02]"
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-zinc-300/8 border border-white/6 px-4 py-2.5 text-sm font-medium text-zinc-200 transition-all duration-300 hover:bg-zinc-300/15 hover:border-white/12 hover:scale-[1.02]"
           >
             <Check className="w-4 h-4" />
             {t('chat.feedback_worked')}

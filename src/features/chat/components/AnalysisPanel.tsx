@@ -26,28 +26,28 @@ function VisualFlowButton({ content }: { content: string }) {
         // BroadCast an event or open a modal (to be implemented in UI)
         window.dispatchEvent(new CustomEvent('open-visual-flow', { detail: flowData }));
       }}
-      className="w-full mt-4 flex items-center justify-between p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 transition-all group overflow-hidden relative"
+      className="w-full mt-4 flex items-center justify-between p-4 rounded-2xl border border-white/8 bg-zinc-300/5 transition-all group overflow-hidden relative"
     >
-      <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 via-emerald-500/5 to-emerald-500/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+      <div className="absolute inset-0 bg-gradient-to-r from-zinc-400/0 via-white/3 to-zinc-400/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
       
       <div className="flex items-center gap-3">
-        <div className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400">
+        <div className="p-2 rounded-xl bg-zinc-300/20 text-zinc-200">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
           </svg>
         </div>
         <div className="text-left">
-          <h5 className="text-[12px] font-bold text-emerald-400 uppercase tracking-wider">Mantık Akışını Görüntüle</h5>
+          <h5 className="text-[12px] font-bold text-zinc-200 uppercase tracking-wider">Mantık Akışını Görüntüle</h5>
           <p className="text-[10px] text-zinc-500 font-medium">Bu kodun çalışma prensibini görselleştir</p>
         </div>
       </div>
       
       <div className="flex items-center gap-2">
         <span className="flex h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-emerald-400 opacity-75"></span>
-          <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+          <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-zinc-200 opacity-75"></span>
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-zinc-300"></span>
         </span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-500/50 group-hover:text-emerald-500 transition-colors">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-300/50 group-hover:text-zinc-300 transition-colors">
           <path d="M5 12h14M12 5l7 7-7 7" />
         </svg>
       </div>

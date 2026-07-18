@@ -17,7 +17,7 @@ export function AcademyPlayground() {
           </button>
         </div>
         
-        <button className="flex items-center gap-2 text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-black px-4 py-1.5 rounded-lg transition-all active:scale-95 shadow-lg shadow-emerald-500/20">
+        <button className="flex items-center gap-2 text-xs font-bold bg-zinc-300 hover:bg-zinc-200 text-black px-4 py-1.5 rounded-lg transition-all active:scale-95 shadow-lg shadow-white/10">
           <Play size={14} fill="currentColor" />
           Kodu Çalıştır
         </button>
@@ -32,9 +32,9 @@ export function AcademyPlayground() {
               ))}
             </div>
             <div className="flex-1 outline-none whitespace-pre-wrap">
-              <span className="text-purple-400">on</span> <span className="text-emerald-400">join</span>:<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-purple-400">set</span> <span className="text-text-primary">&#123;welcome message&#125;</span> <span className="text-purple-400">to</span> <span className="text-emerald-400">"Hoş geldin %player%!"</span><br />
-              &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-purple-400">send</span> <span className="text-text-primary">&#123;welcome message&#125;</span> <span className="text-purple-400">to</span> <span className="text-emerald-400">player</span>
+              <span className="text-purple-400">on</span> <span className="text-zinc-200">join</span>:<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-purple-400">set</span> <span className="text-text-primary">&#123;welcome message&#125;</span> <span className="text-purple-400">to</span> <span className="text-zinc-200">"Hoş geldin %player%!"</span><br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-purple-400">send</span> <span className="text-text-primary">&#123;welcome message&#125;</span> <span className="text-purple-400">to</span> <span className="text-zinc-200">player</span>
             </div>
           </div>
         </div>
@@ -45,7 +45,7 @@ export function AcademyPlayground() {
             <h4 className="text-xs font-bold uppercase tracking-widest text-text-muted">Console Output</h4>
           </div>
           <div className="font-mono text-xs space-y-2">
-            <p className="text-emerald-500/80">[System] Academy Environment initialized.</p>
+            <p className="text-zinc-400/80">[System] Academy Environment initialized.</p>
             <p className="text-text-muted">[Hint] Try changing the variable name to complete the challenge.</p>
           </div>
         </div>

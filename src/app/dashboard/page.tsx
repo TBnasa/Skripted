@@ -36,13 +36,13 @@ export default function DashboardPage() {
   };
 
   const getScoreColor = (score: number) => {
-    if (score > 80) return 'text-emerald-400';
+    if (score > 80) return 'text-zinc-200';
     if (score > 50) return 'text-amber-400';
     return 'text-red-400';
   };
 
   const getDotColor = (score: number) => {
-    if (score > 80) return 'bg-emerald-500';
+    if (score > 80) return 'bg-zinc-300';
     if (score > 50) return 'bg-amber-500';
     return 'bg-red-500';
   };
@@ -59,7 +59,7 @@ export default function DashboardPage() {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-3 mb-2"
             >
-              <div className="p-2 bg-emerald-500/10 rounded-xl text-emerald-400">
+              <div className="p-2 bg-zinc-300/10 rounded-xl text-zinc-200">
                 <LayoutDashboard size={24} />
               </div>
               <h1 className="text-3xl font-black tracking-tight">Project Dashboard</h1>
@@ -117,7 +117,7 @@ export default function DashboardPage() {
                     <span className="text-sm font-bold text-zinc-300 group-hover:text-white">Auto-Optimization</span>
                     <span className="text-[10px] text-zinc-500">Automatically fix detected bottleneck patterns.</span>
                   </div>
-                  <div className={`w-10 h-5 rounded-full relative transition-colors duration-300 ${settings.autoOptimize ? 'bg-emerald-500' : 'bg-zinc-800'}`}>
+                  <div className={`w-10 h-5 rounded-full relative transition-colors duration-300 ${settings.autoOptimize ? 'bg-zinc-300' : 'bg-zinc-800'}`}>
                     <motion.div
                       animate={{ x: settings.autoOptimize ? 20 : 0 }}
                       className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full shadow-sm"
@@ -130,7 +130,7 @@ export default function DashboardPage() {
                     <span className="text-sm font-bold text-zinc-300 group-hover:text-white">Verbose Error Logic</span>
                     <span className="text-[10px] text-zinc-500">Enable deep breakdown of syntax issues.</span>
                   </div>
-                  <div className={`w-10 h-5 rounded-full relative transition-colors duration-300 ${settings.verboseError ? 'bg-emerald-500' : 'bg-zinc-800'}`}>
+                  <div className={`w-10 h-5 rounded-full relative transition-colors duration-300 ${settings.verboseError ? 'bg-zinc-300' : 'bg-zinc-800'}`}>
                     <motion.div
                       animate={{ x: settings.verboseError ? 20 : 0 }}
                       className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full shadow-sm"
@@ -150,7 +150,7 @@ function DashboardCard({ title, icon, description, children }: { title: string, 
   return (
     <div className="bg-[#0a0a0a] border border-zinc-800 rounded-3xl p-8 hover:border-zinc-700 transition-all duration-300">
       <div className="flex items-center gap-3 mb-2">
-        <div className="text-emerald-400">{icon}</div>
+        <div className="text-zinc-200">{icon}</div>
         <h3 className="text-lg font-bold text-white">{title}</h3>
       </div>
       <p className="text-sm text-zinc-500 mb-6">{description}</p>

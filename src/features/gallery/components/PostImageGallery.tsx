@@ -32,11 +32,11 @@ export function PostImageGallery({
   return (
     <div className="lg:col-span-5 space-y-10 animate-slide-up" style={{ animationDelay: '0.2s' }}>
       <div className="bg-white/[0.01] border border-white/[0.04] rounded-[2rem] p-8 md:p-10 shadow-2xl relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-[80px] -mr-16 -mt-16 group-hover:bg-emerald-500/10 transition-colors"></div>
+        <div className="absolute top-0 right-0 w-32 h-32 bg-zinc-300/5 blur-[80px] -mr-16 -mt-16 group-hover:bg-zinc-300/10 transition-colors"></div>
         
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-bold flex items-center gap-3 text-emerald-400">
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+          <h3 className="text-xl font-bold flex items-center gap-3 text-zinc-200">
+            <div className="w-8 h-8 rounded-lg bg-zinc-300/10 flex items-center justify-center border border-white/8">
               <AlertCircle size={16} />
             </div>
             {t('gallery.author')}
@@ -44,7 +44,7 @@ export function PostImageGallery({
           <button 
             onClick={handleTranslateDesc}
             disabled={isTranslating}
-            className="flex items-center gap-2 px-3 py-1 bg-white/5 hover:bg-white/10 rounded-lg text-[10px] font-bold text-zinc-500 hover:text-emerald-400 transition-all border border-white/5"
+            className="flex items-center gap-2 px-3 py-1 bg-white/5 hover:bg-white/10 rounded-lg text-[10px] font-bold text-zinc-500 hover:text-zinc-200 transition-all border border-white/5"
           >
             {isTranslating ? <Loader2 size={12} className="animate-spin" /> : <Languages size={12} />}
             {translatedDesc ? t('gallery.original').toUpperCase() : t('gallery.translate').toUpperCase()}
@@ -55,10 +55,10 @@ export function PostImageGallery({
           <textarea 
             value={editedDesc}
             onChange={(e) => setEditedDesc(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-zinc-300 focus:outline-none focus:border-emerald-500 min-h-[150px] resize-none"
+            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-zinc-300 focus:outline-none focus:border-white/30 min-h-[150px] resize-none"
           />
         ) : (
-          <div className="prose prose-invert prose-emerald text-zinc-400 whitespace-pre-wrap leading-relaxed max-w-none text-base italic">
+           <div className="prose prose-invert prose-zinc text-zinc-400 whitespace-pre-wrap leading-relaxed max-w-none text-base italic">
             {translatedDesc || post.description || t('gallery.post_content.no_desc')}
           </div>
         )}
@@ -67,7 +67,7 @@ export function PostImageGallery({
           <div className="flex flex-wrap gap-2 mt-8">
             {post.tags.map((tag: string) => (
               <span key={tag} className="px-3 py-1 bg-white/[0.03] border border-white/[0.06] rounded-lg text-[9px] font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-1.5">
-                 <Hash size={10} className="text-emerald-500" />
+                 <Hash size={10} className="text-zinc-300" />
                  {tag}
               </span>
             ))}
@@ -101,7 +101,7 @@ export function PostImageGallery({
                   key={idx}
                   onClick={() => setActiveImage(idx)}
                   className={`relative w-24 h-16 shrink-0 rounded-xl overflow-hidden border-2 transition-all ${
-                    activeImage === idx ? 'border-emerald-500 scale-105 shadow-lg' : 'border-transparent opacity-40 hover:opacity-100'
+                    activeImage === idx ? 'border-white/30 scale-105 shadow-lg' : 'border-transparent opacity-40 hover:opacity-100'
                   }`}
                 >
                   <Image src={url} alt={`${post.title} preview ${idx + 1}`} fill className="object-cover" sizes="96px" />

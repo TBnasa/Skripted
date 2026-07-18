@@ -110,7 +110,7 @@ const CommentItem = ({
     const parts = content.split(/(@\w+)/g);
     return parts.map((part, i) => {
       if (part.startsWith('@')) {
-        return <span key={i} className="text-emerald-400 font-bold hover:underline cursor-pointer">{part}</span>;
+        return <span key={i} className="text-zinc-200 font-bold hover:underline cursor-pointer">{part}</span>;
       }
       return part;
     });
@@ -123,7 +123,7 @@ const CommentItem = ({
           {comment.avatar_url ? (
             <Image src={comment.avatar_url} alt={comment.author_name} width={40} height={40} className="rounded-xl object-cover border border-white/10" />
           ) : (
-            <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-400 font-black text-xs">
+            <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-zinc-300/10 flex items-center justify-center border border-white/8 text-zinc-200 font-black text-xs">
               {comment.author_name[0].toUpperCase()}
             </div>
           )}
@@ -147,7 +147,7 @@ const CommentItem = ({
           <div className="flex items-center gap-4 mt-2 ml-2">
              <button 
                onClick={() => setIsReplying(!isReplying)}
-               className="text-[10px] font-bold text-zinc-500 hover:text-emerald-400 flex items-center gap-1 transition-colors uppercase tracking-widest"
+               className="text-[10px] font-bold text-zinc-500 hover:text-zinc-200 flex items-center gap-1 transition-colors uppercase tracking-widest"
              >
                <Reply size={12} />
                {t('gallery.reply')}
@@ -155,7 +155,7 @@ const CommentItem = ({
              <button 
                onClick={handleTranslate}
                disabled={isTranslating}
-               className="text-[10px] font-bold text-zinc-500 hover:text-emerald-400 flex items-center gap-1 transition-colors uppercase tracking-widest"
+               className="text-[10px] font-bold text-zinc-500 hover:text-zinc-200 flex items-center gap-1 transition-colors uppercase tracking-widest"
              >
                {isTranslating ? <Loader2 size={12} className="animate-spin" /> : <Languages size={12} />}
                {translatedContent ? t('gallery.original').toUpperCase() : t('gallery.translate').toUpperCase()}
@@ -176,11 +176,11 @@ const CommentItem = ({
                   value={replyContent}
                   onChange={(e) => setReplyContent(e.target.value)}
                   placeholder={`@${comment.author_name}...`}
-                  className="flex-1 bg-white/[0.02] border border-white/[0.1] rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-emerald-500/50"
+                  className="flex-1 bg-white/[0.02] border border-white/[0.1] rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-white/25"
                 />
                 <button 
                   disabled={isSubmitting}
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold disabled:opacity-50 transition-all flex items-center gap-2"
+                  className="px-4 py-2 bg-zinc-200 hover:bg-zinc-300 text-white rounded-xl text-xs font-bold disabled:opacity-50 transition-all flex items-center gap-2"
                 >
                   {isSubmitting ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
                 </button>
