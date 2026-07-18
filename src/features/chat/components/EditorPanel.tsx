@@ -134,7 +134,7 @@ export default function EditorPanel({ code, onCodeChange, isStreaming, sessionId
     onCodeChange(newCode);
   };
 
-  if (!mounted) return <div className="flex flex-1 flex-col min-h-0 glass-panel m-2 rounded-2xl bg-[#0a0a0b]" />;
+  if (!mounted) return <div className="flex flex-1 flex-col min-h-0 glass-panel m-2 rounded-2xl bg-[var(--color-bg-primary)]" />;
 
   return (
     <div className="flex flex-1 flex-col min-h-0 glass-panel overflow-hidden m-2 rounded-2xl">
@@ -152,7 +152,7 @@ export default function EditorPanel({ code, onCodeChange, isStreaming, sessionId
       />
       
       <div className="relative flex-1 overflow-hidden flex flex-col">
-        <div className="flex-1 overflow-hidden [overflow-anchor:none] bg-[#0a0a0a] relative">
+        <div className="flex-1 overflow-hidden [overflow-anchor:none] bg-[var(--color-bg-primary)] relative">
           <Editor
             height="100%"
             defaultLanguage={SKRIPT_LANGUAGE_ID}

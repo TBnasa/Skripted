@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Sparkles, Code2 } from 'lucide-react';
 import AuthButton from '../AuthButton';
+import { Button } from '@/features/shared/components/ui/Button';
 
 interface NavbarDesktopLinksProps {
   pathname: string;
@@ -39,7 +40,7 @@ export function NavbarDesktopLinks({ pathname, t }: NavbarDesktopLinksProps) {
       </Link>
 
       <div
-        className="group relative flex items-center gap-2 px-3 py-2 text-xs font-semibold text-zinc-500 cursor-not-allowed transition-all duration-300 rounded-lg"
+        className="group relative flex items-center gap-2 px-3 py-2 text-xs font-semibold text-[var(--color-text-muted)] cursor-not-allowed transition-all duration-300 rounded-lg"
         title={t('general.academy_tooltip')}
       >
         <Code2 className="w-3.5 h-3.5" />
@@ -47,7 +48,7 @@ export function NavbarDesktopLinks({ pathname, t }: NavbarDesktopLinksProps) {
         <span className="text-[10px] italic text-[var(--color-text-muted)]">(soon)</span>
       </div>
 
-      {pathname !== '/chat' && (
+      {!pathname.startsWith('/dashboard') && pathname !== '/chat' && (
         <>
           <Link
             href="/dashboard"
@@ -55,15 +56,12 @@ export function NavbarDesktopLinks({ pathname, t }: NavbarDesktopLinksProps) {
           >
             {t('general.dashboard')}
           </Link>
-          <Link
-            href="/chat"
-            className="btn-premium btn-primary text-[11px]"
-          >
+          <Button as="a" href="/chat" variant="primary" size="sm" className="text-[11px]">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="4 17 10 11 4 5" /><line x1="12" y1="19" x2="20" y2="19" />
             </svg>
             {t('general.launch_engine')}
-          </Link>
+          </Button>
         </>
       )}
       

@@ -135,7 +135,7 @@ export default function AppSidebar() {
                 <UserButton
                   appearance={{
                     elements: {
-                      userButtonAvatarBox: "w-8 h-8 rounded-xl border border-white/[0.06] shadow-sm",
+                      userButtonAvatarBox: "w-8 h-8 rounded-xl border border-[var(--color-border)] shadow-sm",
                     },
                   }}
                 />

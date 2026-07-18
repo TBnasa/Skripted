@@ -6,6 +6,7 @@ import { useChats, type ChatSession } from '@/features/shared/hooks/use-chats';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PanelLeftClose, PanelLeftOpen, MessageSquare, Image as ImageIcon, Code2, FolderGit2, MoreHorizontal, Pencil, Trash2, Plus } from 'lucide-react';
+import { Button } from '@/features/shared/components/ui/Button';
 
 interface SidebarProps {
   readonly onNewChat: () => void;
@@ -115,25 +116,27 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
       <motion.div 
         animate={{ width: isDesktopCollapsed ? 80 : 260 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className={`fixed md:relative z-50 md:z-auto h-full border-r border-white/[0.04] bg-[#0e0e0e]/98 md:bg-[#0e0e0e]/70 backdrop-blur-3xl flex flex-col pt-4 pb-4 transition-transform duration-300 ease-out md:translate-x-0 ${
+        className={`fixed md:relative z-50 md:z-auto h-full border-r border-[var(--color-border)] bg-[var(--color-bg-card)]/98 md:bg-[var(--color-bg-card)]/70 backdrop-blur-3xl flex flex-col pt-4 pb-4 transition-transform duration-300 ease-out md:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <button
+        <Button
           onClick={() => setIsDesktopCollapsed(!isDesktopCollapsed)}
-          className="hidden md:flex absolute -right-4 top-6 w-8 h-8 bg-[#141414] border border-white/[0.06] rounded-full items-center justify-center text-zinc-500 hover:text-white hover:border-white/25 transition-all z-50 shadow-xl"
+          variant="ghost" size="icon"
+          className="hidden md:flex absolute -right-4 top-6 w-8 h-8 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-full shadow-xl"
         >
           {isDesktopCollapsed ? <PanelLeftOpen size={14} /> : <PanelLeftClose size={14} />}
-        </button>
+        </Button>
 
         <div className={`px-3 mb-6 space-y-2 ${isDesktopCollapsed ? 'flex flex-col items-center' : ''}`}>
-          <button
+          <Button
             onClick={() => { onNewChat(); onToggle?.(); }}
-            className={`flex items-center justify-center gap-2.5 py-3 text-[11px] font-bold bg-gradient-to-b from-zinc-400 to-zinc-400 hover:from-zinc-300 hover:to-zinc-400 text-black rounded-xl transition-all shadow-[0_0_20px_rgba(255,255,255,0.06)] active:scale-[0.98] ${isDesktopCollapsed ? 'w-12 h-12 rounded-full p-0' : 'w-full'}`}
+            variant="primary" size={isDesktopCollapsed ? 'icon' : 'md'}
+            className={`text-[11px] font-bold bg-gradient-to-b from-[var(--color-accent-secondary)] to-[var(--color-accent-secondary)] hover:from-[var(--color-accent-primary)] hover:to-[var(--color-accent-secondary)] shadow-[0_0_20px_rgba(255,255,255,0.06)] ${isDesktopCollapsed ? 'w-12 h-12 rounded-full p-0' : 'w-full'}`}
           >
             <Plus size={isDesktopCollapsed ? 20 : 16} strokeWidth={3} />
             {!isDesktopCollapsed && t('sidebar.new_chat')}
-          </button>
+          </Button>
           
           <div className="pt-4 flex flex-col gap-2 w-full">
             <NavButton href="/gallery" icon={<ImageIcon size={16} />} text={t('gallery.title_main')} isCollapsed={isDesktopCollapsed} />
@@ -141,7 +144,7 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
             <NavButton href="/gallery?filter=mine" icon={<FolderGit2 size={16} />} text={t('gallery.my_posts')} isCollapsed={isDesktopCollapsed} />
             
             <div
-              className={`group flex items-center justify-center gap-3 py-3 font-bold text-zinc-600 bg-white/[0.01] border border-white/[0.03] cursor-not-allowed transition-all ${
+              className={`group flex items-center justify-center gap-3 py-3 font-bold text-[var(--color-text-muted)] bg-white/[0.01] border border-[var(--color-border)] cursor-not-allowed transition-all ${
                 isDesktopCollapsed ? 'w-12 h-12 rounded-2xl mx-auto' : 'w-full px-4 rounded-xl text-[11px] justify-start'
               }`}
               title={t('general.academy_tooltip')}
@@ -171,7 +174,7 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
             </div>
           ) : chats.length === 0 ? (
             <div className="text-center py-12 opacity-50">
-              <MessageSquare size={24} className="mx-auto mb-2 text-zinc-500" />
+              <MessageSquare size={24} className="mx-auto mb-2 text-[var(--color-text-muted)]" />
               {!isDesktopCollapsed && <p className="text-[10px] font-bold tracking-widest uppercase">{t('sidebar.empty')}</p>}
             </div>
           ) : (
@@ -193,7 +196,7 @@ function NavButton({ href, icon, text, isCollapsed }: { href: string, icon: Reac
   return (
     <Link
       href={href}
-      className={`group flex items-center justify-center gap-3 py-3 font-bold text-zinc-400 hover:text-zinc-200 bg-white/[0.01] hover:bg-zinc-300/10 border border-white/[0.03] hover:border-white/15 transition-all ${
+      className={`group flex items-center justify-center gap-3 py-3 font-bold text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] bg-white/[0.01] hover:bg-[var(--color-accent-glow)] border border-[var(--color-border)] hover:border-[var(--color-border-hover)] transition-all ${
         isCollapsed ? 'w-12 h-12 rounded-2xl mx-auto' : 'w-full px-4 rounded-xl text-[11px] justify-start'
       }`}
       title={isCollapsed ? text : undefined}
@@ -257,7 +260,7 @@ function ChatListItem({ session, isActive, onClick, onRename, onDelete, isCollap
             if (e.key === 'Escape') { setIsEditing(false); setEditTitle(session.title || ''); }
           }}
           onBlur={handleRenameSubmit}
-          className="w-full px-3 py-2.5 text-[11px] font-medium bg-zinc-300/10 border border-white/25 text-white rounded-xl outline-none"
+          className="w-full px-3 py-2.5 text-[11px] font-medium bg-[var(--color-accent-glow)] border border-[var(--color-border-active)] text-[var(--color-text-primary)] rounded-xl outline-none"
           maxLength={60}
         />
       </li>
@@ -274,20 +277,20 @@ function ChatListItem({ session, isActive, onClick, onRename, onDelete, isCollap
           isCollapsed ? 'justify-center px-0 rounded-2xl w-12 h-12 mx-auto' : 'justify-between px-3 rounded-xl'
         } ${
           isActive
-            ? 'bg-zinc-300/10 border-white/15 text-zinc-200 shadow-[0_0_15px_rgba(255,255,255,0.04)]'
-            : 'text-zinc-400 bg-white/[0.01] border-transparent hover:bg-white/[0.04] hover:border-white/[0.08]'
+            ? 'bg-[var(--color-accent-glow)] border-[var(--color-border-hover)] text-[var(--color-text-primary)] shadow-[0_0_15px_rgba(255,255,255,0.04)]'
+            : 'text-[var(--color-text-secondary)] bg-white/[0.01] border-transparent hover:bg-white/[0.04] hover:border-[var(--color-border-hover)]'
         }`}
       >
         {isCollapsed ? (
-          <MessageSquare size={16} className={isActive ? 'text-zinc-200' : 'text-zinc-500 group-hover:text-zinc-300'} />
+          <MessageSquare size={16} className={isActive ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-muted)] group-hover:text-[var(--color-text-primary)]'} />
         ) : (
           <>
-            <span className="truncate group-hover:text-white transition-colors pr-2">
+            <span className="truncate group-hover:text-[var(--color-text-primary)] transition-colors pr-2">
               {session.title || t('sidebar.untitled_chat')}
             </span>
             <div
               onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
-              className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg hover:bg-white/[0.08] shrink-0 text-zinc-500 hover:text-white"
+              className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg hover:bg-white/[0.08] shrink-0 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
             >
               <MoreHorizontal size={14} />
             </div>
@@ -302,17 +305,17 @@ function ChatListItem({ session, isActive, onClick, onRename, onDelete, isCollap
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
             transition={{ duration: 0.15 }}
-            className={`absolute z-50 w-44 bg-[#141414]/95 backdrop-blur-xl border border-white/[0.08] rounded-xl shadow-2xl overflow-hidden ${isCollapsed ? 'left-full ml-4 top-0' : 'right-0 top-full mt-2'}`}
+            className={`absolute z-50 w-44 bg-[var(--color-bg-elevated)]/95 backdrop-blur-xl border border-[var(--color-border-hover)] rounded-xl shadow-2xl overflow-hidden ${isCollapsed ? 'left-full ml-4 top-0' : 'right-0 top-full mt-2'}`}
           >
             <button
               onClick={(e) => { e.stopPropagation(); setIsEditing(true); setEditTitle(session.title || ''); setShowMenu(false); }}
-              className="w-full text-left px-4 py-3 text-[11px] font-bold text-zinc-300 hover:bg-white/[0.04] hover:text-white transition-colors flex items-center gap-3"
+              className="w-full text-left px-4 py-3 text-[11px] font-bold text-[var(--color-text-primary)] hover:bg-white/[0.04] hover:text-[var(--color-text-primary)] transition-colors flex items-center gap-3"
             >
               <Pencil size={14} /> {t('sidebar.rename')}
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); onDelete(session.id); setShowMenu(false); }}
-              className="w-full text-left px-4 py-3 text-[11px] font-bold text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors flex items-center gap-3"
+              className="w-full text-left px-4 py-3 text-[11px] font-bold text-[var(--color-accent-error)] hover:bg-[var(--color-accent-error)]/10 hover:text-[var(--color-accent-error)] transition-colors flex items-center gap-3"
             >
               <Trash2 size={14} /> {t('sidebar.delete')}
             </button>

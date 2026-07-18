@@ -13,7 +13,7 @@ export default function GalleryPage() {
     <div className="flex min-h-screen flex-col bg-[var(--color-bg-primary)] text-white">
       <Suspense fallback={
         <div className="flex-1 flex items-center justify-center">
-          <Loader2 className="w-12 h-12 text-zinc-300 animate-spin" />
+          <Loader2 className="w-12 h-12 text-[var(--color-text-primary)] animate-spin" />
         </div>
       }>
         <GalleryContent />

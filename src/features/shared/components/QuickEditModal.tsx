@@ -9,6 +9,7 @@ import { setupSkriptLinter } from '@/lib/skript-linter';
 import { useTranslation } from '@/lib/useTranslation';
 import { AnimatePresence } from 'framer-motion';
 import GUIBuilder from '@/features/chat/components/Editor/GUIBuilder';
+import { Button } from '@/features/shared/components/ui/Button';
 
 interface QuickEditModalProps {
   readonly script: { id?: string; title: string; content: string; version?: string } | null;
@@ -92,75 +93,76 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-      <div className="bg-[#0f0f11] border border-white/[0.08] w-full max-w-5xl h-[85vh] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col animate-scale-up relative">
+      <div className="bg-[var(--color-bg-elevated)] border border-[var(--color-border-hover)] w-full max-w-5xl h-[85vh] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col animate-scale-up relative">
         <div className="absolute inset-0 bg-gradient-to-tr from-zinc-400/[0.02] via-transparent to-zinc-400/[0.02] pointer-events-none"></div>
         
         {/* Header */}
-        <div className="px-8 py-6 border-b border-white/[0.08] flex justify-between items-center bg-white/[0.01] relative z-10">
+        <div className="px-8 py-6 border-b border-[var(--color-border-hover)] flex justify-between items-center bg-white/[0.01] relative z-10">
           <div className="flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-lg transition-colors ${isNew ? 'bg-zinc-300/20 border-white/15 text-zinc-200' : 'bg-blue-500/20 border-blue-500/30 text-blue-400'}`}>
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-lg transition-colors ${isNew ? 'bg-white/[0.2] border-[var(--color-border-hover)] text-[var(--color-text-primary)]' : 'bg-white/[0.08] border-[var(--color-border-hover)] text-[var(--color-text-secondary)]'}`}>
               <FileCode size={24} />
             </div>
             <div>
               <h2 className="text-xl font-bold text-white tracking-tight">{isNew ? t('editor.create_new') : t('editor.edit_script')}</h2>
-              <p className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest mt-1">
+              <p className="text-[10px] font-mono text-[var(--color-text-muted)] uppercase tracking-widest mt-1">
                 {isNew ? t('editor.start_fresh') : `${t('editor.editing')}: ${script?.title}`}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button
+            <Button
               onClick={() => toast.info('GUI Builder Coming Soon!')}
-              className="p-2 rounded-xl border transition-all flex items-center gap-2 text-xs font-bold text-zinc-500 hover:text-white hover:bg-white/5 border-transparent hover:border-white/10"
+              variant="ghost" size="sm"
               title="GUI Builder"
             >
               <Layout size={20} />
               <span className="hidden sm:inline">GUI</span>
-            </button>
+            </Button>
             {!isNew && (
-              <button
+              <Button
                 onClick={() => setIsHistoryOpen(!isHistoryOpen)}
-                className={`p-2 rounded-xl border transition-all flex items-center gap-2 text-xs font-bold ${isHistoryOpen ? 'bg-zinc-300/10 border-white/15 text-zinc-200' : 'text-zinc-500 hover:text-white hover:bg-white/5 border-transparent hover:border-white/10'}`}
+                variant="ghost" size="sm"
+                className={isHistoryOpen ? 'bg-[var(--color-accent-glow)] border-[var(--color-border-hover)] text-[var(--color-text-primary)]' : ''}
                 title={t('editor.version_history')}
               >
                 <Clock size={20} />
                 <span className="hidden sm:inline">{t('dashboard.history')}</span>
-              </button>
+              </Button>
             )}
-            <button onClick={onClose} className="text-zinc-500 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-xl border border-transparent hover:border-white/10">
+            <Button onClick={onClose} variant="ghost" size="sm">
               <X size={24} />
-            </button>
+            </Button>
           </div>
         </div>
 
         {/* Body */}
         <div className="flex-1 flex flex-col relative z-10 overflow-hidden">
           {/* Settings Bar */}
-          <div className="px-8 py-4 bg-white/[0.02] border-b border-white/[0.06] flex flex-wrap items-center gap-4">
+          <div className="px-8 py-4 bg-white/[0.02] border-b border-[var(--color-border)] flex flex-wrap items-center gap-4">
              <div className="flex-1 min-w-[200px]">
-                <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5 block ml-1">{t('gallery.modal.title_label')}</label>
+                <label className="text-[10px] font-black text-[var(--color-text-muted)] uppercase tracking-widest mb-1.5 block ml-1">{t('gallery.modal.title_label')}</label>
                 <input 
                   type="text" 
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Örn: Gelişmiş Market Sistemi"
-                  className="w-full bg-white/[0.03] border border-white/[0.1] rounded-xl px-4 py-2.5 text-zinc-200 focus:outline-none focus:border-white/25 transition-all font-medium"
+                  className="w-full bg-white/[0.03] border border-[var(--color-border-hover)] rounded-xl px-4 py-2.5 text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-border-active)] transition-all font-medium"
                 />
              </div>
              <div className="w-32">
-                <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5 block ml-1">{t('editor.version_label')}</label>
+                <label className="text-[10px] font-black text-[var(--color-text-muted)] uppercase tracking-widest mb-1.5 block ml-1">{t('editor.version_label')}</label>
                 <input 
                   type="text" 
                   value={version}
                   onChange={(e) => setVersion(e.target.value)}
                   placeholder="1.0.0"
-                  className="w-full bg-white/[0.03] border border-white/[0.1] rounded-xl px-4 py-2.5 text-zinc-200 focus:outline-none focus:border-white/25 transition-all font-mono"
+                  className="w-full bg-white/[0.03] border border-[var(--color-border-hover)] rounded-xl px-4 py-2.5 text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-border-active)] transition-all font-mono"
                 />
              </div>
           </div>
 
           {/* Editor Container */}
-          <div className="flex-1 relative bg-[#0a0a0b]">
+          <div className="flex-1 relative bg-[var(--color-bg-primary)]">
              <Editor
                 height="100%"
                 language={SKRIPT_LANGUAGE_ID}
@@ -169,7 +171,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
                 onChange={(v) => setContent(v || '')}
                 beforeMount={handleEditorWillMount}
                 onMount={handleEditorMount}
-                loading={<div className="flex items-center justify-center h-full bg-[#0a0a0b] text-zinc-500 animate-pulse font-mono text-xs uppercase tracking-widest">{t('editor.preparing')}</div>}
+                loading={<div className="flex items-center justify-center h-full bg-[var(--color-bg-primary)] text-[var(--color-text-muted)] animate-pulse font-mono text-xs uppercase tracking-widest">{t('editor.preparing')}</div>}
                 options={{
                   fontSize: 14,
                   fontFamily: '"JetBrains Mono", "Cascadia Code", monospace',
@@ -188,46 +190,46 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
 
           {/* Version History Sidebar */}
           {isHistoryOpen && (
-            <div className="absolute top-0 right-0 w-80 h-full bg-[#0d0d0f] border-l border-white/[0.08] shadow-2xl z-20 flex flex-col animate-slide-left">
-               <div className="p-6 border-b border-white/[0.08] flex items-center justify-between">
-                  <h3 className="text-sm font-black uppercase tracking-widest text-zinc-300 flex items-center gap-2">
+            <div className="absolute top-0 right-0 w-80 h-full bg-[var(--color-bg-elevated)] border-l border-[var(--color-border-hover)] shadow-2xl z-20 flex flex-col animate-slide-left">
+               <div className="p-6 border-b border-[var(--color-border-hover)] flex items-center justify-between">
+                  <h3 className="text-sm font-black uppercase tracking-widest text-[var(--color-text-primary)] flex items-center gap-2">
                      <History size={16} />
                      {t('editor.version_history')}
                   </h3>
-                  <button onClick={() => setIsHistoryOpen(false)} className="text-zinc-600 hover:text-white transition-colors">
+                  <button onClick={() => setIsHistoryOpen(false)} className="text-[var(--color-text-muted)] hover:text-white transition-colors">
                      <X size={18} />
                   </button>
                </div>
                
                <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-3">
                   {isLoadingVersions ? (
-                     <div className="flex flex-col items-center justify-center h-40 text-zinc-600 italic gap-3">
-                        <Loader2 size={32} className="animate-spin text-zinc-300" />
+                     <div className="flex flex-col items-center justify-center h-40 text-[var(--color-text-muted)] italic gap-3">
+                        <Loader2 size={32} className="animate-spin text-[var(--color-text-primary)]" />
                         <span className="text-xs uppercase tracking-[0.2em]">{t('general.loading')}</span>
                      </div>
                   ) : versions.length === 0 ? (
-                     <div className="flex flex-col items-center justify-center h-40 text-zinc-600 italic gap-3 text-center px-4">
+                     <div className="flex flex-col items-center justify-center h-40 text-[var(--color-text-muted)] italic gap-3 text-center px-4">
                         <Clock size={32} className="opacity-20" />
                         <span className="text-xs">{t('editor.no_history')}</span>
                      </div>
                   ) : (
                      versions.map((v, i) => (
-                        <div key={v.id} className="group p-4 bg-white/[0.02] border border-white/[0.05] rounded-2xl hover:border-white/15 transition-all">
+                        <div key={v.id} className="group p-4 bg-white/[0.02] border border-[var(--color-border)] rounded-2xl hover:border-[var(--color-border-hover)] transition-all">
                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
+                              <span className="text-[10px] font-black text-[var(--color-text-muted)] uppercase tracking-widest">
                                  {i === 0 ? t('editor.last_saved') : `${t('editor.version_label')} #${versions.length - i}`}
                               </span>
-                              <div className="flex items-center gap-1 text-[10px] text-zinc-600">
+                              <div className="flex items-center gap-1 text-[10px] text-[var(--color-text-muted)]">
                                  <Calendar size={10} />
                                  {new Date(v.created_at).toLocaleTimeString(t('general.locale'), { hour: '2-digit', minute: '2-digit' })}
                               </div>
                            </div>
-                           <p className="text-[9px] text-zinc-600 mb-3 truncate font-mono">
+                           <p className="text-[9px] text-[var(--color-text-muted)] mb-3 truncate font-mono">
                               {new Date(v.created_at).toLocaleDateString(t('general.locale'), { day: 'numeric', month: 'short', year: 'numeric' })}
                            </p>
                            <button 
                               onClick={() => handleRestore(v.content)}
-                              className="w-full flex items-center justify-center gap-2 py-2 bg-zinc-300/10 border border-white/8 rounded-lg text-zinc-300 text-[10px] font-black uppercase tracking-widest hover:bg-zinc-300 hover:text-white transition-all"
+                              className="w-full flex items-center justify-center gap-2 py-2 bg-[var(--color-accent-glow)] border border-[var(--color-border-hover)] rounded-lg text-[var(--color-text-primary)] text-[10px] font-black uppercase tracking-widest hover:bg-[var(--color-accent-primary)] hover:text-[var(--color-bg-primary)] transition-all"
                            >
                               <RotateCcw size={12} />
                               {t('editor.restore')}
@@ -237,7 +239,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
                   )}
                </div>
                
-               <div className="p-4 border-t border-white/[0.08] bg-black/20 italic text-[10px] text-zinc-600 text-center">
+               <div className="p-4 border-t border-[var(--color-border-hover)] bg-black/20 italic text-[10px] text-[var(--color-text-muted)] text-center">
                   {t('editor.snapshots_info')}
                </div>
             </div>
@@ -245,15 +247,15 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
         </div>
 
         {/* Footer */}
-        <div className="px-8 py-6 border-t border-white/[0.08] flex items-center justify-between bg-white/[0.01] relative z-10 shrink-0">
-          <div className="flex items-center gap-2 text-zinc-500 text-xs">
+        <div className="px-8 py-6 border-t border-[var(--color-border-hover)] flex items-center justify-between bg-white/[0.01] relative z-10 shrink-0">
+          <div className="flex items-center gap-2 text-[var(--color-text-muted)] text-xs">
              <AlertCircle size={14} className="text-amber-500/70" />
              <span>{t('editor.dont_forget_save')}</span>
           </div>
           <div className="flex items-center gap-3">
              <button 
                 onClick={onClose}
-                className="px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-zinc-500 hover:text-white transition-colors"
+                className="px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-[var(--color-text-muted)] hover:text-white transition-colors"
                 disabled={isSaving}
              >
                 {t('general.cancel')}
@@ -261,7 +263,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
              <button 
                 onClick={() => onSave(title, content, version)}
                 disabled={isSaving || !title || !content}
-                className="flex items-center gap-2 px-8 py-3 bg-zinc-200 hover:bg-zinc-300 text-white text-[11px] font-black uppercase tracking-widest rounded-2xl transition-all shadow-lg shadow-white/10 disabled:opacity-30 active:scale-95"
+                className="flex items-center gap-2 px-8 py-3 bg-[var(--color-accent-primary)] hover:bg-[var(--color-accent-secondary)] text-[var(--color-bg-primary)] text-[11px] font-black uppercase tracking-widest rounded-2xl transition-all shadow-lg shadow-white/10 disabled:opacity-30 active:scale-95"
              >
                 {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
                 {isSaving ? t('editor.saving') : (isNew ? t('editor.create_now') : t('general.save_changes'))}

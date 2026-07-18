@@ -29,32 +29,32 @@ export function PostCodeViewer({
   return (
     <motion.div 
       layout
-      className={`flex flex-col bg-[#0a0a0c]/90 backdrop-blur-2xl border border-white/[0.08] overflow-hidden shadow-2xl ring-1 ring-white/5 transition-all z-50 ${
+      className={`flex flex-col bg-[var(--color-bg-card)]/90 backdrop-blur-2xl border border-[var(--color-border-hover)] overflow-hidden shadow-2xl ring-1 ring-white/5 transition-all z-50 ${
         isFullscreen 
-          ? 'fixed inset-4 md:inset-8 rounded-[2rem]' 
+          ? 'fixed inset-4 md:inset-8 rounded-3xl' 
           : 'relative rounded-[2.5rem] min-h-[500px] h-[700px] max-h-[700px]'
       }`}
     >
-      <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06] bg-black/40 shrink-0">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border)] bg-black/40 shrink-0">
         <div className="flex items-center gap-3">
           <div className="flex gap-2">
             <div className="w-3 h-3 rounded-full bg-red-500/80 border border-red-500/40 shadow-[0_0_10px_rgba(239,68,68,0.5)]"></div>
-            <div className="w-3 h-3 rounded-full bg-amber-500/80 border border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.5)]"></div>
-            <div className="w-3 h-3 rounded-full bg-zinc-300/80 border border-white/20 shadow-[0_0_10px_rgba(255,255,255,0.2)]"></div>
+            <div className="w-3 h-3 rounded-full bg-zinc-500/60 border border-zinc-500/30"></div>
+            <div className="w-3 h-3 rounded-full bg-[var(--color-accent-primary)]/80 border border-[var(--color-border-active)] shadow-[0_0_10px_rgba(255,255,255,0.2)]"></div>
           </div>
-          <span className="ml-3 font-mono text-xs font-bold text-zinc-400 uppercase tracking-widest">script.sk</span>
+          <span className="ml-3 font-mono text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-widest">script.sk</span>
         </div>
         <div className="flex items-center gap-3">
           <button 
             onClick={handleCopy}
-            className="flex items-center gap-2 text-[11px] font-bold text-zinc-300 hover:text-zinc-200 transition-all bg-white/5 hover:bg-zinc-300/10 px-4 py-2 rounded-xl border border-white/5 hover:border-white/15 group active:scale-95"
+            className="flex items-center gap-2 text-[11px] font-bold text-[var(--color-text-primary)] hover:text-[var(--color-text-primary)] transition-all bg-white/5 hover:bg-[var(--color-accent-glow)] px-4 py-2 rounded-xl border border-[var(--color-border)] hover:border-[var(--color-border-hover)] group active:scale-95"
           >
-            {copied ? <CheckCircle2 size={14} className="text-zinc-300" /> : <Copy size={14} className="group-hover:scale-110 transition-transform" />}
+            {copied ? <CheckCircle2 size={14} className="text-[var(--color-text-primary)]" /> : <Copy size={14} className="group-hover:scale-110 transition-transform" />}
             {copied ? t('general.copied') : t('general.copy')}
           </button>
           <button 
             onClick={() => setIsFullscreen(!isFullscreen)}
-            className="flex items-center justify-center text-zinc-400 hover:text-white bg-white/5 hover:bg-white/10 w-8 h-8 rounded-xl border border-white/5 hover:border-white/20 transition-all active:scale-95"
+            className="flex items-center justify-center text-[var(--color-text-secondary)] hover:text-white bg-white/5 hover:bg-white/10 w-8 h-8 rounded-xl border border-[var(--color-border)] hover:border-[var(--color-border-active)] transition-all active:scale-95"
             title={isFullscreen ? t('general.shrink', { defaultValue: 'Shrink' }) : t('general.fullscreen', { defaultValue: 'Fullscreen' })}
           >
             {isFullscreen ? <Shrink size={14} /> : <Maximize2 size={14} />}
@@ -70,7 +70,7 @@ export function PostCodeViewer({
           beforeMount={handleEditorWillMount}
           onMount={handleEditorMount}
           value={code}
-          loading={<div className="flex items-center justify-center h-full bg-[#0a0a0b] text-zinc-500 animate-pulse font-mono text-xs uppercase tracking-widest">{t('gallery.post_content.editor_loading')}</div>}
+          loading={<div className="flex items-center justify-center h-full bg-[var(--color-bg-primary)] text-[var(--color-text-muted)] animate-pulse font-mono text-xs uppercase tracking-widest">{t('gallery.post_content.editor_loading')}</div>}
           options={{
             readOnly: true,
             minimap: { enabled: false },

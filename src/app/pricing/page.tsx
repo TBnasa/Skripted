@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
 import { useTranslation } from '@/lib/useTranslation';
+import { Button } from '@/features/shared/components/ui/Button';
 
 const tiers = [
   {
@@ -93,7 +94,7 @@ export default function PricingPage() {
               className={`relative flex flex-col rounded-2xl p-8 h-full transition-all duration-300 ${
                 tier.recommended
                   ? 'bg-[var(--color-bg-secondary)] border-2 border-[var(--color-accent-primary)]/40 shadow-[0_0_32px_-8px_rgba(255,255,255,0.06)] md:scale-[1.02]'
-                  : 'bg-[var(--color-bg-secondary)] border border-white/6'
+                  : 'bg-[var(--color-bg-secondary)] border border-[var(--color-border)]'
               }`}
             >
               {tier.recommended && (
@@ -141,22 +142,21 @@ export default function PricingPage() {
               </div>
 
               {tier.disabled ? (
-                <button
-                  disabled
-                  className="w-full py-4 px-6 rounded-2xl bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] font-bold border border-white/5 cursor-not-allowed transition-all"
-                >
+                <Button disabled variant="secondary" className="w-full py-4 text-sm cursor-not-allowed">
                   {t(`pricing.${tier.ctaKey}`)}
-                </button>
+                </Button>
               ) : (
-                <button
-                  className={`w-full py-4 px-6 rounded-2xl font-bold transition-all duration-250 active:scale-[0.97] ${
+                <Button
+                  variant={tier.recommended ? 'primary' : 'outline'}
+                  size="lg"
+                  className={`w-full py-4 text-sm ${
                     tier.recommended
-                      ? 'bg-[var(--color-accent-primary)] text-[var(--color-bg-primary)] shadow-[0_0_20px_rgba(255,255,255,0.06)] hover:brightness-110 hover:shadow-[0_0_28px_rgba(255,255,255,0.1)]'
-                      : 'border border-white/10 text-[var(--color-text-secondary)] hover:text-white hover:border-white/20 hover:bg-white/[0.04]'
+                      ? 'shadow-[0_0_20px_rgba(255,255,255,0.06)] hover:brightness-110 hover:shadow-[0_0_28px_rgba(255,255,255,0.1)]'
+                      : ''
                   }`}
                 >
                   {t(`pricing.${tier.ctaKey}`)}
-                </button>
+                </Button>
               )}
             </motion.div>
           ))}
@@ -166,7 +166,7 @@ export default function PricingPage() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-20 pt-10 border-t border-white/5 text-center"
+          className="mt-20 pt-10 border-t border-[var(--color-border)] text-center"
         >
           <p className="text-[var(--color-text-muted)] text-sm max-w-xl mx-auto leading-relaxed">
             {t('status.legal_disclaimer')}

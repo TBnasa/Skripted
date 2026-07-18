@@ -188,52 +188,6 @@ body {
   }
 }
 
-/* ══════ PREMIUM BUTTON ══════ */
-.btn-premium {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.625rem 1.25rem;
-  font-weight: 700;
-  font-size: 0.75rem;
-  letter-spacing: 0.04em;
-  border-radius: 12px;
-  transition: background, border-color, box-shadow, transform, filter 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-  overflow: hidden;
-  cursor: pointer;
-}
-
-.btn-primary {
-  background: var(--color-accent-primary);
-  color: #060608;
-  border: none;
-  box-shadow: 0 0 16px rgba(255, 255, 255, 0.08), 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-@media (hover: hover) and (pointer: fine) {
-  .btn-primary:hover {
-    box-shadow: 0 0 24px rgba(255, 255, 255, 0.15), 0 4px 16px rgba(0, 0, 0, 0.4);
-    transform: translateY(-1px);
-    filter: brightness(1.1);
-  }
-}
-.btn-primary:active { transform: translateY(0); }
-
-.btn-ghost {
-  background: transparent;
-  color: var(--color-text-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-@media (hover: hover) and (pointer: fine) {
-  .btn-ghost:hover {
-    background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(255, 255, 255, 0.15);
-    color: var(--color-text-primary);
-    transform: translateY(-1px);
-  }
-}
-
 /* Legacy compatibility */
 .mc-btn {
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -338,8 +292,8 @@ pre, code, .code-block {
 }
 
 @keyframes confettiPop {
-  0% { transform: scale(0); opacity: 0; }
-  50% { transform: scale(1.2); opacity: 1; }
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.15); opacity: 1; }
   100% { transform: scale(1); opacity: 1; }
 }
 

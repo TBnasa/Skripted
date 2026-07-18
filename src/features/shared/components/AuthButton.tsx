@@ -3,6 +3,7 @@
 import { useTranslation } from '@/lib/useTranslation';
 import { SignInButton, UserButton, useAuth } from '@clerk/nextjs';
 import { User } from 'lucide-react';
+import { Button } from '@/features/shared/components/ui/Button';
 
 export default function AuthButton() {
   const { t } = useTranslation();
@@ -19,7 +20,7 @@ export default function AuthButton() {
           <UserButton 
             appearance={{
               elements: {
-                userButtonAvatarBox: "w-9 h-9 rounded-xl border border-white/[0.06] shadow-sm",
+                userButtonAvatarBox: "w-9 h-9 rounded-xl border border-[var(--color-border)] shadow-sm",
               }
             }}
           >
@@ -34,12 +35,9 @@ export default function AuthButton() {
         </>
       ) : (
         <SignInButton mode="modal">
-          <button 
-            className="btn-premium btn-ghost text-[11px] px-4 py-2"
-            aria-label="Sign in to your account"
-          >
+          <Button variant="ghost" size="sm" className="text-[11px]" aria-label="Sign in to your account">
             {t('sign_in')}
-          </button>
+          </Button>
         </SignInButton>
       )}
     </div>

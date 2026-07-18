@@ -36,13 +36,13 @@ export default function DashboardPage() {
   };
 
   const getScoreColor = (score: number) => {
-    if (score > 80) return 'text-zinc-200';
+    if (score > 80) return 'text-[var(--color-text-primary)]';
     if (score > 50) return 'text-amber-400';
     return 'text-red-400';
   };
 
   const getDotColor = (score: number) => {
-    if (score > 80) return 'bg-zinc-300';
+    if (score > 80) return 'bg-[var(--color-accent-primary)]';
     if (score > 50) return 'bg-amber-500';
     return 'bg-red-500';
   };
@@ -59,17 +59,17 @@ export default function DashboardPage() {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-3 mb-2"
             >
-              <div className="p-2 bg-zinc-300/10 rounded-xl text-zinc-200">
+              <div className="p-2 bg-[var(--color-accent-glow)] rounded-xl text-[var(--color-text-primary)]">
                 <LayoutDashboard size={24} />
               </div>
               <h1 className="text-3xl font-black tracking-tight">Project Dashboard</h1>
             </motion.div>
-            <p className="text-zinc-500 text-sm">Visualize your Skript optimization journey and performance impact.</p>
+            <p className="text-[var(--color-text-muted)] text-sm">Visualize your Skript optimization journey and performance impact.</p>
           </header>
 
           <section className="mb-12">
-            <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-zinc-400 mb-6 flex items-center gap-2">
-              <span className="w-8 h-px bg-zinc-800" />
+            <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-[var(--color-text-secondary)] mb-6 flex items-center gap-2">
+              <span className="w-8 h-px bg-[var(--color-bg-tertiary)]" />
               Performance Overview
             </h2>
             <Overview isCompact={false} />
@@ -84,22 +84,22 @@ export default function DashboardPage() {
               <div className="flex flex-col gap-3">
                 {history.length > 0 ? (
                   history.slice(0, 10).map((item) => (
-                    <div key={item.id} className="flex items-center justify-between p-4 bg-zinc-900/30 border border-zinc-800/50 rounded-2xl hover:border-zinc-700 transition-colors group">
+                    <div key={item.id} className="flex items-center justify-between p-4 bg-black/30 border border-[var(--color-border)]/50 rounded-2xl hover:border-[var(--color-border-hover)] transition-colors group">
                       <div className="flex items-center gap-3">
                         <div className={`w-2 h-2 rounded-full ${getDotColor(item.score)} shadow-[0_0_8px_rgba(0,0,0,0.5)]`} />
                         <div className="flex flex-col">
-                          <span className="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">{item.title}</span>
-                          <span className="text-[10px] text-zinc-500 font-mono italic">{item.category}</span>
+                          <span className="text-sm font-medium text-[var(--color-text-primary)] group-hover:text-white transition-colors">{item.title}</span>
+                          <span className="text-[10px] text-[var(--color-text-muted)] font-mono italic">{item.category}</span>
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
-                        <span className="text-[10px] text-zinc-600 font-mono hidden sm:block">{new Date(item.timestamp).toLocaleDateString()}</span>
+                        <span className="text-[10px] text-[var(--color-text-muted)] font-mono hidden sm:block">{new Date(item.timestamp).toLocaleDateString()}</span>
                         <span className={`text-xs font-mono font-bold ${getScoreColor(item.score)}`}>{item.score}%</span>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-10 text-zinc-600 text-sm italic">
+                  <div className="text-center py-10 text-[var(--color-text-muted)] text-sm italic">
                     No analysis history found. Start a new chat to begin.
                   </div>
                 )}
@@ -114,10 +114,10 @@ export default function DashboardPage() {
               <div className="space-y-6">
                 <div className="flex items-center justify-between cursor-pointer group" onClick={() => updateSetting('autoOptimize')}>
                   <div className="flex flex-col">
-                    <span className="text-sm font-bold text-zinc-300 group-hover:text-white">Auto-Optimization</span>
-                    <span className="text-[10px] text-zinc-500">Automatically fix detected bottleneck patterns.</span>
+                    <span className="text-sm font-bold text-[var(--color-text-primary)] group-hover:text-white">Auto-Optimization</span>
+                    <span className="text-[10px] text-[var(--color-text-muted)]">Automatically fix detected bottleneck patterns.</span>
                   </div>
-                  <div className={`w-10 h-5 rounded-full relative transition-colors duration-300 ${settings.autoOptimize ? 'bg-zinc-300' : 'bg-zinc-800'}`}>
+                  <div className={`w-10 h-5 rounded-full relative transition-colors duration-300 ${settings.autoOptimize ? 'bg-[var(--color-accent-primary)]' : 'bg-[var(--color-bg-tertiary)]'}`}>
                     <motion.div
                       animate={{ x: settings.autoOptimize ? 20 : 0 }}
                       className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full shadow-sm"
@@ -127,10 +127,10 @@ export default function DashboardPage() {
 
                 <div className="flex items-center justify-between cursor-pointer group" onClick={() => updateSetting('verboseError')}>
                   <div className="flex flex-col">
-                    <span className="text-sm font-bold text-zinc-300 group-hover:text-white">Verbose Error Logic</span>
-                    <span className="text-[10px] text-zinc-500">Enable deep breakdown of syntax issues.</span>
+                    <span className="text-sm font-bold text-[var(--color-text-primary)] group-hover:text-white">Verbose Error Logic</span>
+                    <span className="text-[10px] text-[var(--color-text-muted)]">Enable deep breakdown of syntax issues.</span>
                   </div>
-                  <div className={`w-10 h-5 rounded-full relative transition-colors duration-300 ${settings.verboseError ? 'bg-zinc-300' : 'bg-zinc-800'}`}>
+                  <div className={`w-10 h-5 rounded-full relative transition-colors duration-300 ${settings.verboseError ? 'bg-[var(--color-accent-primary)]' : 'bg-[var(--color-bg-tertiary)]'}`}>
                     <motion.div
                       animate={{ x: settings.verboseError ? 20 : 0 }}
                       className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full shadow-sm"
@@ -148,12 +148,12 @@ export default function DashboardPage() {
 
 function DashboardCard({ title, icon, description, children }: { title: string, icon: any, description: string, children: React.ReactNode }) {
   return (
-    <div className="bg-[#0a0a0a] border border-zinc-800 rounded-3xl p-8 hover:border-zinc-700 transition-all duration-300">
+    <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-3xl p-8 hover:border-[var(--color-border-hover)] transition-all duration-300">
       <div className="flex items-center gap-3 mb-2">
-        <div className="text-zinc-200">{icon}</div>
+        <div className="text-[var(--color-text-primary)]">{icon}</div>
         <h3 className="text-lg font-bold text-white">{title}</h3>
       </div>
-      <p className="text-sm text-zinc-500 mb-6">{description}</p>
+      <p className="text-sm text-[var(--color-text-muted)] mb-6">{description}</p>
       {children}
     </div>
   );

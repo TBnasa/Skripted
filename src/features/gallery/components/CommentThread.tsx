@@ -110,20 +110,20 @@ const CommentItem = ({
     const parts = content.split(/(@\w+)/g);
     return parts.map((part, i) => {
       if (part.startsWith('@')) {
-        return <span key={i} className="text-zinc-200 font-bold hover:underline cursor-pointer">{part}</span>;
+        return <span key={i} className="text-[var(--color-text-primary)] font-bold hover:underline cursor-pointer">{part}</span>;
       }
       return part;
     });
   };
 
   return (
-    <div className={`flex flex-col gap-4 ${level > 0 ? 'ml-6 md:ml-10 border-l border-white/5 pl-4 md:pl-6 my-2' : 'py-4'}`}>
+    <div className={`flex flex-col gap-4 ${level > 0 ? 'ml-6 md:ml-10 border-l border-[var(--color-border)] pl-4 md:pl-6 my-2' : 'py-4'}`}>
       <div className="flex gap-4 group/item">
         <div className="relative shrink-0">
           {comment.avatar_url ? (
-            <Image src={comment.avatar_url} alt={comment.author_name} width={40} height={40} className="rounded-xl object-cover border border-white/10" />
+            <Image src={comment.avatar_url} alt={comment.author_name} width={40} height={40} className="rounded-xl object-cover border border-[var(--color-border-hover)]" />
           ) : (
-            <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-zinc-300/10 flex items-center justify-center border border-white/8 text-zinc-200 font-black text-xs">
+            <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-[var(--color-accent-glow)] flex items-center justify-center border border-[var(--color-border-hover)] text-[var(--color-text-primary)] font-black text-xs">
               {comment.author_name[0].toUpperCase()}
             </div>
           )}
@@ -131,23 +131,23 @@ const CommentItem = ({
         <div className="flex-1">
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-sm text-zinc-300">{comment.author_name}</span>
+              <span className="font-bold text-sm text-[var(--color-text-primary)]">{comment.author_name}</span>
               {comment.author_username && (
-                <span className="text-[10px] text-zinc-600 font-mono">@{comment.author_username}</span>
+                <span className="text-[10px] text-[var(--color-text-muted)] font-mono">@{comment.author_username}</span>
               )}
             </div>
-            <span className="text-[10px] text-zinc-600 font-mono italic">
+            <span className="text-[10px] text-[var(--color-text-muted)] font-mono italic">
               {new Date(comment.created_at).toLocaleDateString(t('general.locale'))}
             </span>
           </div>
-          <div className="p-4 bg-white/[0.03] border border-white/[0.05] rounded-2xl rounded-tl-none text-zinc-300 text-sm leading-relaxed font-medium">
+          <div className="p-4 bg-white/[0.03] border border-[var(--color-border)] rounded-2xl rounded-tl-none text-[var(--color-text-primary)] text-sm leading-relaxed font-medium">
             {renderContent(translatedContent || comment.content)}
           </div>
           
           <div className="flex items-center gap-4 mt-2 ml-2">
              <button 
                onClick={() => setIsReplying(!isReplying)}
-               className="text-[10px] font-bold text-zinc-500 hover:text-zinc-200 flex items-center gap-1 transition-colors uppercase tracking-widest"
+               className="text-[10px] font-bold text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] flex items-center gap-1 transition-colors uppercase tracking-widest"
              >
                <Reply size={12} />
                {t('gallery.reply')}
@@ -155,7 +155,7 @@ const CommentItem = ({
              <button 
                onClick={handleTranslate}
                disabled={isTranslating}
-               className="text-[10px] font-bold text-zinc-500 hover:text-zinc-200 flex items-center gap-1 transition-colors uppercase tracking-widest"
+               className="text-[10px] font-bold text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] flex items-center gap-1 transition-colors uppercase tracking-widest"
              >
                {isTranslating ? <Loader2 size={12} className="animate-spin" /> : <Languages size={12} />}
                {translatedContent ? t('gallery.original').toUpperCase() : t('gallery.translate').toUpperCase()}
@@ -176,11 +176,11 @@ const CommentItem = ({
                   value={replyContent}
                   onChange={(e) => setReplyContent(e.target.value)}
                   placeholder={`@${comment.author_name}...`}
-                  className="flex-1 bg-white/[0.02] border border-white/[0.1] rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-white/25"
+                  className="flex-1 bg-white/[0.02] border border-[var(--color-border-hover)] rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-[var(--color-border-active)]"
                 />
                 <button 
                   disabled={isSubmitting}
-                  className="px-4 py-2 bg-zinc-200 hover:bg-zinc-300 text-white rounded-xl text-xs font-bold disabled:opacity-50 transition-all flex items-center gap-2"
+                  className="px-4 py-2 bg-[var(--color-accent-primary)] hover:bg-[var(--color-accent-secondary)] text-[var(--color-bg-primary)] rounded-xl text-xs font-bold disabled:opacity-50 transition-all flex items-center gap-2"
                 >
                   {isSubmitting ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
                 </button>
@@ -219,7 +219,7 @@ export default function CommentThread({ comments, postId, currentUserId, onComme
 
   if (comments.length === 0) {
     return (
-      <div className="text-center py-12 opacity-30 border border-dashed border-white/5 rounded-3xl">
+      <div className="text-center py-12 opacity-30 border border-dashed border-[var(--color-border)] rounded-3xl">
         <MessageSquare size={48} className="mx-auto mb-4" />
         <p className="text-sm">{t('chat.no_discussion')}</p>
       </div>

@@ -2,17 +2,15 @@ import React from 'react';
 import { cn } from '@/lib/utils/cn';
 
 interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: 'default' | 'zinc' | 'purple' | 'blue' | 'red' | 'outline';
+  variant?: 'default' | 'zinc' | 'red' | 'outline';
 }
 
 export function Badge({ className, variant = 'default', ...props }: BadgeProps) {
   const variants = {
-    default: "bg-white/5 text-zinc-400 border-white/5",
-    zinc: "bg-zinc-300/10 text-zinc-300 border-white/8",
-    purple: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-    blue: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+    default: "bg-white/5 text-[var(--color-text-secondary)] border-[var(--color-border)]",
+    zinc: "bg-[var(--color-accent-glow)] text-[var(--color-text-primary)] border-[var(--color-border-hover)]",
     red: "bg-red-500/10 text-red-400 border-red-500/20",
-    outline: "bg-transparent border-white/10 text-text-secondary"
+    outline: "bg-transparent border-[var(--color-border-hover)] text-text-secondary"
   };
 
   return (

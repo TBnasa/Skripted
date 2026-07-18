@@ -112,20 +112,20 @@ export default function GitHubExportModal({ code, isOpen, onClose }: GitHubExpor
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-lg overflow-hidden rounded-[2.5rem] border border-white/[0.08] bg-[#0a0a0a] shadow-2xl"
+            className="relative w-full max-w-lg overflow-hidden rounded-[2.5rem] border border-[var(--color-border-hover)] bg-[var(--color-bg-primary)] shadow-2xl"
           >
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-white/[0.04] bg-white/[0.01] px-8 py-6">
+            <div className="flex items-center justify-between border-b border-[var(--color-border)] bg-white/[0.01] px-8 py-6">
               <div className="flex items-center gap-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/5 text-white">
                   <Github size={24} />
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-white">GitHub&apos;a Aktar</h2>
-                  <p className="text-xs text-zinc-500">Skript dosyanızı doğrudan bir depoya gönderin.</p>
+                  <p className="text-xs text-[var(--color-text-muted)]">Skript dosyanızı doğrudan bir depoya gönderin.</p>
                 </div>
               </div>
-              <button onClick={onClose} className="rounded-xl p-2 text-zinc-500 hover:bg-white/5 hover:text-white transition-all">
+              <button onClick={onClose} className="rounded-xl p-2 text-[var(--color-text-muted)] hover:bg-white/5 hover:text-white transition-all">
                 <X size={20} />
               </button>
             </div>
@@ -133,37 +133,37 @@ export default function GitHubExportModal({ code, isOpen, onClose }: GitHubExpor
             <div className="p-8 space-y-6">
               {/* Repo Search & Select */}
               <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1">Repository Seçin</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-muted)] ml-1">Repository Seçin</label>
                 <div className="relative group">
-                  <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-zinc-300 transition-colors" />
+                  <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] group-focus-within:text-[var(--color-text-primary)] transition-colors" />
                   <input
                     type="text"
                     placeholder="Repo ara..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full bg-white/[0.02] border border-white/[0.06] focus:border-white/25 rounded-2xl py-3.5 pl-11 pr-4 text-sm outline-none transition-all"
+                    className="w-full bg-white/[0.02] border border-[var(--color-border)] focus:border-[var(--color-border-active)] rounded-2xl py-3.5 pl-11 pr-4 text-sm outline-none transition-all"
                   />
                 </div>
                 
-                <div className="max-h-40 overflow-y-auto custom-scrollbar mt-2 border border-white/[0.04] rounded-2xl bg-black/20">
+                <div className="max-h-40 overflow-y-auto custom-scrollbar mt-2 border border-[var(--color-border)] rounded-2xl bg-black/20">
                   {loading ? (
-                    <div className="p-8 text-center"><Loader2 size={24} className="animate-spin mx-auto text-zinc-300" /></div>
+                    <div className="p-8 text-center"><Loader2 size={24} className="animate-spin mx-auto text-[var(--color-text-primary)]" /></div>
                   ) : filteredRepos.length > 0 ? (
                     filteredRepos.map(repo => (
                       <button
                         key={repo.id}
                         onClick={() => setSelectedRepo(repo.full_name)}
-                        className={`w-full flex items-center justify-between p-3.5 text-sm transition-all border-b border-white/[0.02] last:border-0 hover:bg-white/[0.04] ${selectedRepo === repo.full_name ? 'bg-zinc-300/10 text-zinc-200' : 'text-zinc-400'}`}
+                        className={`w-full flex items-center justify-between p-3.5 text-sm transition-all border-b border-[var(--color-border)] last:border-0 hover:bg-white/[0.04] ${selectedRepo === repo.full_name ? 'bg-[var(--color-accent-glow)] text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]'}`}
                       >
                         <span className="flex items-center gap-3">
-                          <div className={`w-2 h-2 rounded-full ${repo.private ? 'bg-amber-500' : 'bg-zinc-300'}`} />
+                          <div className={`w-2 h-2 rounded-full ${repo.private ? 'bg-amber-500' : 'bg-[var(--color-accent-primary)]'}`} />
                           {repo.full_name}
                         </span>
                         {selectedRepo === repo.full_name && <CheckCircle2 size={16} />}
                       </button>
                     ))
                   ) : (
-                    <div className="p-8 text-center text-xs text-zinc-600 italic">Repository bulunamadı.</div>
+                    <div className="p-8 text-center text-xs text-[var(--color-text-muted)] italic">Repository bulunamadı.</div>
                   )}
                 </div>
               </div>
@@ -171,21 +171,21 @@ export default function GitHubExportModal({ code, isOpen, onClose }: GitHubExpor
               {/* Filename & Message */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1">Dosya Adı</label>
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-muted)] ml-1">Dosya Adı</label>
                   <input
                     type="text"
                     value={filename}
                     onChange={(e) => setFilename(e.target.value)}
-                    className="w-full bg-white/[0.02] border border-white/[0.06] rounded-2xl py-3 px-4 text-sm outline-none focus:border-white/15 transition-all"
+                    className="w-full bg-white/[0.02] border border-[var(--color-border)] rounded-2xl py-3 px-4 text-sm outline-none focus:border-[var(--color-border-hover)] transition-all"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1">Commit Mesajı</label>
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-muted)] ml-1">Commit Mesajı</label>
                   <input
                     type="text"
                     value={commitMessage}
                     onChange={(e) => setCommitMessage(e.target.value)}
-                    className="w-full bg-white/[0.02] border border-white/[0.06] rounded-2xl py-3 px-4 text-sm outline-none focus:border-white/15 transition-all"
+                    className="w-full bg-white/[0.02] border border-[var(--color-border)] rounded-2xl py-3 px-4 text-sm outline-none focus:border-[var(--color-border-hover)] transition-all"
                   />
                 </div>
               </div>
@@ -199,7 +199,7 @@ export default function GitHubExportModal({ code, isOpen, onClose }: GitHubExpor
                   {exporting ? <Loader2 size={18} className="animate-spin" /> : <Github size={18} />}
                   {exporting ? 'Gönderiliyor...' : 'GitHub\'a Commit Et'}
                 </Button>
-                <p className="mt-4 text-center text-[10px] text-zinc-600 font-medium leading-relaxed">
+                <p className="mt-4 text-center text-[10px] text-[var(--color-text-muted)] font-medium leading-relaxed">
                   <AlertCircle size={10} className="inline mr-1 mb-0.5" />
                   Eğer repolarınız görünmüyorsa, GitHub üzerinden repo izinlerini verdiğinizden emin olun.
                 </p>

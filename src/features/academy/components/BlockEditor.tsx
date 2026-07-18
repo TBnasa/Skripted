@@ -139,10 +139,10 @@ export function BlockEditor({
   return (
     <div className={`flex h-full ${showCodePreview ? 'gap-0' : ''}`}>
       {/* ── Block Palette (Left) ── */}
-      <div className="w-56 shrink-0 border-r border-white/[0.06] bg-white/[0.01] overflow-y-auto custom-scrollbar p-3 space-y-4">
+      <div className="w-56 shrink-0 border-r border-[var(--color-border)] bg-white/[0.01] overflow-y-auto custom-scrollbar p-3 space-y-4">
         <div className="flex items-center gap-2 mb-1 px-1">
-          <Sparkles size={14} className="text-purple-400" />
-          <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">
+          <Sparkles size={14} className="text-[var(--color-text-secondary)]" />
+          <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--color-text-muted)]">
             {isTr ? 'Blok Paleti' : 'Block Palette'}
           </h3>
         </div>
@@ -168,20 +168,20 @@ export function BlockEditor({
         ))}
 
         {Object.keys(groupedAvailable).length === 0 && (
-          <div className="text-center py-8 text-zinc-600 text-xs">
+          <div className="text-center py-8 text-[var(--color-text-muted)] text-xs">
             {isTr ? 'Tüm bloklar yerleştirildi! ✨' : 'All blocks placed! ✨'}
           </div>
         )}
       </div>
 
       {/* ── Canvas (Center) ── */}
-      <div className={`flex-1 flex flex-col ${showCodePreview ? 'border-r border-white/[0.06]' : ''}`}>
-        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/[0.06] bg-white/[0.01]">
-          <div className="w-2 h-2 rounded-full bg-zinc-300 animate-pulse" />
-          <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">
+      <div className={`flex-1 flex flex-col ${showCodePreview ? 'border-r border-[var(--color-border)]' : ''}`}>
+        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[var(--color-border)] bg-white/[0.01]">
+          <div className="w-2 h-2 rounded-full bg-[var(--color-accent-primary)] animate-pulse" />
+          <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--color-text-muted)]">
             {isTr ? 'Çalışma Alanı' : 'Workspace'}
           </span>
-          <span className="ml-auto text-[10px] text-zinc-600 font-mono">
+          <span className="ml-auto text-[10px] text-[var(--color-text-muted)] font-mono">
             {placedBlocks.length} {isTr ? 'blok' : 'blocks'}
           </span>
         </div>
@@ -193,7 +193,7 @@ export function BlockEditor({
           onDrop={handleDrop}
           className={`
             flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar transition-all duration-300 relative
-            ${isDragOverCanvas ? 'bg-zinc-300/[0.03] ring-2 ring-inset ring-white/10' : 'bg-transparent'}
+            ${isDragOverCanvas ? 'bg-[var(--color-accent-primary)]/[0.03] ring-2 ring-inset ring-white/10' : 'bg-transparent'}
           `}
         >
           <AnimatePresence initial={false}>
@@ -205,12 +205,12 @@ export function BlockEditor({
                 className="flex flex-col items-center justify-center h-full text-center"
               >
                 <div className={`p-6 rounded-2xl border-2 border-dashed transition-colors ${
-                  isDragOverCanvas ? 'border-white/20 bg-zinc-300/[0.05]' : 'border-white/10'
+                  isDragOverCanvas ? 'border-[var(--color-border-active)] bg-[var(--color-accent-primary)]/[0.05]' : 'border-[var(--color-border-hover)]'
                 }`}>
-                  <p className="text-zinc-500 text-sm font-medium mb-1">
+                  <p className="text-[var(--color-text-muted)] text-sm font-medium mb-1">
                     {isTr ? 'Blokları buraya sürükle' : 'Drag blocks here'}
                   </p>
-                  <p className="text-zinc-600 text-xs">
+                  <p className="text-[var(--color-text-muted)] text-xs">
                     {isTr ? 'Doğru sırada birleştir' : 'Combine them in the right order'}
                   </p>
                 </div>
@@ -260,16 +260,16 @@ export function BlockEditor({
       {/* ── Code Preview (Right, Bridge Mode) ── */}
       {showCodePreview && (
         <div className="w-80 shrink-0 flex flex-col bg-black/40">
-          <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/[0.06]">
-            <div className="w-2 h-2 rounded-full bg-cyan-500" />
-            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">
+          <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[var(--color-border)]">
+            <div className="w-2 h-2 rounded-full bg-[var(--color-text-muted)]" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--color-text-muted)]">
               {isTr ? 'Kod Karşılığı' : 'Code Equivalent'}
             </span>
           </div>
           <div className="flex-1 p-4 overflow-y-auto custom-scrollbar">
-            <pre className="font-mono text-xs text-zinc-200/80 whitespace-pre-wrap leading-relaxed">
+            <pre className="font-mono text-xs text-[var(--color-text-primary)]/80 whitespace-pre-wrap leading-relaxed">
               {generatedCode || (
-                <span className="text-zinc-600 italic">
+                <span className="text-[var(--color-text-muted)] italic">
                   {isTr ? 'Blok yerleştirdikçe kod burada görünecek...' : 'Code will appear here as you place blocks...'}
                 </span>
               )}

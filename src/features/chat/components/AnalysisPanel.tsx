@@ -26,28 +26,28 @@ function VisualFlowButton({ content }: { content: string }) {
         // BroadCast an event or open a modal (to be implemented in UI)
         window.dispatchEvent(new CustomEvent('open-visual-flow', { detail: flowData }));
       }}
-      className="w-full mt-4 flex items-center justify-between p-4 rounded-2xl border border-white/8 bg-zinc-300/5 transition-all group overflow-hidden relative"
+      className="w-full mt-4 flex items-center justify-between p-4 rounded-2xl border border-[var(--color-border-hover)] bg-white/[0.05] transition-all group overflow-hidden relative"
     >
       <div className="absolute inset-0 bg-gradient-to-r from-zinc-400/0 via-white/3 to-zinc-400/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
       
       <div className="flex items-center gap-3">
-        <div className="p-2 rounded-xl bg-zinc-300/20 text-zinc-200">
+        <div className="p-2 rounded-xl bg-white/[0.2] text-[var(--color-text-primary)]">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
           </svg>
         </div>
         <div className="text-left">
-          <h5 className="text-[12px] font-bold text-zinc-200 uppercase tracking-wider">Mantık Akışını Görüntüle</h5>
-          <p className="text-[10px] text-zinc-500 font-medium">Bu kodun çalışma prensibini görselleştir</p>
+          <h5 className="text-[12px] font-bold text-[var(--color-text-primary)] uppercase tracking-wider">Mantık Akışını Görüntüle</h5>
+          <p className="text-[10px] text-[var(--color-text-muted)] font-medium">Bu kodun çalışma prensibini görselleştir</p>
         </div>
       </div>
       
       <div className="flex items-center gap-2">
         <span className="flex h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-zinc-200 opacity-75"></span>
-          <span className="relative inline-flex h-2 w-2 rounded-full bg-zinc-300"></span>
+          <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-[var(--color-accent-glow)] opacity-75"></span>
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--color-accent-primary)]"></span>
         </span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-300/50 group-hover:text-zinc-300 transition-colors">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--color-text-primary)]/50 group-hover:text-[var(--color-text-primary)] transition-colors">
           <path d="M5 12h14M12 5l7 7-7 7" />
         </svg>
       </div>
@@ -75,15 +75,15 @@ export function AnalysisPanel({ content }: AnalysisProps) {
       title: 'Logic & Modernization',
       items: analysis.logic,
       icon: <AlertCircle size={20} />,
-      iconColor: 'text-amber-400',
-      borderColor: 'border-amber-500/10'
+      iconColor: 'text-[var(--color-text-secondary)]',
+      borderColor: 'border-[var(--color-border)]'
     },
     {
       title: 'Performance Optimization',
       items: analysis.performance,
       icon: <Zap size={20} />,
-      iconColor: 'text-cyan-400',
-      borderColor: 'border-cyan-500/10'
+      iconColor: 'text-[var(--color-text-secondary)]',
+      borderColor: 'border-[var(--color-border)]'
     }
   ].filter(s => s.items && s.items.length > 0);
 
@@ -97,7 +97,7 @@ export function AnalysisPanel({ content }: AnalysisProps) {
           transition={{ delay: idx * 0.1 }}
           className={`flex gap-4 p-5 rounded-3xl border bg-black/40 backdrop-blur-sm shadow-xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,0,0,0.5)] ${section.borderColor}`}
         >
-          <div className={`shrink-0 mt-0.5 p-2 rounded-xl bg-zinc-900/50 border border-zinc-800 ${section.iconColor}`}>
+          <div className={`shrink-0 mt-0.5 p-2 rounded-xl bg-black/50 border border-[var(--color-border)] ${section.iconColor}`}>
             {section.icon}
           </div>
           <div className="flex-1">
@@ -106,8 +106,8 @@ export function AnalysisPanel({ content }: AnalysisProps) {
             </h5>
             <div className="space-y-1.5">
               {section.items.map((item: string, i: number) => (
-                <p key={i} className="text-[13px] leading-relaxed text-zinc-400 font-medium flex items-start gap-2">
-                  <span className="mt-1.5 w-1 h-1 rounded-full bg-zinc-700 shrink-0" />
+                <p key={i} className="text-[13px] leading-relaxed text-[var(--color-text-secondary)] font-medium flex items-start gap-2">
+                  <span className="mt-1.5 w-1 h-1 rounded-full bg-[var(--color-text-muted)] shrink-0" />
                   {item}
                 </p>
               ))}

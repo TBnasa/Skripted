@@ -154,7 +154,7 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
           onClick={() => setSelectedSlot(i)}
           className={`
             relative aspect-square rounded-lg border-2 transition-all cursor-pointer
-            ${isSelected ? 'border-purple-500 bg-purple-500/20' : 'border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.05]'}
+            ${isSelected ? 'border-purple-500 bg-purple-500/20' : 'border-[var(--color-border-hover)] bg-white/[0.02] hover:border-[var(--color-border-active)] hover:bg-white/[0.05]'}
             ${slotData?.enabled === false ? 'opacity-30' : ''}
           `}
         >
@@ -163,7 +163,7 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
               {MINECRAFT_ITEMS.find(item => item.id === slotData.item)?.icon || '📦'}
             </div>
           )}
-          <div className="absolute bottom-0.5 right-0.5 text-[8px] text-zinc-600 font-mono">
+          <div className="absolute bottom-0.5 right-0.5 text-[8px] text-[var(--color-text-muted)] font-mono">
             {i}
           </div>
         </div>
@@ -179,57 +179,57 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 400, opacity: 0 }}
       transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-      className="fixed right-0 top-0 h-full w-[500px] bg-[#0a0a0b] border-l border-white/[0.08] shadow-2xl z-50 flex flex-col"
+      className="fixed right-0 top-0 h-full w-[500px] bg-[var(--color-bg-primary)] border-l border-[var(--color-border-hover)] shadow-2xl z-50 flex flex-col"
     >
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4 bg-white/[0.01]">
+      <div className="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-4 bg-white/[0.01]">
         <div className="flex items-center gap-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-500/10 text-purple-400">
             <Layout size={16} />
           </div>
           <div>
             <h2 className="text-sm font-semibold text-white">GUI Builder</h2>
-            <p className="text-[10px] text-zinc-500">Skript GUI Oluşturucu</p>
+            <p className="text-[10px] text-[var(--color-text-muted)]">Skript GUI Oluşturucu</p>
           </div>
         </div>
         <button
           onClick={onClose}
-          className="p-1.5 rounded-lg hover:bg-white/[0.05] text-zinc-400 hover:text-white transition-all"
+          className="p-1.5 rounded-lg hover:bg-white/[0.05] text-[var(--color-text-secondary)] hover:text-white transition-all"
         >
           <X size={18} />
         </button>
       </div>
 
       {/* GUI Settings */}
-      <div className="p-4 border-b border-white/[0.06] space-y-3">
+      <div className="p-4 border-b border-[var(--color-border)] space-y-3">
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1.5 block">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] mb-1.5 block">
               GUI ID
             </label>
             <input
               type="text"
               value={guiConfig.id}
               onChange={(e) => setGuiConfig(prev => ({ ...prev, id: e.target.value }))}
-              className="w-full bg-black/30 border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500/50 transition-all"
+              className="w-full bg-black/30 border border-[var(--color-border-hover)] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500/50 transition-all"
               placeholder="menu"
             />
           </div>
           <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1.5 block">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] mb-1.5 block">
               GUI Adı
             </label>
             <input
               type="text"
               value={guiConfig.name}
               onChange={(e) => setGuiConfig(prev => ({ ...prev, name: e.target.value }))}
-              className="w-full bg-black/30 border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500/50 transition-all"
+              className="w-full bg-black/30 border border-[var(--color-border-hover)] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500/50 transition-all"
               placeholder="Menu"
             />
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+          <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
             Satır Sayısı:
           </label>
           <button
@@ -251,8 +251,8 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
       </div>
 
       {/* Item Menu */}
-      <div className="p-4 border-b border-white/[0.06]">
-        <h3 className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-3">
+      <div className="p-4 border-b border-[var(--color-border)]">
+        <h3 className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] mb-3">
           Eşya Menüsü (Sürükle & Bırak)
         </h3>
         <div className="grid grid-cols-4 gap-2 max-h-32 overflow-y-auto custom-scrollbar">
@@ -264,11 +264,11 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
               onDragEnd={() => setDraggedItem(null)}
               className={`
                 flex flex-col items-center gap-1 p-2 rounded-lg border cursor-grab active:cursor-grabbing transition-all
-                ${draggedItem === item.id ? 'border-purple-500 bg-purple-500/20' : 'border-white/[0.06] bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.05]'}
+                ${draggedItem === item.id ? 'border-purple-500 bg-purple-500/20' : 'border-[var(--color-border)] bg-white/[0.02] hover:border-[var(--color-border-active)] hover:bg-white/[0.05]'}
               `}
             >
               <span className="text-xl">{item.icon}</span>
-              <span className="text-[9px] text-zinc-400">{item.name}</span>
+              <span className="text-[9px] text-[var(--color-text-secondary)]">{item.name}</span>
             </div>
           ))}
         </div>
@@ -276,12 +276,12 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
 
       {/* GUI Canvas */}
       <div className="flex-1 overflow-auto p-4">
-        <h3 className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-3">
+        <h3 className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] mb-3">
           GUI Canvas (Slot'a tıkla veya eşya bırak)
         </h3>
         <div
           ref={canvasRef}
-          className="bg-[#0d0d0f] border border-white/[0.08] rounded-xl p-4 inline-block"
+          className="bg-[var(--color-bg-elevated)] border border-[var(--color-border-hover)] rounded-xl p-4 inline-block"
         >
           <div
             className="grid gap-1"
@@ -302,28 +302,28 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="border-t border-white/[0.06] bg-white/[0.01] p-4"
+            className="border-t border-[var(--color-border)] bg-white/[0.01] p-4"
           >
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+              <h3 className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
                 Slot {selectedSlot} Düzenle
               </h3>
               <button
                 onClick={() => setSelectedSlot(null)}
-                className="text-zinc-500 hover:text-white transition-all"
+                className="text-[var(--color-text-muted)] hover:text-white transition-all"
               >
                 <X size={14} />
               </button>
             </div>
             <div className="space-y-3">
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1.5 block">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] mb-1.5 block">
                   Item
                 </label>
                 <select
                   value={guiConfig.slots.find(s => s.slot === selectedSlot)?.item || ''}
                   onChange={(e) => updateSlot(selectedSlot, { item: e.target.value })}
-                  className="w-full bg-black/30 border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500/50 transition-all"
+                  className="w-full bg-black/30 border border-[var(--color-border-hover)] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500/50 transition-all"
                 >
                   <option value="">Seçiniz</option>
                   {MINECRAFT_ITEMS.map(item => (
@@ -332,25 +332,25 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
                 </select>
               </div>
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1.5 block">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] mb-1.5 block">
                   Name
                 </label>
                 <input
                   type="text"
                   value={guiConfig.slots.find(s => s.slot === selectedSlot)?.name || ''}
                   onChange={(e) => updateSlot(selectedSlot, { name: e.target.value })}
-                  className="w-full bg-black/30 border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500/50 transition-all"
+                  className="w-full bg-black/30 border border-[var(--color-border-hover)] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500/50 transition-all"
                   placeholder="&aItem Name"
                 />
               </div>
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1.5 block">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] mb-1.5 block">
                   Command
                 </label>
                 <textarea
                   value={guiConfig.slots.find(s => s.slot === selectedSlot)?.command || ''}
                   onChange={(e) => updateSlot(selectedSlot, { command: e.target.value })}
-                  className="w-full bg-black/30 border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500/50 transition-all resize-none"
+                  className="w-full bg-black/30 border border-[var(--color-border-hover)] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500/50 transition-all resize-none"
                   rows={2}
                   placeholder="send 'Clicked!' to player"
                 />
@@ -358,7 +358,7 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
               <div className="flex gap-2">
                 <button
                   onClick={() => toggleSlot(selectedSlot)}
-                  className="flex-1 flex items-center justify-center gap-2 bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.08] px-3 py-2 text-xs font-bold text-white rounded-lg transition-all"
+                  className="flex-1 flex items-center justify-center gap-2 bg-white/[0.05] hover:bg-white/[0.1] border border-[var(--color-border-hover)] px-3 py-2 text-xs font-bold text-white rounded-lg transition-all"
                 >
                   {guiConfig.slots.find(s => s.slot === selectedSlot)?.enabled !== false ? <Eye size={12} /> : <EyeOff size={12} />}
                   {guiConfig.slots.find(s => s.slot === selectedSlot)?.enabled !== false ? 'Aktif' : 'Pasif'}
@@ -377,11 +377,11 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
       </AnimatePresence>
 
       {/* Code Preview & Actions */}
-      <div className="border-t border-white/[0.06] p-4 space-y-3">
+      <div className="border-t border-[var(--color-border)] p-4 space-y-3">
         <div className="flex gap-2">
           <button
             onClick={() => setShowCode(!showCode)}
-            className="flex-1 flex items-center justify-center gap-2 bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.08] px-4 py-2.5 text-xs font-bold text-white rounded-xl transition-all"
+            className="flex-1 flex items-center justify-center gap-2 bg-white/[0.05] hover:bg-white/[0.1] border border-[var(--color-border-hover)] px-4 py-2.5 text-xs font-bold text-white rounded-xl transition-all"
           >
             {showCode ? <EyeOff size={14} /> : <Eye size={14} />}
             {showCode ? 'Kodu Gizle' : 'Kodu Göster'}
@@ -401,9 +401,9 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="bg-black/40 border border-white/[0.08] rounded-xl overflow-hidden"
+              className="bg-black/40 border border-[var(--color-border-hover)] rounded-xl overflow-hidden"
             >
-              <pre className="p-4 text-[10px] font-mono text-zinc-200/80 whitespace-pre-wrap overflow-x-auto">
+              <pre className="p-4 text-[10px] font-mono text-[var(--color-text-primary)]/80 whitespace-pre-wrap overflow-x-auto">
                 {generatedCode}
               </pre>
             </motion.div>

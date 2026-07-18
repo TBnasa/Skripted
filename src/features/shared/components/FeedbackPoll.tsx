@@ -41,14 +41,14 @@ export default function FeedbackPoll({ onFeedback, visible }: FeedbackPollProps)
         <div className="flex gap-3">
           <button
             onClick={handleSuccess}
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-zinc-300/8 border border-white/6 px-4 py-2.5 text-sm font-medium text-zinc-200 transition-all duration-300 hover:bg-zinc-300/15 hover:border-white/12 hover:scale-[1.02]"
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[var(--color-accent-glow)] border border-[var(--color-border)] px-4 py-2.5 text-sm font-medium text-[var(--color-text-primary)] transition-all duration-300 hover:bg-white/[0.15] hover:border-[var(--color-border-hover)] hover:scale-[1.02]"
           >
             <Check className="w-4 h-4" />
             {t('chat.feedback_worked')}
           </button>
           <button
             onClick={handleError}
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-red-500/8 border border-red-500/15 px-4 py-2.5 text-sm font-medium text-red-400 transition-all duration-300 hover:bg-red-500/15 hover:border-red-500/25 hover:scale-[1.02]"
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[var(--color-accent-error)]/10 border border-[var(--color-accent-error)]/25 px-4 py-2.5 text-sm font-medium text-[var(--color-accent-error)] transition-all duration-300 hover:bg-[var(--color-accent-error)]/15 hover:border-[var(--color-accent-error)]/35 hover:scale-[1.02]"
           >
             <X className="w-4 h-4" />
             {t('chat.feedback_error')}
@@ -61,12 +61,12 @@ export default function FeedbackPoll({ onFeedback, visible }: FeedbackPollProps)
               value={errorLog}
               onChange={(e) => setErrorLog(e.target.value)}
               placeholder={t('chat.feedback_placeholder')}
-              className="w-full resize-none rounded-xl border border-white/[0.06] bg-black/30 p-3 font-mono text-xs text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:border-red-500/30 focus:outline-none transition-colors"
+              className="w-full resize-none rounded-xl border border-[var(--color-border)] bg-black/30 p-3 font-mono text-xs text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-accent-error)]/30 focus:outline-none transition-colors"
               rows={4}
             />
             <button
               onClick={handleError}
-              className="mt-2 w-full rounded-xl bg-red-500/10 border border-red-500/15 px-4 py-2.5 text-sm font-medium text-red-400 transition-all duration-300 hover:bg-red-500/15"
+              className="mt-2 w-full rounded-xl bg-[var(--color-accent-error)]/10 border border-[var(--color-accent-error)]/25 px-4 py-2.5 text-sm font-medium text-[var(--color-accent-error)] transition-all duration-300 hover:bg-[var(--color-accent-error)]/15"
             >
               {t('chat.feedback_submit')}
             </button>

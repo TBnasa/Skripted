@@ -1,6 +1,7 @@
 'use client';
 
 import { Undo2, Redo2, ClipboardPaste, Sparkles, ArrowRightToLine } from 'lucide-react';
+import { Button } from '@/features/shared/components/ui/Button';
 
 interface EditorToolbarProps {
   triggerAction: (actionId: string) => void;
@@ -8,44 +9,25 @@ interface EditorToolbarProps {
 }
 
 export function EditorToolbar({ triggerAction, handleTab }: EditorToolbarProps) {
+  const iconBtn = "text-[var(--color-text-secondary)] hover:text-white hover:bg-white/10";
   return (
-    <div className="md:hidden absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 p-1.5 bg-[#141414]/90 backdrop-blur-xl border border-white/[0.08] rounded-2xl shadow-2xl z-10">
-      <button 
-        onClick={() => triggerAction('undo')} 
-        className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl active:scale-90 transition-all"
-        aria-label="Undo"
-      >
+    <div className="md:hidden absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 p-1.5 bg-[var(--color-bg-elevated)]/90 backdrop-blur-xl border border-[var(--color-border-hover)] rounded-2xl shadow-2xl z-10">
+      <Button onClick={() => triggerAction('undo')} variant="ghost" size="icon" className={iconBtn} aria-label="Undo">
         <Undo2 size={16} />
-      </button>
-      <button 
-        onClick={() => triggerAction('redo')} 
-        className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl active:scale-90 transition-all"
-        aria-label="Redo"
-      >
+      </Button>
+      <Button onClick={() => triggerAction('redo')} variant="ghost" size="icon" className={iconBtn} aria-label="Redo">
         <Redo2 size={16} />
-      </button>
-      <div className="w-px h-6 bg-white/[0.06] mx-1"></div>
-      <button 
-        onClick={() => triggerAction('editor.action.clipboardPasteAction')} 
-        className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl active:scale-90 transition-all"
-        aria-label="Paste"
-      >
+      </Button>
+      <div className="w-px h-6 bg-white/[0.06] mx-1" />
+      <Button onClick={() => triggerAction('editor.action.clipboardPasteAction')} variant="ghost" size="icon" className={iconBtn} aria-label="Paste">
         <ClipboardPaste size={16} />
-      </button>
-      <button 
-        onClick={() => triggerAction('editor.action.formatDocument')} 
-        className="p-2 text-zinc-200 hover:text-zinc-300 hover:bg-zinc-300/10 rounded-xl active:scale-90 transition-all font-bold text-[10px] uppercase tracking-widest"
-        aria-label="Format"
-      >
+      </Button>
+      <Button onClick={() => triggerAction('editor.action.formatDocument')} variant="ghost" size="icon" className="p-2 text-[var(--color-text-primary)] hover:bg-[var(--color-accent-glow)]" aria-label="Format">
         <Sparkles size={16} />
-      </button>
-      <button 
-        onClick={handleTab} 
-        className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl active:scale-90 transition-all"
-        aria-label="Tab"
-      >
+      </Button>
+      <Button onClick={handleTab} variant="ghost" size="icon" className={iconBtn} aria-label="Tab">
         <ArrowRightToLine size={16} />
-      </button>
+      </Button>
     </div>
   );
 }

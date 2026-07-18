@@ -66,7 +66,7 @@ export default function GalleryHighlights() {
                 </div>
               </div>
 
-              <h3 className="text-base font-bold text-white mb-2 line-clamp-1 group-hover:text-[var(--color-accent-primary)] transition-colors duration-250">
+              <h3 className="text-base font-bold text-white mb-2 line-clamp-1 group-hover:text-[var(--color-text-primary)] transition-colors duration-200">
                 {post.title}
               </h3>
               <p className="text-sm text-[var(--color-text-muted)] line-clamp-2 mb-6 h-10">

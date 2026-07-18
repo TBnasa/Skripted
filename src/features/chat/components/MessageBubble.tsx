@@ -39,7 +39,7 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
   const getScoreColor = (score: number) => {
     if (score <= 40) return 'bg-red-500';
     if (score <= 75) return 'bg-amber-500';
-    return 'bg-zinc-300';
+    return 'bg-[var(--color-accent-primary)]';
   };
 
   const getScoreLabel = (score: number) => {
@@ -59,7 +59,7 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
           className={`flex h-8 w-8 items-center justify-center rounded-xl transition-all duration-300 ${
             isUser
               ? 'bg-white/[0.05] text-[var(--color-text-secondary)]'
-              : 'bg-zinc-300/10 text-zinc-200'
+              : 'bg-[var(--color-accent-glow)] text-[var(--color-text-primary)]'
           }`}
         >
           {isUser ? (
@@ -77,13 +77,13 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
       <div
         className={`max-w-[80%] px-4 py-3.5 text-sm leading-relaxed transition-all ${
           isUser
-            ? 'bg-white/[0.04] text-[var(--color-text-primary)] rounded-2xl rounded-tr-sm border border-white/[0.04]'
-            : 'bg-white/[0.02] text-[var(--color-text-primary)] rounded-2xl rounded-tl-sm border border-white/[0.04] border-l-2 border-l-white/15'
+            ? 'bg-white/[0.04] text-[var(--color-text-primary)] rounded-2xl rounded-tr-sm border border-[var(--color-border)]'
+            : 'bg-white/[0.02] text-[var(--color-text-primary)] rounded-2xl rounded-tl-sm border border-[var(--color-border)] border-l-2 border-l-white/15'
         }`}
       >
         {/* Performance Score Gauge (for Assistant only) */}
         {performanceScore !== null && (
-          <div className="mb-4 p-3 bg-black/30 rounded-xl border border-white/[0.04] overflow-hidden">
+          <div className="mb-4 p-3 bg-black/30 rounded-xl border border-[var(--color-border)] overflow-hidden">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-muted)]">
                 Optimization Score
@@ -108,12 +108,12 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
 
         {/* Reasoning/Thinking block */}
         {message.reasoning && (
-          <details className="mb-3 overflow-hidden rounded-xl border border-white/[0.04] bg-black/20 group" open={!message.content}>
+          <details className="mb-3 overflow-hidden rounded-xl border border-[var(--color-border)] bg-black/20 group" open={!message.content}>
             <summary className="cursor-pointer select-none list-none flex items-center justify-between px-3 py-2 text-[10px] tracking-widest uppercase text-[var(--color-text-muted)] hover:bg-white/[0.02] transition-colors">
               <div className="flex items-center gap-2">
                 <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-zinc-200 opacity-75 animate-ping" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-zinc-300" />
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-[var(--color-accent-glow)] opacity-75 animate-ping" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--color-accent-primary)]" />
                 </span>
                 <span className="font-medium">{t('chat.thinking_process')}</span>
               </div>
@@ -121,7 +121,7 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
                 <path d="M6 9l6 6 6-6" />
               </svg>
             </summary>
-            <div className="px-3 pb-3 pt-1 font-mono text-[11px] text-[var(--color-text-muted)] italic leading-relaxed whitespace-pre-wrap border-t border-white/[0.03]">
+            <div className="px-3 pb-3 pt-1 font-mono text-[11px] text-[var(--color-text-muted)] italic leading-relaxed whitespace-pre-wrap border-t border-[var(--color-border)]">
               {message.reasoning}
             </div>
           </details>
@@ -152,7 +152,7 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
               return (
                 <pre
                   key={i}
-                  className="my-3 overflow-x-auto rounded-xl bg-black/40 p-4 font-mono text-[13px] leading-relaxed border border-white/[0.04] text-zinc-400/90"
+                  className="my-3 overflow-x-auto rounded-xl bg-black/40 p-4 font-mono text-[13px] leading-relaxed border border-[var(--color-border)] text-[var(--color-text-secondary)]/90"
                 >
                   <code className="block whitespace-pre">{codeContent || ' '}</code>
                 </pre>

@@ -23,7 +23,7 @@ export default function AcademyPage() {
         {/* Main Area */}
         <main className="flex-1 flex overflow-hidden">
           {/* Center: Lesson Runner */}
-          <div className="flex-1 flex flex-col min-w-0 border-r border-white/[0.04]">
+          <div className="flex-1 flex flex-col min-w-0 border-r border-[var(--color-border)]">
             {/* Task Banner */}
             <div className="p-3 lg:p-4 pb-0 shrink-0">
               <DailyChallenge />
@@ -36,8 +36,8 @@ export default function AcademyPage() {
               ) : (
                 <div className="flex items-center justify-center h-full">
                   <div className="text-center">
-                    <GraduationCap size={48} className="text-purple-500/30 mx-auto mb-4" />
-                    <p className="text-zinc-500 text-sm">Select a lesson to begin</p>
+                    <GraduationCap size={48} className="text-white/5 mx-auto mb-4" />
+                    <p className="text-[var(--color-text-muted)] text-sm">Select a lesson to begin</p>
                   </div>
                 </div>
               )}

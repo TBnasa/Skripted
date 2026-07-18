@@ -161,15 +161,15 @@ export default function ChatInterface() {
         />
 
         <div className="flex flex-1 flex-col overflow-hidden min-h-0">
-          <div className="px-6 py-2 bg-[#0a0a0a] border-b border-white/[0.04] flex items-center justify-between">
+          <div className="px-6 py-2 bg-[var(--color-bg-primary)] border-b border-[var(--color-border)] flex items-center justify-between">
             <Overview isCompact={true} />
-            <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest hidden md:block">
-              Engine Protocol: <span className="text-zinc-300">Active</span>
+            <div className="text-[10px] font-mono text-[var(--color-text-muted)] uppercase tracking-widest hidden md:block">
+              Engine Protocol: <span className="text-[var(--color-text-primary)]">Active</span>
             </div>
           </div>
 
           <div className="flex flex-1 overflow-hidden min-h-0">
-            <div className="flex w-full flex-col border-r border-white/[0.04] md:w-[55%] lg:w-[55%] flex-shrink-0">
+            <div className="flex w-full flex-col border-r border-[var(--color-border)] md:w-[55%] lg:w-[55%] flex-shrink-0">
               <ChatPanel
                 messages={messages}
                 onNewMessage={handleNewMessage}

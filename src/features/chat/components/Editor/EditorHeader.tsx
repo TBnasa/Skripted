@@ -2,6 +2,7 @@
 
 import { Code, Copy, CheckCircle2, Loader2, Cloud, Share2, Layout } from 'lucide-react';
 import DownloadButton from '@/features/gallery/components/DownloadButton';
+import { Button } from '@/features/shared/components/ui/Button';
 
 const GithubIcon = ({ size = 12 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
@@ -37,14 +38,14 @@ export function EditorHeader({
   const lineCount = code.trim() ? code.split('\n').length : 0;
 
   return (
-    <div className="flex items-center justify-between border-b border-white/[0.04] bg-white/[0.01] px-5 py-4">
+    <div className="flex items-center justify-between border-b border-[var(--color-border)] bg-white/[0.01] px-5 py-4">
       <div className="flex items-center gap-3">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-zinc-300/10 text-zinc-200">
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--color-accent-glow)] text-[var(--color-text-primary)]">
            <Code size={18} />
         </div>
         <div>
           <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t('chat.script_editor')}</h2>
-          <p className="text-[10px] font-mono text-zinc-300/50 mt-0.5 uppercase tracking-widest italic">
+          <p className="text-[10px] font-mono text-[var(--color-text-primary)]/50 mt-0.5 uppercase tracking-widest italic">
             {lineCount > 0 ? `${lineCount} ${t('editor.lines')}` : t('chat.status_ready')}
           </p>
         </div>
@@ -52,56 +53,54 @@ export function EditorHeader({
 
       <div className="flex items-center gap-2">
         {onGUIBuilderToggle && (
-          <button
+          <Button
             onClick={onGUIBuilderToggle}
-            className={`flex items-center gap-2 px-3 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all active:scale-95 ${
-              isGUIBuilderOpen
-                ? 'bg-purple-600 text-white shadow-[0_0_20px_rgba(147,51,234,0.3)]'
-                : 'bg-white/[0.03] border border-white/[0.06] text-purple-400 hover:bg-purple-500/10 hover:border-purple-500/30'
-            }`}
+            variant={isGUIBuilderOpen ? 'primary' : 'secondary'}
+            size="sm"
+            className={`text-[10px] uppercase tracking-widest ${isGUIBuilderOpen ? 'text-[var(--color-bg-primary)]' : ''}`}
           >
             <Layout size={12} />
             GUI
-          </button>
+          </Button>
         )}
 
-        <button
+        <Button
           onClick={handleCopy}
           disabled={!code.trim()}
-          className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.06] px-3 py-2 text-[10px] font-black uppercase tracking-widest text-zinc-400 rounded-xl transition-all hover:bg-white/[0.06] hover:text-white disabled:opacity-30 active:scale-95"
+          variant="secondary" size="sm" className="text-[10px] uppercase tracking-widest"
         >
-          {copied ? <CheckCircle2 size={12} className="text-zinc-300" /> : <Copy size={12} />}
+          {copied ? <CheckCircle2 size={12} /> : <Copy size={12} />}
           {copied ? t('general.copied') : t('general.copy')}
-        </button>
+        </Button>
 
-        <button
+        <Button
           onClick={handleCloudSave}
           disabled={!code.trim() || isSaving}
-          className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.06] px-3 py-2 text-[10px] font-black uppercase tracking-widest text-cyan-400 rounded-xl transition-all hover:bg-cyan-500/10 hover:border-cyan-500/30 disabled:opacity-30 active:scale-95"
+          variant="secondary" size="sm" className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)]"
         >
           {isSaving ? <Loader2 size={12} className="animate-spin" /> : <Cloud size={12} />}
           {isSaving ? t('editor.saving') : t('editor.save_to_cloud')}
-        </button>
+        </Button>
         
         <DownloadButton code={code} />
         
-        <button
+        <Button
           onClick={() => setIsGitHubOpen(true)}
           disabled={!code.trim()}
-          className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.06] px-3 py-2 text-[10px] font-black uppercase tracking-widest text-zinc-400 rounded-xl transition-all hover:bg-white/[0.06] hover:text-white disabled:opacity-30 active:scale-95"
+          variant="secondary" size="sm" className="text-[10px] uppercase tracking-widest"
         >
           <GithubIcon />
           GitHub
-        </button>
+        </Button>
 
-        <button
+        <Button
           onClick={() => setIsGalleryOpen(true)}
           disabled={!code.trim()}
-          className="flex items-center gap-2 bg-zinc-200 hover:bg-zinc-300 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white rounded-xl transition-all shadow-[0_0_20px_rgba(255,255,255,0.06)] active:scale-95 disabled:opacity-30"
+          variant="primary" size="sm" className="px-4 py-2 text-[10px] uppercase tracking-widest"
         >
           <Share2 size={14} />
           {t('gallery.post').toUpperCase()}
-        </button>
+        </Button>
       </div>
     </div>
   );

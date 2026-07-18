@@ -39,16 +39,16 @@ export default function ProfilePage() {
     enabled: !!profile?.id,
   });
 
-  if (!mounted) return <div className="min-h-screen bg-[#0a0a0b]" />;
+  if (!mounted) return <div className="min-h-screen bg-[var(--color-bg-primary)]" />;
 
-  if (!profile && !profileError) return <div className="min-h-screen bg-[#0a0a0b] flex items-center justify-center text-zinc-500 font-mono text-xs tracking-widest uppercase">{t('profile.loading')}</div>;
+  if (!profile && !profileError) return <div className="min-h-screen bg-[var(--color-bg-primary)] flex items-center justify-center text-[var(--color-text-muted)] font-mono text-xs tracking-widest uppercase">{t('profile.loading')}</div>;
 
   if (profileError || !profile) {
     return (
-      <div className="min-h-screen bg-[#0a0a0b] flex flex-col items-center justify-center text-center p-6">
+      <div className="min-h-screen bg-[var(--color-bg-primary)] flex flex-col items-center justify-center text-center p-6">
         <h1 className="text-4xl font-black text-white mb-4">404</h1>
-        <p className="text-zinc-500 mb-8">{t('profile.not_found')}</p>
-        <Link href="/" className="px-6 py-3 bg-zinc-200 text-white rounded-xl font-bold">{t('profile.back_home')}</Link>
+        <p className="text-[var(--color-text-muted)] mb-8">{t('profile.not_found')}</p>
+        <Link href="/" className="px-6 py-3 bg-[var(--color-accent-primary)] text-[var(--color-bg-primary)] rounded-xl font-bold">{t('profile.back_home')}</Link>
       </div>
     );
   }
@@ -63,18 +63,18 @@ export default function ProfilePage() {
         {/* Header Profile Section */}
         <div className="relative mb-20">
           {/* Cover Placeholder */}
-          <div className="h-64 w-full rounded-[3rem] bg-gradient-to-br from-zinc-400/20 via-[#0a0a0b] to-blue-600/10 border border-white/5 overflow-hidden relative">
+          <div className="h-64 w-full rounded-[3rem] bg-gradient-to-br from-zinc-400/20 via-[#0a0a0b] to-transparent border border-[var(--color-border)] overflow-hidden relative">
              <div className="absolute inset-0 mesh-gradient opacity-30" />
              <div className="absolute inset-0 dot-grid opacity-20" />
           </div>
 
           <div className="absolute -bottom-12 left-8 md:left-16 flex flex-col md:flex-row md:items-end gap-6 md:gap-10">
             <div className="relative group">
-              <div className="w-32 h-32 md:w-40 md:h-40 rounded-[2.5rem] bg-[#121214] border-4 border-[#0a0a0b] shadow-2xl overflow-hidden relative">
+              <div className="w-32 h-32 md:w-40 md:h-40 rounded-[2.5rem] bg-[var(--color-bg-elevated)] border-4 border-[#0a0a0b] shadow-2xl overflow-hidden relative">
                 {profile.avatar_url ? (
                   <Image src={profile.avatar_url} alt={profile.username} fill className="object-cover" sizes="(max-width: 768px) 128px, 160px" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-4xl font-black text-zinc-300">
+                  <div className="w-full h-full flex items-center justify-center text-4xl font-black text-[var(--color-text-primary)]">
                     {profile.username[0].toUpperCase()}
                   </div>
                 )}
@@ -82,7 +82,7 @@ export default function ProfilePage() {
               {isOwner && (
                 <button 
                   onClick={() => setIsEditModalOpen(true)}
-                  className="absolute bottom-2 right-2 p-2.5 bg-zinc-200 text-white rounded-xl shadow-lg hover:scale-110 transition-transform active:scale-95 z-10"
+                  className="absolute bottom-2 right-2 p-2.5 bg-[var(--color-accent-primary)] text-[var(--color-bg-primary)] rounded-xl shadow-lg hover:scale-110 transition-transform active:scale-95 z-10"
                 >
                   <Edit3 size={16} />
                 </button>
@@ -95,11 +95,11 @@ export default function ProfilePage() {
                   {profile.full_name || profile.username}
                 </h1>
                 {isOwner && (
-                  <Settings size={20} className="text-zinc-600 hover:text-white cursor-pointer transition-colors" />
+                  <Settings size={20} className="text-[var(--color-text-muted)] hover:text-white cursor-pointer transition-colors" />
                 )}
               </div>
-              <div className="flex items-center gap-4 text-zinc-400 font-medium">
-                <span className="text-zinc-200 font-mono tracking-tighter">@{profile.username}</span>
+              <div className="flex items-center gap-4 text-[var(--color-text-secondary)] font-medium">
+                <span className="text-[var(--color-text-primary)] font-mono tracking-tighter">@{profile.username}</span>
                 <span className="opacity-20">•</span>
                 <div className="flex items-center gap-1">
                    <Calendar size={14} />
@@ -112,11 +112,11 @@ export default function ProfilePage() {
                <div className="flex items-center gap-6 mr-6">
                   <div className="text-center">
                      <span className="block text-xl font-black text-white">{profile.followers_count || 0}</span>
-                     <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">{t('profile.followers')}</span>
+                     <span className="text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest">{t('profile.followers')}</span>
                   </div>
                   <div className="text-center">
                      <span className="block text-xl font-black text-white">{profile.following_count || 0}</span>
-                     <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">{t('profile.following')}</span>
+                     <span className="text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest">{t('profile.following')}</span>
                   </div>
                </div>
                
@@ -124,7 +124,7 @@ export default function ProfilePage() {
                  <button 
                    disabled={isFollowingLoading}
                    className={`px-8 py-3 rounded-2xl font-black text-sm flex items-center gap-2 transition-all active:scale-95 shadow-xl ${
-                     false ? 'bg-zinc-800 text-white' : 'bg-white text-black hover:bg-zinc-200'
+                     false ? 'bg-[var(--color-bg-tertiary)] text-white' : 'bg-white text-black hover:bg-[var(--color-accent-primary)]'
                    }`}
                    onClick={async () => {
                      setIsFollowingLoading(true);
@@ -156,25 +156,25 @@ export default function ProfilePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-32">
           {/* Sidebar Info */}
           <div className="lg:col-span-4 space-y-8">
-             <div className="p-8 bg-white/[0.02] border border-white/[0.05] rounded-[2.5rem]">
-                <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-6">{t('profile.about')}</h3>
-                <p className="text-zinc-400 leading-relaxed italic">
+             <div className="p-8 bg-white/[0.02] border border-[var(--color-border)] rounded-[2.5rem]">
+                <h3 className="text-sm font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-6">{t('profile.about')}</h3>
+                <p className="text-[var(--color-text-secondary)] leading-relaxed italic">
                   {profile.bio || t('profile.no_bio')}
                 </p>
                 
-                <div className="mt-8 pt-8 border-t border-white/5 space-y-4">
+                <div className="mt-8 pt-8 border-t border-[var(--color-border)] space-y-4">
                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-zinc-600 uppercase tracking-widest">{t('profile.total_scripts')}</span>
+                      <span className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest">{t('profile.total_scripts')}</span>
                       <span className="text-white font-mono">{scripts?.length || 0}</span>
                    </div>
                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-zinc-600 uppercase tracking-widest">{t('profile.membership')}</span>
+                      <span className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest">{t('profile.membership')}</span>
                       <span className="text-white font-mono text-xs">{t('profile.premium_member')}</span>
                    </div>
                 </div>
              </div>
              
-             <button className="w-full py-4 bg-white/[0.03] border border-white/[0.08] rounded-2xl text-zinc-400 font-bold text-xs uppercase tracking-widest hover:bg-white/[0.06] transition-all flex items-center justify-center gap-2">
+             <button className="w-full py-4 bg-white/[0.03] border border-[var(--color-border-hover)] rounded-2xl text-[var(--color-text-secondary)] font-bold text-xs uppercase tracking-widest hover:bg-white/[0.06] transition-all flex items-center justify-center gap-2">
                 <Share2 size={16} />
                 {t('general.share_profile')}
              </button>
@@ -186,19 +186,19 @@ export default function ProfilePage() {
                 <div className="flex items-center gap-8">
                    <button 
                      onClick={() => setActiveTab('scripts')}
-                     className={`text-sm font-black uppercase tracking-widest transition-all pb-2 border-b-2 ${ activeTab === 'scripts' ? 'text-zinc-200 border-zinc-200' : 'text-zinc-600 border-transparent hover:text-zinc-400'}`}
+                     className={`text-sm font-black uppercase tracking-widest transition-all pb-2 border-b-2 ${ activeTab === 'scripts' ? 'text-[var(--color-text-primary)] border-[var(--color-accent-primary)]' : 'text-[var(--color-text-muted)] border-transparent hover:text-[var(--color-text-secondary)]'}`}
                    >
                      {t('gallery.post_content.share')}
                    </button>
                    <button 
                      onClick={() => setActiveTab('about')}
-                     className={`text-sm font-black uppercase tracking-widest transition-all pb-2 border-b-2 ${ activeTab === 'about' ? 'text-zinc-200 border-zinc-200' : 'text-zinc-600 border-transparent hover:text-zinc-400'}`}
+                     className={`text-sm font-black uppercase tracking-widest transition-all pb-2 border-b-2 ${ activeTab === 'about' ? 'text-[var(--color-text-primary)] border-[var(--color-accent-primary)]' : 'text-[var(--color-text-muted)] border-transparent hover:text-[var(--color-text-secondary)]'}`}
                    >
                      {t('dashboard.history')}
                    </button>
                 </div>
                 
-                <div className="flex items-center gap-2 text-zinc-600">
+                <div className="flex items-center gap-2 text-[var(--color-text-muted)]">
                    <Grid size={18} className="cursor-pointer hover:text-white transition-colors" />
                    <ListIcon size={18} className="cursor-pointer hover:text-white transition-colors" />
                 </div>
@@ -209,21 +209,21 @@ export default function ProfilePage() {
                   <Link 
                     key={script.id} 
                     href={`/gallery/${script.id}`}
-                    className="group p-6 bg-white/[0.02] border border-white/[0.05] rounded-[2.5rem] hover:bg-white/[0.05] hover:border-white/8 transition-all duration-500"
+                    className="group p-6 bg-white/[0.02] border border-[var(--color-border)] rounded-[2.5rem] hover:bg-white/[0.05] hover:border-[var(--color-border-hover)] transition-all duration-500"
                   >
                      <div className="flex items-center justify-between mb-6">
-                        <div className="w-10 h-10 rounded-xl bg-zinc-300/10 flex items-center justify-center text-zinc-200">
+                        <div className="w-10 h-10 rounded-xl bg-[var(--color-accent-glow)] flex items-center justify-center text-[var(--color-text-primary)]">
                            <Code size={20} />
                         </div>
-                        <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-500">
-                           <Heart size={12} className="text-rose-500" />
+                        <div className="flex items-center gap-2 text-[10px] font-bold text-[var(--color-text-muted)]">
+                           <Heart size={12} className="text-[var(--color-text-primary)]" />
                            {script.likes_count}
                         </div>
                      </div>
-                     <h3 className="text-lg font-black text-white mb-2 group-hover:text-zinc-200 transition-colors">{script.title}</h3>
-                     <p className="text-sm text-zinc-500 line-clamp-2 italic mb-4">{script.description}</p>
+                     <h3 className="text-lg font-black text-white mb-2 group-hover:text-[var(--color-text-primary)] transition-colors">{script.title}</h3>
+                     <p className="text-sm text-[var(--color-text-muted)] line-clamp-2 italic mb-4">{script.description}</p>
                      
-                     <div className="flex items-center gap-4 text-[9px] font-bold text-zinc-600 uppercase tracking-widest">
+                     <div className="flex items-center gap-4 text-[9px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest">
                         <span>{script.category}</span>
                         <span>•</span>
                         <span>{new Date(script.created_at).toLocaleDateString('tr-TR')}</span>

@@ -6,6 +6,7 @@ import { useAuth } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import AppSidebar from '@/features/shared/components/AppSidebar';
 import GalleryPostModal from '@/features/gallery/components/GalleryPostModal';
+import { Button } from '@/features/shared/components/ui/Button';
 import { 
   Cloud, 
   Search, 
@@ -124,7 +125,7 @@ export default function UserScriptsPage() {
       <div className="flex min-h-screen bg-[var(--color-bg-primary)]">
         <AppSidebar />
         <div className="flex-1 md:ml-60 flex items-center justify-center">
-           <Loader2 className="w-12 h-12 text-zinc-300 animate-spin" />
+           <Loader2 className="w-12 h-12 text-[var(--color-text-primary)] animate-spin" />
         </div>
       </div>
     );
@@ -135,22 +136,19 @@ export default function UserScriptsPage() {
       <div className="flex min-h-screen bg-[var(--color-bg-primary)]">
         <AppSidebar />
         <div className="flex-1 md:ml-60 flex items-center justify-center py-20 px-4">
-          <div className="text-center p-12 bg-white/[0.02] border border-white/[0.06] rounded-[3rem] shadow-2xl relative overflow-hidden">
+          <div className="text-center p-12 bg-white/[0.02] border border-[var(--color-border)] rounded-[3rem] shadow-2xl relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-400/[0.02] to-transparent"></div>
             <div className="relative z-10">
-              <div className="w-20 h-20 bg-zinc-300/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-white/8">
-                 <Cloud className="text-zinc-300" size={40} />
+              <div className="w-20 h-20 bg-[var(--color-accent-glow)] rounded-3xl flex items-center justify-center mx-auto mb-6 border border-[var(--color-border-hover)]">
+                 <Cloud className="text-[var(--color-text-primary)]" size={40} />
               </div>
               <h2 className="text-3xl font-black text-white mb-4 tracking-tighter">{t('dashboard.please_login')}</h2>
-              <p className="text-zinc-500 max-w-sm mx-auto mb-10 text-lg leading-relaxed">
+              <p className="text-[var(--color-text-muted)] max-w-sm mx-auto mb-10 text-lg leading-relaxed">
                 {t('dashboard.login_desc', { defaultValue: 'Kendi scriptlerinizi yönetmek ve bulutta saklamak için bir oturum açmanız gerekiyor.' })}
               </p>
-              <button 
-                onClick={() => router.push('/login')} 
-                className="btn-premium px-12 py-4 bg-zinc-200 hover:bg-zinc-300 rounded-2xl text-white font-black uppercase tracking-widest text-xs transition-all shadow-[0_0_30px_rgba(255,255,255,0.08)]"
-              >
+              <Button onClick={() => router.push('/login')} variant="primary" size="lg" className="px-12 py-4 rounded-2xl font-black uppercase tracking-widest text-xs">
                 {t('general.sign_in')}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -164,17 +162,17 @@ export default function UserScriptsPage() {
       
       <main className="md:ml-60 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-16 relative">
-          <div className="absolute -top-24 -left-24 w-64 h-64 bg-zinc-300/10 blur-[120px] pointer-events-none"></div>
+          <div className="absolute -top-24 -left-24 w-64 h-64 bg-[var(--color-accent-glow)] blur-[120px] pointer-events-none"></div>
           
           <div className="relative z-10 animate-slide-up">
-            <div className="flex items-center gap-2 text-zinc-200 font-bold tracking-widest text-xs uppercase mb-4">
+            <div className="flex items-center gap-2 text-[var(--color-text-primary)] font-bold tracking-widest text-xs uppercase mb-4">
                <Database size={14} />
                <span>{t('dashboard.cloud_area')}</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tighter">
               {t('dashboard.cloud_scripts_prefix', { defaultValue: 'Bulut' })} <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-300 via-zinc-400 to-zinc-500 antialiased">{t('dashboard.cloud_scripts_suffix', { defaultValue: 'Scriptlerim' })}</span>
             </h1>
-            <p className="text-zinc-500 text-xl max-w-2xl leading-relaxed">
+            <p className="text-[var(--color-text-muted)] text-xl max-w-2xl leading-relaxed">
               {t('dashboard.cloud_desc', { defaultValue: 'Tüm projelerini güvenle bulutta sakla, düzenle ve dilediğin zaman galeriye yükle.' })}
             </p>
           </div>
@@ -182,19 +180,19 @@ export default function UserScriptsPage() {
           <div className="flex flex-col sm:flex-row items-center gap-4 animate-slide-up" style={{ animationDelay: '0.1s' }}>
              <button 
                 onClick={() => setIsNewModalOpen(true)}
-                className="flex items-center gap-2 px-6 py-4 bg-zinc-200 hover:bg-zinc-300 text-white rounded-2xl transition-all font-black text-[10px] uppercase tracking-widest shadow-[0_0_20px_rgba(255,255,255,0.08)] active:scale-95 whitespace-nowrap"
+                className="flex items-center gap-2 px-6 py-4 bg-[var(--color-accent-primary)] hover:bg-[var(--color-accent-secondary)] text-[var(--color-bg-primary)] rounded-2xl transition-all font-black text-[10px] uppercase tracking-widest shadow-[0_0_20px_rgba(255,255,255,0.08)] active:scale-95 whitespace-nowrap"
              >
                 <Plus size={18} />
                 {t('general.new_script', { defaultValue: 'Yeni Script' })}
              </button>
              <div className="relative group w-full sm:w-auto">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600 group-focus-within:text-zinc-300 transition-colors" size={18} />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] group-focus-within:text-[var(--color-text-primary)] transition-colors" size={18} />
                 <input 
                   type="text" 
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={t('general.search_placeholder', { defaultValue: 'Script ara...' })}
-                  className="pl-12 pr-6 py-4 bg-white/[0.03] border border-white/[0.08] rounded-2xl w-full sm:w-80 focus:outline-none focus:border-white/25 transition-all font-medium text-white placeholder-zinc-700"
+                  className="pl-12 pr-6 py-4 bg-white/[0.03] border border-[var(--color-border-hover)] rounded-2xl w-full sm:w-80 focus:outline-none focus:border-[var(--color-border-active)] transition-all font-medium text-white placeholder-zinc-700"
                 />
              </div>
           </div>
@@ -208,46 +206,46 @@ export default function UserScriptsPage() {
         ) : isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-64 bg-white/[0.02] border border-white/[0.06] rounded-[2.5rem] animate-pulse"></div>
+              <div key={i} className="h-64 bg-white/[0.02] border border-[var(--color-border)] rounded-[2.5rem] animate-pulse"></div>
             ))}
           </div>
         ) : filteredScripts.length === 0 ? (
-          <div className="text-center py-32 bg-white/[0.01] border border-white/[0.03] rounded-[3rem] relative overflow-hidden group">
+          <div className="text-center py-32 bg-white/[0.01] border border-[var(--color-border)] rounded-[3rem] relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-400/[0.02] to-transparent"></div>
             <div className="relative z-10 scale-110 mb-8 inline-block opacity-20 group-hover:scale-125 transition-transform duration-700">
-               <Cloud size={120} className="text-zinc-300" />
+               <Cloud size={120} className="text-[var(--color-text-primary)]" />
             </div>
             <h3 className="text-2xl font-black text-white mb-3">{t('dashboard.empty_cloud_title')}</h3>
-            <p className="text-zinc-500 max-w-sm mx-auto mb-10 text-lg">{t('dashboard.empty_cloud_desc')}</p>
-            <button onClick={() => router.push('/chat')} className="btn-premium px-10 py-4 bg-zinc-200 hover:bg-zinc-300 text-white rounded-2xl transition-all font-bold">
-               {t('general.open_editor', { defaultValue: 'Editörü Aç' })}
-            </button>
+            <p className="text-[var(--color-text-muted)] max-w-sm mx-auto mb-10 text-lg">{t('dashboard.empty_cloud_desc')}</p>
+            <Button onClick={() => router.push('/chat')} variant="primary" size="lg" className="px-10 py-4 rounded-2xl">
+                {t('general.open_editor', { defaultValue: 'Editörü Aç' })}
+            </Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
             {filteredScripts.map((script) => (
-              <div key={script.id} className="group relative flex flex-col bg-[#0f0f12] border border-white/[0.06] rounded-[2.5rem] p-8 hover:border-white/20 hover:bg-[#121216] transition-all duration-500 hover:shadow-2xl overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-zinc-300/5 blur-[80px] -mr-16 -mt-16 group-hover:bg-zinc-300/10 transition-colors"></div>
+              <div key={script.id} className="group relative flex flex-col bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-[2.5rem] p-8 hover:border-[var(--color-border-active)] hover:bg-[var(--color-bg-elevated)] transition-all duration-500 hover:shadow-2xl overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/[0.05] blur-[80px] -mr-16 -mt-16 group-hover:bg-[var(--color-accent-glow)] transition-colors"></div>
                 
                 <div className="flex items-center justify-between mb-6">
-                   <div className="w-12 h-12 rounded-2xl bg-zinc-300/10 flex items-center justify-center border border-white/8 group-hover:bg-zinc-300 group-hover:text-black transition-all duration-500">
+                   <div className="w-12 h-12 rounded-2xl bg-[var(--color-accent-glow)] flex items-center justify-center border border-[var(--color-border-hover)] group-hover:bg-[var(--color-accent-primary)] group-hover:text-black transition-all duration-500">
                       <FileCode size={24} />
                    </div>
                    <div className="flex items-center gap-2">
-                      <span className="px-3 py-1 bg-white/[0.03] border border-white/[0.05] rounded-lg text-[10px] font-black text-zinc-500 uppercase tracking-widest">
+                      <span className="px-3 py-1 bg-white/[0.03] border border-[var(--color-border)] rounded-lg text-[10px] font-black text-[var(--color-text-muted)] uppercase tracking-widest">
                          v{script.version || '1.0.0'}
                       </span>
-                      <button onClick={() => handleDelete(script.id)} className="p-2 text-zinc-600 hover:text-rose-500 transition-colors">
+                      <button onClick={() => handleDelete(script.id)} className="p-2 text-[var(--color-text-muted)] hover:text-rose-500 transition-colors">
                          <Trash2 size={16} />
                       </button>
                    </div>
                 </div>
 
-                <h3 className="text-xl font-bold text-white mb-2 line-clamp-1 group-hover:text-zinc-200 transition-colors">
+                <h3 className="text-xl font-bold text-white mb-2 line-clamp-1 group-hover:text-[var(--color-text-primary)] transition-colors">
                   {script.title}
                 </h3>
                 
-                <div className="flex items-center gap-2 text-zinc-600 text-xs mb-8">
+                <div className="flex items-center gap-2 text-[var(--color-text-muted)] text-xs mb-8">
                    <Clock size={12} />
                    <span>{t('general.last_update', { defaultValue: 'Son güncelleme' })}: {script.updated_at ? new Date(script.updated_at).toLocaleDateString(t('general.locale', { defaultValue: 'tr-TR' })) : t('general.unknown', { defaultValue: 'Bilinmiyor' })}</span>
                 </div>
@@ -255,7 +253,7 @@ export default function UserScriptsPage() {
                 <div className="flex flex-col gap-3 mt-auto">
                    <button 
                       onClick={() => setEditingScript(script)}
-                      className="flex items-center justify-between px-6 py-3 bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.08] rounded-xl text-sm font-bold text-zinc-400 hover:text-white transition-all group/btn"
+                      className="flex items-center justify-between px-6 py-3 bg-white/[0.03] border border-[var(--color-border)] hover:bg-white/[0.08] rounded-xl text-sm font-bold text-[var(--color-text-secondary)] hover:text-white transition-all group/btn"
                    >
                       <span>{t('dashboard.quick_edit')}</span>
                       <ChevronRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
@@ -264,7 +262,7 @@ export default function UserScriptsPage() {
                    {script.linked_session_id && (
                      <button 
                         onClick={() => router.push(`/chat?session=${script.linked_session_id}`)}
-                        className="flex items-center justify-center gap-2 px-6 py-3 bg-cyan-500/10 border border-cyan-500/20 hover:bg-cyan-600 hover:text-white rounded-xl text-xs font-bold text-cyan-400 transition-all shadow-lg shadow-cyan-500/5 mb-2"
+                        className="flex items-center justify-center gap-2 px-6 py-3 bg-white/[0.03] border border-[var(--color-border)] hover:bg-white/[0.08] hover:text-white rounded-xl text-xs font-bold text-[var(--color-text-secondary)] transition-all mb-2"
                      >
                         <MessageSquare size={16} />
                         <span>Sohbette Aç</span>
@@ -273,14 +271,14 @@ export default function UserScriptsPage() {
                    
                    <button 
                       onClick={() => handleSendToEditor(script.content)}
-                      className="flex items-center justify-center gap-2 px-6 py-3 bg-white/[0.01] border border-white/[0.04] hover:bg-white/[0.06] rounded-xl text-[10px] uppercase tracking-widest font-black text-zinc-500 hover:text-zinc-300 transition-all"
+                      className="flex items-center justify-center gap-2 px-6 py-3 bg-white/[0.01] border border-[var(--color-border)] hover:bg-white/[0.06] rounded-xl text-[10px] uppercase tracking-widest font-black text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-all"
                    >
                       {t('general.send_to_editor', { defaultValue: 'Editöre Gönder' })}
                    </button>
                    
                    <button 
                       onClick={() => setPublishCode(script.content)}
-                      className="flex items-center justify-center gap-2 px-6 py-3 bg-zinc-200/10 border border-white/8 hover:bg-zinc-200 hover:text-white rounded-xl text-sm font-bold text-zinc-200 transition-all shadow-lg shadow-white/3"
+                      className="flex items-center justify-center gap-2 px-6 py-3 bg-[var(--color-accent-glow)] border border-[var(--color-border-hover)] hover:bg-[var(--color-accent-primary)] hover:text-[var(--color-bg-primary)] rounded-xl text-sm font-bold text-[var(--color-text-primary)] transition-all shadow-lg shadow-white/3"
                    >
                       <Share2 size={16} />
                       <span>{t('dashboard.share_gallery')}</span>

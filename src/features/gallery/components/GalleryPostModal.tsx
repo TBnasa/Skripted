@@ -2,9 +2,10 @@ import React, { useState, useRef } from 'react';
 import { GalleryClientService } from '@/services/client/gallery.client';
 import { GalleryPostSchema } from '@/types/schemas';
 import { useAuth } from '@clerk/nextjs';
-import { X, UploadCloud, Loader2, CheckCircle2, Hash, Wallet, Shield, Gamepad2, MessageSquare, Lock, FolderOpen } from 'lucide-react';
+import { X, UploadCloud, Loader2, CheckCircle2, Hash } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from '@/lib/useTranslation';
+import { CATEGORY_IDS, CATEGORY_ICONS } from '@/features/gallery/data/gallery-categories';
 
 interface GalleryPostModalProps {
   readonly code: string;
@@ -12,16 +13,6 @@ interface GalleryPostModalProps {
   readonly onClose: () => void;
   readonly onSuccess?: (postId: string) => void;
 }
-
-const CATEGORY_IDS = ['Economy', 'Admin', 'Minigame', 'Chat', 'Security', 'Other'];
-const CATEGORY_ICONS: Record<string, React.ReactNode> = {
-  Economy: <Wallet className="w-4 h-4" />,
-  Admin: <Shield className="w-4 h-4" />,
-  Minigame: <Gamepad2 className="w-4 h-4" />,
-  Chat: <MessageSquare className="w-4 h-4" />,
-  Security: <Lock className="w-4 h-4" />,
-  Other: <FolderOpen className="w-4 h-4" />,
-};
 
 export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: GalleryPostModalProps) {
   const { t, mounted } = useTranslation();
