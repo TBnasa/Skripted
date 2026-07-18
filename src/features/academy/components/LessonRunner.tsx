@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/lib/useTranslation';
 import { useAcademyStore } from '@/store/useAcademyStore';
@@ -12,7 +12,7 @@ import {
   getNextLesson,
 } from '@/lib/academy-data';
 import {
-  Target, CheckCircle2, Lightbulb, Trophy, ChevronRight, Sparkles, AlertTriangle, MessageSquare, Terminal
+  Target, CheckCircle2, Lightbulb, Trophy, ChevronRight, Sparkles, MessageSquare, Terminal
 } from 'lucide-react';
 
 interface LessonRunnerProps {

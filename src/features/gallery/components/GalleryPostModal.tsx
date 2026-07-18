@@ -1,8 +1,8 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { GalleryClientService } from '@/services/client/gallery.client';
 import { GalleryPostSchema } from '@/types/schemas';
 import { useAuth } from '@clerk/nextjs';
-import { X, UploadCloud, Loader2, Image as ImageIcon, CheckCircle2, AlertCircle, Hash, Tag, Wallet, Shield, Gamepad2, MessageSquare, Lock, FolderOpen } from 'lucide-react';
+import { X, UploadCloud, Loader2, CheckCircle2, Hash, Wallet, Shield, Gamepad2, MessageSquare, Lock, FolderOpen } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from '@/lib/useTranslation';
 

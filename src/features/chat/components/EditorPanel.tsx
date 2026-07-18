@@ -3,8 +3,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { useTranslation } from '@/lib/useTranslation';
-import GalleryPostModal from '@/features/gallery/components/GalleryPostModal';
-import GitHubExportModal from '@/features/shared/components/GitHubExportModal';
 import { SKRIPT_LANGUAGE_ID, registerSkriptLanguage } from '@/lib/skript-language';
 import type { editor } from 'monaco-editor';
 import { useAuth } from '@clerk/nextjs';
@@ -15,7 +13,11 @@ import { AnimatePresence } from 'framer-motion';
 // Sub-components
 import { EditorHeader } from './Editor/EditorHeader';
 import { EditorToolbar } from './Editor/EditorToolbar';
-import GUIBuilder from './Editor/GUIBuilder';
+
+// Modals are dynamically loaded (only loaded on user interaction)
+const GalleryPostModal = dynamic(() => import('@/features/gallery/components/GalleryPostModal'), { ssr: false });
+const GitHubExportModal = dynamic(() => import('@/features/shared/components/GitHubExportModal'), { ssr: false });
+const GUIBuilder = dynamic(() => import('./Editor/GUIBuilder'), { ssr: false });
 
 const Editor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 

@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { Undo2, Redo2, ClipboardPaste, Sparkles, ArrowRightToLine } from 'lucide-react';
 
 interface EditorToolbarProps {

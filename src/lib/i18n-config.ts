@@ -4,20 +4,20 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
-// JSON dosyalarını doğrudan import ediyoruz (Build sırasında hata almamak için)
-import enCommon from '../../public/locales/en/common.json';
-import trCommon from '../../public/locales/tr/common.json';
+async function loadResources(lng: string) {
+  const common = await import(`../../public/locales/${lng}/common.json`);
+  return { common: common.default };
+}
 
-const resources = {
-  en: { common: enCommon },
-  tr: { common: trCommon },
-};
+const detectedLng = typeof window !== 'undefined'
+  ? localStorage.getItem('i18nextLng') || navigator.language.split('-')[0] || 'en'
+  : 'en';
 
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    resources,
+    resources: {},
     fallbackLng: 'en',
     ns: ['common'],
     defaultNS: 'common',
@@ -29,5 +29,16 @@ i18n
       caches: ['localStorage', 'cookie'],
     },
   });
+
+loadResources(detectedLng).then((res) => {
+  i18n.addResourceBundle(detectedLng, 'common', res.common);
+});
+
+i18n.on('languageChanged', async (lng) => {
+  if (!i18n.hasResourceBundle(lng, 'common')) {
+    const res = await loadResources(lng);
+    i18n.addResourceBundle(lng, 'common', res.common);
+  }
+});
 
 export default i18n;

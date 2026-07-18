@@ -29,7 +29,8 @@ export default clerkMiddleware(async (auth, req) => {
 
 export const config = {
   matcher: [
-    // Tüm rotaları dahil et (daha agresif matcher)
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    '/dashboard/:path*',
+    '/chat/:path*',
+    '/api/:path*',
   ],
 };

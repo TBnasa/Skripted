@@ -3,7 +3,6 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft, User, Heart, Share2, Download } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 interface PostDetailHeaderProps {
   post: any;

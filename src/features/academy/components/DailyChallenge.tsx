@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { Trophy, Target, ChevronRight } from 'lucide-react';
 import { useTranslation } from '@/lib/useTranslation';
 import { useAcademyStore } from '@/store/useAcademyStore';

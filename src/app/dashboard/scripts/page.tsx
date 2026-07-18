@@ -21,7 +21,7 @@ import {
 import { useState } from 'react';
 import { toast } from 'sonner';
 import QuickEditModal from '@/features/shared/components/QuickEditModal';
-import { FilePlus, MessageSquare } from 'lucide-react';
+import { MessageSquare } from 'lucide-react';
 
 interface UserScript {
   id: string;

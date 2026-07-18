@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { AcademySidebar } from '@/features/academy/components/AcademySidebar';
 import { AcademyChat } from '@/features/academy/components/AcademyChat';
 import { DailyChallenge } from '@/features/academy/components/DailyChallenge';

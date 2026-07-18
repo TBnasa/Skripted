@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { User, Code, Heart, Calendar, MapPin, Share2, Edit3, Settings, Grid, List as ListIcon, UserPlus, UserCheck } from 'lucide-react';
+import Image from 'next/image';
+import { Code, Heart, Calendar, Share2, Edit3, Settings, Grid, List as ListIcon, UserPlus } from 'lucide-react';
 import Navbar from '@/features/shared/components/Navbar';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@clerk/nextjs';
-import { Profile } from '@/services/server/profile-service';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import ProfileEditModal from '@/features/profile/components/ProfileEditModal';
@@ -73,7 +72,7 @@ export default function ProfilePage() {
             <div className="relative group">
               <div className="w-32 h-32 md:w-40 md:h-40 rounded-[2.5rem] bg-[#121214] border-4 border-[#0a0a0b] shadow-2xl overflow-hidden relative">
                 {profile.avatar_url ? (
-                  <img src={profile.avatar_url} alt={profile.username} className="w-full h-full object-cover" />
+                  <Image src={profile.avatar_url} alt={profile.username} fill className="object-cover" sizes="(max-width: 768px) 128px, 160px" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-4xl font-black text-emerald-500">
                     {profile.username[0].toUpperCase()}

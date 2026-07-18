@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Camera, X, Loader2, User, FileText, Check } from 'lucide-react';
+import { Camera, X, Loader2, User, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { useTranslation } from '@/lib/useTranslation';
+import Image from 'next/image';
 
 interface ProfileEditModalProps {
   isOpen: boolean;
@@ -82,7 +83,7 @@ export default function ProfileEditModal({ isOpen, onClose, initialData, onUpdat
                   <div className="relative group">
                      <div className="w-24 h-24 rounded-[2rem] bg-[#121214] border border-white/10 flex items-center justify-center overflow-hidden">
                         {formData.avatar_url ? (
-                           <img src={formData.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                            <Image src={formData.avatar_url} alt="Avatar" fill className="object-cover" sizes="96px" />
                         ) : (
                            <User size={40} className="text-zinc-700" />
                         )}

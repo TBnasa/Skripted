@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
-import { X, Save, Loader2, CheckCircle2, AlertCircle, FileCode, Clock, RotateCcw, History, Calendar, Layout } from 'lucide-react';
+import { X, Save, Loader2, AlertCircle, FileCode, Clock, RotateCcw, History, Calendar, Layout } from 'lucide-react';
 import { toast } from 'sonner';
 import { SKRIPT_LANGUAGE_ID, registerSkriptLanguage } from '@/lib/skript-language';
 import { setupSkriptLinter } from '@/lib/skript-linter';

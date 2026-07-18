@@ -1,6 +1,6 @@
 'use client';
 
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { motion, Variants } from 'framer-motion';
 import { Heart, Code, Download, User, Hash } from 'lucide-react';
 import Link from 'next/link';

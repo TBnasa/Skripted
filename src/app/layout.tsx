@@ -1,7 +1,28 @@
 import type { Metadata } from 'next';
-import { APP_NAME, APP_DESCRIPTION } from '@/lib/constants';
+import React from 'react';
+import { IBM_Plex_Mono } from 'next/font/google';
+import localFont from 'next/font/local';
 import Navbar from '@/features/shared/components/Navbar';
 import './globals.css';
+
+const ibmPlexMono = IBM_Plex_Mono({
+  weight: ['400', '500', '600'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-mono',
+});
+
+// Satoshi is self-hosted via next/font/local
+const satoshi = localFont({
+  src: [
+    { path: '../../public/fonts/Satoshi-Regular.woff2', weight: '400' },
+    { path: '../../public/fonts/Satoshi-Medium.woff2', weight: '500' },
+    { path: '../../public/fonts/Satoshi-Bold.woff2', weight: '700' },
+    { path: '../../public/fonts/Satoshi-Black.woff2', weight: '900' },
+  ],
+  display: 'swap',
+  variable: '--font-sans',
+});
 
 export const metadata: Metadata = {
   title: {
@@ -50,16 +71,7 @@ export default function RootLayout({
     <ClerkProvider>
       <Providers>
         <html lang="en" className="dark">
-          <head>
-            <link rel="preconnect" href="https://fonts.googleapis.com" />
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-            <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet" />
-            <link
-              href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap"
-              rel="stylesheet"
-            />
-          </head>
-          <body className="bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] antialiased">
+          <body className={`${satoshi.variable} ${ibmPlexMono.variable} bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] antialiased`}>
             <Toaster position="top-right" richColors theme="dark" closeButton />
             <Navbar />
             <main>{children}</main>

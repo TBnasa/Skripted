@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { Code, Copy, CheckCircle2, Loader2, Cloud, Share2, Layout } from 'lucide-react';
 import DownloadButton from '@/features/gallery/components/DownloadButton';
 

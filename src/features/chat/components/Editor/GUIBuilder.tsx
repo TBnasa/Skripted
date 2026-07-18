@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Copy, Layout, Plus, Minus, Trash2, Eye, EyeOff, GripHorizontal } from 'lucide-react';
+import { X, Copy, Layout, Plus, Minus, Trash2, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 
 // Minecraft Items

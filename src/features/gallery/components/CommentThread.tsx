@@ -3,11 +3,12 @@
 import React, { useState } from 'react';
 import { GalleryClientService } from '@/services/client/gallery.client';
 import { GalleryCommentSchema } from '@/types/schemas';
-import { User, MessageSquare, Reply, Trash2, Send, Loader2, Languages } from 'lucide-react';
+import { MessageSquare, Reply, Send, Loader2, Languages } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { useTranslation } from '@/lib/useTranslation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface Comment {
   id: string;
@@ -120,7 +121,7 @@ const CommentItem = ({
       <div className="flex gap-4 group/item">
         <div className="relative shrink-0">
           {comment.avatar_url ? (
-            <img src={comment.avatar_url} alt={comment.author_name} className="w-9 h-9 md:w-10 md:h-10 rounded-xl object-cover border border-white/10" />
+            <Image src={comment.avatar_url} alt={comment.author_name} width={40} height={40} className="rounded-xl object-cover border border-white/10" />
           ) : (
             <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-400 font-black text-xs">
               {comment.author_name[0].toUpperCase()}

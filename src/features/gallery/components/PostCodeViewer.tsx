@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { motion } from 'framer-motion';
 import Editor from '@monaco-editor/react';
 import { Copy, CheckCircle2, Shrink, Maximize2 } from 'lucide-react';
