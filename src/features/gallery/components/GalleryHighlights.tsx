@@ -19,67 +19,69 @@ export default function GalleryHighlights() {
   if (error || !posts || !Array.isArray(posts) || posts.length === 0) return null;
 
   return (
-    <section className="relative z-10 py-28 px-6 bg-[var(--color-bg-primary)] content-visibility-auto">
-      <div className="max-w-7xl mx-auto">
-        {/* Section header — editorial, not flashy */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+    <section className="relative z-10 bg-[var(--color-bg-primary)] px-6 py-28 md:py-36 content-visibility-auto">
+      <div className="mx-auto max-w-7xl">
+        {/* Section header — editorial, on-brand eyebrow */}
+        <div className="mb-14 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
-            <div className="flex items-center gap-2 text-[var(--color-accent-primary)] font-bold tracking-wide text-xs uppercase mb-3">
-               <span className="w-6 h-px bg-[var(--color-accent-primary)]" />
-               <span>{t('gallery.community_showcase')}</span>
+            <div className="mb-4 flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-[var(--color-accent-primary)]">
+              <span className="h-px w-8 bg-[var(--color-accent-primary)]" />
+              {t('gallery.community_showcase')}
             </div>
-            <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight text-balance">
-              {t('gallery.weekly_favorites_prefix', { defaultValue: 'Haftanın Favori' })} <span className="text-[var(--color-accent-primary)]">{t('gallery.weekly_favorites_suffix', { defaultValue: 'Skriptleri' })}</span>
+            <h2 className="text-4xl font-black tracking-tight text-balance text-[var(--color-text-primary)] md:text-6xl">
+              {t('gallery.weekly_favorites_prefix', { defaultValue: 'Haftanın Favori' })}{' '}
+              <span className="text-[var(--color-text-muted)]">{t('gallery.weekly_favorites_suffix', { defaultValue: 'Skriptleri' })}</span>
             </h2>
           </div>
-          
-          <Link href="/gallery" className="group flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-white transition-colors font-semibold text-sm">
-             {t('general.view_all', { defaultValue: 'Tümünü Gör' })} 
-             <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
+
+          <Link
+            href="/gallery"
+            className="press group flex items-center gap-2 text-sm font-semibold text-[var(--color-text-secondary)] transition-colors duration-200 hover:text-[var(--color-text-primary)]"
+          >
+            {t('general.view_all', { defaultValue: 'Tümünü Gör' })}
+            <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
         </div>
 
         {/* Editorial grid — first card featured */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {posts.map((post: any, idx: number) => (
             <motion.div
               key={post.id}
-              whileHover={{ y: -3 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              className={`group relative bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-2xl p-6 hover:border-[var(--color-border-hover)] transition-colors duration-300 ${
+              whileHover={{ y: -4 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 26 }}
+              className={`press group relative overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6 transition-colors duration-300 hover:border-[var(--color-border-hover)] ${
                 idx === 0 ? 'sm:col-span-2 lg:col-span-1' : ''
               }`}
             >
-              <div className="flex items-center justify-between mb-5">
-                <div className="w-9 h-9 rounded-xl bg-[var(--color-accent-primary)]/10 border border-[var(--color-accent-primary)]/15 flex items-center justify-center text-[var(--color-accent-primary)]">
+              <div className="mb-5 flex items-center justify-between">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--color-border-active)] bg-[var(--color-accent-glow)] text-[var(--color-accent-primary)]">
                   <Code size={17} />
                 </div>
                 <div className="flex items-center gap-3">
-                   <div className="flex items-center gap-1 text-[11px] font-semibold text-[var(--color-text-muted)]">
-                      <Heart size={12} className="text-[var(--color-accent-warm)]" />
-                      {post.likes_count}
-                   </div>
-                   <div className="flex items-center gap-1 text-[11px] font-semibold text-[var(--color-text-muted)]">
-                      <Download size={12} className="text-[var(--color-accent-primary)]" />
-                      {post.downloads_count}
-                   </div>
+                  <div className="flex items-center gap-1 text-[11px] font-semibold text-[var(--color-text-muted)]">
+                    <Heart size={12} className="text-[var(--color-accent-warm)]" />
+                    {post.likes_count}
+                  </div>
+                  <div className="flex items-center gap-1 text-[11px] font-semibold text-[var(--color-text-muted)]">
+                    <Download size={12} className="text-[var(--color-accent-primary)]" />
+                    {post.downloads_count}
+                  </div>
                 </div>
               </div>
 
-              <h3 className="text-base font-bold text-white mb-2 line-clamp-1 group-hover:text-[var(--color-text-primary)] transition-colors duration-200">
+              <h3 className="mb-2 line-clamp-1 text-base font-bold text-[var(--color-text-primary)] transition-colors duration-200 group-hover:text-[var(--color-text-primary)]">
                 {post.title}
               </h3>
-              <p className="text-sm text-[var(--color-text-muted)] line-clamp-2 mb-6 h-10">
-                {post.description}
-              </p>
+              <p className="mb-6 line-clamp-2 h-10 text-sm text-[var(--color-text-muted)]">{post.description}</p>
 
-              <div className="flex items-center justify-between pt-4 border-t border-[var(--color-border)]">
-                <span className="text-[10px] font-semibold text-[var(--color-text-muted)] uppercase tracking-wider truncate max-w-[100px]">
+              <div className="flex items-center justify-between border-t border-[var(--color-border)] pt-4">
+                <span className="max-w-[100px] truncate text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
                   {post.author_name}
                 </span>
-                <Link 
+                <Link
                   href={`/gallery/${post.id}`}
-                  className="p-2 rounded-lg bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] hover:bg-[var(--color-accent-primary)] hover:border-[var(--color-accent-primary)] hover:text-[var(--color-bg-primary)] transition-all duration-200"
+                  className="press rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-tertiary)] p-2 transition-colors duration-200 hover:bg-[var(--color-accent-primary)] hover:border-[var(--color-accent-primary)] hover:text-[var(--color-bg-primary)]"
                 >
                   <ArrowRight size={14} />
                 </Link>

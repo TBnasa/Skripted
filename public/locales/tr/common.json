@@ -87,9 +87,13 @@
     "desc": "AI destekli Minecraft Skript IDE'si. 120 Milyar parametreli modellerle kodunuzu saniyeler içinde yazın, denetleyin ve yayınlayın.",
     "explore_gallery": "Galeriyi Keşfet",
     "start_learning": "Öğrenmeye Başla",
-    "academy_tooltip": "AI destekli öğrenme yolu yakında geliyor"
+    "academy_tooltip": "AI destekli öğrenme yolu yakında geliyor",
+    "scroll_hint": "Kaydır"
   },
   "features": {
+    "section_eyebrow": "Kapasiteler",
+    "section_title_prefix": "Sınır tanımayan",
+    "section_title_suffix": "bir forge.",
     "feature1_title": "AI Kod Denetçisi",
     "feature1_desc": "Her kod parçacığı, AI Judge tarafindan 120B parametreli modellerle mantık hatalarına karşı denetlenir.",
     "feature2_title": "Bulut Depolama",
@@ -98,6 +102,16 @@
     "feature3_desc": "TuSKe, SkQuery ve SkQuantum başta olmak üzere popüler eklentiler için otomatik sentaks ve optimizasyon.",
     "feature4_title": "Rehberli Öğrenme",
     "feature4_desc": "Skript mantığını adım adım, seviyene uyum sağlayan bir AI mentör ile öğren."
+  },
+  "how": {
+    "eyebrow": "Nasıl çalışır",
+    "title": "Fikirden .sk dosyasına üç adımda.",
+    "step1_title": "Tarif Et",
+    "step1_desc": "Terminale ne istediğini söyle — bir warp, bir ekonomi, bir minigame. Türkçe veya İngilizce, sade bir dille.",
+    "step2_title": "AI Forge Eder",
+    "step2_desc": "Engine, Skript'i yazar ve her satırı mantık ve performans açısından 120B parametreli modellerle denetler.",
+    "step3_title": "Yayınla",
+    "step3_desc": "Buluta kaydet, sunucuna gönder veya galeride toplulukla paylaş."
   },
   "stats": {
     "total_snippets": "Toplam Kod Parçacığı",
@@ -307,6 +321,12 @@
     "business_feature7": "Gelişmiş Analitik",
     "business_cta": "Satış Ekibiyle İletişim",
     "recommended": "Önerilen"
+  },
+  "footer": {
+    "cta_eyebrow": "Hazır",
+    "cta_title_prefix": "Boilerplate yazmayı bırak.",
+    "cta_title_suffix": "Forge etmeye başla.",
+    "cta_desc": "Engine'i aç, mantığı tarif et, kahven soğumadan çalışan bir Skript gönder."
   },
   "academy": {
     "coming_soon_title": "Skript Academy Çok Yakında!",

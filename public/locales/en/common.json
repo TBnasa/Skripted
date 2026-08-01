@@ -87,9 +87,13 @@
     "desc": "AI-powered Minecraft Skript IDE. Write, audit, and publish code in seconds with 120B parameter models.",
     "explore_gallery": "Explore Gallery",
     "start_learning": "Start Learning",
-    "academy_tooltip": "AI-powered learning path coming soon"
+    "academy_tooltip": "AI-powered learning path coming soon",
+    "scroll_hint": "Scroll"
   },
   "features": {
+    "section_eyebrow": "Capabilities",
+    "section_title_prefix": "Forge",
+    "section_title_suffix": "without limits.",
     "feature1_title": "AI Code Auditor",
     "feature1_desc": "Every snippet is checked for logic errors by 120B parameter models via AI Judge.",
     "feature2_title": "Cloud Storage",
@@ -98,6 +102,16 @@
     "feature3_desc": "Automatic syntax and optimization for major addons including TuSKe, SkQuery, and SkQuantum.",
     "feature4_title": "Guided Learning",
     "feature4_desc": "Learn Skript logic step by step with an AI mentor that adapts to your skill level."
+  },
+  "how": {
+    "eyebrow": "How it works",
+    "title": "From idea to .sk in three steps.",
+    "step1_title": "Describe",
+    "step1_desc": "Tell the terminal what you want — a warp, an economy, a minigame. Plain language, in Turkish or English.",
+    "step2_title": "AI Forges",
+    "step2_desc": "The engine writes the Skript and audits every line for logic and performance with 120B parameter models.",
+    "step3_title": "Publish",
+    "step3_desc": "Save to your cloud, ship to your server, or share it in the gallery for the rest of the community."
   },
   "stats": {
     "total_snippets": "Total Code Snippets",
@@ -306,6 +320,12 @@
     "business_feature7": "Advanced Analytics",
     "business_cta": "Contact Sales",
     "recommended": "Recommended"
+  },
+  "footer": {
+    "cta_eyebrow": "Ready",
+    "cta_title_prefix": "Stop writing boilerplate.",
+    "cta_title_suffix": "Start forging.",
+    "cta_desc": "Open the engine, describe the logic, and ship a working Skript before your coffee is cold."
   },
   "academy": {
     "coming_soon_title": "Skript Academy Coming Soon!",
