@@ -21,10 +21,10 @@ const ICON_MAP: Record<string, React.ElementType> = {
 };
 
 const COLOR_MAP: Record<string, { bg: string; text: string; border: string; glow: string }> = {
-  emerald: { bg: 'bg-[var(--color-accent-glow)]', text: 'text-[var(--color-text-primary)]', border: 'border-[var(--color-border-hover)]', glow: 'shadow-white/10' },
-  purple:  { bg: 'bg-[var(--color-accent-glow)]', text: 'text-[var(--color-text-primary)]', border: 'border-[var(--color-border-hover)]', glow: 'shadow-white/10' },
-  amber:   { bg: 'bg-[var(--color-accent-glow)]', text: 'text-[var(--color-text-primary)]', border: 'border-[var(--color-border-hover)]', glow: 'shadow-white/10' },
-  cyan:    { bg: 'bg-[var(--color-accent-glow)]', text: 'text-[var(--color-text-primary)]', border: 'border-[var(--color-border-hover)]', glow: 'shadow-white/10' },
+  emerald: { bg: 'bg-[var(--color-accent-glow)]', text: 'text-[var(--color-accent-primary)]', border: 'border-[var(--color-border-hover)]', glow: 'ink-shadow-sm' },
+  purple:  { bg: 'bg-[var(--color-accent-glow)]', text: 'text-[var(--color-accent-primary)]', border: 'border-[var(--color-border-hover)]', glow: 'ink-shadow-sm' },
+  amber:   { bg: 'bg-[var(--color-accent-glow)]', text: 'text-[var(--color-accent-primary)]', border: 'border-[var(--color-border-hover)]', glow: 'ink-shadow-sm' },
+  cyan:    { bg: 'bg-[var(--color-accent-glow)]', text: 'text-[var(--color-accent-primary)]', border: 'border-[var(--color-border-hover)]', glow: 'ink-shadow-sm' },
 };
 
 export function AcademySidebar() {
@@ -53,7 +53,7 @@ export function AcademySidebar() {
     <div className="w-64 border-r border-[var(--color-border)] bg-[var(--color-bg-secondary)] h-full flex flex-col">
       {/* Header */}
       <div className="p-4 pb-3 border-b border-[var(--color-border)]">
-        <h2 className="text-lg font-black bg-gradient-to-r from-zinc-400 to-zinc-200 bg-clip-text text-transparent">
+        <h2 className="text-lg font-black text-[var(--color-text-primary)]">
           Academy
         </h2>
         <p className="text-[10px] text-[var(--color-text-muted)] mt-0.5 font-medium">
@@ -79,14 +79,14 @@ export function AcademySidebar() {
                 className={cn(
                   "w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all duration-200 group relative text-left",
                   !isUnlocked && "opacity-40 cursor-not-allowed",
-                  isUnlocked && "hover:bg-white/[0.03] cursor-pointer",
-                  isCurrentModule && isUnlocked && "bg-white/[0.04]"
+                  isUnlocked && "hover:bg-[var(--color-accent-glow)] cursor-pointer",
+                  isCurrentModule && isUnlocked && "bg-[var(--color-accent-glow)] ring-1 ring-inset ring-[var(--color-border-active)]"
                 )}
               >
                 {/* Module Icon */}
                 <div className={cn(
                   "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all",
-                  isUnlocked ? `${colors.bg} ${colors.text}` : 'bg-white/5 text-[var(--color-text-muted)]'
+                  isUnlocked ? `${colors.bg} ${colors.text}` : 'bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)]'
                 )}>
                   {isUnlocked ? <Icon size={16} /> : <Lock size={14} />}
                 </div>
@@ -96,7 +96,7 @@ export function AcademySidebar() {
                   <div className="flex items-center gap-1.5">
                     <span className={cn(
                       "text-xs font-bold truncate",
-                      isUnlocked ? 'text-white' : 'text-[var(--color-text-muted)]'
+                      isUnlocked ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-muted)]'
                     )}>
                       {isTr ? mod.title_tr : mod.title_en}
                     </span>
@@ -107,12 +107,12 @@ export function AcademySidebar() {
 
                   {/* Progress Bar */}
                   {isUnlocked && (
-                    <div className="w-full bg-white/5 h-1 rounded-full mt-1.5 overflow-hidden">
+                    <div className="w-full bg-[var(--color-bg-tertiary)] h-1 rounded-full mt-1.5 overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all duration-500 bg-gradient-to-r ${
                           progress === 100
-                            ? 'from-zinc-400 to-zinc-200'
-                            : 'from-zinc-500 to-zinc-400'
+                            ? 'from-[var(--color-accent-primary)] to-[var(--color-accent-warm)]'
+                            : 'from-[var(--color-accent-primary)] to-[var(--color-accent-warm)]'
                         }`}
                         style={{ width: `${progress}%` }}
                       />
@@ -161,8 +161,8 @@ export function AcademySidebar() {
                             className={cn(
                               "w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition-all text-left",
                               !isLessonUnlocked && "opacity-30 cursor-not-allowed",
-                              isLessonUnlocked && !isCurrentLesson && "hover:bg-white/[0.03] cursor-pointer",
-                              isCurrentLesson && `bg-white/[0.06] ${colors.border} border shadow-sm ${colors.glow}`
+                              isLessonUnlocked && !isCurrentLesson && "hover:bg-[var(--color-accent-glow)] cursor-pointer",
+                              isCurrentLesson && `bg-[var(--color-accent-glow)] ${colors.border} border shadow-sm ${colors.glow}`
                             )}
                           >
                             {/* Status Icon */}
@@ -181,7 +181,7 @@ export function AcademySidebar() {
                             {/* Lesson Title */}
                             <span className={cn(
                               "text-[11px] font-medium truncate",
-                              isCurrentLesson ? 'text-white' :
+                              isCurrentLesson ? 'text-[var(--color-accent-primary)]' :
                               isLessonCompleted ? 'text-[var(--color-text-muted)]' : 'text-[var(--color-text-secondary)]'
                             )}>
                               {isTr ? lesson.title_tr : lesson.title_en}
@@ -189,7 +189,7 @@ export function AcademySidebar() {
 
                             {/* Boss badge */}
                             {lesson.isBossLevel && isLessonUnlocked && (
-                              <span className="ml-auto text-[8px] font-black px-1.5 py-0.5 rounded bg-white/[0.08] text-[var(--color-text-secondary)] border border-[var(--color-border)] uppercase shrink-0">
+                              <span className="ml-auto text-[8px] font-black px-1.5 py-0.5 rounded bg-[var(--color-accent-glow)] text-[var(--color-accent-primary)] border border-[var(--color-border-active)] uppercase shrink-0">
                                 BOSS
                               </span>
                             )}
@@ -207,7 +207,7 @@ export function AcademySidebar() {
 
       {/* Rank & XP Card */}
       <div className="p-3 border-t border-[var(--color-border)]">
-        <div className="p-3 rounded-2xl bg-gradient-to-br from-white/[0.03] to-transparent border border-[var(--color-border)]">
+        <div className="p-3 rounded-xl bg-[var(--color-bg-tertiary)] border border-[var(--color-border)]">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <span className="text-base">{rank.emoji}</span>
@@ -215,23 +215,23 @@ export function AcademySidebar() {
                 <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
                   {isTr ? 'Rütbe' : 'Rank'}
                 </p>
-                <p className="text-xs font-bold text-white">
+                <p className="text-xs font-bold text-[var(--color-text-primary)]">
                   {isTr ? rank.title_tr : rank.title_en}
                 </p>
               </div>
             </div>
             <div className="text-right">
               <p className="text-[10px] text-[var(--color-text-muted)]">{isTr ? 'Seviye' : 'Level'}</p>
-              <p className="text-sm font-black text-white">{level}</p>
+              <p className="text-sm font-black text-[var(--color-text-primary)]">{level}</p>
             </div>
           </div>
 
           {/* XP Progress */}
           <div className="flex items-center gap-2">
             <Sparkles size={10} className="text-[var(--color-text-muted)] shrink-0" />
-            <div className="flex-1 bg-white/5 h-1.5 rounded-full overflow-hidden">
+            <div className="flex-1 bg-[var(--color-bg-secondary)] h-1.5 rounded-full overflow-hidden">
               <div
-                className="bg-gradient-to-r from-zinc-400 to-zinc-200 h-full rounded-full transition-all duration-700"
+                className="bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] h-full rounded-full transition-all duration-700"
                 style={{ width: `${Math.min(xpProgressToNext, 100)}%` }}
               />
             </div>

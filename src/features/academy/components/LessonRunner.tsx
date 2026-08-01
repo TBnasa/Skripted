@@ -128,12 +128,12 @@ export function LessonRunner({ lesson }: LessonRunnerProps) {
 
   return (
     <div className="flex flex-col h-full bg-[var(--color-bg-primary)]">
-      <div className="px-5 py-4 border-b border-[var(--color-border)] bg-white/[0.01]">
+      <div className="px-5 py-4 border-b border-[var(--color-border)] bg-[var(--color-bg-tertiary)]">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1.5">
               {lesson.isBossLevel && (
-                <span className="px-2 py-0.5 text-[10px] font-black bg-gradient-to-r from-zinc-500 to-zinc-400 text-black rounded-md uppercase tracking-wider">
+                <span className="px-2 py-0.5 text-[10px] font-black bg-[var(--color-accent-primary)] text-white rounded-md uppercase tracking-wider">
                   BOSS
                 </span>
               )}
@@ -148,7 +148,7 @@ export function LessonRunner({ lesson }: LessonRunnerProps) {
               </span>
               {isCompleted && <CheckCircle2 size={16} className="text-[var(--color-text-primary)]" />}
             </div>
-            <h2 className="text-sm font-bold text-white truncate">
+            <h2 className="text-sm font-bold text-[var(--color-text-primary)] truncate">
               {isTr ? lesson.title_tr : lesson.title_en}
             </h2>
             <p className="text-xs text-[var(--color-text-muted)] mt-0.5">
@@ -157,7 +157,7 @@ export function LessonRunner({ lesson }: LessonRunnerProps) {
           </div>
           <div className="flex items-center gap-2 shrink-0">
             {!isCompleted && currentHintIndex < lesson.hints.length - 1 && (
-              <button onClick={showNextHint} className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold bg-white/[0.05] text-[var(--color-text-secondary)] border border-[var(--color-border)] rounded-lg hover:bg-white/10 transition-all">
+              <button onClick={showNextHint} className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-accent-glow)] transition-all">
                 <Lightbulb size={12} />
                 {isTr ? `İpucu (${currentHintIndex + 1}/${lesson.hints.length})` : `Hint (${currentHintIndex + 1}/${lesson.hints.length})`}
               </button>
@@ -169,7 +169,7 @@ export function LessonRunner({ lesson }: LessonRunnerProps) {
           </div>
         </div>
 
-        <div className="mt-3 flex items-start gap-2 p-2.5 rounded-xl bg-white/[0.02] border border-[var(--color-border)]">
+        <div className="mt-3 flex items-start gap-2 p-2.5 rounded-xl bg-[var(--color-bg-tertiary)] border border-[var(--color-border)]">
           <Target size={14} className="text-[var(--color-text-primary)] shrink-0 mt-0.5" />
           <p className="text-[11px] text-[var(--color-text-secondary)] font-medium">
             <span className="text-[var(--color-text-primary)] font-bold mr-1">{isTr ? 'Hedef:' : 'Goal:'}</span>
@@ -184,7 +184,7 @@ export function LessonRunner({ lesson }: LessonRunnerProps) {
               {virtualOutputs.map((out, i) => (
                 <div key={i} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[var(--color-accent-glow)] border border-[var(--color-border-hover)]">
                   {out.type === 'send' ? <MessageSquare size={12} className="text-[var(--color-text-secondary)]" /> : <Terminal size={12} className="text-[var(--color-text-secondary)]" />}
-                  <span className="text-[10px] font-mono text-white/80">{out.text}</span>
+                  <span className="text-[10px] font-mono text-[var(--color-text-secondary)]">{out.text}</span>
                 </div>
               ))}
             </motion.div>
@@ -202,16 +202,16 @@ export function LessonRunner({ lesson }: LessonRunnerProps) {
         <AnimatePresence>
           {showSuccess && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 z-30 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-              <motion.div initial={{ scale: 0.8, y: 20 }} animate={{ scale: 1, y: 0 }} className="glass-panel p-8 rounded-3xl text-center max-w-sm mx-4">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-zinc-400 to-zinc-400 flex items-center justify-center mx-auto mb-4 shadow-lg animate-float">
+              <motion.div initial={{ scale: 0.8, y: 20 }} animate={{ scale: 1, y: 0 }} className="glass-panel p-8 rounded-xl text-center max-w-sm mx-4">
+                <div className="w-16 h-16 rounded-2xl bg-[var(--color-accent-primary)] flex items-center justify-center mx-auto mb-4 ink-shadow-sm animate-float">
                   {lesson.isBossLevel ? <Trophy size={32} className="text-white" /> : <CheckCircle2 size={32} className="text-white" />}
                 </div>
-                <h3 className="text-lg font-black text-white mb-2">{lesson.isBossLevel ? (isTr ? '🏆 Boss Yenildi!' : '🏆 Boss Defeated!') : (isTr ? '✨ Tebrikler!' : '✨ Congratulations!')}</h3>
+                <h3 className="text-lg font-black text-[var(--color-text-primary)] mb-2">{lesson.isBossLevel ? (isTr ? '🏆 Boss Yenildi!' : '🏆 Boss Defeated!') : (isTr ? '✨ Tebrikler!' : '✨ Congratulations!')}</h3>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--color-accent-glow)] border border-[var(--color-border-hover)] text-[var(--color-text-primary)] font-bold text-sm mb-6">
                   <Sparkles size={16} /> +{lesson.xpReward} XP
                 </div>
                 {getNextLesson(lesson.id) ? (
-                  <button onClick={handleNextLesson} className="flex items-center justify-center gap-2 w-full px-6 py-3 text-sm font-bold bg-[var(--color-accent-primary)] text-black rounded-xl hover:bg-[var(--color-accent-primary)] transition-all active:scale-95 shadow-lg shadow-white/10">
+                  <button onClick={handleNextLesson} className="flex items-center justify-center gap-2 w-full px-6 py-3 text-sm font-bold bg-[var(--color-accent-primary)] text-white rounded-xl hover:bg-[var(--color-accent-secondary)] transition-all active:scale-95 ink-shadow-sm">
                     {isTr ? 'Sonraki Ders' : 'Next Lesson'} <ChevronRight size={16} />
                   </button>
                 ) : <p className="text-xs text-[var(--color-text-muted)] font-medium">{isTr ? '🎉 Tüm dersleri tamamladın!' : '🎉 You completed all lessons!'}</p>}
@@ -222,8 +222,8 @@ export function LessonRunner({ lesson }: LessonRunnerProps) {
       </div>
 
       {!isCodeMode && !isCompleted && !showSuccess && (
-        <div className="px-4 py-3 border-t border-[var(--color-border)] bg-white/[0.01]">
-          <button onClick={validateBlocks} disabled={placedBlocks.length === 0} className="w-full flex items-center justify-center gap-2 px-6 py-3 text-sm font-bold bg-[var(--color-accent-primary)] text-black rounded-xl hover:bg-[var(--color-accent-primary)] transition-all active:scale-95 shadow-lg shadow-white/10 disabled:opacity-40 disabled:pointer-events-none">
+        <div className="px-4 py-3 border-t border-[var(--color-border)] bg-[var(--color-bg-tertiary)]">
+          <button onClick={validateBlocks} disabled={placedBlocks.length === 0} className="w-full flex items-center justify-center gap-2 px-6 py-3 text-sm font-bold bg-[var(--color-accent-primary)] text-white rounded-xl hover:bg-[var(--color-accent-secondary)] transition-all active:scale-95 ink-shadow-sm disabled:opacity-40 disabled:pointer-events-none">
             <CheckCircle2 size={16} /> {isTr ? 'Çözümü Kontrol Et' : 'Check Solution'}
           </button>
         </div>

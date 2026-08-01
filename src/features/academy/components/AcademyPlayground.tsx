@@ -7,7 +7,7 @@ export function AcademyPlayground() {
     <div className="flex flex-col h-full bg-bg-primary">
       <div className="h-12 border-b border-border flex items-center justify-between px-4 bg-bg-secondary/50">
         <div className="flex items-center gap-4">
-          <button className="flex items-center gap-2 text-xs font-bold text-text-primary px-3 py-1.5 rounded-lg bg-white/5">
+          <button className="flex items-center gap-2 text-xs font-bold text-text-primary px-3 py-1.5 rounded-lg bg-[var(--color-bg-tertiary)]">
             <Code2 size={14} className="text-[var(--color-text-secondary)]" />
             Playground.sk
           </button>
@@ -17,7 +17,7 @@ export function AcademyPlayground() {
           </button>
         </div>
         
-        <button className="flex items-center gap-2 text-xs font-bold bg-[var(--color-accent-primary)] hover:bg-[var(--color-accent-primary)] text-black px-4 py-1.5 rounded-lg transition-all active:scale-95 shadow-lg shadow-white/10">
+        <button className="flex items-center gap-2 text-xs font-bold bg-[var(--color-accent-primary)] hover:bg-[var(--color-accent-secondary)] text-white px-4 py-1.5 rounded-lg transition-all active:scale-95 ink-shadow-sm">
           <Play size={14} fill="currentColor" />
           Kodu Çalıştır
         </button>
@@ -39,7 +39,7 @@ export function AcademyPlayground() {
           </div>
         </div>
 
-        <div className="h-1/3 border-t border-border p-6 bg-black/40">
+        <div className="h-1/3 border-t border-border p-6 bg-[var(--color-bg-tertiary)]">
           <div className="flex items-center gap-2 mb-4">
             <GraduationCap size={16} className="text-[var(--color-text-secondary)]" />
             <h4 className="text-xs font-bold uppercase tracking-widest text-text-muted">Console Output</h4>
@@ -52,7 +52,7 @@ export function AcademyPlayground() {
         
         {/* Visual Decoration */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-[0.03]">
-          <GraduationCap size={400} className="text-white/5" />
+          <GraduationCap size={400} className="text-[var(--color-accent-primary)]/10" />
         </div>
       </div>
     </div>

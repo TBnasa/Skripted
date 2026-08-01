@@ -155,8 +155,8 @@ export function AcademyChat() {
               <div className={cn(
                 "w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow-md",
                 msg.role === 'mentor'
-                  ? "bg-gradient-to-br from-zinc-500 to-zinc-400 text-white"
-                  : "bg-white/10 text-white"
+                  ? "bg-[var(--color-accent-primary)] text-white"
+                  : "bg-[var(--color-accent-glow)] text-[var(--color-accent-primary)]"
               )}>
                 {msg.role === 'mentor' ? <Bot size={14} /> : <User size={14} />}
               </div>
@@ -164,7 +164,7 @@ export function AcademyChat() {
               <div className={cn(
                 "px-3.5 py-2.5 rounded-2xl text-[13px] leading-relaxed shadow-sm",
                 msg.role === 'mentor'
-                  ? "bg-white/[0.04] text-[var(--color-text-primary)] border border-[var(--color-border)] rounded-tl-none"
+                  ? "bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] border border-[var(--color-border)] rounded-tl-none"
                   : "bg-[var(--color-accent-primary)] text-[var(--color-bg-primary)] rounded-tr-none"
               )}>
                 {/* Simple markdown-like rendering */}
@@ -184,10 +184,10 @@ export function AcademyChat() {
         {/* Typing Indicator */}
         {isTyping && (
           <div className="flex gap-3">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-zinc-500 to-zinc-400 text-white flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[var(--color-accent-primary)] text-white flex items-center justify-center">
               <Bot size={14} />
             </div>
-            <div className="px-4 py-3 rounded-2xl bg-white/[0.04] border border-[var(--color-border)] rounded-tl-none flex items-center gap-1.5">
+            <div className="px-4 py-3 rounded-2xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-tl-none flex items-center gap-1.5">
               <Loader2 size={14} className="animate-spin text-[var(--color-text-secondary)]" />
               <span className="text-xs text-[var(--color-text-muted)]">
                 {isTr ? 'Mentor düşünüyor...' : 'Mentor is thinking...'}
@@ -200,7 +200,7 @@ export function AcademyChat() {
       </div>
 
       {/* Input */}
-      <div className="p-3 border-t border-[var(--color-border)] bg-white/[0.01]">
+      <div className="p-3 border-t border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
         <form onSubmit={handleSubmit} className="relative">
           <input
             type="text"
@@ -208,8 +208,8 @@ export function AcademyChat() {
             onChange={(e) => setInput(e.target.value)}
             placeholder={isTr ? 'Mentöre sor...' : 'Ask the mentor...'}
             disabled={isTyping}
-            className="w-full bg-white/[0.03] border border-[var(--color-border-hover)] focus:border-[var(--color-border-active)] 
-                       rounded-xl py-3 pl-4 pr-12 text-sm transition-all outline-none
+            className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border-hover)] focus:border-[var(--color-border-active)] 
+                       rounded-xl py-3 pl-4 pr-12 text-sm transition-all outline-none text-[var(--color-text-primary)]
                        disabled:opacity-50 placeholder:text-[var(--color-text-muted)]"
           />
           <button
@@ -217,7 +217,7 @@ export function AcademyChat() {
             disabled={!input.trim() || isTyping}
             className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-[var(--color-accent-primary)] text-[var(--color-bg-primary)]
                        hover:brightness-110 rounded-lg flex items-center justify-center 
-                       transition-all hover:scale-105 active:scale-95 shadow-lg shadow-white/10
+                       transition-all hover:scale-105 active:scale-95 ink-shadow-sm
                        disabled:opacity-40 disabled:pointer-events-none"
           >
             <Send size={14} />

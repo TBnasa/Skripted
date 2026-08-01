@@ -78,7 +78,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
   };
 
   const handleEditorMount = (editor: any, monaco: any) => {
-    monaco.editor.setTheme('skripted-dark');
+    monaco.editor.setTheme('vs');
     setupSkriptLinter(editor, monaco);
   };
 
@@ -93,17 +93,17 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-      <div className="bg-[var(--color-bg-elevated)] border border-[var(--color-border-hover)] w-full max-w-5xl h-[85vh] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col animate-scale-up relative">
+      <div className="bg-[var(--color-bg-elevated)] border border-[var(--color-border-hover)] w-full max-w-5xl h-[85vh] rounded-xl shadow-2xl overflow-hidden flex flex-col animate-scale-up relative">
         <div className="absolute inset-0 bg-gradient-to-tr from-zinc-400/[0.02] via-transparent to-zinc-400/[0.02] pointer-events-none"></div>
         
         {/* Header */}
-        <div className="px-8 py-6 border-b border-[var(--color-border-hover)] flex justify-between items-center bg-white/[0.01] relative z-10">
+        <div className="px-8 py-6 border-b border-[var(--color-border-hover)] flex justify-between items-center bg-[var(--color-bg-tertiary)] relative z-10">
           <div className="flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-lg transition-colors ${isNew ? 'bg-white/[0.2] border-[var(--color-border-hover)] text-[var(--color-text-primary)]' : 'bg-white/[0.08] border-[var(--color-border-hover)] text-[var(--color-text-secondary)]'}`}>
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-lg transition-colors ${isNew ? 'bg-[var(--color-accent-glow)] border-[var(--color-border-hover)] text-[var(--color-text-primary)]' : 'bg-[var(--color-bg-tertiary)] border-[var(--color-border-hover)] text-[var(--color-text-secondary)]'}`}>
               <FileCode size={24} />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white tracking-tight">{isNew ? t('editor.create_new') : t('editor.edit_script')}</h2>
+              <h2 className="text-xl font-bold text-[var(--color-text-primary)] tracking-tight">{isNew ? t('editor.create_new') : t('editor.edit_script')}</h2>
               <p className="text-[10px] font-mono text-[var(--color-text-muted)] uppercase tracking-widest mt-1">
                 {isNew ? t('editor.start_fresh') : `${t('editor.editing')}: ${script?.title}`}
               </p>
@@ -138,7 +138,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
         {/* Body */}
         <div className="flex-1 flex flex-col relative z-10 overflow-hidden">
           {/* Settings Bar */}
-          <div className="px-8 py-4 bg-white/[0.02] border-b border-[var(--color-border)] flex flex-wrap items-center gap-4">
+          <div className="px-8 py-4 bg-[var(--color-bg-tertiary)] border-b border-[var(--color-border)] flex flex-wrap items-center gap-4">
              <div className="flex-1 min-w-[200px]">
                 <label className="text-[10px] font-black text-[var(--color-text-muted)] uppercase tracking-widest mb-1.5 block ml-1">{t('gallery.modal.title_label')}</label>
                 <input 
@@ -146,7 +146,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Örn: Gelişmiş Market Sistemi"
-                  className="w-full bg-white/[0.03] border border-[var(--color-border-hover)] rounded-xl px-4 py-2.5 text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-border-active)] transition-all font-medium"
+                  className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border-hover)] rounded-xl px-4 py-2.5 text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-border-active)] transition-all font-medium"
                 />
              </div>
              <div className="w-32">
@@ -156,7 +156,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
                   value={version}
                   onChange={(e) => setVersion(e.target.value)}
                   placeholder="1.0.0"
-                  className="w-full bg-white/[0.03] border border-[var(--color-border-hover)] rounded-xl px-4 py-2.5 text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-border-active)] transition-all font-mono"
+                  className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border-hover)] rounded-xl px-4 py-2.5 text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-border-active)] transition-all font-mono"
                 />
              </div>
           </div>
@@ -166,7 +166,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
              <Editor
                 height="100%"
                 language={SKRIPT_LANGUAGE_ID}
-                theme="skripted-dark"
+                theme="vs"
                 value={content}
                 onChange={(v) => setContent(v || '')}
                 beforeMount={handleEditorWillMount}
@@ -196,7 +196,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
                      <History size={16} />
                      {t('editor.version_history')}
                   </h3>
-                  <button onClick={() => setIsHistoryOpen(false)} className="text-[var(--color-text-muted)] hover:text-white transition-colors">
+                  <button onClick={() => setIsHistoryOpen(false)} className="text-[var(--color-text-muted)] hover:text-[var(--color-accent-primary)] transition-colors">
                      <X size={18} />
                   </button>
                </div>
@@ -214,7 +214,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
                      </div>
                   ) : (
                      versions.map((v, i) => (
-                        <div key={v.id} className="group p-4 bg-white/[0.02] border border-[var(--color-border)] rounded-2xl hover:border-[var(--color-border-hover)] transition-all">
+                        <div key={v.id} className="group p-4 bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-xl hover:border-[var(--color-border-hover)] transition-all">
                            <div className="flex items-center justify-between mb-2">
                               <span className="text-[10px] font-black text-[var(--color-text-muted)] uppercase tracking-widest">
                                  {i === 0 ? t('editor.last_saved') : `${t('editor.version_label')} #${versions.length - i}`}
@@ -239,7 +239,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
                   )}
                </div>
                
-               <div className="p-4 border-t border-[var(--color-border-hover)] bg-black/20 italic text-[10px] text-[var(--color-text-muted)] text-center">
+               <div className="p-4 border-t border-[var(--color-border-hover)] bg-[var(--color-bg-tertiary)] italic text-[10px] text-[var(--color-text-muted)] text-center">
                   {t('editor.snapshots_info')}
                </div>
             </div>
@@ -247,7 +247,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
         </div>
 
         {/* Footer */}
-        <div className="px-8 py-6 border-t border-[var(--color-border-hover)] flex items-center justify-between bg-white/[0.01] relative z-10 shrink-0">
+        <div className="px-8 py-6 border-t border-[var(--color-border-hover)] flex items-center justify-between bg-[var(--color-bg-tertiary)] relative z-10 shrink-0">
           <div className="flex items-center gap-2 text-[var(--color-text-muted)] text-xs">
              <AlertCircle size={14} className="text-amber-500/70" />
              <span>{t('editor.dont_forget_save')}</span>
@@ -255,7 +255,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
           <div className="flex items-center gap-3">
              <button 
                 onClick={onClose}
-                className="px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-[var(--color-text-muted)] hover:text-white transition-colors"
+                className="px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-[var(--color-text-muted)] hover:text-[var(--color-accent-primary)] transition-colors"
                 disabled={isSaving}
              >
                 {t('general.cancel')}
@@ -263,7 +263,7 @@ export default function QuickEditModal({ script, isOpen, onClose, onSave, isSavi
              <button 
                 onClick={() => onSave(title, content, version)}
                 disabled={isSaving || !title || !content}
-                className="flex items-center gap-2 px-8 py-3 bg-[var(--color-accent-primary)] hover:bg-[var(--color-accent-secondary)] text-[var(--color-bg-primary)] text-[11px] font-black uppercase tracking-widest rounded-2xl transition-all shadow-lg shadow-white/10 disabled:opacity-30 active:scale-95"
+                className="flex items-center gap-2 px-8 py-3 bg-[var(--color-accent-primary)] hover:bg-[var(--color-accent-secondary)] text-[var(--color-bg-primary)] text-[11px] font-black uppercase tracking-widest rounded-xl transition-all ink-shadow-sm disabled:opacity-30 active:scale-95"
              >
                 {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
                 {isSaving ? t('editor.saving') : (isNew ? t('editor.create_now') : t('general.save_changes'))}

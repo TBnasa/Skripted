@@ -142,9 +142,9 @@ export default function ChatInterface() {
   return (
     <div className="flex h-screen max-h-screen flex-col pt-16 overflow-hidden bg-[var(--color-bg-primary)]">
       {globalError && (
-        <div className="absolute top-16 left-0 right-0 z-50 p-3 bg-red-500/10 border-b border-red-500/20 text-red-400 text-xs font-mono text-center flex items-center justify-center gap-2">
+        <div className="absolute top-16 left-0 right-0 z-50 p-3 bg-[var(--color-accent-error)]/10 border-b border-[var(--color-accent-error)]/20 text-[var(--color-accent-error)] text-xs font-mono text-center flex items-center justify-center gap-2">
           {globalError}
-          <button onClick={() => setGlobalError(null)} className="ml-2 hover:text-red-300">
+          <button onClick={() => setGlobalError(null)} className="ml-2 hover:text-[var(--color-accent-error)]/80">
             X
           </button>
         </div>

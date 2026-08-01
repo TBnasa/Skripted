@@ -36,7 +36,7 @@ export default function AcademyPage() {
               ) : (
                 <div className="flex items-center justify-center h-full">
                   <div className="text-center">
-                    <GraduationCap size={48} className="text-white/5 mx-auto mb-4" />
+                    <GraduationCap size={48} className="text-[var(--color-accent-primary)]/15 mx-auto mb-4" />
                     <p className="text-[var(--color-text-muted)] text-sm">Select a lesson to begin</p>
                   </div>
                 </div>

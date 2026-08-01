@@ -13,7 +13,7 @@ export default function LoginPage() {
 
       <div className="relative w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-[var(--color-accent-primary)]/40 bg-transparent text-[var(--color-accent-primary)]">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl border-2 border-[var(--color-accent-primary)]/40 bg-transparent text-[var(--color-accent-primary)]">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
             </svg>
@@ -24,7 +24,7 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-8 shadow-2xl">
+        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-8 ink-shadow">
           <AuthForm />
         </div>
 

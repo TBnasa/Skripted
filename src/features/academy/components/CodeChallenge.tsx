@@ -76,11 +76,11 @@ export function CodeChallenge({ starterCode, solutionCode, onValidate }: CodeCha
   return (
     <div className="flex flex-col h-full">
       {/* Toolbar */}
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--color-border)] bg-white/[0.01]">
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--color-border)] bg-[var(--color-bg-tertiary)]">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-red-500/60" />
-            <div className="w-3 h-3 rounded-full bg-zinc-500/60" />
+            <div className="w-3 h-3 rounded-full bg-[var(--color-accent-primary)]/60" />
             <div className="w-3 h-3 rounded-full bg-[var(--color-accent-primary)]/60" />
           </div>
           <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--color-text-muted)] font-mono">
@@ -92,7 +92,7 @@ export function CodeChallenge({ starterCode, solutionCode, onValidate }: CodeCha
           <button
             onClick={handleReset}
             className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold text-[var(--color-text-secondary)] 
-                       bg-white/5 hover:bg-white/10 rounded-lg border border-[var(--color-border)] transition-all"
+                       bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-accent-glow)] rounded-lg border border-[var(--color-border)] transition-all"
           >
             <RotateCcw size={12} />
             {isTr ? 'Sıfırla' : 'Reset'}
@@ -100,9 +100,9 @@ export function CodeChallenge({ starterCode, solutionCode, onValidate }: CodeCha
           <button
             onClick={handleCheck}
             disabled={isValidating}
-            className="flex items-center gap-1.5 px-4 py-1.5 text-[10px] font-bold text-black 
-                       bg-[var(--color-accent-primary)] hover:bg-[var(--color-accent-primary)] rounded-lg transition-all active:scale-95
-                       shadow-lg shadow-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-1.5 px-4 py-1.5 text-[10px] font-bold text-white 
+                       bg-[var(--color-accent-primary)] hover:bg-[var(--color-accent-secondary)] rounded-lg transition-all active:scale-95
+                       ink-shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isValidating ? (
               <Loader2 size={12} className="animate-spin" />
@@ -119,7 +119,7 @@ export function CodeChallenge({ starterCode, solutionCode, onValidate }: CodeCha
         {/* Line Numbers */}
         <div
           ref={lineNumberRef}
-          className="w-12 shrink-0 bg-black/30 overflow-hidden select-none border-r border-[var(--color-border)] pt-4 px-1"
+          className="w-12 shrink-0 bg-[var(--color-bg-tertiary)] overflow-hidden select-none border-r border-[var(--color-border)] pt-4 px-1"
         >
           {lineNumbers.map(n => (
             <div key={n} className="text-right pr-2 text-[11px] font-mono text-[var(--color-text-muted)] leading-[1.7]">

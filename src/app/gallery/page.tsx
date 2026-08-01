@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function GalleryPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-[var(--color-bg-primary)] text-white">
+    <div className="flex min-h-screen flex-col bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
       <Suspense fallback={
         <div className="flex-1 flex items-center justify-center">
           <Loader2 className="w-12 h-12 text-[var(--color-text-primary)] animate-spin" />

@@ -3,8 +3,8 @@
 import { motion, useScroll, useSpring, useReducedMotion } from 'framer-motion';
 
 /**
- * Fixed amber scroll-progress bar at the very top of the viewport.
- * Tied to overall page scroll progress — the "forge" filling up.
+ * Fixed blue scroll-progress bar at the very top of the viewport.
+ * Tied to overall page scroll progress — the ink line being drawn.
  * Respects reduced-motion (renders a static half-filled bar).
  */
 export default function ScrollProgress() {

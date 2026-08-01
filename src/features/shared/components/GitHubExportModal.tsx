@@ -112,20 +112,20 @@ export default function GitHubExportModal({ code, isOpen, onClose }: GitHubExpor
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-lg overflow-hidden rounded-[2.5rem] border border-[var(--color-border-hover)] bg-[var(--color-bg-primary)] shadow-2xl"
+            className="relative w-full max-w-lg overflow-hidden rounded-xl border border-[var(--color-border-hover)] bg-[var(--color-bg-primary)] shadow-2xl"
           >
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-[var(--color-border)] bg-white/[0.01] px-8 py-6">
+            <div className="flex items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-bg-tertiary)] px-8 py-6">
               <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/5 text-white">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--color-accent-glow)] text-[var(--color-accent-primary)]">
                   <Github size={24} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-white">GitHub&apos;a Aktar</h2>
+                  <h2 className="text-xl font-bold text-[var(--color-text-primary)]">GitHub&apos;a Aktar</h2>
                   <p className="text-xs text-[var(--color-text-muted)]">Skript dosyanızı doğrudan bir depoya gönderin.</p>
                 </div>
               </div>
-              <button onClick={onClose} className="rounded-xl p-2 text-[var(--color-text-muted)] hover:bg-white/5 hover:text-white transition-all">
+              <button onClick={onClose} className="rounded-xl p-2 text-[var(--color-text-muted)] hover:bg-[var(--color-accent-glow)] hover:text-[var(--color-accent-primary)] transition-all">
                 <X size={20} />
               </button>
             </div>
@@ -141,11 +141,11 @@ export default function GitHubExportModal({ code, isOpen, onClose }: GitHubExpor
                     placeholder="Repo ara..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full bg-white/[0.02] border border-[var(--color-border)] focus:border-[var(--color-border-active)] rounded-2xl py-3.5 pl-11 pr-4 text-sm outline-none transition-all"
+                    className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] focus:border-[var(--color-border-active)] rounded-xl py-3.5 pl-11 pr-4 text-sm outline-none transition-all"
                   />
                 </div>
                 
-                <div className="max-h-40 overflow-y-auto custom-scrollbar mt-2 border border-[var(--color-border)] rounded-2xl bg-black/20">
+                <div className="max-h-40 overflow-y-auto custom-scrollbar mt-2 border border-[var(--color-border)] rounded-xl bg-[var(--color-bg-tertiary)]">
                   {loading ? (
                     <div className="p-8 text-center"><Loader2 size={24} className="animate-spin mx-auto text-[var(--color-text-primary)]" /></div>
                   ) : filteredRepos.length > 0 ? (
@@ -153,7 +153,7 @@ export default function GitHubExportModal({ code, isOpen, onClose }: GitHubExpor
                       <button
                         key={repo.id}
                         onClick={() => setSelectedRepo(repo.full_name)}
-                        className={`w-full flex items-center justify-between p-3.5 text-sm transition-all border-b border-[var(--color-border)] last:border-0 hover:bg-white/[0.04] ${selectedRepo === repo.full_name ? 'bg-[var(--color-accent-glow)] text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]'}`}
+                        className={`w-full flex items-center justify-between p-3.5 text-sm transition-all border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-accent-glow)] ${selectedRepo === repo.full_name ? 'bg-[var(--color-accent-glow)] text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]'}`}
                       >
                         <span className="flex items-center gap-3">
                           <div className={`w-2 h-2 rounded-full ${repo.private ? 'bg-amber-500' : 'bg-[var(--color-accent-primary)]'}`} />
@@ -176,7 +176,7 @@ export default function GitHubExportModal({ code, isOpen, onClose }: GitHubExpor
                     type="text"
                     value={filename}
                     onChange={(e) => setFilename(e.target.value)}
-                    className="w-full bg-white/[0.02] border border-[var(--color-border)] rounded-2xl py-3 px-4 text-sm outline-none focus:border-[var(--color-border-hover)] transition-all"
+                    className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-xl py-3 px-4 text-sm outline-none focus:border-[var(--color-border-hover)] transition-all"
                   />
                 </div>
                 <div className="space-y-2">
@@ -185,7 +185,7 @@ export default function GitHubExportModal({ code, isOpen, onClose }: GitHubExpor
                     type="text"
                     value={commitMessage}
                     onChange={(e) => setCommitMessage(e.target.value)}
-                    className="w-full bg-white/[0.02] border border-[var(--color-border)] rounded-2xl py-3 px-4 text-sm outline-none focus:border-[var(--color-border-hover)] transition-all"
+                    className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-xl py-3 px-4 text-sm outline-none focus:border-[var(--color-border-hover)] transition-all"
                   />
                 </div>
               </div>
@@ -194,7 +194,7 @@ export default function GitHubExportModal({ code, isOpen, onClose }: GitHubExpor
                 <Button
                   onClick={handleExport}
                   disabled={!selectedRepo || exporting || loading}
-                  className="w-full py-4 rounded-2xl gap-3"
+                  className="w-full py-4 rounded-xl gap-3"
                 >
                   {exporting ? <Loader2 size={18} className="animate-spin" /> : <Github size={18} />}
                   {exporting ? 'Gönderiliyor...' : 'GitHub\'a Commit Et'}

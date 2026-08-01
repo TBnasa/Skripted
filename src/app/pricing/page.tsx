@@ -67,7 +67,7 @@ export default function PricingPage() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="text-4xl md:text-6xl font-black tracking-tight mb-4 text-white"
+            className="text-4xl md:text-6xl font-black tracking-tight mb-4 text-[var(--color-text-primary)]"
           >
             {t('pricing.title')}
           </motion.h1>
@@ -91,22 +91,22 @@ export default function PricingPage() {
             <motion.div
               key={tier.key}
               variants={cardVariants}
-              className={`relative flex flex-col rounded-2xl p-8 h-full transition-all duration-300 ${
+              className={`relative flex flex-col rounded-xl p-8 h-full transition-all duration-300 ${
                 tier.recommended
-                  ? 'bg-[var(--color-bg-secondary)] border-2 border-[var(--color-accent-primary)]/40 shadow-[0_0_32px_-8px_rgba(255,255,255,0.06)] md:scale-[1.02]'
-                  : 'bg-[var(--color-bg-secondary)] border border-[var(--color-border)]'
+                  ? 'bg-[var(--color-bg-secondary)] border-2 border-[var(--color-accent-primary)]/40 ink-shadow md:scale-[1.02]'
+                  : 'bg-[var(--color-bg-secondary)] border border-[var(--color-border)] ink-shadow-sm'
               }`}
             >
               {tier.recommended && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-                  <div className="px-4 py-1 rounded-full bg-[var(--color-accent-primary)] text-[var(--color-bg-primary)] text-[11px] font-extrabold tracking-wider uppercase whitespace-nowrap">
+                  <div className="px-4 py-1 rounded-lg bg-[var(--color-accent-primary)] text-white text-[11px] font-extrabold tracking-wider uppercase whitespace-nowrap ink-shadow-sm">
                     {t('pricing.recommended')}
                   </div>
                 </div>
               )}
 
               <div className="mb-6 mt-2">
-                <h3 className="text-2xl font-bold text-white mb-1">
+                <h3 className="text-2xl font-bold text-[var(--color-text-primary)] mb-1">
                   {t(`pricing.${tier.titleKey}`)}
                 </h3>
                 <p className="text-sm text-[var(--color-text-muted)] mb-4">
@@ -117,7 +117,7 @@ export default function PricingPage() {
                     className={`text-4xl font-black ${
                       tier.key === 'starter'
                         ? 'text-[var(--color-accent-primary)]'
-                        : 'text-white'
+                        : 'text-[var(--color-text-primary)]'
                     }`}
                   >
                     {t(`pricing.${tier.priceKey}`)}
@@ -151,7 +151,7 @@ export default function PricingPage() {
                   size="lg"
                   className={`w-full py-4 text-sm ${
                     tier.recommended
-                      ? 'shadow-[0_0_20px_rgba(255,255,255,0.06)] hover:brightness-110 hover:shadow-[0_0_28px_rgba(255,255,255,0.1)]'
+                      ? 'ink-shadow-sm hover:brightness-110 hover:ink-shadow'
                       : ''
                   }`}
                 >

@@ -16,7 +16,7 @@ export function ErrorFallback({
             <path strokeLinecap="round" d="M12 8v4m0 4h.01" />
           </svg>
         </div>
-        <h2 className="text-xl font-black text-white mb-2">Something went wrong</h2>
+        <h2 className="text-xl font-black text-[var(--color-text-primary)] mb-2">Something went wrong</h2>
         <p className="text-sm text-[var(--color-text-muted)] mb-6 font-mono">
           {error.message || 'An unexpected error occurred'}
         </p>

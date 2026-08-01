@@ -139,7 +139,7 @@ export function BlockEditor({
   return (
     <div className={`flex h-full ${showCodePreview ? 'gap-0' : ''}`}>
       {/* ── Block Palette (Left) ── */}
-      <div className="w-56 shrink-0 border-r border-[var(--color-border)] bg-white/[0.01] overflow-y-auto custom-scrollbar p-3 space-y-4">
+      <div className="w-56 shrink-0 border-r border-[var(--color-border)] bg-[var(--color-bg-tertiary)] overflow-y-auto custom-scrollbar p-3 space-y-4">
         <div className="flex items-center gap-2 mb-1 px-1">
           <Sparkles size={14} className="text-[var(--color-text-secondary)]" />
           <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--color-text-muted)]">
@@ -176,7 +176,7 @@ export function BlockEditor({
 
       {/* ── Canvas (Center) ── */}
       <div className={`flex-1 flex flex-col ${showCodePreview ? 'border-r border-[var(--color-border)]' : ''}`}>
-        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[var(--color-border)] bg-white/[0.01]">
+        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[var(--color-border)] bg-[var(--color-bg-tertiary)]">
           <div className="w-2 h-2 rounded-full bg-[var(--color-accent-primary)] animate-pulse" />
           <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--color-text-muted)]">
             {isTr ? 'Çalışma Alanı' : 'Workspace'}
@@ -193,7 +193,7 @@ export function BlockEditor({
           onDrop={handleDrop}
           className={`
             flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar transition-all duration-300 relative
-            ${isDragOverCanvas ? 'bg-[var(--color-accent-primary)]/[0.03] ring-2 ring-inset ring-white/10' : 'bg-transparent'}
+            ${isDragOverCanvas ? 'bg-[var(--color-accent-primary)]/[0.03] ring-2 ring-inset ring-[var(--color-border-active)]' : 'bg-transparent'}
           `}
         >
           <AnimatePresence initial={false}>
@@ -204,7 +204,7 @@ export function BlockEditor({
                 exit={{ opacity: 0 }}
                 className="flex flex-col items-center justify-center h-full text-center"
               >
-                <div className={`p-6 rounded-2xl border-2 border-dashed transition-colors ${
+                <div className={`p-6 rounded-xl border-2 border-dashed transition-colors ${
                   isDragOverCanvas ? 'border-[var(--color-border-active)] bg-[var(--color-accent-primary)]/[0.05]' : 'border-[var(--color-border-hover)]'
                 }`}>
                   <p className="text-[var(--color-text-muted)] text-sm font-medium mb-1">
@@ -230,7 +230,7 @@ export function BlockEditor({
                 {/* Connector line */}
                 {index > 0 && (
                   <div
-                    className="absolute -top-2 left-4 w-px h-2 bg-white/10"
+                    className="absolute -top-2 left-4 w-px h-2 bg-[var(--color-border-hover)]"
                     style={{ marginLeft: `${block.indent * 24}px` }}
                   />
                 )}
@@ -259,7 +259,7 @@ export function BlockEditor({
 
       {/* ── Code Preview (Right, Bridge Mode) ── */}
       {showCodePreview && (
-        <div className="w-80 shrink-0 flex flex-col bg-black/40">
+        <div className="w-80 shrink-0 flex flex-col bg-[var(--color-bg-tertiary)]">
           <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[var(--color-border)]">
             <div className="w-2 h-2 rounded-full bg-[var(--color-text-muted)]" />
             <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--color-text-muted)]">

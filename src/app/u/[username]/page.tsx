@@ -46,7 +46,7 @@ export default function ProfilePage() {
   if (profileError || !profile) {
     return (
       <div className="min-h-screen bg-[var(--color-bg-primary)] flex flex-col items-center justify-center text-center p-6">
-        <h1 className="text-4xl font-black text-white mb-4">404</h1>
+        <h1 className="text-4xl font-black text-[var(--color-text-primary)] mb-4">404</h1>
         <p className="text-[var(--color-text-muted)] mb-8">{t('profile.not_found')}</p>
         <Link href="/" className="px-6 py-3 bg-[var(--color-accent-primary)] text-[var(--color-bg-primary)] rounded-xl font-bold">{t('profile.back_home')}</Link>
       </div>
@@ -56,21 +56,21 @@ export default function ProfilePage() {
   const isOwner = userId === profile.id;
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg-primary)] text-white">
+    <div className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         {/* Header Profile Section */}
         <div className="relative mb-20">
           {/* Cover Placeholder */}
-          <div className="h-64 w-full rounded-[3rem] bg-gradient-to-br from-zinc-400/20 via-[#0a0a0b] to-transparent border border-[var(--color-border)] overflow-hidden relative">
+          <div className="h-64 w-full rounded-xl bg-gradient-to-br from-[var(--color-accent-glow)] via-[var(--color-bg-tertiary)] to-transparent border border-[var(--color-border)] overflow-hidden relative">
              <div className="absolute inset-0 mesh-gradient opacity-30" />
              <div className="absolute inset-0 dot-grid opacity-20" />
           </div>
 
           <div className="absolute -bottom-12 left-8 md:left-16 flex flex-col md:flex-row md:items-end gap-6 md:gap-10">
             <div className="relative group">
-              <div className="w-32 h-32 md:w-40 md:h-40 rounded-[2.5rem] bg-[var(--color-bg-elevated)] border-4 border-[#0a0a0b] shadow-2xl overflow-hidden relative">
+              <div className="w-32 h-32 md:w-40 md:h-40 rounded-[2rem] bg-[var(--color-bg-elevated)] border-4 border-[var(--color-border-hover)] ink-shadow-sm overflow-hidden relative">
                 {profile.avatar_url ? (
                   <Image src={profile.avatar_url} alt={profile.username} fill className="object-cover" sizes="(max-width: 768px) 128px, 160px" />
                 ) : (
@@ -82,7 +82,7 @@ export default function ProfilePage() {
               {isOwner && (
                 <button 
                   onClick={() => setIsEditModalOpen(true)}
-                  className="absolute bottom-2 right-2 p-2.5 bg-[var(--color-accent-primary)] text-[var(--color-bg-primary)] rounded-xl shadow-lg hover:scale-110 transition-transform active:scale-95 z-10"
+                  className="absolute bottom-2 right-2 p-2.5 bg-[var(--color-accent-primary)] text-[var(--color-bg-primary)] rounded-xl ink-shadow-sm hover:scale-110 transition-transform active:scale-95 z-10"
                 >
                   <Edit3 size={16} />
                 </button>
@@ -91,11 +91,11 @@ export default function ProfilePage() {
 
             <div className="mb-2 space-y-2">
               <div className="flex items-center gap-3">
-                <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight">
+                <h1 className="text-3xl md:text-5xl font-black text-[var(--color-text-primary)] tracking-tight">
                   {profile.full_name || profile.username}
                 </h1>
                 {isOwner && (
-                  <Settings size={20} className="text-[var(--color-text-muted)] hover:text-white cursor-pointer transition-colors" />
+                  <Settings size={20} className="text-[var(--color-text-muted)] hover:text-[var(--color-accent-primary)] cursor-pointer transition-colors" />
                 )}
               </div>
               <div className="flex items-center gap-4 text-[var(--color-text-secondary)] font-medium">
@@ -111,11 +111,11 @@ export default function ProfilePage() {
             <div className="md:ml-auto mb-2 flex items-center gap-4">
                <div className="flex items-center gap-6 mr-6">
                   <div className="text-center">
-                     <span className="block text-xl font-black text-white">{profile.followers_count || 0}</span>
+                     <span className="block text-xl font-black text-[var(--color-text-primary)]">{profile.followers_count || 0}</span>
                      <span className="text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest">{t('profile.followers')}</span>
                   </div>
                   <div className="text-center">
-                     <span className="block text-xl font-black text-white">{profile.following_count || 0}</span>
+                     <span className="block text-xl font-black text-[var(--color-text-primary)]">{profile.following_count || 0}</span>
                      <span className="text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest">{t('profile.following')}</span>
                   </div>
                </div>
@@ -123,8 +123,8 @@ export default function ProfilePage() {
                {!isOwner && (
                  <button 
                    disabled={isFollowingLoading}
-                   className={`px-8 py-3 rounded-2xl font-black text-sm flex items-center gap-2 transition-all active:scale-95 shadow-xl ${
-                     false ? 'bg-[var(--color-bg-tertiary)] text-white' : 'bg-white text-black hover:bg-[var(--color-accent-primary)]'
+                   className={`px-8 py-3 rounded-xl font-black text-sm flex items-center gap-2 transition-all active:scale-95 ink-shadow-sm ${
+                     false ? 'bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]' : 'bg-[var(--color-accent-primary)] text-white hover:bg-[var(--color-accent-secondary)]'
                    }`}
                    onClick={async () => {
                      setIsFollowingLoading(true);
@@ -156,7 +156,7 @@ export default function ProfilePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-32">
           {/* Sidebar Info */}
           <div className="lg:col-span-4 space-y-8">
-             <div className="p-8 bg-white/[0.02] border border-[var(--color-border)] rounded-[2.5rem]">
+             <div className="p-8 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl ink-shadow-sm">
                 <h3 className="text-sm font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-6">{t('profile.about')}</h3>
                 <p className="text-[var(--color-text-secondary)] leading-relaxed italic">
                   {profile.bio || t('profile.no_bio')}
@@ -165,16 +165,16 @@ export default function ProfilePage() {
                 <div className="mt-8 pt-8 border-t border-[var(--color-border)] space-y-4">
                    <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest">{t('profile.total_scripts')}</span>
-                      <span className="text-white font-mono">{scripts?.length || 0}</span>
+                      <span className="text-[var(--color-text-primary)] font-mono">{scripts?.length || 0}</span>
                    </div>
                    <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest">{t('profile.membership')}</span>
-                      <span className="text-white font-mono text-xs">{t('profile.premium_member')}</span>
+                      <span className="text-[var(--color-text-primary)] font-mono text-xs">{t('profile.premium_member')}</span>
                    </div>
                 </div>
              </div>
              
-             <button className="w-full py-4 bg-white/[0.03] border border-[var(--color-border-hover)] rounded-2xl text-[var(--color-text-secondary)] font-bold text-xs uppercase tracking-widest hover:bg-white/[0.06] transition-all flex items-center justify-center gap-2">
+             <button className="w-full py-4 bg-[var(--color-bg-tertiary)] border border-[var(--color-border-hover)] rounded-xl text-[var(--color-text-secondary)] font-bold text-xs uppercase tracking-widest hover:bg-[var(--color-accent-glow)] transition-all flex items-center justify-center gap-2">
                 <Share2 size={16} />
                 {t('general.share_profile')}
              </button>
@@ -199,8 +199,8 @@ export default function ProfilePage() {
                 </div>
                 
                 <div className="flex items-center gap-2 text-[var(--color-text-muted)]">
-                   <Grid size={18} className="cursor-pointer hover:text-white transition-colors" />
-                   <ListIcon size={18} className="cursor-pointer hover:text-white transition-colors" />
+                   <Grid size={18} className="cursor-pointer hover:text-[var(--color-accent-primary)] transition-colors" />
+                   <ListIcon size={18} className="cursor-pointer hover:text-[var(--color-accent-primary)] transition-colors" />
                 </div>
              </div>
 
@@ -209,7 +209,7 @@ export default function ProfilePage() {
                   <Link 
                     key={script.id} 
                     href={`/gallery/${script.id}`}
-                    className="group p-6 bg-white/[0.02] border border-[var(--color-border)] rounded-[2.5rem] hover:bg-white/[0.05] hover:border-[var(--color-border-hover)] transition-all duration-500"
+                    className="group p-6 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl hover:bg-[var(--color-accent-glow)] hover:border-[var(--color-border-active)] transition-all duration-500 ink-shadow-sm"
                   >
                      <div className="flex items-center justify-between mb-6">
                         <div className="w-10 h-10 rounded-xl bg-[var(--color-accent-glow)] flex items-center justify-center text-[var(--color-text-primary)]">
@@ -220,7 +220,7 @@ export default function ProfilePage() {
                            {script.likes_count}
                         </div>
                      </div>
-                     <h3 className="text-lg font-black text-white mb-2 group-hover:text-[var(--color-text-primary)] transition-colors">{script.title}</h3>
+                     <h3 className="text-lg font-black text-[var(--color-text-primary)] mb-2 group-hover:text-[var(--color-accent-primary)] transition-colors">{script.title}</h3>
                      <p className="text-sm text-[var(--color-text-muted)] line-clamp-2 italic mb-4">{script.description}</p>
                      
                      <div className="flex items-center gap-4 text-[9px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest">

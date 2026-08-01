@@ -31,13 +31,13 @@ export default function FeaturesSection() {
     <section ref={ref} className="relative bg-[var(--color-bg-primary)] px-6 py-28 md:py-36">
       {/* eyebrow + heading */}
       <div className="mx-auto mb-16 max-w-7xl">
-        <div className="mb-4 flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-[var(--color-accent-primary)]">
+        <div className="mono-label mb-4 flex items-center gap-2">
           <span className="h-px w-8 bg-[var(--color-accent-primary)]" />
           {t('features.section_eyebrow', { defaultValue: 'Capabilities' })}
         </div>
         <h2 className="max-w-3xl text-4xl font-black tracking-tight text-balance text-[var(--color-text-primary)] md:text-6xl">
           {t('features.section_title_prefix', { defaultValue: 'Forge' })}{' '}
-          <span className="text-[var(--color-text-muted)]">{t('features.section_title_suffix', { defaultValue: 'without limits.' })}</span>
+          <span className="text-[var(--color-accent-primary)]">{t('features.section_title_suffix', { defaultValue: 'without limits.' })}</span>
         </h2>
       </div>
 
@@ -72,26 +72,27 @@ function FeatureCard({
   return (
     <motion.article
       style={{ opacity, y }}
-      className="press group relative overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-7 transition-colors duration-300 hover:border-[var(--color-border-hover)]"
+      className="press group relative overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-7 transition-colors duration-300 hover:border-[var(--color-border-active)] ink-shadow-sm"
     >
       {/* tone underglow on hover */}
       <div
-        className="pointer-events-none absolute -bottom-px left-1/2 h-16 w-2/3 -translate-x-1/2 rounded-full opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-25"
+        className="pointer-events-none absolute -bottom-px left-1/2 h-16 w-2/3 -translate-x-1/2 rounded-full opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-20"
         style={{ background: tone }}
       />
 
       <div
-        className="mb-6 flex h-11 w-11 items-center justify-center rounded-xl border"
+        className="mb-6 flex h-11 w-11 items-center justify-center rounded-lg border"
         style={{
           color: tone,
-          backgroundColor: `color-mix(in srgb, ${tone} 12%, transparent)`,
-          borderColor: `color-mix(in srgb, ${tone} 24%, transparent)`,
+          backgroundColor: `color-mix(in srgb, ${tone} 10%, transparent)`,
+          borderColor: `color-mix(in srgb, ${tone} 26%, transparent)`,
         }}
       >
         <Icon className="h-5 w-5" />
       </div>
 
-      <h3 className="mb-3 text-base font-bold text-[var(--color-text-primary)]">{title}</h3>
+      <span className="mono-label block">MODULE {String(index + 1).padStart(2, '0')}</span>
+      <h3 className="mb-3 mt-2 text-base font-bold text-[var(--color-text-primary)]">{title}</h3>
       <p className="text-sm leading-relaxed text-[var(--color-text-muted)] transition-colors duration-300 group-hover:text-[var(--color-text-secondary)]">
         {desc}
       </p>

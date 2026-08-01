@@ -154,7 +154,7 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
           onClick={() => setSelectedSlot(i)}
           className={`
             relative aspect-square rounded-lg border-2 transition-all cursor-pointer
-            ${isSelected ? 'border-purple-500 bg-purple-500/20' : 'border-[var(--color-border-hover)] bg-white/[0.02] hover:border-[var(--color-border-active)] hover:bg-white/[0.05]'}
+            ${isSelected ? 'border-[var(--color-border-active)] bg-[var(--color-accent-glow)]' : 'border-[var(--color-border-hover)] bg-[var(--color-bg-tertiary)] hover:border-[var(--color-border-active)] hover:bg-[var(--color-accent-glow)]'}
             ${slotData?.enabled === false ? 'opacity-30' : ''}
           `}
         >
@@ -182,19 +182,19 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
       className="fixed right-0 top-0 h-full w-[500px] bg-[var(--color-bg-primary)] border-l border-[var(--color-border-hover)] shadow-2xl z-50 flex flex-col"
     >
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-4 bg-white/[0.01]">
+      <div className="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-4 bg-[var(--color-bg-tertiary)]">
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-500/10 text-purple-400">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--color-accent-glow)] text-[var(--color-accent-primary)]">
             <Layout size={16} />
           </div>
           <div>
-            <h2 className="text-sm font-semibold text-white">GUI Builder</h2>
+            <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">GUI Builder</h2>
             <p className="text-[10px] text-[var(--color-text-muted)]">Skript GUI Oluşturucu</p>
           </div>
         </div>
         <button
           onClick={onClose}
-          className="p-1.5 rounded-lg hover:bg-white/[0.05] text-[var(--color-text-secondary)] hover:text-white transition-all"
+          className="p-1.5 rounded-lg hover:bg-[var(--color-accent-glow)] text-[var(--color-text-secondary)] hover:text-[var(--color-accent-primary)] transition-all"
         >
           <X size={18} />
         </button>
@@ -211,7 +211,7 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
               type="text"
               value={guiConfig.id}
               onChange={(e) => setGuiConfig(prev => ({ ...prev, id: e.target.value }))}
-              className="w-full bg-black/30 border border-[var(--color-border-hover)] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500/50 transition-all"
+              className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border-hover)] rounded-lg px-3 py-2 text-xs text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-border-active)] transition-all"
               placeholder="menu"
             />
           </div>
@@ -223,7 +223,7 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
               type="text"
               value={guiConfig.name}
               onChange={(e) => setGuiConfig(prev => ({ ...prev, name: e.target.value }))}
-              className="w-full bg-black/30 border border-[var(--color-border-hover)] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500/50 transition-all"
+              className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border-hover)] rounded-lg px-3 py-2 text-xs text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-border-active)] transition-all"
               placeholder="Menu"
             />
           </div>
@@ -235,15 +235,15 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
           <button
             onClick={() => setGuiConfig(prev => ({ ...prev, rows: Math.max(1, prev.rows - 1) }))}
             disabled={guiConfig.rows <= 1}
-            className="p-1 rounded bg-white/[0.05] hover:bg-white/[0.1] text-white disabled:opacity-30"
+            className="p-1 rounded bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-accent-glow)] text-[var(--color-text-primary)] disabled:opacity-30"
           >
             <Minus size={14} />
           </button>
-          <span className="text-sm font-bold text-white w-8 text-center">{guiConfig.rows}</span>
+          <span className="text-sm font-bold text-[var(--color-text-primary)] w-8 text-center">{guiConfig.rows}</span>
           <button
             onClick={() => setGuiConfig(prev => ({ ...prev, rows: Math.min(6, prev.rows + 1) }))}
             disabled={guiConfig.rows >= 6}
-            className="p-1 rounded bg-white/[0.05] hover:bg-white/[0.1] text-white disabled:opacity-30"
+            className="p-1 rounded bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-accent-glow)] text-[var(--color-text-primary)] disabled:opacity-30"
           >
             <Plus size={14} />
           </button>
@@ -264,7 +264,7 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
               onDragEnd={() => setDraggedItem(null)}
               className={`
                 flex flex-col items-center gap-1 p-2 rounded-lg border cursor-grab active:cursor-grabbing transition-all
-                ${draggedItem === item.id ? 'border-purple-500 bg-purple-500/20' : 'border-[var(--color-border)] bg-white/[0.02] hover:border-[var(--color-border-active)] hover:bg-white/[0.05]'}
+                ${draggedItem === item.id ? 'border-[var(--color-border-active)] bg-[var(--color-accent-glow)]' : 'border-[var(--color-border)] bg-[var(--color-bg-tertiary)] hover:border-[var(--color-border-active)] hover:bg-[var(--color-accent-glow)]'}
               `}
             >
               <span className="text-xl">{item.icon}</span>
@@ -302,7 +302,7 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="border-t border-[var(--color-border)] bg-white/[0.01] p-4"
+            className="border-t border-[var(--color-border)] bg-[var(--color-bg-tertiary)] p-4"
           >
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
@@ -310,7 +310,7 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
               </h3>
               <button
                 onClick={() => setSelectedSlot(null)}
-                className="text-[var(--color-text-muted)] hover:text-white transition-all"
+                className="text-[var(--color-text-muted)] hover:text-[var(--color-accent-primary)] transition-all"
               >
                 <X size={14} />
               </button>
@@ -323,7 +323,7 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
                 <select
                   value={guiConfig.slots.find(s => s.slot === selectedSlot)?.item || ''}
                   onChange={(e) => updateSlot(selectedSlot, { item: e.target.value })}
-                  className="w-full bg-black/30 border border-[var(--color-border-hover)] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500/50 transition-all"
+                  className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border-hover)] rounded-lg px-3 py-2 text-xs text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-border-active)] transition-all"
                 >
                   <option value="">Seçiniz</option>
                   {MINECRAFT_ITEMS.map(item => (
@@ -339,7 +339,7 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
                   type="text"
                   value={guiConfig.slots.find(s => s.slot === selectedSlot)?.name || ''}
                   onChange={(e) => updateSlot(selectedSlot, { name: e.target.value })}
-                  className="w-full bg-black/30 border border-[var(--color-border-hover)] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500/50 transition-all"
+                  className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border-hover)] rounded-lg px-3 py-2 text-xs text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-border-active)] transition-all"
                   placeholder="&aItem Name"
                 />
               </div>
@@ -350,7 +350,7 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
                 <textarea
                   value={guiConfig.slots.find(s => s.slot === selectedSlot)?.command || ''}
                   onChange={(e) => updateSlot(selectedSlot, { command: e.target.value })}
-                  className="w-full bg-black/30 border border-[var(--color-border-hover)] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500/50 transition-all resize-none"
+                  className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border-hover)] rounded-lg px-3 py-2 text-xs text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-border-active)] transition-all resize-none"
                   rows={2}
                   placeholder="send 'Clicked!' to player"
                 />
@@ -358,14 +358,14 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
               <div className="flex gap-2">
                 <button
                   onClick={() => toggleSlot(selectedSlot)}
-                  className="flex-1 flex items-center justify-center gap-2 bg-white/[0.05] hover:bg-white/[0.1] border border-[var(--color-border-hover)] px-3 py-2 text-xs font-bold text-white rounded-lg transition-all"
+                  className="flex-1 flex items-center justify-center gap-2 bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-accent-glow)] border border-[var(--color-border-hover)] px-3 py-2 text-xs font-bold text-[var(--color-text-primary)] rounded-lg transition-all"
                 >
                   {guiConfig.slots.find(s => s.slot === selectedSlot)?.enabled !== false ? <Eye size={12} /> : <EyeOff size={12} />}
                   {guiConfig.slots.find(s => s.slot === selectedSlot)?.enabled !== false ? 'Aktif' : 'Pasif'}
                 </button>
                 <button
                   onClick={() => removeSlot(selectedSlot)}
-                  className="flex-1 flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 px-3 py-2 text-xs font-bold text-red-400 rounded-lg transition-all"
+                  className="flex-1 flex items-center justify-center gap-2 bg-[var(--color-accent-error)]/10 hover:bg-[var(--color-accent-error)]/20 border border-[var(--color-accent-error)]/20 px-3 py-2 text-xs font-bold text-[var(--color-accent-error)] rounded-lg transition-all"
                 >
                   <Trash2 size={12} />
                   Sil
@@ -381,14 +381,14 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
         <div className="flex gap-2">
           <button
             onClick={() => setShowCode(!showCode)}
-            className="flex-1 flex items-center justify-center gap-2 bg-white/[0.05] hover:bg-white/[0.1] border border-[var(--color-border-hover)] px-4 py-2.5 text-xs font-bold text-white rounded-xl transition-all"
+            className="flex-1 flex items-center justify-center gap-2 bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-accent-glow)] border border-[var(--color-border-hover)] px-4 py-2.5 text-xs font-bold text-[var(--color-text-primary)] rounded-xl transition-all"
           >
             {showCode ? <EyeOff size={14} /> : <Eye size={14} />}
             {showCode ? 'Kodu Gizle' : 'Kodu Göster'}
           </button>
           <button
             onClick={handleCopyCode}
-            className="flex-1 flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-500 px-4 py-2.5 text-xs font-bold text-white rounded-xl transition-all shadow-lg shadow-purple-500/20"
+            className="flex-1 flex items-center justify-center gap-2 btn-forge px-4 py-2.5 text-xs font-bold text-white rounded-xl transition-all"
           >
             <Copy size={14} />
             Kopyala
@@ -401,7 +401,7 @@ export default function GUIBuilder({ onClose, onCodeGenerate }: GUIBuilderProps)
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="bg-black/40 border border-[var(--color-border-hover)] rounded-xl overflow-hidden"
+              className="bg-[var(--color-bg-tertiary)] border border-[var(--color-border-hover)] rounded-xl overflow-hidden"
             >
               <pre className="p-4 text-[10px] font-mono text-[var(--color-text-primary)]/80 whitespace-pre-wrap overflow-x-auto">
                 {generatedCode}

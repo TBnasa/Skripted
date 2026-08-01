@@ -73,7 +73,7 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
         className="mb-6"
       >
         {!isDesktopCollapsed && (
-          <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-[var(--color-text-muted)] mb-3 flex items-center gap-2">
+          <h3 className="text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-[var(--color-accent-primary)] mb-3 flex items-center gap-2">
             <span className="w-1 h-1 rounded-full bg-[var(--color-accent-primary)]"></span>
             {label}
           </h3>
@@ -116,14 +116,14 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
       <motion.div 
         animate={{ width: isDesktopCollapsed ? 80 : 260 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className={`fixed md:relative z-50 md:z-auto h-full border-r border-[var(--color-border)] bg-[var(--color-bg-card)]/98 md:bg-[var(--color-bg-card)]/70 backdrop-blur-3xl flex flex-col pt-4 pb-4 transition-transform duration-300 ease-out md:translate-x-0 ${
+        className={`fixed md:relative z-50 md:z-auto h-full border-r border-[var(--color-border)] bg-[var(--color-bg-secondary)] flex flex-col pt-4 pb-4 transition-transform duration-300 ease-out md:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <Button
           onClick={() => setIsDesktopCollapsed(!isDesktopCollapsed)}
           variant="ghost" size="icon"
-          className="hidden md:flex absolute -right-4 top-6 w-8 h-8 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-full shadow-xl"
+          className="hidden md:flex absolute -right-3 top-6 w-8 h-8 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-lg shadow-md"
         >
           {isDesktopCollapsed ? <PanelLeftOpen size={14} /> : <PanelLeftClose size={14} />}
         </Button>
@@ -132,7 +132,7 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
           <Button
             onClick={() => { onNewChat(); onToggle?.(); }}
             variant="primary" size={isDesktopCollapsed ? 'icon' : 'md'}
-            className={`text-[11px] font-bold bg-gradient-to-b from-[var(--color-accent-secondary)] to-[var(--color-accent-secondary)] hover:from-[var(--color-accent-primary)] hover:to-[var(--color-accent-secondary)] shadow-[0_0_20px_rgba(255,255,255,0.06)] ${isDesktopCollapsed ? 'w-12 h-12 rounded-full p-0' : 'w-full'}`}
+            className={`text-[11px] font-bold ${isDesktopCollapsed ? 'w-12 h-12 rounded-xl p-0' : 'w-full'}`}
           >
             <Plus size={isDesktopCollapsed ? 20 : 16} strokeWidth={3} />
             {!isDesktopCollapsed && t('sidebar.new_chat')}
@@ -144,8 +144,8 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
             <NavButton href="/gallery?filter=mine" icon={<FolderGit2 size={16} />} text={t('gallery.my_posts')} isCollapsed={isDesktopCollapsed} />
             
             <div
-              className={`group flex items-center justify-center gap-3 py-3 font-bold text-[var(--color-text-muted)] bg-white/[0.01] border border-[var(--color-border)] cursor-not-allowed transition-all ${
-                isDesktopCollapsed ? 'w-12 h-12 rounded-2xl mx-auto' : 'w-full px-4 rounded-xl text-[11px] justify-start'
+              className={`group flex items-center justify-center gap-3 py-3 font-bold text-[var(--color-text-muted)] bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] cursor-not-allowed transition-all ${
+                isDesktopCollapsed ? 'w-12 h-12 rounded-lg mx-auto' : 'w-full px-4 rounded-lg text-[11px] justify-start'
               }`}
               title={t('general.academy_tooltip')}
             >
@@ -153,7 +153,7 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
               {!isDesktopCollapsed && (
                 <div className="flex items-center justify-between w-full">
                   <span>{t('general.academy')}</span>
-                  <span className="px-1.5 py-0.5 text-[8px] font-black bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded uppercase tracking-tighter">
+                  <span className="px-1.5 py-0.5 text-[8px] font-black bg-[var(--color-accent-glow)] text-[var(--color-accent-primary)] border border-[var(--color-border-active)] rounded uppercase tracking-tighter">
                     {t('general.soon')}
                   </span>
                 </div>
@@ -196,8 +196,8 @@ function NavButton({ href, icon, text, isCollapsed }: { href: string, icon: Reac
   return (
     <Link
       href={href}
-      className={`group flex items-center justify-center gap-3 py-3 font-bold text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] bg-white/[0.01] hover:bg-[var(--color-accent-glow)] border border-[var(--color-border)] hover:border-[var(--color-border-hover)] transition-all ${
-        isCollapsed ? 'w-12 h-12 rounded-2xl mx-auto' : 'w-full px-4 rounded-xl text-[11px] justify-start'
+      className={`group flex items-center justify-center gap-3 py-3 font-bold text-[var(--color-text-secondary)] hover:text-[var(--color-accent-primary)] bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-accent-glow)] border border-[var(--color-border)] hover:border-[var(--color-border-active)] transition-all ${
+        isCollapsed ? 'w-12 h-12 rounded-lg mx-auto' : 'w-full px-4 rounded-lg text-[11px] justify-start'
       }`}
       title={isCollapsed ? text : undefined}
     >
@@ -273,12 +273,12 @@ function ChatListItem({ session, isActive, onClick, onRename, onDelete, isCollap
         onClick={onClick}
         onContextMenu={(e) => { e.preventDefault(); setShowMenu(true); }}
         title={isCollapsed ? session.title || t('sidebar.untitled_chat') : undefined}
-        className={`group w-full text-left py-2.5 text-[11px] font-medium border transition-all duration-300 truncate flex items-center ${
-          isCollapsed ? 'justify-center px-0 rounded-2xl w-12 h-12 mx-auto' : 'justify-between px-3 rounded-xl'
+          className={`group w-full text-left py-2.5 text-[11px] font-medium border transition-all duration-300 truncate flex items-center ${
+          isCollapsed ? 'justify-center px-0 rounded-lg w-12 h-12 mx-auto' : 'justify-between px-3 rounded-lg'
         } ${
           isActive
-            ? 'bg-[var(--color-accent-glow)] border-[var(--color-border-hover)] text-[var(--color-text-primary)] shadow-[0_0_15px_rgba(255,255,255,0.04)]'
-            : 'text-[var(--color-text-secondary)] bg-white/[0.01] border-transparent hover:bg-white/[0.04] hover:border-[var(--color-border-hover)]'
+            ? 'bg-[var(--color-accent-glow)] border-[var(--color-border-active)] text-[var(--color-text-primary)] border-l-2'
+            : 'text-[var(--color-text-secondary)] bg-transparent border-transparent hover:bg-[var(--color-bg-tertiary)] hover:border-[var(--color-border)]'
         }`}
       >
         {isCollapsed ? (
@@ -290,7 +290,7 @@ function ChatListItem({ session, isActive, onClick, onRename, onDelete, isCollap
             </span>
             <div
               onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
-              className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg hover:bg-white/[0.08] shrink-0 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
+              className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-md hover:bg-[var(--color-bg-tertiary)] shrink-0 text-[var(--color-text-muted)] hover:text-[var(--color-accent-primary)]"
             >
               <MoreHorizontal size={14} />
             </div>
@@ -305,11 +305,11 @@ function ChatListItem({ session, isActive, onClick, onRename, onDelete, isCollap
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
             transition={{ duration: 0.15 }}
-            className={`absolute z-50 w-44 bg-[var(--color-bg-elevated)]/95 backdrop-blur-xl border border-[var(--color-border-hover)] rounded-xl shadow-2xl overflow-hidden ${isCollapsed ? 'left-full ml-4 top-0' : 'right-0 top-full mt-2'}`}
+            className={`absolute z-50 w-44 bg-[var(--color-bg-elevated)] border border-[var(--color-border-hover)] rounded-lg shadow-xl overflow-hidden ${isCollapsed ? 'left-full ml-4 top-0' : 'right-0 top-full mt-2'}`}
           >
             <button
               onClick={(e) => { e.stopPropagation(); setIsEditing(true); setEditTitle(session.title || ''); setShowMenu(false); }}
-              className="w-full text-left px-4 py-3 text-[11px] font-bold text-[var(--color-text-primary)] hover:bg-white/[0.04] hover:text-[var(--color-text-primary)] transition-colors flex items-center gap-3"
+              className="w-full text-left px-4 py-3 text-[11px] font-bold text-[var(--color-text-primary)] hover:bg-[var(--color-accent-glow)] hover:text-[var(--color-accent-primary)] transition-colors flex items-center gap-3"
             >
               <Pencil size={14} /> {t('sidebar.rename')}
             </button>

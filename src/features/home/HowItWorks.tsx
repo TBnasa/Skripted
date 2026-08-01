@@ -30,12 +30,12 @@ export default function HowItWorks() {
 
   return (
     <section ref={ref} className="relative overflow-hidden bg-[var(--color-bg-primary)] px-6 py-28 md:py-36">
-      <div className="forge-glow absolute inset-0 opacity-60" />
+      <div className="absolute inset-0 blueprint-grid opacity-30" />
 
       <div className="relative z-10 mx-auto max-w-5xl">
         {/* heading */}
         <div className="mb-16 text-center">
-          <div className="mb-4 flex items-center justify-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-[var(--color-accent-primary)]">
+          <div className="mono-label mb-4 flex items-center justify-center gap-2">
             <span className="h-px w-8 bg-[var(--color-accent-primary)]" />
             {t('how.eyebrow', { defaultValue: 'How it works' })}
             <span className="h-px w-8 bg-[var(--color-accent-primary)]" />
@@ -47,11 +47,11 @@ export default function HowItWorks() {
 
         {/* timeline */}
         <div className="relative">
-          {/* vertical forge line — drawn as you scroll */}
+          {/* vertical ink line — drawn as you scroll */}
           <div className="absolute left-[27px] top-2 bottom-2 w-px bg-[var(--color-border)] md:left-[31px]">
             <motion.div
               style={reduce ? undefined : { scaleY: lineScale, transformOrigin: 'top' }}
-              className="h-full w-full bg-gradient-to-b from-[var(--color-accent-primary)] to-[var(--color-accent-primary)]/0"
+              className="h-full w-full bg-gradient-to-b from-[var(--color-accent-primary)] to-[var(--color-accent-warm)]"
             />
           </div>
 
@@ -89,12 +89,12 @@ function StepCard({
   return (
     <motion.li style={{ opacity, x }} className="relative flex items-start gap-5 md:gap-7">
       {/* number node */}
-      <div className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-[var(--color-border-active)] bg-[var(--color-bg-secondary)] md:h-16 md:w-16">
+      <div className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border-2 border-[var(--color-accent-primary)] bg-[var(--color-bg-secondary)] md:h-16 md:w-16 ink-shadow-sm">
         <span className="font-mono text-base font-bold tabular-nums text-[var(--color-accent-primary)] md:text-lg">{num}</span>
       </div>
 
       {/* body */}
-      <div className="press flex-1 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)]/60 p-6 backdrop-blur-sm transition-colors duration-300 hover:border-[var(--color-border-hover)] md:p-7">
+      <div className="press corner-ticks flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6 transition-colors duration-300 hover:border-[var(--color-border-active)] md:p-7">
         <div className="mb-3 flex items-center gap-2.5">
           <Icon className="h-4 w-4 text-[var(--color-accent-primary)]" />
           <h3 className="text-lg font-bold text-[var(--color-text-primary)]">{t(titleKey, { defaultValue: defaultTitle })}</h3>

@@ -58,7 +58,7 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
         <div
           className={`flex h-8 w-8 items-center justify-center rounded-xl transition-all duration-300 ${
             isUser
-              ? 'bg-white/[0.05] text-[var(--color-text-secondary)]'
+              ? 'bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)]'
               : 'bg-[var(--color-accent-glow)] text-[var(--color-text-primary)]'
           }`}
         >
@@ -77,27 +77,27 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
       <div
         className={`max-w-[80%] px-4 py-3.5 text-sm leading-relaxed transition-all ${
           isUser
-            ? 'bg-white/[0.04] text-[var(--color-text-primary)] rounded-2xl rounded-tr-sm border border-[var(--color-border)]'
-            : 'bg-white/[0.02] text-[var(--color-text-primary)] rounded-2xl rounded-tl-sm border border-[var(--color-border)] border-l-2 border-l-white/15'
+            ? 'bg-[var(--color-accent-glow)] text-[var(--color-text-primary)] rounded-xl rounded-tr-sm border border-[var(--color-border-active)]'
+            : 'bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] rounded-xl rounded-tl-sm border border-[var(--color-border)] border-l-2 border-l-[var(--color-border-active)]'
         }`}
       >
         {/* Performance Score Gauge (for Assistant only) */}
         {performanceScore !== null && (
-          <div className="mb-4 p-3 bg-black/30 rounded-xl border border-[var(--color-border)] overflow-hidden">
+          <div className="mb-4 p-3 bg-[var(--color-bg-tertiary)] rounded-xl border border-[var(--color-border)] overflow-hidden">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-muted)]">
                 Optimization Score
               </span>
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${getScoreColor(performanceScore)}/20 text-white/90`}>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${getScoreColor(performanceScore)}/20 text-[var(--color-text-primary)]`}>
                 {performanceScore}/100 • {getScoreLabel(performanceScore)}
               </span>
             </div>
-            <div className="h-1.5 w-full bg-white/[0.05] rounded-full overflow-hidden">
+            <div className="h-1.5 w-full bg-[var(--color-bg-tertiary)] rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${performanceScore}%` }}
                 transition={{ duration: 1, ease: 'easeOut' }}
-                className={`h-full ${getScoreColor(performanceScore)} shadow-[0_0_10px_rgba(0,0,0,0.5)]`}
+                className={`h-full ${getScoreColor(performanceScore)}`}
               />
             </div>
           </div>
@@ -108,8 +108,8 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
 
         {/* Reasoning/Thinking block */}
         {message.reasoning && (
-          <details className="mb-3 overflow-hidden rounded-xl border border-[var(--color-border)] bg-black/20 group" open={!message.content}>
-            <summary className="cursor-pointer select-none list-none flex items-center justify-between px-3 py-2 text-[10px] tracking-widest uppercase text-[var(--color-text-muted)] hover:bg-white/[0.02] transition-colors">
+          <details className="mb-3 overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-tertiary)] group" open={!message.content}>
+            <summary className="cursor-pointer select-none list-none flex items-center justify-between px-3 py-2 text-[10px] tracking-widest uppercase text-[var(--color-text-muted)] hover:bg-[var(--color-accent-glow)] transition-colors">
               <div className="flex items-center gap-2">
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="absolute inline-flex h-full w-full rounded-full bg-[var(--color-accent-glow)] opacity-75 animate-ping" />
@@ -152,7 +152,7 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
               return (
                 <pre
                   key={i}
-                  className="my-3 overflow-x-auto rounded-xl bg-black/40 p-4 font-mono text-[13px] leading-relaxed border border-[var(--color-border)] text-[var(--color-text-secondary)]/90"
+                  className="my-3 overflow-x-auto rounded-xl bg-[var(--color-bg-tertiary)] p-4 font-mono text-[13px] leading-relaxed border border-[var(--color-border)] text-[var(--color-text-secondary)]/90"
                 >
                   <code className="block whitespace-pre">{codeContent || ' '}</code>
                 </pre>

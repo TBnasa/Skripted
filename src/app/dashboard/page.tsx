@@ -48,7 +48,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg-primary)] text-white">
+    <div className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
       <AppSidebar />
 
       <main className="md:ml-60 min-h-screen overflow-y-auto p-8 custom-scrollbar">
@@ -59,7 +59,7 @@ export default function DashboardPage() {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-3 mb-2"
             >
-              <div className="p-2 bg-[var(--color-accent-glow)] rounded-xl text-[var(--color-text-primary)]">
+              <div className="p-2 bg-[var(--color-accent-glow)] rounded-xl text-[var(--color-accent-primary)]">
                 <LayoutDashboard size={24} />
               </div>
               <h1 className="text-3xl font-black tracking-tight">Project Dashboard</h1>
@@ -84,11 +84,11 @@ export default function DashboardPage() {
               <div className="flex flex-col gap-3">
                 {history.length > 0 ? (
                   history.slice(0, 10).map((item) => (
-                    <div key={item.id} className="flex items-center justify-between p-4 bg-black/30 border border-[var(--color-border)]/50 rounded-2xl hover:border-[var(--color-border-hover)] transition-colors group">
+                    <div key={item.id} className="flex items-center justify-between p-4 bg-[var(--color-bg-tertiary)] border border-[var(--color-border)]/50 rounded-xl hover:border-[var(--color-border-hover)] transition-colors group">
                       <div className="flex items-center gap-3">
-                        <div className={`w-2 h-2 rounded-full ${getDotColor(item.score)} shadow-[0_0_8px_rgba(0,0,0,0.5)]`} />
+                        <div className={`w-2 h-2 rounded-full ${getDotColor(item.score)}`} />
                         <div className="flex flex-col">
-                          <span className="text-sm font-medium text-[var(--color-text-primary)] group-hover:text-white transition-colors">{item.title}</span>
+                          <span className="text-sm font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent-primary)] transition-colors">{item.title}</span>
                           <span className="text-[10px] text-[var(--color-text-muted)] font-mono italic">{item.category}</span>
                         </div>
                       </div>
@@ -114,7 +114,7 @@ export default function DashboardPage() {
               <div className="space-y-6">
                 <div className="flex items-center justify-between cursor-pointer group" onClick={() => updateSetting('autoOptimize')}>
                   <div className="flex flex-col">
-                    <span className="text-sm font-bold text-[var(--color-text-primary)] group-hover:text-white">Auto-Optimization</span>
+                    <span className="text-sm font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-accent-primary)]">Auto-Optimization</span>
                     <span className="text-[10px] text-[var(--color-text-muted)]">Automatically fix detected bottleneck patterns.</span>
                   </div>
                   <div className={`w-10 h-5 rounded-full relative transition-colors duration-300 ${settings.autoOptimize ? 'bg-[var(--color-accent-primary)]' : 'bg-[var(--color-bg-tertiary)]'}`}>
@@ -127,7 +127,7 @@ export default function DashboardPage() {
 
                 <div className="flex items-center justify-between cursor-pointer group" onClick={() => updateSetting('verboseError')}>
                   <div className="flex flex-col">
-                    <span className="text-sm font-bold text-[var(--color-text-primary)] group-hover:text-white">Verbose Error Logic</span>
+                    <span className="text-sm font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-accent-primary)]">Verbose Error Logic</span>
                     <span className="text-[10px] text-[var(--color-text-muted)]">Enable deep breakdown of syntax issues.</span>
                   </div>
                   <div className={`w-10 h-5 rounded-full relative transition-colors duration-300 ${settings.verboseError ? 'bg-[var(--color-accent-primary)]' : 'bg-[var(--color-bg-tertiary)]'}`}>
@@ -148,10 +148,10 @@ export default function DashboardPage() {
 
 function DashboardCard({ title, icon, description, children }: { title: string, icon: any, description: string, children: React.ReactNode }) {
   return (
-    <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-3xl p-8 hover:border-[var(--color-border-hover)] transition-all duration-300">
+    <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl p-8 hover:border-[var(--color-border-active)] transition-all duration-300 ink-shadow-sm">
       <div className="flex items-center gap-3 mb-2">
         <div className="text-[var(--color-text-primary)]">{icon}</div>
-        <h3 className="text-lg font-bold text-white">{title}</h3>
+        <h3 className="text-lg font-bold text-[var(--color-text-primary)]">{title}</h3>
       </div>
       <p className="text-sm text-[var(--color-text-muted)] mb-6">{description}</p>
       {children}

@@ -34,8 +34,8 @@ export default function DownloadButton({ code, filename = 'script.sk' }: Downloa
       aria-label="Download script as .sk file"
       className={`flex items-center gap-1.5 px-3 py-2 text-[11px] font-medium rounded-xl border transition-all duration-300 disabled:opacity-30 ${
         downloaded
-          ? 'bg-[var(--color-accent-glow)] border-[var(--color-border-hover)] text-[var(--color-text-primary)] shadow-[0_0_15px_rgba(255,255,255,0.06)]'
-          : 'bg-white/[0.03] border-[var(--color-border)] text-[var(--color-text-secondary)] hover:bg-white/[0.06] hover:text-[var(--color-text-primary)]'
+          ? 'bg-[var(--color-accent-glow)] border-[var(--color-border-hover)] text-[var(--color-text-primary)] ink-shadow-sm'
+          : 'bg-[var(--color-bg-tertiary)] border-[var(--color-border)] text-[var(--color-text-secondary)] hover:bg-[var(--color-accent-glow)] hover:text-[var(--color-text-primary)]'
       }`}
     >
       {downloaded ? (

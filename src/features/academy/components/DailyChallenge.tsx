@@ -15,7 +15,7 @@ export function DailyChallenge() {
   if (!currentLesson) return null;
 
   return (
-    <div className="glass-panel p-4 rounded-2xl relative overflow-hidden group">
+    <div className="glass-panel p-4 rounded-xl relative overflow-hidden group">
       <div className="absolute top-0 right-0 p-6 opacity-[0.03] transform translate-x-4 -translate-y-4 
                       group-hover:scale-110 transition-transform duration-500">
         <Trophy size={80} className="text-[var(--color-text-muted)]" />
@@ -23,7 +23,7 @@ export function DailyChallenge() {
 
       <div className="relative flex items-center gap-3">
         <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-          isCompleted ? 'bg-white/[0.2] text-[var(--color-text-primary)]' : 'bg-[var(--color-accent-glow)] text-[var(--color-text-secondary)]'
+          isCompleted ? 'bg-[var(--color-accent-glow)] text-[var(--color-accent-primary)]' : 'bg-[var(--color-accent-glow)] text-[var(--color-text-secondary)]'
         }`}>
           {isCompleted ? <Trophy size={20} /> : <Target size={20} />}
         </div>
@@ -37,12 +37,12 @@ export function DailyChallenge() {
               +{currentLesson.xpReward} XP
             </span>
             {currentLesson.isBossLevel && (
-              <span className="text-[8px] px-1.5 py-0.5 rounded bg-white/[0.08] text-[var(--color-text-secondary)] border-[var(--color-border)] font-black uppercase">
+              <span className="text-[8px] px-1.5 py-0.5 rounded bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] border-[var(--color-border)] font-black uppercase">
                 BOSS
               </span>
             )}
           </div>
-          <h3 className="text-xs font-bold text-white truncate">
+          <h3 className="text-xs font-bold text-[var(--color-text-primary)] truncate">
             {isTr ? currentLesson.title_tr : currentLesson.title_en}
           </h3>
         </div>
@@ -50,7 +50,7 @@ export function DailyChallenge() {
         <div className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all shrink-0 ${
           isCompleted
             ? 'bg-[var(--color-accent-glow)] text-[var(--color-text-primary)] border border-[var(--color-border-hover)]'
-            : 'bg-[var(--color-accent-glow)] text-[var(--color-text-secondary)] border-[var(--color-border)] hover:bg-white/[0.08] cursor-pointer'
+            : 'bg-[var(--color-accent-glow)] text-[var(--color-text-secondary)] border-[var(--color-border)] hover:bg-[var(--color-accent-glow)] cursor-pointer'
         }`}>
           {isCompleted ? (isTr ? '✅ Tamamlandı' : '✅ Done') : (isTr ? 'Devam Et' : 'Continue')}
           {!isCompleted && <ChevronRight size={12} />}

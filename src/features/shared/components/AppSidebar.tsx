@@ -54,7 +54,7 @@ export default function AppSidebar() {
     <>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-3 left-3 z-[60] flex md:hidden items-center justify-center w-9 h-9 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-white transition-colors"
+        className="fixed top-3 left-3 z-[60] flex md:hidden items-center justify-center w-9 h-9 rounded-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-accent-primary)] transition-colors"
         aria-label="Toggle sidebar"
       >
         {isOpen ? <X size={16} /> : <Menu size={16} />}
@@ -74,14 +74,14 @@ export default function AppSidebar() {
       </AnimatePresence>
 
       <aside
-        className={`fixed top-0 left-0 z-50 h-screen w-[240px] flex flex-col bg-[var(--color-bg-primary)]/90 backdrop-blur-2xl border-r border-[var(--color-border)] transition-transform duration-300 ease-out md:translate-x-0 ${
+        className={`fixed top-0 left-0 z-50 h-screen w-[240px] flex flex-col bg-[var(--color-bg-secondary)] border-r border-[var(--color-border)] transition-transform duration-300 ease-out md:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <div className="flex items-center gap-3 px-5 h-14 border-b border-[var(--color-border)]">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-8 h-8 rounded-lg border border-[var(--color-accent-primary)]/40 flex items-center justify-center transition-colors group-hover:border-[var(--color-accent-primary)]">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <div className="w-8 h-8 rounded-lg bg-[var(--color-accent-primary)] flex items-center justify-center transition-colors group-hover:bg-[var(--color-accent-secondary)] ink-shadow-sm">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
               </svg>
             </div>
@@ -176,12 +176,12 @@ function NavItem({
   onClick?: () => void;
 }) {
   const isDisabled = !href;
-  const className = `flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${
+  const className = `flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-all duration-200 relative ${
     isDisabled
       ? 'text-[var(--color-text-muted)]/40 cursor-not-allowed'
       : active
-      ? 'text-[var(--color-accent-primary)] bg-[var(--color-accent-glow)]'
-      : 'text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:bg-white/[0.04]'
+      ? 'text-[var(--color-accent-primary)] bg-[var(--color-accent-glow)] border border-[var(--color-border-active)]'
+      : 'text-[var(--color-text-muted)] hover:text-[var(--color-accent-primary)] hover:bg-[var(--color-accent-glow)]'
   }`;
 
   const content = (
@@ -191,7 +191,7 @@ function NavItem({
       </span>
       <span className="flex-1 truncate">{label}</span>
       {badge === 'soon' && (
-        <span className="px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded">
+        <span className="px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider bg-[var(--color-accent-glow)] text-[var(--color-accent-primary)] border border-[var(--color-border-active)] rounded">
           Soon
         </span>
       )}

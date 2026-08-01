@@ -6,12 +6,12 @@ import { motion, useScroll, useTransform, useSpring, useReducedMotion, type Moti
 import { useTranslation } from '@/lib/useTranslation';
 import { GraduationCap, ChevronDown } from 'lucide-react';
 
-/* ── Example Skript forged by the engine ── */
+/* ── Example Skript drafted by the engine ── */
 type Tok = { s: string; c?: string };
-const KW = 'text-[var(--color-accent-primary)]';
+const KW = 'text-[var(--color-accent-primary)] font-semibold';
 const STR = 'text-[var(--color-text-primary)]';
 const VAR = 'text-[var(--color-accent-secondary)]';
-const NUM = 'text-[var(--color-accent-warm)]';
+const NUM = 'text-[var(--color-accent-primary)]';
 const DIM = 'text-[var(--color-text-muted)]';
 
 const LINES: Tok[][] = [
@@ -53,9 +53,7 @@ export default function HeroSection() {
   // Spring-smoothed scroll feel
   const p = useSpring(scrollYProgress, { stiffness: 90, damping: 22, restDelta: 0.001 });
 
-  // ─ 3D scroll choreography (hooks must run unconditionally before any return) ─
-  // All transforms start at the identity (p=0) so the desktop-applied state matches
-  // the static first paint → no mount-time flash.
+  // ─ 3D scroll choreography (hooks run unconditionally before any return) ─
   const panelRotateY = useTransform(p, [0, 1], [0, -24]);
   const panelRotateX = useTransform(p, [0, 1], [0, 8]);
   const panelY = useTransform(p, [0, 1], [0, -80]);
@@ -67,11 +65,11 @@ export default function HeroSection() {
   const hintOpacity = useTransform(p, [0, 0.12], [1, 0]);
   const hintY = useTransform(p, [0, 0.12], [0, 12]);
 
-  // ─ Reduced motion: static fallback (motion values computed above are ignored) ─
+  // ─ Reduced motion: static fallback ─
   if (reduce) {
     return (
       <section className="relative min-h-screen overflow-hidden bg-[var(--color-bg-primary)] forge-glow">
-        <div className="absolute inset-0 line-grid opacity-30" />
+        <div className="absolute inset-0 blueprint-grid opacity-60" />
         <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-6 pt-16 pb-16 md:flex-row md:items-center md:gap-12">
           <TextBlock />
           <div className="mt-12 w-full md:mt-0 md:flex-1">
@@ -85,28 +83,28 @@ export default function HeroSection() {
   return (
     <section ref={ref} className="relative min-h-screen bg-[var(--color-bg-primary)] md:min-h-[185vh]">
       <motion.div className="relative min-h-screen md:sticky md:top-0 md:h-screen md:overflow-hidden">
-        {/* Background ─ faint warm grid + ember glow + drifting ember dots */}
-        <div className="absolute inset-0 line-grid opacity-40" />
+        {/* Background ─ blueprint graph paper + blue wash + drifting sparks */}
+        <div className="absolute inset-0 blueprint-grid opacity-50" />
         <div className="forge-glow absolute inset-0" />
         <EmberField />
 
         <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col items-center justify-center px-6 pb-24 pt-20 md:h-full md:flex-row md:items-center md:gap-10">
           {/* ── Left: copy + CTAs (parallax depth) ── */}
           <motion.div style={isDesktop ? { y: headY, opacity: headOpacity } : undefined} className="w-full text-center md:flex-1 md:text-left">
-            {/* Version badge */}
-            <div className="animate-fade-in mx-auto mb-9 flex w-fit items-center gap-2.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-4 py-2 md:mx-0">
+            {/* Draft label */}
+            <div className="animate-fade-in mx-auto mb-9 flex w-fit items-center gap-2.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-4 py-2 md:mx-0 ink-shadow-sm">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--color-accent-primary)] animate-subtle-pulse" />
               </span>
-              <span className="font-mono text-[11px] font-medium tracking-wide text-[var(--color-text-secondary)]">
-                Skripted Engine v2.1.0-beta
+              <span className="font-mono text-[11px] font-semibold tracking-[0.2em] text-[var(--color-text-secondary)]">
+                SKRIPTED ENGINE · REV 2.1
               </span>
             </div>
 
             {/* Headline ─ oversized tight-tracked Satoshi Black */}
             <h1 className="mb-7 text-5xl font-black leading-[0.92] tracking-tighter text-balance sm:text-7xl md:text-[5.5rem]">
               <span className="block animate-slide-up text-[var(--color-text-primary)]">{t('hero.title_1')}</span>
-              <span className="block animate-slide-up text-[var(--color-accent-primary)] glow-text" style={{ animationDelay: '0.06s' }}>
+              <span className="block animate-slide-up text-[var(--color-accent-primary)]" style={{ animationDelay: '0.06s' }}>
                 {t('hero.title_2')}
               </span>
             </h1>
@@ -115,7 +113,7 @@ export default function HeroSection() {
               {t('hero.desc')}
             </p>
 
-            {/* CTAs ─ parallax + press feedback (no CSS entrance anim — scroll motion drives opacity) */}
+            {/* CTAs ─ parallax + press feedback */}
             <motion.div style={isDesktop ? { y: ctaY, opacity: ctaOpacity } : undefined} className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4 md:items-start">
               <Link
                 href="/chat"
@@ -141,14 +139,14 @@ export default function HeroSection() {
 
               <Link
                 href="/gallery"
-                className="press group w-full rounded-xl border border-[var(--color-border)] bg-transparent px-8 py-4 text-center text-sm font-semibold text-[var(--color-text-secondary)] transition-colors duration-200 hover:border-[var(--color-border-hover)] hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-text-primary)] sm:w-auto"
+                className="press group w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-8 py-4 text-center text-sm font-semibold text-[var(--color-text-secondary)] transition-colors duration-200 hover:border-[var(--color-border-active)] hover:text-[var(--color-accent-primary)] sm:w-auto"
               >
                 {t('hero.explore_gallery')}
               </Link>
             </motion.div>
           </motion.div>
 
-          {/* ── Right: 3D Code Forge panel ── */}
+          {/* ── Right: 3D drafting sheet ── */}
           <div className="mt-14 w-full md:mt-0 md:flex-1" style={{ perspective: 1200 }}>
             <motion.div
               style={isDesktop ? { rotateY: panelRotateY, rotateX: panelRotateX, y: panelY, scale: panelScale, transformStyle: 'preserve-3d' } : undefined}
@@ -182,16 +180,16 @@ function TextBlock() {
   const { t } = useTranslation();
   return (
     <div className="w-full text-center md:flex-1 md:text-left">
-      <div className="mx-auto mb-9 flex w-fit items-center gap-2.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-4 py-2 md:mx-0">
+      <div className="mx-auto mb-9 flex w-fit items-center gap-2.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-4 py-2 md:mx-0 ink-shadow-sm">
         <span className="relative flex h-1.5 w-1.5">
           <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--color-accent-primary)] animate-subtle-pulse" />
         </span>
-        <span className="font-mono text-[11px] font-medium tracking-wide text-[var(--color-text-secondary)]">
-          Skripted Engine v2.1.0-beta
+        <span className="font-mono text-[11px] font-semibold tracking-[0.2em] text-[var(--color-text-secondary)]">
+          SKRIPTED ENGINE · REV 2.1
         </span>
       </div>
       <h1 className="mb-7 text-5xl font-black leading-[0.92] tracking-tighter text-balance text-[var(--color-text-primary)] sm:text-7xl md:text-[5.5rem]">
-        {t('hero.title_1')} <span className="block text-[var(--color-accent-primary)] glow-text">{t('hero.title_2')}</span>
+        {t('hero.title_1')} <span className="block text-[var(--color-accent-primary)]">{t('hero.title_2')}</span>
       </h1>
       <p className="mx-auto mb-12 max-w-xl text-lg leading-relaxed text-[var(--color-text-secondary)] md:mx-0">
         {t('hero.desc')}
@@ -200,7 +198,7 @@ function TextBlock() {
   );
 }
 
-/* ───────────────────────── Code Forge panel ───────────────────────── */
+/* ───────────────────────── Blueprint drafting sheet ───────────────────────── */
 function CodePanel({
   lines,
   reveal,
@@ -213,30 +211,36 @@ function CodePanel({
   return (
     <div
       role="figure"
-      aria-label="Example Skript produced by the engine"
-      className="glass-panel relative overflow-hidden rounded-2xl p-5 sm:p-6"
+      aria-label="Example Skript drafted by the engine"
+      className="corner-ticks glass-panel relative overflow-hidden rounded-xl p-0"
     >
-      {/* window chrome */}
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-[var(--color-accent-error)]/70" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[var(--color-accent-warning)]/70" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[var(--color-accent-success)]/70" />
+      {/* sheet header — technical drawing strip */}
+      <div className="flex items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-bg-tertiary)] px-5 py-3">
+        <div className="flex items-center gap-2">
+          <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent-primary)]" />
+          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--color-text-secondary)]">
+            schematic · forge.sk
+          </span>
         </div>
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--color-text-muted)]">
-          forge.sk
-        </span>
+        <span className="stamp text-[9px]">Rev 2.1</span>
       </div>
 
-      {/* code body — reveal clipped top→bottom as the engine "writes" */}
+      {/* dimension rule */}
+      <div className="dimension relative mx-5 mt-4 flex items-center justify-between">
+        <span className="h-1 w-1 rounded-full bg-[var(--color-accent-primary)]" />
+        <span className="font-mono text-[8px] uppercase tracking-[0.3em] text-[var(--color-text-muted)]">spec · sheet 01</span>
+        <span className="h-1 w-1 rounded-full bg-[var(--color-accent-primary)]" />
+      </div>
+
+      {/* code body — ink on paper */}
       <motion.div
-        style={{ ...(reveal ? { clipPath: reveal } : {}), backgroundColor: 'oklch(18% 0.010 55)' }}
-        className="overflow-hidden rounded-xl border border-[var(--color-border)]"
+        style={{ ...(reveal ? { clipPath: reveal } : {}) }}
+        className="m-5 overflow-hidden rounded-lg border border-[var(--color-border)]"
       >
-        <pre aria-hidden className="overflow-hidden p-4 font-mono text-[12.5px] leading-[1.85] sm:text-[13.5px]">
+        <pre aria-hidden className="blueprint-grid overflow-hidden bg-[var(--color-bg-secondary)] p-4 font-mono text-[12.5px] leading-[1.85] sm:text-[13.5px]">
           {lines.map((line, i) => (
             <div key={i} className="flex">
-              <span className="mr-3 w-5 shrink-0 select-none text-right text-[var(--color-text-muted)]/50">{i + 1}</span>
+              <span className="mr-3 w-5 shrink-0 select-none text-right text-[var(--color-text-muted)]/60">{i + 1}</span>
               <span className="whitespace-pre">
                 {line.length === 0 || (line.length === 1 && line[0].s === '') ? (
                   <span>&nbsp;</span>
@@ -249,20 +253,20 @@ function CodePanel({
                 )}
               </span>
               {interactive && i === lines.length - 1 && (
-                <span className="ml-0.5 inline-block h-[1em] w-[7px] translate-y-[2px] bg-[var(--color-accent-primary)]" />
+                <span className="ml-0.5 inline-block h-[1em] w-[7px] translate-y-[2px] bg-[var(--color-accent-primary)] animate-subtle-pulse" />
               )}
             </div>
           ))}
         </pre>
       </motion.div>
 
-      {/* ember underglow */}
+      {/* blue underlight */}
       <div className="pointer-events-none absolute -bottom-px left-1/2 h-12 w-3/4 -translate-x-1/2 rounded-full bg-[var(--color-accent-primary)] opacity-10 blur-2xl" />
     </div>
   );
 }
 
-/* ───────────────────────── Decorative drifting embers ───────────────────────── */
+/* ───────────────────────── Decorative drifting sparks ───────────────────────── */
 function EmberField() {
   const embers = [
     { l: '12%', t: '70%', d: '0s', s: 3 },

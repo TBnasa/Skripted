@@ -64,15 +64,15 @@ export default function ProfileEditModal({ isOpen, onClose, initialData, onUpdat
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border-hover)] rounded-[2.5rem] shadow-2xl overflow-hidden"
+            className="relative w-full max-w-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border-hover)] rounded-xl ink-shadow-sm overflow-hidden"
           >
             {/* Header */}
-            <div className="px-8 py-6 border-b border-[var(--color-border)] flex items-center justify-between bg-white/[0.01]">
-               <h2 className="text-xl font-bold text-white flex items-center gap-3">
+            <div className="px-8 py-6 border-b border-[var(--color-border)] flex items-center justify-between bg-[var(--color-bg-tertiary)]">
+               <h2 className="text-xl font-bold text-[var(--color-text-primary)] flex items-center gap-3">
                   <User size={20} className="text-[var(--color-text-primary)]" />
                   {t('profile.edit_profile')}
                </h2>
-               <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors">
+               <button onClick={onClose} className="p-2 hover:bg-[var(--color-accent-glow)] rounded-lg transition-colors">
                   <X size={20} />
                </button>
             </div>
@@ -81,14 +81,14 @@ export default function ProfileEditModal({ isOpen, onClose, initialData, onUpdat
                {/* Avatar Upload Placeholder */}
                <div className="flex flex-col items-center gap-4">
                   <div className="relative group">
-                     <div className="w-24 h-24 rounded-3xl bg-[var(--color-bg-elevated)] border border-[var(--color-border-hover)] flex items-center justify-center overflow-hidden">
+                     <div className="w-24 h-24 rounded-xl bg-[var(--color-bg-elevated)] border border-[var(--color-border-hover)] flex items-center justify-center overflow-hidden">
                         {formData.avatar_url ? (
                             <Image src={formData.avatar_url} alt="Avatar" fill className="object-cover" sizes="96px" />
                         ) : (
                            <User size={40} className="text-[var(--color-text-muted)]" />
                         )}
                      </div>
-                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity rounded-3xl cursor-pointer">
+                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity rounded-xl cursor-pointer">
                         <Camera size={24} className="text-white" />
                      </div>
                   </div>
@@ -97,7 +97,7 @@ export default function ProfileEditModal({ isOpen, onClose, initialData, onUpdat
                     placeholder={t('profile.avatar_url_placeholder')} 
                     value={formData.avatar_url || ''}
                     onChange={(e) => setFormData({...formData, avatar_url: e.target.value})}
-                    className="text-[10px] w-full bg-white/[0.02] border border-[var(--color-border)] rounded-lg px-3 py-1.5 focus:outline-none text-[var(--color-text-muted)] font-mono text-center"
+                    className="text-[10px] w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-lg px-3 py-1.5 focus:outline-none text-[var(--color-text-muted)] font-mono text-center"
                   />
                </div>
 
@@ -109,7 +109,7 @@ export default function ProfileEditModal({ isOpen, onClose, initialData, onUpdat
                            type="text"
                            value={formData.username}
                            onChange={(e) => setFormData({...formData, username: e.target.value})}
-                           className="w-full bg-white/[0.02] border border-[var(--color-border-hover)] rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-[var(--color-border-active)] transition-all font-semibold"
+                           className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border-hover)] rounded-xl px-5 py-3 text-sm focus:outline-none focus:border-[var(--color-border-active)] transition-all font-semibold"
                         />
                         <Check size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-text-primary)]" />
                      </div>
@@ -121,7 +121,7 @@ export default function ProfileEditModal({ isOpen, onClose, initialData, onUpdat
                         type="text"
                         value={formData.full_name || ''}
                         onChange={(e) => setFormData({...formData, full_name: e.target.value})}
-                        className="w-full bg-white/[0.02] border border-[var(--color-border-hover)] rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-[var(--color-border-active)] transition-all font-semibold"
+                        className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border-hover)] rounded-xl px-5 py-3 text-sm focus:outline-none focus:border-[var(--color-border-active)] transition-all font-semibold"
                         placeholder={t('profile.fullname_placeholder')}
                      />
                   </div>
@@ -131,7 +131,7 @@ export default function ProfileEditModal({ isOpen, onClose, initialData, onUpdat
                      <textarea 
                         value={formData.bio || ''}
                         onChange={(e) => setFormData({...formData, bio: e.target.value})}
-                        className="w-full bg-white/[0.02] border border-[var(--color-border-hover)] rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-[var(--color-border-active)] transition-all min-h-[100px] resize-none font-medium italic"
+                        className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border-hover)] rounded-xl px-5 py-3 text-sm focus:outline-none focus:border-[var(--color-border-active)] transition-all min-h-[100px] resize-none font-medium italic"
                         placeholder={t('profile.bio_placeholder')}
                      />
                   </div>
@@ -139,7 +139,7 @@ export default function ProfileEditModal({ isOpen, onClose, initialData, onUpdat
 
                <button 
                   disabled={isSubmitting}
-                  className="w-full py-4 bg-[var(--color-accent-primary)] hover:bg-[var(--color-accent-secondary)] text-[var(--color-bg-primary)] rounded-2xl font-black text-sm shadow-xl shadow-black/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full py-4 bg-[var(--color-accent-primary)] hover:bg-[var(--color-accent-secondary)] text-white rounded-xl font-black text-sm ink-shadow-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                >
                   {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Check size={18} />}
                   {t('general.save_changes').toUpperCase()}

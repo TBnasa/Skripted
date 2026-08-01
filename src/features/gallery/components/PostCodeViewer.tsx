@@ -29,32 +29,32 @@ export function PostCodeViewer({
   return (
     <motion.div 
       layout
-      className={`flex flex-col bg-[var(--color-bg-card)]/90 backdrop-blur-2xl border border-[var(--color-border-hover)] overflow-hidden shadow-2xl ring-1 ring-white/5 transition-all z-50 ${
+      className={`flex flex-col bg-[var(--color-bg-secondary)] backdrop-blur-2xl border border-[var(--color-border)] overflow-hidden ink-shadow-lg transition-all z-50 ${
         isFullscreen 
-          ? 'fixed inset-4 md:inset-8 rounded-3xl' 
-          : 'relative rounded-[2.5rem] min-h-[500px] h-[700px] max-h-[700px]'
+          ? 'fixed inset-4 md:inset-8 rounded-xl' 
+          : 'relative rounded-xl min-h-[500px] h-[700px] max-h-[700px]'
       }`}
     >
-      <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border)] bg-black/40 shrink-0">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border)] bg-[var(--color-bg-tertiary)] shrink-0">
         <div className="flex items-center gap-3">
           <div className="flex gap-2">
             <div className="w-3 h-3 rounded-full bg-red-500/80 border border-red-500/40 shadow-[0_0_10px_rgba(239,68,68,0.5)]"></div>
-            <div className="w-3 h-3 rounded-full bg-zinc-500/60 border border-zinc-500/30"></div>
-            <div className="w-3 h-3 rounded-full bg-[var(--color-accent-primary)]/80 border border-[var(--color-border-active)] shadow-[0_0_10px_rgba(255,255,255,0.2)]"></div>
+            <div className="w-3 h-3 rounded-full bg-[var(--color-text-muted)] border border-[var(--color-border)]"></div>
+            <div className="w-3 h-3 rounded-full bg-[var(--color-accent-primary)]/80 border border-[var(--color-border-active)]"></div>
           </div>
           <span className="ml-3 font-mono text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-widest">script.sk</span>
         </div>
         <div className="flex items-center gap-3">
           <button 
             onClick={handleCopy}
-            className="flex items-center gap-2 text-[11px] font-bold text-[var(--color-text-primary)] hover:text-[var(--color-text-primary)] transition-all bg-white/5 hover:bg-[var(--color-accent-glow)] px-4 py-2 rounded-xl border border-[var(--color-border)] hover:border-[var(--color-border-hover)] group active:scale-95"
+            className="flex items-center gap-2 text-[11px] font-bold text-[var(--color-text-primary)] transition-all bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-accent-glow)] px-4 py-2 rounded-xl border border-[var(--color-border)] hover:border-[var(--color-border-hover)] group active:scale-95"
           >
             {copied ? <CheckCircle2 size={14} className="text-[var(--color-text-primary)]" /> : <Copy size={14} className="group-hover:scale-110 transition-transform" />}
             {copied ? t('general.copied') : t('general.copy')}
           </button>
           <button 
             onClick={() => setIsFullscreen(!isFullscreen)}
-            className="flex items-center justify-center text-[var(--color-text-secondary)] hover:text-white bg-white/5 hover:bg-white/10 w-8 h-8 rounded-xl border border-[var(--color-border)] hover:border-[var(--color-border-active)] transition-all active:scale-95"
+            className="flex items-center justify-center text-[var(--color-text-secondary)] hover:text-[var(--color-accent-primary)] bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-accent-glow)] w-8 h-8 rounded-xl border border-[var(--color-border)] hover:border-[var(--color-border-active)] transition-all active:scale-95"
             title={isFullscreen ? t('general.shrink', { defaultValue: 'Shrink' }) : t('general.fullscreen', { defaultValue: 'Fullscreen' })}
           >
             {isFullscreen ? <Shrink size={14} /> : <Maximize2 size={14} />}

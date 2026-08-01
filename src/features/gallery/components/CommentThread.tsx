@@ -140,7 +140,7 @@ const CommentItem = ({
               {new Date(comment.created_at).toLocaleDateString(t('general.locale'))}
             </span>
           </div>
-          <div className="p-4 bg-white/[0.03] border border-[var(--color-border)] rounded-2xl rounded-tl-none text-[var(--color-text-primary)] text-sm leading-relaxed font-medium">
+          <div className="p-4 bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-xl rounded-tl-none text-[var(--color-text-primary)] text-sm leading-relaxed font-medium">
             {renderContent(translatedContent || comment.content)}
           </div>
           
@@ -176,7 +176,7 @@ const CommentItem = ({
                   value={replyContent}
                   onChange={(e) => setReplyContent(e.target.value)}
                   placeholder={`@${comment.author_name}...`}
-                  className="flex-1 bg-white/[0.02] border border-[var(--color-border-hover)] rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-[var(--color-border-active)]"
+                  className="flex-1 bg-[var(--color-bg-tertiary)] border border-[var(--color-border-hover)] rounded-xl px-4 py-2 text-xs text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-border-active)]"
                 />
                 <button 
                   disabled={isSubmitting}
@@ -219,7 +219,7 @@ export default function CommentThread({ comments, postId, currentUserId, onComme
 
   if (comments.length === 0) {
     return (
-      <div className="text-center py-12 opacity-30 border border-dashed border-[var(--color-border)] rounded-3xl">
+      <div className="text-center py-12 opacity-30 border border-dashed border-[var(--color-border)] rounded-xl">
         <MessageSquare size={48} className="mx-auto mb-4" />
         <p className="text-sm">{t('chat.no_discussion')}</p>
       </div>

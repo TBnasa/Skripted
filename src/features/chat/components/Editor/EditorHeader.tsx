@@ -38,7 +38,7 @@ export function EditorHeader({
   const lineCount = code.trim() ? code.split('\n').length : 0;
 
   return (
-    <div className="flex items-center justify-between border-b border-[var(--color-border)] bg-white/[0.01] px-5 py-4">
+    <div className="flex items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-bg-tertiary)] px-5 py-4">
       <div className="flex items-center gap-3">
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--color-accent-glow)] text-[var(--color-text-primary)]">
            <Code size={18} />

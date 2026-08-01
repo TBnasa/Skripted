@@ -70,9 +70,9 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <Providers>
-        <html lang="en" className="dark">
+        <html lang="en" className="light">
           <body className={`${satoshi.variable} ${ibmPlexMono.variable} bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] antialiased`}>
-            <Toaster position="top-right" richColors theme="dark" closeButton />
+            <Toaster position="top-right" richColors theme="light" closeButton />
             <Navbar />
             <main>{children}</main>
           </body>

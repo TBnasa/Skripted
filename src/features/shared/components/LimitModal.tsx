@@ -31,7 +31,7 @@ export default function LimitModal({ isOpen, onClose }: LimitModalProps) {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative w-full max-w-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border-hover)] rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+            className="relative w-full max-w-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border-hover)] rounded-xl overflow-hidden ink-shadow-sm"
           >
             {/* Header Gradient */}
             <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-[var(--color-accent-secondary)] via-[var(--color-accent-primary)] to-[var(--color-accent-secondary)]" />
@@ -48,7 +48,7 @@ export default function LimitModal({ isOpen, onClose }: LimitModalProps) {
                 <AlertCircle className="w-8 h-8 text-[var(--color-text-primary)]" />
               </div>
 
-              <h2 className="text-2xl font-bold text-white mb-3">
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)] mb-3">
                 Daily Limit Reached
               </h2>
               
@@ -58,12 +58,12 @@ export default function LimitModal({ isOpen, onClose }: LimitModalProps) {
               </p>
 
               <div className="grid grid-cols-1 gap-3 mb-8">
-                <div className="flex items-center gap-3 p-4 bg-[var(--color-accent-glow)] border border-[var(--color-border-hover)] rounded-2xl text-left">
+                <div className="flex items-center gap-3 p-4 bg-[var(--color-accent-glow)] border border-[var(--color-border-hover)] rounded-xl text-left">
                   <div className="p-2 bg-[var(--color-accent-glow)] rounded-lg">
                     <Sparkles className="w-4 h-4 text-[var(--color-text-primary)]" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-white">Unlimited Generations</p>
+                    <p className="text-sm font-bold text-[var(--color-text-primary)]">Unlimited Generations</p>
                     <p className="text-[10px] text-[var(--color-text-muted)]">No more daily resets or waiting.</p>
                   </div>
                 </div>
@@ -73,7 +73,7 @@ export default function LimitModal({ isOpen, onClose }: LimitModalProps) {
                 <Link
                   href="/pricing"
                   onClick={onClose}
-                  className="flex items-center justify-center gap-2 w-full py-4 bg-[var(--color-accent-primary)] hover:bg-[var(--color-accent-secondary)] text-[var(--color-bg-primary)] font-bold rounded-2xl transition-all shadow-lg shadow-white/5"
+                  className="flex items-center justify-center gap-2 w-full py-4 bg-[var(--color-accent-primary)] hover:bg-[var(--color-accent-secondary)] text-[var(--color-bg-primary)] font-bold rounded-xl transition-all ink-shadow-sm"
                 >
                   View Pricing Plans
                   <ArrowRight className="w-4 h-4" />

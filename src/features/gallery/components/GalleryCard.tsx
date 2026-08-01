@@ -53,7 +53,7 @@ const GalleryCard = memo(({ post }: { post: GalleryPost }) => {
     >
       <Link 
         href={`/gallery/${post.id}`} 
-        className="group flex flex-col bg-[var(--color-bg-card)]/80 backdrop-blur-md border border-[var(--color-border)] rounded-[2.5rem] overflow-hidden hover:border-[var(--color-border-hover)] transition-[border-color,box-shadow,transform] duration-500 hover:shadow-[0_20px_60px_-15px_rgba(255,255,255,0.06)] hover:-translate-y-2 relative h-full transform-gpu"
+        className="group flex flex-col bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl overflow-hidden hover:border-[var(--color-border-active)] transition-[border-color,box-shadow,transform] duration-500 ink-shadow-sm hover:-translate-y-2 relative h-full transform-gpu"
         style={{ contain: 'content' }} // Isolate layout/paint
       >
         
@@ -76,12 +76,12 @@ const GalleryCard = memo(({ post }: { post: GalleryPost }) => {
           
           {/* Glass Stats Overlay - Flattened structure */}
           <div className="absolute top-4 right-4 z-20 flex flex-col gap-2 translate-z-0">
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-black/50 backdrop-blur-xl border border-[var(--color-border-hover)] rounded-full text-[10px] font-black text-white shadow-2xl transition-transform group-hover:scale-110">
-              <Heart size={14} className="text-[var(--color-text-primary)] fill-[var(--color-text-primary)]" />
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--color-bg-secondary)]/90 backdrop-blur-xl border border-[var(--color-border)] rounded-full text-[10px] font-black text-[var(--color-text-primary)] ink-shadow-sm transition-transform group-hover:scale-110">
+              <Heart size={14} className="text-[var(--color-accent-primary)] fill-[var(--color-accent-primary)]" />
               {post.likes_count}
             </div>
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-black/50 backdrop-blur-xl border border-[var(--color-border-hover)] rounded-full text-[10px] font-black text-white shadow-2xl transition-transform group-hover:scale-110">
-              <Download size={14} className="text-[var(--color-text-primary)]" />
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--color-bg-secondary)]/90 backdrop-blur-xl border border-[var(--color-border)] rounded-full text-[10px] font-black text-[var(--color-text-primary)] ink-shadow-sm transition-transform group-hover:scale-110">
+              <Download size={14} className="text-[var(--color-accent-primary)]" />
               {post.downloads_count}
             </div>
           </div>
@@ -93,12 +93,12 @@ const GalleryCard = memo(({ post }: { post: GalleryPost }) => {
             </span>
           </div>
           
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0c] via-transparent to-transparent opacity-100 transition-opacity pointer-events-none"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] via-transparent to-transparent opacity-100 transition-opacity pointer-events-none"></div>
         </div>
 
         {/* Content Area - Flattened DOM */}
-        <div className="p-7 flex flex-col flex-1 relative bg-gradient-to-b from-transparent to-white/[0.01]">
-          <h3 className="text-xl font-bold text-white line-clamp-1 group-hover:text-[var(--color-text-primary)] transition-colors mb-3 tracking-tight">
+        <div className="p-7 flex flex-col flex-1 relative">
+          <h3 className="text-xl font-bold text-[var(--color-text-primary)] line-clamp-1 group-hover:text-[var(--color-accent-primary)] transition-colors mb-3 tracking-tight">
             {post.title}
           </h3>
           
@@ -106,7 +106,7 @@ const GalleryCard = memo(({ post }: { post: GalleryPost }) => {
           {post.tags?.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-6 h-5 overflow-hidden">
               {post.tags.slice(0, 3).map(tag => (
-                <span key={tag} className="px-2 py-0.5 rounded-md bg-white/[0.03] border border-[var(--color-border)] text-[9px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest flex items-center gap-1">
+                <span key={tag} className="px-2 py-0.5 rounded-md bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] text-[9px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest flex items-center gap-1">
                   <Hash size={8} className="text-[var(--color-text-primary)]" />
                   {tag}
                 </span>
@@ -116,7 +116,7 @@ const GalleryCard = memo(({ post }: { post: GalleryPost }) => {
           
           <div className="flex items-center justify-between mt-auto pt-4 border-t border-[var(--color-border)]">
             <div className="flex items-center gap-3 overflow-hidden">
-              <div className="shrink-0 w-7 h-7 rounded-lg bg-[var(--color-accent-glow)] flex items-center justify-center border border-[var(--color-border-hover)] group-hover:bg-[var(--color-accent-primary)] group-hover:text-black transition-all duration-500 text-[var(--color-text-secondary)]">
+              <div className="shrink-0 w-7 h-7 rounded-lg bg-[var(--color-accent-glow)] flex items-center justify-center border border-[var(--color-border-hover)] group-hover:bg-[var(--color-accent-primary)] group-hover:text-[var(--color-bg-primary)] transition-all duration-500 text-[var(--color-text-secondary)]">
                 <User size={12} />
               </div>
               <span className="text-xs font-bold text-[var(--color-text-muted)] group-hover:text-[var(--color-text-primary)] transition-colors truncate">

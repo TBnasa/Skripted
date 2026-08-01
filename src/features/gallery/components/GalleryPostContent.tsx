@@ -254,7 +254,7 @@ export default function GalleryPostContent({ post }: { post: GalleryPost }) {
   if (!mounted) return <div className="flex min-h-screen flex-col bg-[var(--color-bg-primary)]" />;
 
   return (
-    <div className="flex min-h-screen flex-col bg-[var(--color-bg-primary)] text-white">
+    <div className="flex min-h-screen flex-col bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 animate-fade-in">
         
         <PostDetailHeader 

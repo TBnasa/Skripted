@@ -24,19 +24,19 @@ export default function GalleryHighlights() {
         {/* Section header — editorial, on-brand eyebrow */}
         <div className="mb-14 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
-            <div className="mb-4 flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-[var(--color-accent-primary)]">
+            <div className="mono-label mb-4 flex items-center gap-2">
               <span className="h-px w-8 bg-[var(--color-accent-primary)]" />
               {t('gallery.community_showcase')}
             </div>
             <h2 className="text-4xl font-black tracking-tight text-balance text-[var(--color-text-primary)] md:text-6xl">
               {t('gallery.weekly_favorites_prefix', { defaultValue: 'Haftanın Favori' })}{' '}
-              <span className="text-[var(--color-text-muted)]">{t('gallery.weekly_favorites_suffix', { defaultValue: 'Skriptleri' })}</span>
+              <span className="text-[var(--color-accent-primary)]">{t('gallery.weekly_favorites_suffix', { defaultValue: 'Skriptleri' })}</span>
             </h2>
           </div>
 
           <Link
             href="/gallery"
-            className="press group flex items-center gap-2 text-sm font-semibold text-[var(--color-text-secondary)] transition-colors duration-200 hover:text-[var(--color-text-primary)]"
+            className="press group flex items-center gap-2 text-sm font-semibold text-[var(--color-text-secondary)] transition-colors duration-200 hover:text-[var(--color-accent-primary)]"
           >
             {t('general.view_all', { defaultValue: 'Tümünü Gör' })}
             <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
@@ -50,17 +50,17 @@ export default function GalleryHighlights() {
               key={post.id}
               whileHover={{ y: -4 }}
               transition={{ type: 'spring', stiffness: 400, damping: 26 }}
-              className={`press group relative overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6 transition-colors duration-300 hover:border-[var(--color-border-hover)] ${
+              className={`press group relative overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6 transition-colors duration-300 hover:border-[var(--color-border-active)] ink-shadow-sm ${
                 idx === 0 ? 'sm:col-span-2 lg:col-span-1' : ''
               }`}
             >
               <div className="mb-5 flex items-center justify-between">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--color-border-active)] bg-[var(--color-accent-glow)] text-[var(--color-accent-primary)]">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--color-border-active)] bg-[var(--color-accent-glow)] text-[var(--color-accent-primary)]">
                   <Code size={17} />
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1 text-[11px] font-semibold text-[var(--color-text-muted)]">
-                    <Heart size={12} className="text-[var(--color-accent-warm)]" />
+                    <Heart size={12} className="text-[var(--color-accent-error)]" />
                     {post.likes_count}
                   </div>
                   <div className="flex items-center gap-1 text-[11px] font-semibold text-[var(--color-text-muted)]">
@@ -81,7 +81,7 @@ export default function GalleryHighlights() {
                 </span>
                 <Link
                   href={`/gallery/${post.id}`}
-                  className="press rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-tertiary)] p-2 transition-colors duration-200 hover:bg-[var(--color-accent-primary)] hover:border-[var(--color-accent-primary)] hover:text-[var(--color-bg-primary)]"
+                  className="press rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-tertiary)] p-2 transition-colors duration-200 hover:bg-[var(--color-accent-primary)] hover:border-[var(--color-accent-primary)] hover:text-white"
                 >
                   <ArrowRight size={14} />
                 </Link>

@@ -117,10 +117,10 @@ export function PostDetailHeader({
             type="text" 
             value={editedTitle}
             onChange={(e) => setEditedTitle(e.target.value)}
-            className="text-4xl md:text-6xl font-black bg-white/5 border-b border-[var(--color-border-hover)] w-full focus:outline-none focus:border-[var(--color-border-active)] transition-colors py-2 mb-6"
+            className="text-4xl md:text-6xl font-black bg-[var(--color-bg-tertiary)] border-b border-[var(--color-border-hover)] w-full focus:outline-none focus:border-[var(--color-border-active)] transition-colors py-2 mb-6"
           />
         ) : (
-          <h1 className="text-4xl md:text-6xl font-black text-white mb-6 leading-tight tracking-tight">
+          <h1 className="text-4xl md:text-6xl font-black text-[var(--color-text-primary)] mb-6 leading-tight tracking-tight">
             {post.title}
           </h1>
         )}
@@ -128,12 +128,12 @@ export function PostDetailHeader({
         <div className="flex flex-wrap items-center gap-4 text-sm text-[var(--color-text-muted)]">
           <Link 
             href={`/u/${post.author_name.toLowerCase().replace(/\s+/g, '_')}`}
-            className="flex items-center gap-2 px-4 py-2 bg-white/[0.03] border border-[var(--color-border)] rounded-full text-[var(--color-text-primary)] hover:bg-[var(--color-accent-glow)] hover:border-[var(--color-border-hover)] transition-all group/author"
+            className="flex items-center gap-2 px-4 py-2 bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-full text-[var(--color-text-primary)] hover:bg-[var(--color-accent-glow)] hover:border-[var(--color-border-hover)] transition-all group/author"
           >
-            <div className="w-5 h-5 rounded-full bg-white/[0.2] flex items-center justify-center border border-[var(--color-border-hover)]">
+            <div className="w-5 h-5 rounded-full bg-[var(--color-accent-glow)] flex items-center justify-center border border-[var(--color-border-hover)]">
               <User size={10} className="text-[var(--color-text-primary)]" />
             </div>
-            <span className="font-semibold text-[var(--color-text-primary)] group-hover/author:text-white transition-colors">{post.author_name}</span>
+            <span className="font-semibold text-[var(--color-text-primary)] group-hover/author:text-[var(--color-accent-primary)] transition-colors">{post.author_name}</span>
           </Link>
           <span className="hidden sm:inline opacity-20">•</span>
           <span className="font-mono text-xs uppercase tracking-widest">{new Date(post.created_at).toLocaleDateString(t('general.locale'), { day: 'numeric', month: 'long', year: 'numeric' })}</span>
@@ -143,18 +143,18 @@ export function PostDetailHeader({
       <div className="flex items-center gap-3 animate-slide-up" style={{ animationDelay: '0.1s' }}>
          <button 
            onClick={handleLike}
-           className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl transition-all active:scale-95 shadow-lg border ${
-             isLiked ? 'bg-white/[0.08] border-[var(--color-border-hover)] text-[var(--color-text-primary)]' : 'bg-white/[0.02] border-[var(--color-border)] hover:bg-white/[0.08] text-[var(--color-text-secondary)]'
+           className={`flex items-center gap-2 px-5 py-2.5 rounded-xl transition-all active:scale-95 ink-shadow-sm border ${
+             isLiked ? 'bg-[var(--color-accent-glow)] border-[var(--color-border-active)] text-[var(--color-accent-primary)]' : 'bg-[var(--color-bg-tertiary)] border-[var(--color-border)] hover:bg-[var(--color-accent-glow)] text-[var(--color-text-secondary)]'
            }`}
          >
-           <Heart size={18} className={isLiked ? 'fill-[var(--color-text-primary)]' : ''} />
+           <Heart size={18} className={isLiked ? 'fill-[var(--color-accent-primary)]' : ''} />
            <span className="font-bold">{likes}</span>
          </button>
-         <button onClick={handleShare} className="flex items-center gap-2 px-5 py-2.5 bg-white/[0.02] border border-[var(--color-border)] hover:bg-white/[0.08] rounded-2xl transition-all active:scale-95 shadow-lg text-[var(--color-text-secondary)]">
+         <button onClick={handleShare} className="flex items-center gap-2 px-5 py-2.5 bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] hover:bg-[var(--color-accent-glow)] rounded-xl transition-all active:scale-95 ink-shadow-sm text-[var(--color-text-secondary)]">
            <Share2 size={18} />
            <span className="uppercase font-bold text-xs">{t('general.share')}</span>
          </button>
-         <Button onClick={handleDownload} variant="primary" size="md" className="px-6 py-2.5 rounded-2xl shadow-lg">
+         <Button onClick={handleDownload} variant="primary" size="md" className="px-6 py-2.5 rounded-xl ink-shadow-sm">
             <Download size={18} />
             <span className="uppercase text-xs">{t('gallery.post_content.download_sk')}</span>
           </Button>

@@ -86,12 +86,12 @@ export default function ChatPanel({
     }
   }, [messages]);
 
-  if (!mounted) return <div className="flex h-full flex-col min-h-0 glass-panel m-2 rounded-2xl bg-[var(--color-bg-primary)]" />;
+  if (!mounted) return <div className="flex h-full flex-col min-h-0 glass-panel m-2 rounded-xl bg-[var(--color-bg-primary)]" />;
 
   return (
-    <div className="flex h-full flex-col min-h-0 glass-panel overflow-hidden m-2 rounded-2xl relative">
+    <div className="flex h-full flex-col min-h-0 glass-panel overflow-hidden m-2 rounded-xl relative">
       {/* Header */}
-      <div className="flex items-center gap-2 sm:gap-3 border-b border-[var(--color-border)] px-3 sm:px-5 py-3 sm:py-4 bg-white/[0.01]">
+      <div className="flex items-center gap-2 sm:gap-3 border-b border-[var(--color-border)] px-3 sm:px-5 py-3 sm:py-4 bg-[var(--color-bg-tertiary)]">
         <div className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-lg sm:rounded-xl bg-[var(--color-accent-glow)] text-[var(--color-text-primary)]">
           <Terminal size={18} />
         </div>
@@ -172,8 +172,8 @@ export default function ChatPanel({
               onClick={() => setSelectedAddons(prev => prev.includes(addon) ? prev.filter(a => a !== addon) : [...prev, addon])}
               className={`whitespace-nowrap px-2.5 py-1 text-[10px] font-bold rounded-lg border transition-all ${
                 selectedAddons.includes(addon)
-                  ? 'bg-white/[0.2] border-[var(--color-border-active)] text-[var(--color-text-primary)]'
-                  : 'bg-white/[0.02] border-[var(--color-border)] text-[var(--color-text-muted)]'
+                  ? 'bg-[var(--color-accent-glow)] border-[var(--color-border-active)] text-[var(--color-text-primary)]'
+                  : 'bg-[var(--color-bg-tertiary)] border-[var(--color-border)] text-[var(--color-text-muted)]'
               }`}
             >
               {addon}
@@ -181,7 +181,7 @@ export default function ChatPanel({
           ))}
         </div>
 
-        <div className="relative flex items-end gap-2 bg-black/50 rounded-2xl border border-[var(--color-border-hover)] focus-within:border-[var(--color-border-hover)] transition-all p-1">
+        <div className="relative flex items-end gap-2 bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border-hover)] focus-within:border-[var(--color-border-active)] transition-all p-1">
           <textarea
             ref={textareaRef}
             value={input}
@@ -189,7 +189,7 @@ export default function ChatPanel({
             onKeyDown={handleKeyDown}
             placeholder={t('chat.placeholder')}
             rows={1}
-            className="flex-1 resize-none bg-transparent font-mono text-[13px] sm:text-sm text-white focus:outline-none py-2.5 px-3 min-h-[44px]"
+            className="flex-1 resize-none bg-transparent font-mono text-[13px] sm:text-sm text-[var(--color-text-primary)] focus:outline-none py-2.5 px-3 min-h-[44px]"
             disabled={isStreaming}
           />
           <div className="flex items-center gap-1.5 pb-1 pr-1">
@@ -201,8 +201,8 @@ export default function ChatPanel({
               disabled={isStreaming || isProcessing}
               className={`relative transition-all duration-300 ${
                 isRecording 
-                  ? 'bg-red-500/20 text-red-500 border-red-500/50 hover:bg-red-500/30' 
-                  : 'bg-white/[0.02] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
+                  ? 'bg-[var(--color-accent-error)]/20 text-[var(--color-accent-error)] border-[var(--color-accent-error)]/50 hover:bg-[var(--color-accent-error)]/30' 
+                  : 'bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
               }`}
               aria-label={isRecording ? t('chat.voice_stop') : t('chat.voice_start')}
               title={isProcessing ? t('chat.voice_processing') : (isRecording ? t('chat.voice_stop') : t('chat.voice_start'))}

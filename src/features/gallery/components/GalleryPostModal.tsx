@@ -128,14 +128,14 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#0f0f11] border border-white/[0.08] w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col animate-scale-up">
+      <div className="bg-[var(--color-bg-elevated)] border border-[var(--color-border)] w-full max-w-lg rounded-xl ink-shadow-lg overflow-hidden flex flex-col animate-scale-up">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-white/[0.08] flex justify-between items-center bg-white/[0.02]">
+        <div className="px-6 py-4 border-b border-[var(--color-border)] flex justify-between items-center bg-[var(--color-bg-tertiary)]">
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-zinc-300 animate-pulse"></div>
-            <h2 className="text-lg font-semibold text-white">{t('gallery.modal.share_title')}</h2>
+            <div className="w-2 h-2 rounded-full bg-[var(--color-accent-primary)] animate-pulse"></div>
+            <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">{t('gallery.modal.share_title')}</h2>
           </div>
-          <button onClick={onClose} className="text-zinc-400 hover:text-white transition-colors p-1 hover:bg-white/5 rounded-lg">
+          <button onClick={onClose} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors p-1 hover:bg-[var(--color-accent-glow)] rounded-lg">
             <X size={20} />
           </button>
         </div>
@@ -143,14 +143,14 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
         <form onSubmit={handleSubmit} className="p-6 space-y-5 overflow-y-auto max-h-[85vh] custom-scrollbar">
           {/* Title Input */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-400">{t('gallery.modal.title_label')} <span className="text-red-500/50">*</span></label>
+            <label className="text-sm font-medium text-[var(--color-text-secondary)]">{t('gallery.modal.title_label')} <span className="text-[var(--color-accent-error)]/60">*</span></label>
             <input 
               type="text" 
               required
               maxLength={100}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-white/25 text-white placeholder-zinc-600 transition-all font-medium"
+              className="w-full px-4 py-3 bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-xl focus:outline-none focus:border-[var(--color-border-active)] text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] transition-all font-medium"
               placeholder={t('gallery.modal.title_label')}
             />
           </div>
@@ -158,21 +158,21 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
           <div className="grid grid-cols-2 gap-4">
             {/* Category Select */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-zinc-400">{t('gallery.modal.category_label')}</label>
+              <label className="text-sm font-medium text-[var(--color-text-secondary)]">{t('gallery.modal.category_label')}</label>
               <select 
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-white/25 text-white transition-all appearance-none cursor-pointer"
+                className="w-full px-4 py-3 bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-xl focus:outline-none focus:border-[var(--color-border-active)] text-[var(--color-text-primary)] transition-all appearance-none cursor-pointer"
               >
                 {CATEGORY_IDS.map(id => (
-                  <option key={id} value={id} className="bg-[#121214]">{CATEGORY_ICONS[id]} {t(`gallery.categories.${id}`)}</option>
+                  <option key={id} value={id} className="bg-[var(--color-bg-elevated)]">{CATEGORY_ICONS[id]} {t(`gallery.categories.${id}`)}</option>
                 ))}
               </select>
             </div>
 
             {/* Tags Input */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-zinc-400">{t('gallery.modal.tags_label')}</label>
+              <label className="text-sm font-medium text-[var(--color-text-secondary)]">{t('gallery.modal.tags_label')}</label>
               <div className="relative">
                 <input 
                   type="text" 
@@ -180,7 +180,7 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyDown={handleAddTag}
                   placeholder="admin, chat..."
-                  className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-white/25 text-white placeholder-zinc-700 transition-all"
+                  className="w-full px-4 py-3 bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-xl focus:outline-none focus:border-[var(--color-border-active)] text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] transition-all"
                 />
               </div>
             </div>
@@ -190,10 +190,10 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
           {tags.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {tags.map(tag => (
-                <span key={tag} className="flex items-center gap-1.5 px-3 py-1 bg-zinc-300/10 border border-white/8 rounded-lg text-zinc-200 text-xs font-bold">
+                <span key={tag} className="flex items-center gap-1.5 px-3 py-1 bg-[var(--color-accent-glow)] border border-[var(--color-border-active)] rounded-lg text-[var(--color-accent-primary)] text-xs font-bold">
                   <Hash size={10} />
                   {tag}
-                  <button type="button" onClick={() => removeTag(tag)} className="hover:text-white transition-colors">
+                  <button type="button" onClick={() => removeTag(tag)} className="hover:text-[var(--color-text-primary)] transition-colors">
                     <X size={12} />
                   </button>
                 </span>
@@ -203,35 +203,35 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
 
           {/* Description Input */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-zinc-400">{t('gallery.modal.desc_label')}</label>
+            <label className="text-sm font-medium text-[var(--color-text-secondary)]">{t('gallery.modal.desc_label')}</label>
             <textarea 
               maxLength={1000}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl focus:outline-none focus:border-white/25 text-white placeholder-zinc-700 min-h-[100px] resize-none transition-all text-sm leading-relaxed"
+              className="w-full px-4 py-3 bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-xl focus:outline-none focus:border-[var(--color-border-active)] text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] min-h-[100px] resize-none transition-all text-sm leading-relaxed"
               placeholder={t('gallery.modal.desc_label')}
             />
           </div>
 
           {/* Image Upload Area */}
           <div className="space-y-3">
-            <label className="text-sm font-medium text-zinc-400 flex justify-between items-center">
+            <label className="text-sm font-medium text-[var(--color-text-secondary)] flex justify-between items-center">
               <span>{t('gallery.modal.server_images')}</span>
-              <span className={`text-[10px] font-bold tracking-widest uppercase ${images.length === 5 ? 'text-amber-400' : 'text-zinc-500'}`}>
+              <span className={`text-[10px] font-bold tracking-widest uppercase ${images.length === 5 ? 'text-[var(--color-accent-primary)]' : 'text-[var(--color-text-muted)]'}`}>
                 {images.length} / 5
               </span>
             </label>
             
             <div 
               onClick={() => !isUploading && fileInputRef.current?.click()}
-              className={`border-2 border-dashed rounded-2xl p-6 flex flex-col items-center justify-center transition-all group ${
-                isUploading ? 'opacity-50 cursor-not-allowed border-white/[0.05]' : 'border-white/[0.1] hover:border-white/20 hover:bg-zinc-300/[0.02] cursor-pointer'
+              className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center transition-all group ${
+                isUploading ? 'opacity-50 cursor-not-allowed border-[var(--color-border)]' : 'border-[var(--color-border)] hover:border-[var(--color-border-active)] hover:bg-[var(--color-accent-glow)] cursor-pointer'
               }`}
             >
-              <div className="w-10 h-10 rounded-xl bg-white/[0.03] flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                <UploadCloud className="w-5 h-5 text-zinc-500 group-hover:text-zinc-200" />
+              <div className="w-10 h-10 rounded-xl bg-[var(--color-bg-tertiary)] flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                <UploadCloud className="w-5 h-5 text-[var(--color-text-muted)] group-hover:text-[var(--color-accent-primary)]" />
               </div>
-              <p className="text-xs text-zinc-400 font-bold">{t('gallery.modal.drop_images')}</p>
+              <p className="text-xs text-[var(--color-text-secondary)] font-bold">{t('gallery.modal.drop_images')}</p>
               <input 
                 ref={fileInputRef}
                 type="file" 
@@ -247,13 +247,13 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
             {images.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {images.map((file, idx) => (
-                  <div key={idx} className="relative w-[calc(25%-6px)] aspect-square rounded-xl bg-black/50 border border-white/[0.05] overflow-hidden group shadow-lg">
+                  <div key={idx} className="relative w-[calc(25%-6px)] aspect-square rounded-xl bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] overflow-hidden group ink-shadow-sm">
                     <img src={URL.createObjectURL(file)} alt="Preview" className="object-cover w-full h-full opacity-70 group-hover:opacity-100 transition-opacity" />
                     {!isUploading && (
                       <button 
                         type="button" 
                         onClick={(e) => { e.stopPropagation(); removeImage(idx); }}
-                        className="absolute top-1 right-1 w-5 h-5 bg-black/80 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
+                        className="absolute top-1 right-1 w-5 h-5 bg-[var(--color-bg-secondary)] rounded-full flex items-center justify-center text-[var(--color-text-primary)] opacity-0 group-hover:opacity-100 transition-opacity border border-[var(--color-border)] hover:bg-[var(--color-accent-error)] hover:text-[var(--color-bg-primary)]"
                       >
                         <X size={10} />
                       </button>
@@ -268,15 +268,15 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
           {isUploading && (
             <div className="space-y-3 pt-2">
               <div className="flex justify-between items-end">
-                <span className="text-[10px] font-bold uppercase text-zinc-200 flex items-center gap-2 tracking-widest">
+                <span className="text-[10px] font-bold uppercase text-[var(--color-text-primary)] flex items-center gap-2 tracking-widest">
                   <Loader2 size={12} className="animate-spin" />
                   {uploadStatus}
                 </span>
-                <span className="text-[10px] font-bold text-zinc-300">{progress}%</span>
+                <span className="text-[10px] font-bold text-[var(--color-text-secondary)]">{progress}%</span>
               </div>
-              <div className="h-1.5 w-full bg-white/[0.03] rounded-full overflow-hidden border border-white/[0.05]">
+              <div className="h-1.5 w-full bg-[var(--color-bg-tertiary)] rounded-full overflow-hidden border border-[var(--color-border)]">
                 <div 
-                  className="h-full bg-gradient-to-r from-zinc-400 to-zinc-400 transition-all duration-300"
+                  className="h-full bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-accent-secondary)] transition-all duration-300"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -284,19 +284,19 @@ export default function GalleryPostModal({ code, isOpen, onClose, onSuccess }: G
           )}
 
           {/* Footer Actions */}
-          <div className="pt-4 border-t border-white/[0.08] flex items-center justify-end gap-3">
+          <div className="pt-4 border-t border-[var(--color-border)] flex items-center justify-end gap-3">
             <button 
               type="button" 
               onClick={onClose}
               disabled={isUploading}
-              className="px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-zinc-500 hover:text-white transition-colors disabled:opacity-30"
+              className="px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors disabled:opacity-30"
             >
               {t('general.cancel')}
             </button>
             <button 
               type="submit"
               disabled={isUploading || !title}
-              className="px-8 py-2.5 bg-zinc-200 hover:bg-zinc-300 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all disabled:opacity-50 flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.08)]"
+              className="btn-forge px-8 py-2.5 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all disabled:opacity-50 flex items-center gap-2"
             >
               {isUploading ? t('gallery.sharing') : t('gallery.share_now')}
               {!isUploading && <CheckCircle2 size={14} />}

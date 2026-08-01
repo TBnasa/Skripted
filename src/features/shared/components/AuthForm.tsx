@@ -17,44 +17,43 @@ export default function AuthForm() {
 
           socialButtonsBlockButton: [
             'w-full flex items-center justify-center gap-3 px-4 py-3.5',
-            'rounded-xl border border-[var(--color-border)] bg-white/[0.03]',
-            'hover:bg-white/[0.06] hover:border-[var(--color-border-hover)]',
+            'rounded-xl border border-[var(--color-border)] !bg-[var(--color-bg-tertiary)]',
+            '!hover:bg-[var(--color-accent-glow)] hover:border-[var(--color-border-hover)]',
             'transition-all duration-200 active:scale-[0.98]',
           ].join(' '),
           socialButtonsBlockButtonText: 'text-sm font-bold !text-white',
           socialButtonsProviderIcon: 'w-5 h-5',
 
-          dividerLine: '!bg-white/[0.06]',
+          dividerLine: '!bg-[var(--color-border)]',
           dividerText: '!text-[var(--color-text-muted)] text-xs font-bold uppercase tracking-widest px-4',
 
           formFieldLabel: '!text-[var(--color-text-secondary)] text-sm font-medium mb-2',
           formFieldInput: [
             'w-full !bg-[var(--color-bg-primary)] !border !border-[var(--color-border-hover)]',
-            '!rounded-xl !px-4 !py-3 text-sm !text-white',
+            '!rounded-xl !px-4 !py-3 text-sm !text-[var(--color-text-primary)]',
             'placeholder:!text-[var(--color-text-muted)]',
             'focus:outline-none focus:!border-[var(--color-accent-primary)]',
             'focus:!ring-1 focus:!ring-[var(--color-accent-primary)]/30 transition-all',
           ].join(' '),
-          formFieldInputShowPasswordButton: '!text-[var(--color-text-muted)] hover:!text-white',
+          formFieldInputShowPasswordButton: '!text-[var(--color-text-muted)] hover:!text-[var(--color-text-primary)]',
 
           formButtonPrimary: [
             'w-full !py-3.5 !rounded-xl !bg-[var(--color-accent-primary)]',
-            'hover:brightness-110 !text-black !font-bold text-sm',
+            'hover:brightness-110 !text-white !font-bold text-sm',
             'transition-all active:scale-[0.98]',
-            '!shadow-[0_0_16px_rgba(255,255,255,0.06)]',
           ].join(' '),
           formButtonReset: '!text-[var(--color-accent-primary)] !font-bold text-sm',
 
           footerAction: 'mt-4',
           footerActionLink: '!text-[var(--color-accent-primary)] !font-bold text-sm hover:brightness-110 transition-all',
 
-          identityPreview: '!bg-white/[0.03] !border !border-[var(--color-border)] !rounded-xl',
+          identityPreview: '!bg-[var(--color-bg-tertiary)] !border !border-[var(--color-border)] !rounded-xl',
           identityPreviewEditButton: '!text-[var(--color-accent-primary)]',
           identityPreviewEditButtonIcon: '!text-[var(--color-accent-primary)]',
 
           formResendCodeLink: '!text-[var(--color-accent-primary)] !font-bold',
 
-          OTPCodeFieldInput: '!bg-[var(--color-bg-primary)] !border !border-[var(--color-border-hover)] !rounded-xl !text-white',
+          OTPCodeFieldInput: '!bg-[var(--color-bg-primary)] !border !border-[var(--color-border-hover)] !rounded-xl !text-[var(--color-text-primary)]',
 
           alertText: '!text-[var(--color-text-secondary)]',
           alertIcon: '!text-[var(--color-accent-primary)]',
@@ -64,7 +63,7 @@ export default function AuthForm() {
 
           verificationLinkText: '!text-[var(--color-accent-primary)] !font-bold',
 
-          modalCloseButton: '!text-[var(--color-text-muted)] hover:!text-white',
+          modalCloseButton: '!text-[var(--color-text-muted)] hover:!text-[var(--color-text-primary)]',
 
           scrollBox: 'bg-[var(--color-bg-secondary)]',
 
@@ -74,10 +73,10 @@ export default function AuthForm() {
         variables: {
           colorPrimary: 'var(--color-accent-primary)',
           colorBackground: 'var(--color-bg-secondary)',
-          colorText: '#ffffff',
+          colorText: 'var(--color-text-primary)',
           colorTextSecondary: 'var(--color-text-secondary)',
-          colorInputText: '#ffffff',
-          colorTextOnPrimaryBackground: '#000000',
+          colorInputText: 'var(--color-text-primary)',
+          colorTextOnPrimaryBackground: '#ffffff',
           borderRadius: '12px',
           fontFamily: 'var(--font-sans)',
         },

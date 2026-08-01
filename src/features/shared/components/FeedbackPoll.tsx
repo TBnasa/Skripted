@@ -41,7 +41,7 @@ export default function FeedbackPoll({ onFeedback, visible }: FeedbackPollProps)
         <div className="flex gap-3">
           <button
             onClick={handleSuccess}
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[var(--color-accent-glow)] border border-[var(--color-border)] px-4 py-2.5 text-sm font-medium text-[var(--color-text-primary)] transition-all duration-300 hover:bg-white/[0.15] hover:border-[var(--color-border-hover)] hover:scale-[1.02]"
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[var(--color-accent-glow)] border border-[var(--color-border)] px-4 py-2.5 text-sm font-medium text-[var(--color-text-primary)] transition-all duration-300 hover:border-[var(--color-border-hover)] hover:scale-[1.02]"
           >
             <Check className="w-4 h-4" />
             {t('chat.feedback_worked')}
@@ -61,7 +61,7 @@ export default function FeedbackPoll({ onFeedback, visible }: FeedbackPollProps)
               value={errorLog}
               onChange={(e) => setErrorLog(e.target.value)}
               placeholder={t('chat.feedback_placeholder')}
-              className="w-full resize-none rounded-xl border border-[var(--color-border)] bg-black/30 p-3 font-mono text-xs text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-accent-error)]/30 focus:outline-none transition-colors"
+              className="w-full resize-none rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-tertiary)] p-3 font-mono text-xs text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-accent-error)]/30 focus:outline-none transition-colors"
               rows={4}
             />
             <button

@@ -62,7 +62,7 @@ export default function EditorPanel({ code, onCodeChange, isStreaming, sessionId
       editorRef.current = editorInstance;
 
       registerSkriptLanguage(monaco);
-      monaco.editor.setTheme('skripted-dark');
+      monaco.editor.setTheme('vs');
 
       const model = editorInstance.getModel();
       if (model) {
@@ -134,10 +134,10 @@ export default function EditorPanel({ code, onCodeChange, isStreaming, sessionId
     onCodeChange(newCode);
   };
 
-  if (!mounted) return <div className="flex flex-1 flex-col min-h-0 glass-panel m-2 rounded-2xl bg-[var(--color-bg-primary)]" />;
+  if (!mounted) return <div className="flex flex-1 flex-col min-h-0 glass-panel m-2 rounded-xl bg-[var(--color-bg-primary)]" />;
 
   return (
-    <div className="flex flex-1 flex-col min-h-0 glass-panel overflow-hidden m-2 rounded-2xl">
+    <div className="flex flex-1 flex-col min-h-0 glass-panel overflow-hidden m-2 rounded-xl">
       <EditorHeader
         code={code}
         t={t}
@@ -159,7 +159,7 @@ export default function EditorPanel({ code, onCodeChange, isStreaming, sessionId
             value={code}
             onChange={(value) => onCodeChange(value ?? '')}
             onMount={handleEditorMount}
-            theme="skripted-dark"
+            theme="vs"
             options={{
               fontSize: 14,
               fontFamily: '"JetBrains Mono", "Cascadia Code", monospace',

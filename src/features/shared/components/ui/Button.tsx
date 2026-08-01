@@ -20,21 +20,21 @@ type PolymorphicButtonProps = ButtonProps | LinkButtonProps;
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    'bg-[var(--color-accent-primary)] text-[var(--color-bg-primary)] hover:bg-[var(--color-accent-secondary)] shadow-[0_0_20px_rgba(255,255,255,0.08)]',
+    'btn-forge',
   secondary:
-    'bg-white/5 text-white hover:bg-white/10 border border-[var(--color-border)]',
+    'bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] hover:text-[var(--color-accent-primary)] hover:border-[var(--color-border-active)] border border-[var(--color-border)]',
   ghost:
-    'bg-transparent border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-white hover:bg-white/5',
+    'bg-transparent border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-accent-primary)] hover:bg-[var(--color-accent-glow)] hover:border-[var(--color-border-active)]',
   outline:
-    'bg-transparent border border-[var(--color-border-hover)] text-[var(--color-text-secondary)] hover:text-white hover:border-[var(--color-border-active)]',
+    'bg-transparent border border-[var(--color-border-hover)] text-[var(--color-text-secondary)] hover:text-[var(--color-accent-primary)] hover:border-[var(--color-border-active)]',
   danger:
-    'bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white',
+    'bg-[var(--color-accent-error)]/10 border border-[var(--color-accent-error)]/30 text-[var(--color-accent-error)] hover:bg-[var(--color-accent-error)] hover:text-white',
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
   sm: 'px-3 py-1.5 text-xs rounded-lg',
   md: 'px-5 py-2.5 text-sm rounded-xl',
-  lg: 'px-6 py-3 text-base rounded-2xl',
+  lg: 'px-6 py-3 text-base rounded-xl',
   icon: 'p-2 rounded-xl',
 };
 

@@ -20,18 +20,18 @@ function VisualFlowButton({ content }: { content: string }) {
     <motion.button
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ scale: 1.02, backgroundColor: 'rgba(16, 185, 129, 0.1)' }}
+      whileHover={{ scale: 1.02, backgroundColor: 'rgba(29, 78, 216, 0.08)' }}
       whileTap={{ scale: 0.98 }}
       onClick={() => {
         // BroadCast an event or open a modal (to be implemented in UI)
         window.dispatchEvent(new CustomEvent('open-visual-flow', { detail: flowData }));
       }}
-      className="w-full mt-4 flex items-center justify-between p-4 rounded-2xl border border-[var(--color-border-hover)] bg-white/[0.05] transition-all group overflow-hidden relative"
+      className="w-full mt-4 flex items-center justify-between p-4 rounded-xl border border-[var(--color-border-hover)] bg-[var(--color-bg-tertiary)] transition-all group overflow-hidden relative"
     >
-      <div className="absolute inset-0 bg-gradient-to-r from-zinc-400/0 via-white/3 to-zinc-400/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[var(--color-accent-glow)] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
       
       <div className="flex items-center gap-3">
-        <div className="p-2 rounded-xl bg-white/[0.2] text-[var(--color-text-primary)]">
+        <div className="p-2 rounded-xl bg-[var(--color-accent-glow)] text-[var(--color-text-primary)]">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
           </svg>
@@ -68,8 +68,8 @@ export function AnalysisPanel({ content }: AnalysisProps) {
       title: 'Syntax Errors',
       items: analysis.syntax,
       icon: <ShieldAlert size={20} />,
-      iconColor: 'text-red-400',
-      borderColor: 'border-red-500/10'
+      iconColor: 'text-[var(--color-accent-error)]',
+      borderColor: 'border-[var(--color-accent-error)]/20'
     },
     {
       title: 'Logic & Modernization',
@@ -95,9 +95,9 @@ export function AnalysisPanel({ content }: AnalysisProps) {
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: idx * 0.1 }}
-          className={`flex gap-4 p-5 rounded-3xl border bg-black/40 backdrop-blur-sm shadow-xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,0,0,0.5)] ${section.borderColor}`}
+          className={`flex gap-4 p-5 rounded-xl border bg-[var(--color-bg-tertiary)] ink-shadow-sm transition-all duration-300 hover:border-[var(--color-border-hover)] ${section.borderColor}`}
         >
-          <div className={`shrink-0 mt-0.5 p-2 rounded-xl bg-black/50 border border-[var(--color-border)] ${section.iconColor}`}>
+          <div className={`shrink-0 mt-0.5 p-2 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] ${section.iconColor}`}>
             {section.icon}
           </div>
           <div className="flex-1">

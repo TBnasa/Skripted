@@ -12,7 +12,7 @@ export default function Overview({ isCompact = false }: { isCompact?: boolean })
 
   if (isCompact) {
     return (
-      <div className="flex items-center gap-6 py-2 px-4 bg-[var(--color-bg-primary)]/40 backdrop-blur-md rounded-2xl border border-[var(--color-border)]/50">
+      <div className="flex items-center gap-6 py-2 px-4 bg-[var(--color-bg-secondary)] backdrop-blur-md rounded-xl border border-[var(--color-border)]/50">
         <CompactStat icon={<Code size={14} />} label={t('general.search')} value={stats.totalAnalyzed} color="text-[var(--color-text-secondary)]" />
         <div className="h-4 w-px bg-[var(--color-bg-tertiary)]" />
         <CompactStat icon={<Activity size={14} />} label={t('stats.avg_score')} value={`${stats.averageScore}%`} color="text-[var(--color-text-primary)]" />
@@ -77,7 +77,7 @@ function StatCard({
   gaugeValue?: number;
 }) {
   return (
-    <Card className="relative group overflow-hidden shadow-2xl hover:shadow-[0_0_20px_rgba(255,255,255,0.02)] hover:border-[var(--color-border-hover)] transition-all duration-500">
+    <Card className="relative group overflow-hidden ink-shadow-sm hover:ink-shadow hover:border-[var(--color-border-active)] transition-all duration-500">
       <div className="flex items-center justify-between mb-4">
         <div className="p-2.5 bg-[var(--color-bg-tertiary)] rounded-2xl border border-[var(--color-border)] group-hover:border-[var(--color-border-hover)] transition-colors">
           {icon}
@@ -118,11 +118,11 @@ function StatCard({
       
       <div>
         <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--color-text-muted)] mb-1">{label}</h4>
-        <div className="text-3xl font-black text-white tracking-tighter">{value}</div>
+        <div className="text-3xl font-black text-[var(--color-text-primary)] tracking-tighter">{value}</div>
         <p className="text-[11px] text-[var(--color-text-muted)] font-medium mt-1.5">{description}</p>
       </div>
 
-      <div className="absolute top-0 right-0 w-32 h-32 bg-white/[0.05] blur-[60px] rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-accent-glow)] blur-[60px] rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity" />
     </Card>
   );
 }
