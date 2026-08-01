@@ -26,6 +26,13 @@ export default function FooterCTA() {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="corner-ticks relative z-10 mx-auto max-w-4xl rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-10 text-center md:p-16 ink-shadow"
       >
+        {/* sheet marker */}
+        <div className="mb-6 flex items-center justify-center gap-3">
+          <span className="dimension w-16" />
+          <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[var(--color-text-muted)]">Final Rev · Signed &amp; Approved</span>
+          <span className="dimension w-16" />
+        </div>
+
         {/* eyebrow */}
         <div className="mono-label mb-5 flex items-center justify-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent-primary)] animate-subtle-pulse" />
@@ -43,16 +50,21 @@ export default function FooterCTA() {
 
         <Link
           href="/chat"
-          className="btn-forge press group inline-flex items-center justify-center gap-2.5 rounded-xl px-10 py-4 text-sm font-bold"
+          className="btn-forge press group relative inline-flex items-center justify-center gap-2.5 rounded-xl px-10 py-4 text-sm font-bold"
         >
           {t('general.access_engine')}
           <ArrowRight className="h-[18px] w-[18px] transition-transform duration-300 group-hover:translate-x-1" />
         </Link>
 
-        <div className="mt-8 flex items-center justify-center gap-4">
-          <span className="dimension w-24" />
-          <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[var(--color-text-muted)]">drawing approved</span>
-          <span className="dimension w-24" />
+        {/* approval block — signature + stamp */}
+        <div className="mx-auto mt-9 flex max-w-md items-end justify-between gap-6 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-tertiary)] px-6 py-4">
+          <div className="text-left">
+            <div className="h-px w-28 bg-[var(--color-border-active)]" />
+            <span className="mt-1.5 block font-mono text-[9px] uppercase tracking-[0.25em] text-[var(--color-text-muted)]">
+              Approved · Skripted Engineering
+            </span>
+          </div>
+          <span className="stamp shrink-0">Approved</span>
         </div>
 
         {/* legal */}

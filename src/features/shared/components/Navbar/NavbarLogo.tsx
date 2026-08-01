@@ -14,8 +14,13 @@ export function NavbarLogo({ isChatPage }: NavbarLogoProps) {
           <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
         </svg>
       </div>
-      <span className="text-base font-bold tracking-tight text-[var(--color-text-primary)]">
-        Skripted{isChatPage && <span className="text-[var(--color-accent-primary)] ml-1 font-mono text-sm tracking-tighter">_engine</span>}
+      <span className="flex flex-col leading-none">
+        <span className="text-base font-bold tracking-tight text-[var(--color-text-primary)]">
+          Skripted{isChatPage && <span className="text-[var(--color-accent-primary)] font-mono text-sm tracking-tighter">_engine</span>}
+        </span>
+        <span className="mt-0.5 font-mono text-[8px] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-muted)]">
+          Script Forge · v2.1
+        </span>
       </span>
     </Link>
   );

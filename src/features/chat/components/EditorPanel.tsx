@@ -190,6 +190,26 @@ export default function EditorPanel({ code, onCodeChange, isStreaming, sessionId
         </div>
       </div>
 
+      {/* sheet title block */}
+      <div className="flex items-stretch border-t border-[var(--color-border)] bg-[var(--color-bg-tertiary)] font-mono text-[9px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
+        <span className="border-r border-[var(--color-border)] px-3 py-2">Dwg: script.sk</span>
+        <span className="hidden border-r border-[var(--color-border)] px-3 py-2 sm:block">Sheet: 1/1</span>
+        <span className="hidden px-3 py-2 md:block">
+          {isStreaming ? (
+            <span className="flex items-center gap-1.5 text-[var(--color-accent-primary)]">
+              <span className="h-1 w-1 rounded-full bg-[var(--color-accent-primary)] animate-subtle-pulse" />
+              Streaming…
+            </span>
+          ) : (
+            <span className="flex items-center gap-1.5">
+              <span className="h-1 w-1 rounded-full bg-[var(--color-accent-primary)]" />
+              Lint: {code.trim() ? 'Passive' : 'Idle'}
+            </span>
+          )}
+        </span>
+        <span className="ml-auto px-3 py-2 text-[var(--color-accent-primary)]">Skript v2.6+</span>
+      </div>
+
       <GalleryPostModal
         code={code}
         isOpen={isGalleryOpen}

@@ -91,13 +91,13 @@ export default function ChatPanel({
   return (
     <div className="flex h-full flex-col min-h-0 glass-panel overflow-hidden m-2 rounded-xl relative">
       {/* Header */}
-      <div className="flex items-center gap-2 sm:gap-3 border-b border-[var(--color-border)] px-3 sm:px-5 py-3 sm:py-4 bg-[var(--color-bg-tertiary)]">
-        <div className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-lg sm:rounded-xl bg-[var(--color-accent-glow)] text-[var(--color-text-primary)]">
+      <div className="flex items-center gap-2 sm:gap-3 border-b border-[var(--color-border)] px-3 sm:px-5 py-3 bg-[var(--color-bg-tertiary)]">
+        <div className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-lg sm:rounded-xl border border-[var(--color-border-active)] bg-[var(--color-accent-glow)] text-[var(--color-accent-primary)]">
           <Terminal size={18} />
         </div>
         <div className="flex-1 min-w-0">
-          <h2 className="text-xs sm:text-sm font-semibold text-[var(--color-text-primary)] truncate">{t('chat.terminal_header')}</h2>
-          <p className="hidden sm:block text-[10px] font-mono text-[var(--color-text-primary)]/70 mt-0.5">
+          <h2 className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--color-text-primary)] truncate">{t('chat.terminal_header')}</h2>
+          <p className="hidden sm:block text-[9px] font-mono uppercase tracking-[0.25em] text-[var(--color-text-muted)] mt-0.5">
             {isStreaming ? (
               <span className="flex items-center gap-1.5">
                 {isAnalyzing ? (
@@ -182,6 +182,9 @@ export default function ChatPanel({
         </div>
 
         <div className="relative flex items-end gap-2 bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border-hover)] focus-within:border-[var(--color-border-active)] transition-all p-1">
+          <span className="select-none pl-3 pb-2.5 font-mono text-[14px] font-bold text-[var(--color-accent-primary)]">
+            &gt;
+          </span>
           <textarea
             ref={textareaRef}
             value={input}
@@ -189,7 +192,7 @@ export default function ChatPanel({
             onKeyDown={handleKeyDown}
             placeholder={t('chat.placeholder')}
             rows={1}
-            className="flex-1 resize-none bg-transparent font-mono text-[13px] sm:text-sm text-[var(--color-text-primary)] focus:outline-none py-2.5 px-3 min-h-[44px]"
+            className="flex-1 resize-none bg-transparent font-mono text-[13px] sm:text-sm text-[var(--color-text-primary)] focus:outline-none py-2.5 px-2 min-h-[44px]"
             disabled={isStreaming}
           />
           <div className="flex items-center gap-1.5 pb-1 pr-1">

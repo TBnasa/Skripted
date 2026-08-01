@@ -38,15 +38,19 @@ export function EditorHeader({
   const lineCount = code.trim() ? code.split('\n').length : 0;
 
   return (
-    <div className="flex items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-bg-tertiary)] px-5 py-4">
-      <div className="flex items-center gap-3">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--color-accent-glow)] text-[var(--color-text-primary)]">
+    <div className="flex items-center justify-between gap-3 border-b border-[var(--color-border)] bg-[var(--color-bg-tertiary)] px-4 py-3 sm:px-5">
+      <div className="flex min-w-0 items-center gap-3">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[var(--color-border-active)] bg-[var(--color-accent-glow)] text-[var(--color-accent-primary)]">
            <Code size={18} />
         </div>
-        <div>
-          <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t('chat.script_editor')}</h2>
-          <p className="text-[10px] font-mono text-[var(--color-text-primary)]/50 mt-0.5 uppercase tracking-widest italic">
-            {lineCount > 0 ? `${lineCount} ${t('editor.lines')}` : t('chat.status_ready')}
+        <div className="min-w-0">
+          <h2 className="flex items-center gap-2 truncate font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--color-text-primary)]">
+            <span className="text-[var(--color-accent-primary)]">▮</span>
+            {t('chat.script_editor')}
+            <span className="hidden text-[var(--color-text-muted)] sm:inline">// script.sk</span>
+          </h2>
+          <p className="mt-0.5 truncate font-mono text-[9px] uppercase tracking-[0.25em] text-[var(--color-text-muted)]">
+            {lineCount > 0 ? `${String(lineCount).padStart(3, '0')} ${t('editor.lines')} · Rev 2.1` : t('chat.status_ready')}
           </p>
         </div>
       </div>

@@ -23,6 +23,16 @@ export function NavbarMobileMenu({ isOpen, setIsOpen, pathname, t }: NavbarMobil
           transition={{ duration: 0.3, ease: "easeInOut" }}
           className="md:hidden border-t border-[var(--color-border)] bg-[var(--color-bg-secondary)]/95 backdrop-blur-xl overflow-hidden"
         >
+          {/* sheet header strip */}
+          <div className="flex items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-bg-tertiary)] px-5 py-2">
+            <span className="font-mono text-[8px] font-semibold uppercase tracking-[0.3em] text-[var(--color-text-muted)]">
+              Project: Skripted_Engine
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-1 w-1 rounded-full bg-[var(--color-accent-primary)] animate-subtle-pulse" />
+              <span className="font-mono text-[8px] font-bold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">Rev 2.1</span>
+            </span>
+          </div>
           <div className="flex flex-col gap-2 p-6">
             <Link
               href="/pricing"

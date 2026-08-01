@@ -81,6 +81,17 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
             : 'bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] rounded-xl rounded-tl-sm border border-[var(--color-border)] border-l-2 border-l-[var(--color-border-active)]'
         }`}
       >
+        {/* msg header — mono role + timestamp */}
+        <div className="mb-2 flex items-center gap-2 font-mono text-[9px] font-bold uppercase tracking-[0.25em]">
+          <span className={isUser ? 'text-[var(--color-accent-primary)]' : 'text-[var(--color-text-secondary)]'}>
+            {isUser ? 'You' : 'Engine'}
+          </span>
+          <span className="h-px w-6 bg-[var(--color-border)]" />
+          <span className="font-normal normal-case tracking-normal tabular-nums text-[var(--color-text-muted)]">
+            {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </span>
+        </div>
+
         {/* Performance Score Gauge (for Assistant only) */}
         {performanceScore !== null && (
           <div className="mb-4 p-3 bg-[var(--color-bg-tertiary)] rounded-xl border border-[var(--color-border)] overflow-hidden">

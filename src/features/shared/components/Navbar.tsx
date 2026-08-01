@@ -24,7 +24,29 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)]/85 backdrop-blur-2xl">
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
+      {/* Tier 0 — engineering spec strip (md+) */}
+      <div className="hidden h-5 items-center justify-between border-b border-[var(--color-border)] px-6 md:flex">
+        <div className="flex items-center gap-2">
+          <span className="h-1 w-1 rounded-full bg-[var(--color-accent-primary)]" />
+          <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.25em] text-[var(--color-text-muted)]">
+            Project: Skripted_Engine
+          </span>
+        </div>
+        <div className="flex items-center gap-5">
+          <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.25em] text-[var(--color-text-muted)]">
+            Rev 2.1 · Build 0417
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="h-1 w-1 rounded-full bg-[var(--color-accent-primary)] animate-subtle-pulse" />
+            <span className="font-mono text-[9px] font-bold uppercase tracking-[0.25em] text-[var(--color-text-secondary)]">
+              Online
+            </span>
+          </span>
+        </div>
+      </div>
+
+      {/* Tier 1 — main bar (44px; total 64px = pt-16 pages) */}
+      <div className="mx-auto flex h-11 max-w-7xl items-center justify-between px-6">
         {!isDashboardPage && <NavbarLogo isChatPage={isChatPage} />}
         {isDashboardPage && <div />}
 

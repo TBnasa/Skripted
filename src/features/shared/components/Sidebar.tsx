@@ -70,19 +70,25 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: delayIndex * 0.1, duration: 0.3 }}
-        className="mb-6"
+        className="mb-5"
       >
         {!isDesktopCollapsed && (
-          <h3 className="text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-[var(--color-accent-primary)] mb-3 flex items-center gap-2">
-            <span className="w-1 h-1 rounded-full bg-[var(--color-accent-primary)]"></span>
-            {label}
-          </h3>
+          <div className="mb-2 flex items-center justify-between rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-tertiary)] px-2.5 py-1.5">
+            <span className="flex items-center gap-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.25em] text-[var(--color-text-secondary)]">
+              <span className="h-1 w-1 rounded-full bg-[var(--color-accent-primary)]"></span>
+              {label}
+            </span>
+            <span className="font-mono text-[9px] font-bold tabular-nums text-[var(--color-text-muted)]">
+              {String(items.length).padStart(2, '0')}
+            </span>
+          </div>
         )}
-        <ul className="space-y-1.5">
-          {items.map(session => (
+        <ul className="space-y-1">
+          {items.map((session, i) => (
             <ChatListItem
               key={session.id}
               session={session}
+              index={i}
               isActive={session.id === activeChatId}
               onClick={() => onLoadChat(session.id)}
               onRename={handleRename}
@@ -179,12 +185,33 @@ export default function Sidebar({ onNewChat, onLoadChat, activeChatId, refreshKe
             </div>
           ) : (
             <div className="mt-2">
+              {/* index sheet header */}
+              <div className="mb-3 flex items-center justify-between border-b border-dashed border-[var(--color-border)] px-1 pb-2">
+                <span className="font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[var(--color-text-muted)]">
+                  Chat Index
+                </span>
+                <span className="font-mono text-[9px] font-bold tabular-nums text-[var(--color-accent-primary)]">
+                  {String(chats.length).padStart(2, '0')}
+                </span>
+              </div>
               {renderGroup(t('sidebar.today'), today, 0)}
               {renderGroup(t('sidebar.yesterday'), yesterday, 1)}
               {renderGroup(t('sidebar.older'), older, 2)}
             </div>
           )}
         </div>
+
+        {/* spec bar */}
+        {!isDesktopCollapsed && (
+          <div className="mt-2 flex items-center justify-between border-t border-[var(--color-border)] px-3 pt-2.5">
+            <span className="font-mono text-[8px] font-semibold uppercase tracking-[0.25em] text-[var(--color-text-muted)]">
+              Dwg: Chat-Log
+            </span>
+            <span className="font-mono text-[8px] font-semibold uppercase tracking-[0.25em] text-[var(--color-text-muted)]">
+              Rev 2.1
+            </span>
+          </div>
+        )}
       </motion.div>
     </>
   );
@@ -209,6 +236,7 @@ function NavButton({ href, icon, text, isCollapsed }: { href: string, icon: Reac
 
 interface ChatListItemProps {
   readonly session: ChatSession;
+  readonly index: number;
   readonly isActive: boolean;
   readonly onClick: () => void;
   readonly onRename: (id: string, title: string) => void;
@@ -217,7 +245,7 @@ interface ChatListItemProps {
   readonly t: any;
 }
 
-function ChatListItem({ session, isActive, onClick, onRename, onDelete, isCollapsed, t }: ChatListItemProps) {
+function ChatListItem({ session, index, isActive, onClick, onRename, onDelete, isCollapsed, t }: ChatListItemProps) {
   const [showMenu, setShowMenu] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(session.title || '');
@@ -285,6 +313,9 @@ function ChatListItem({ session, isActive, onClick, onRename, onDelete, isCollap
           <MessageSquare size={16} className={isActive ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-muted)] group-hover:text-[var(--color-text-primary)]'} />
         ) : (
           <>
+            <span className="w-5 shrink-0 font-mono text-[9px] tabular-nums text-[var(--color-text-muted)]">
+              {String(index + 1).padStart(2, '0')}
+            </span>
             <span className="truncate group-hover:text-[var(--color-text-primary)] transition-colors pr-2">
               {session.title || t('sidebar.untitled_chat')}
             </span>

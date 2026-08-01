@@ -78,7 +78,7 @@ export default function AppSidebar() {
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex items-center gap-3 px-5 h-14 border-b border-[var(--color-border)]">
+        <div className="flex items-center gap-3 px-5 h-16 border-b border-[var(--color-border)]">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-8 h-8 rounded-lg bg-[var(--color-accent-primary)] flex items-center justify-center transition-colors group-hover:bg-[var(--color-accent-secondary)] ink-shadow-sm">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

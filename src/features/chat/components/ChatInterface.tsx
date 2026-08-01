@@ -161,10 +161,30 @@ export default function ChatInterface() {
         />
 
         <div className="flex flex-1 flex-col overflow-hidden min-h-0">
-          <div className="px-6 py-2 bg-[var(--color-bg-primary)] border-b border-[var(--color-border)] flex items-center justify-between">
-            <Overview isCompact={true} />
-            <div className="text-[10px] font-mono text-[var(--color-text-muted)] uppercase tracking-widest hidden md:block">
-              Engine Protocol: <span className="text-[var(--color-text-primary)]">Active</span>
+          {/* spec bar */}
+          <div className="flex items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-6 py-2">
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-[9px] font-bold uppercase tracking-[0.25em] text-[var(--color-text-muted)]">Session</span>
+              <span className="font-mono text-[11px] font-bold text-[var(--color-accent-primary)]">
+                {sessionId ? `#${sessionId.slice(0, 6).toUpperCase()}` : '#NEW'}
+              </span>
+              <span className="hidden h-4 w-px bg-[var(--color-border)] sm:block" />
+              <span className="hidden items-center gap-2 sm:flex">
+                <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-[var(--color-text-muted)]">Msg</span>
+                <span className="font-mono text-[10px] font-bold tabular-nums text-[var(--color-text-secondary)]">
+                  {String(messages.length).padStart(2, '0')}
+                </span>
+              </span>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <Overview isCompact={true} />
+              <span className="hidden items-center gap-1.5 md:flex">
+                <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent-primary)] animate-subtle-pulse" />
+                <span className="font-mono text-[9px] font-bold uppercase tracking-[0.25em] text-[var(--color-text-secondary)]">
+                  Protocol Active
+                </span>
+              </span>
             </div>
           </div>
 

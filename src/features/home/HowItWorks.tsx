@@ -32,7 +32,7 @@ export default function HowItWorks() {
     <section ref={ref} className="relative overflow-hidden bg-[var(--color-bg-primary)] px-6 py-28 md:py-36">
       <div className="absolute inset-0 blueprint-grid opacity-30" />
 
-      <div className="relative z-10 mx-auto max-w-5xl">
+      <div className="relative z-10 mx-auto max-w-6xl">
         {/* heading */}
         <div className="mb-16 text-center">
           <div className="mono-label mb-4 flex items-center justify-center gap-2">
@@ -40,33 +40,38 @@ export default function HowItWorks() {
             {t('how.eyebrow', { defaultValue: 'How it works' })}
             <span className="h-px w-8 bg-[var(--color-accent-primary)]" />
           </div>
-          <h2 className="text-4xl font-black tracking-tight text-balance text-[var(--color-text-primary)] md:text-6xl">
+          <h2 className="mb-4 text-4xl font-black tracking-tight text-balance text-[var(--color-text-primary)] md:text-6xl">
             {t('how.title', { defaultValue: 'From idea to .sk in three steps.' })}
           </h2>
+          <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[var(--color-text-muted)]">Sheet 03/04 · Assembly Line</span>
         </div>
 
-        {/* timeline */}
+        {/* assembly line — continuous dashed baseline */}
         <div className="relative">
-          {/* vertical ink line — drawn as you scroll */}
-          <div className="absolute left-[27px] top-2 bottom-2 w-px bg-[var(--color-border)] md:left-[31px]">
+          {/* baseline (desktop horizontal / mobile vertical) */}
+          <div className="absolute left-[27px] top-0 bottom-0 w-px border-l-2 border-dashed border-[var(--color-border-active)] md:left-0 md:right-0 md:top-8 md:h-px md:w-full md:border-l-0 md:border-t-2">
+            <motion.div
+              style={reduce ? undefined : { scaleX: lineScale, scaleY: undefined, transformOrigin: 'left top' }}
+              className="hidden h-full w-full bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] md:block"
+            />
             <motion.div
               style={reduce ? undefined : { scaleY: lineScale, transformOrigin: 'top' }}
-              className="h-full w-full bg-gradient-to-b from-[var(--color-accent-primary)] to-[var(--color-accent-warm)]"
+              className="h-full w-full bg-gradient-to-b from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] md:hidden"
             />
           </div>
 
-          <ol className="space-y-6 md:space-y-8">
+          <div className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-6">
             {STEPS.map((step, i) => (
-              <StepCard key={i} step={step} index={i} progress={p} reduce={reduce} />
+              <StationCard key={i} step={step} index={i} progress={p} reduce={reduce} />
             ))}
-          </ol>
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-function StepCard({
+function StationCard({
   step,
   index,
   progress,
@@ -81,26 +86,26 @@ function StepCard({
   const start = 0.1 + index * 0.18;
   const end = start + 0.22;
   const opacity = useTransform(progress, [start, end], reduce ? [1, 1] : [0, 1]);
-  const x = useTransform(progress, [start, end], reduce ? [0, 0] : [24, 0]);
+  const y = useTransform(progress, [start, end], reduce ? [0, 0] : [24, 0]);
 
   const { Icon, titleKey, descKey, defaultTitle, defaultDesc } = step;
   const num = String(index + 1).padStart(2, '0');
 
   return (
-    <motion.li style={{ opacity, x }} className="relative flex items-start gap-5 md:gap-7">
-      {/* number node */}
-      <div className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border-2 border-[var(--color-accent-primary)] bg-[var(--color-bg-secondary)] md:h-16 md:w-16 ink-shadow-sm">
+    <motion.div style={{ opacity, y }} className="relative flex flex-col items-center text-center md:items-start md:text-left">
+      {/* station node on the baseline */}
+      <div className="relative z-10 mb-6 flex h-14 w-14 items-center justify-center rounded-lg border-2 border-[var(--color-accent-primary)] bg-[var(--color-bg-primary)] md:h-16 md:w-16 ink-shadow-sm">
         <span className="font-mono text-base font-bold tabular-nums text-[var(--color-accent-primary)] md:text-lg">{num}</span>
       </div>
 
-      {/* body */}
       <div className="press corner-ticks flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6 transition-colors duration-300 hover:border-[var(--color-border-active)] md:p-7">
-        <div className="mb-3 flex items-center gap-2.5">
+        <span className="font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[var(--color-text-muted)]">Station {num}</span>
+        <div className="mb-3 mt-2 flex items-center justify-center gap-2.5 md:justify-start">
           <Icon className="h-4 w-4 text-[var(--color-accent-primary)]" />
           <h3 className="text-lg font-bold text-[var(--color-text-primary)]">{t(titleKey, { defaultValue: defaultTitle })}</h3>
         </div>
         <p className="text-sm leading-relaxed text-[var(--color-text-secondary)]">{t(descKey, { defaultValue: defaultDesc })}</p>
       </div>
-    </motion.li>
+    </motion.div>
   );
 }

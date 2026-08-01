@@ -36,7 +36,7 @@ export default function DashboardPage() {
   };
 
   const getScoreColor = (score: number) => {
-    if (score > 80) return 'text-[var(--color-text-primary)]';
+    if (score > 80) return 'text-[var(--color-accent-primary)]';
     if (score > 50) return 'text-amber-400';
     return 'text-red-400';
   };
@@ -53,23 +53,36 @@ export default function DashboardPage() {
 
       <main className="md:ml-60 min-h-screen overflow-y-auto p-8 custom-scrollbar">
         <div className="max-w-6xl mx-auto pt-4">
+          {/* spec header */}
           <header className="mb-10">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-3 mb-2"
             >
-              <div className="p-2 bg-[var(--color-accent-glow)] rounded-xl text-[var(--color-accent-primary)]">
+              <div className="p-2 bg-[var(--color-accent-glow)] rounded-xl text-[var(--color-accent-primary)] border border-[var(--color-border-active)]">
                 <LayoutDashboard size={24} />
               </div>
-              <h1 className="text-3xl font-black tracking-tight">Project Dashboard</h1>
+              <h1 className="font-mono text-xl font-black uppercase tracking-[0.15em]">Project Dashboard</h1>
             </motion.div>
             <p className="text-[var(--color-text-muted)] text-sm">Visualize your Skript optimization journey and performance impact.</p>
+
+            <div className="mt-6 flex items-center justify-between gap-4 border-t-2 border-[var(--color-border-active)] pt-3">
+              <div className="flex items-center gap-3 font-mono text-[9px] font-bold uppercase tracking-[0.25em] text-[var(--color-text-muted)]">
+                <span className="text-[var(--color-accent-primary)]">DWG: CONSOLE-01</span>
+                <span className="hidden h-px w-16 bg-[var(--color-border)] sm:block" />
+                <span className="hidden sm:block">Rev 2.1</span>
+              </div>
+              <span className="font-mono text-[9px] font-bold uppercase tracking-[0.25em] text-[var(--color-text-muted)]">
+                {new Date().toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+              </span>
+            </div>
           </header>
 
           <section className="mb-12">
-            <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-[var(--color-text-secondary)] mb-6 flex items-center gap-2">
-              <span className="w-8 h-px bg-[var(--color-bg-tertiary)]" />
+            <h2 className="flex items-center gap-2 border-b border-dashed border-[var(--color-border)] pb-3 mb-6 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
+              <span className="text-[var(--color-accent-primary)]">Item 01</span>
+              <span className="h-px w-8 bg-[var(--color-border)]" />
               Performance Overview
             </h2>
             <Overview isCompact={false} />
@@ -77,15 +90,19 @@ export default function DashboardPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <DashboardCard
+              index="02"
               title="Recent History"
               icon={<History size={18} />}
               description="Your last code optimizations and their scores."
             >
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-1">
                 {history.length > 0 ? (
-                  history.slice(0, 10).map((item) => (
-                    <div key={item.id} className="flex items-center justify-between p-4 bg-[var(--color-bg-tertiary)] border border-[var(--color-border)]/50 rounded-xl hover:border-[var(--color-border-hover)] transition-colors group">
+                  history.slice(0, 10).map((item, i) => (
+                    <div key={item.id} className="group flex items-center justify-between border-b border-dashed border-[var(--color-border)] px-1 py-3 transition-colors duration-200 hover:bg-[var(--color-accent-glow)]">
                       <div className="flex items-center gap-3">
+                        <span className="w-8 shrink-0 font-mono text-[9px] tabular-nums text-[var(--color-text-muted)]">
+                          {String(i + 1).padStart(2, '0')}
+                        </span>
                         <div className={`w-2 h-2 rounded-full ${getDotColor(item.score)}`} />
                         <div className="flex flex-col">
                           <span className="text-sm font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent-primary)] transition-colors">{item.title}</span>
@@ -94,7 +111,7 @@ export default function DashboardPage() {
                       </div>
                       <div className="flex items-center gap-4">
                         <span className="text-[10px] text-[var(--color-text-muted)] font-mono hidden sm:block">{new Date(item.timestamp).toLocaleDateString()}</span>
-                        <span className={`text-xs font-mono font-bold ${getScoreColor(item.score)}`}>{item.score}%</span>
+                        <span className={`text-xs font-mono font-bold tabular-nums ${getScoreColor(item.score)}`}>{item.score}%</span>
                       </div>
                     </div>
                   ))
@@ -107,12 +124,13 @@ export default function DashboardPage() {
             </DashboardCard>
 
             <DashboardCard
+              index="03"
               title="Global Settings"
               icon={<Settings size={18} />}
               description="Manage your engine preferences and default versions."
             >
-              <div className="space-y-6">
-                <div className="flex items-center justify-between cursor-pointer group" onClick={() => updateSetting('autoOptimize')}>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between cursor-pointer group border-b border-dashed border-[var(--color-border)] px-1 py-4 transition-colors duration-200 hover:bg-[var(--color-accent-glow)]" onClick={() => updateSetting('autoOptimize')}>
                   <div className="flex flex-col">
                     <span className="text-sm font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-accent-primary)]">Auto-Optimization</span>
                     <span className="text-[10px] text-[var(--color-text-muted)]">Automatically fix detected bottleneck patterns.</span>
@@ -125,7 +143,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between cursor-pointer group" onClick={() => updateSetting('verboseError')}>
+                <div className="flex items-center justify-between cursor-pointer group px-1 py-4 transition-colors duration-200 hover:bg-[var(--color-accent-glow)]" onClick={() => updateSetting('verboseError')}>
                   <div className="flex flex-col">
                     <span className="text-sm font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-accent-primary)]">Verbose Error Logic</span>
                     <span className="text-[10px] text-[var(--color-text-muted)]">Enable deep breakdown of syntax issues.</span>
@@ -146,15 +164,23 @@ export default function DashboardPage() {
   );
 }
 
-function DashboardCard({ title, icon, description, children }: { title: string, icon: any, description: string, children: React.ReactNode }) {
+function DashboardCard({ index, title, icon, description, children }: { index: string, title: string, icon: any, description: string, children: React.ReactNode }) {
   return (
-    <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl p-8 hover:border-[var(--color-border-active)] transition-all duration-300 ink-shadow-sm">
+    <div className="corner-ticks relative bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl p-8 hover:border-[var(--color-border-active)] transition-all duration-300 ink-shadow-sm">
       <div className="flex items-center gap-3 mb-2">
         <div className="text-[var(--color-text-primary)]">{icon}</div>
         <h3 className="text-lg font-bold text-[var(--color-text-primary)]">{title}</h3>
       </div>
       <p className="text-sm text-[var(--color-text-muted)] mb-6">{description}</p>
       {children}
+
+      {/* title block strip */}
+      <div className="mt-6 flex items-center justify-between border-t border-dashed border-[var(--color-border)] pt-3">
+        <span className="font-mono text-[9px] font-bold uppercase tracking-[0.25em] text-[var(--color-text-muted)]">
+          <span className="text-[var(--color-accent-primary)]">Item {index}</span> · Console
+        </span>
+        <span className="font-mono text-[9px] font-bold uppercase tracking-[0.25em] text-[var(--color-text-muted)]">Rev 2.1</span>
+      </div>
     </div>
   );
 }

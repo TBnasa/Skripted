@@ -3,6 +3,7 @@ import React from 'react';
 import { IBM_Plex_Mono } from 'next/font/google';
 import localFont from 'next/font/local';
 import Navbar from '@/features/shared/components/Navbar';
+import SiteFooter from '@/features/shared/components/SiteFooter';
 import './globals.css';
 
 const ibmPlexMono = IBM_Plex_Mono({
@@ -75,6 +76,7 @@ export default function RootLayout({
             <Toaster position="top-right" richColors theme="light" closeButton />
             <Navbar />
             <main>{children}</main>
+            <SiteFooter />
           </body>
         </html>
       </Providers>

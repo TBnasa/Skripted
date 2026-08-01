@@ -99,6 +99,17 @@ export default function GalleryContent() {
             {t('gallery.gallery_desc')}
           </p>
 
+          {/* index strip */}
+          <div className="mb-8 flex items-center gap-4 border-y border-dashed border-[var(--color-border)] py-2">
+            <span className="font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[var(--color-accent-primary)]">
+              Plans Wall
+            </span>
+            <span className="h-px w-10 bg-[var(--color-border)]" />
+            <span className="font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[var(--color-text-muted)]">
+              Sheet 01/01 · {Array.isArray(filteredPosts) ? String(filteredPosts.length).padStart(2, '0') : '00'} Plates
+            </span>
+          </div>
+
           <div className="flex flex-col gap-6">
             <div className="flex items-center p-1.5 bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-xl w-fit">
               <button 
@@ -223,9 +234,9 @@ export default function GalleryContent() {
           variants={containerVariants}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+          className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 [column-fill:balance]"
         >
-          <AnimatePresence mode="popLayout">
+          <AnimatePresence>
             {filteredPosts.map((post) => (
               <GalleryCard key={post.id} post={post} />
             ))}

@@ -45,6 +45,7 @@ const GalleryCard = memo(({ post }: { post: GalleryPost }) => {
     <motion.div 
       variants={itemVariants} 
       layoutId={`post-${post.id}`}
+      className="mb-6 break-inside-avoid"
       style={{ 
         contentVisibility: 'auto', 
         containIntrinsicSize: '0 400px',
@@ -53,7 +54,7 @@ const GalleryCard = memo(({ post }: { post: GalleryPost }) => {
     >
       <Link 
         href={`/gallery/${post.id}`} 
-        className="group flex flex-col bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl overflow-hidden hover:border-[var(--color-border-active)] transition-[border-color,box-shadow,transform] duration-500 ink-shadow-sm hover:-translate-y-2 relative h-full transform-gpu"
+        className="group flex flex-col bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl overflow-hidden hover:border-[var(--color-border-active)] transition-[border-color,box-shadow,transform] duration-500 ink-shadow-sm hover:-translate-y-2 relative transform-gpu"
         style={{ contain: 'content' }} // Isolate layout/paint
       >
         
